@@ -7,9 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		F451E3CB195B8CD80051434C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F451E3CA195B8CD80051434C /* AppDelegate.swift */; };
-		F451E3CD195B8CD80051434C /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F451E3CC195B8CD80051434C /* Images.xcassets */; };
 		F451E3D9195B8CD80051434C /* OAuthSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F451E3D8195B8CD80051434C /* OAuthSwiftTests.swift */; };
+		F451E3E6195B8D030051434C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F451E3E3195B8D030051434C /* AppDelegate.swift */; };
+		F451E3E7195B8D030051434C /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F451E3E4195B8D030051434C /* Images.xcassets */; };
+		F451E3E8195B8D030051434C /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F451E3E5195B8D030051434C /* Info.plist */; };
+		F451E3F5195B8D5B0051434C /* Dictionary+OAuthSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = F451E3EA195B8D5B0051434C /* Dictionary+OAuthSwift.swift */; };
+		F451E3F6195B8D5B0051434C /* HMACSHA1Signature.m in Sources */ = {isa = PBXBuildFile; fileRef = F451E3EC195B8D5B0051434C /* HMACSHA1Signature.m */; };
+		F451E3F7195B8D5B0051434C /* NSURL+OAuthSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = F451E3ED195B8D5B0051434C /* NSURL+OAuthSwift.swift */; };
+		F451E3F8195B8D5B0051434C /* OAuth1Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = F451E3EE195B8D5B0051434C /* OAuth1Swift.swift */; };
+		F451E3F9195B8D5B0051434C /* OAuth2Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = F451E3EF195B8D5B0051434C /* OAuth2Swift.swift */; };
+		F451E3FA195B8D5B0051434C /* OAuthSwiftClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = F451E3F1195B8D5B0051434C /* OAuthSwiftClient.swift */; };
+		F451E3FB195B8D5B0051434C /* OAuthSwiftCredential.swift in Sources */ = {isa = PBXBuildFile; fileRef = F451E3F2195B8D5B0051434C /* OAuthSwiftCredential.swift */; };
+		F451E3FC195B8D5B0051434C /* OAuthSwiftHTTPRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = F451E3F3195B8D5B0051434C /* OAuthSwiftHTTPRequest.swift */; };
+		F451E3FD195B8D5B0051434C /* String+OAuthSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = F451E3F4195B8D5B0051434C /* String+OAuthSwift.swift */; };
+		F451E3FF195B8E910051434C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F451E3FE195B8E910051434C /* ViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -24,12 +35,24 @@
 
 /* Begin PBXFileReference section */
 		F451E3C5195B8CD80051434C /* OAuthSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OAuthSwift.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		F451E3C9195B8CD80051434C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		F451E3CA195B8CD80051434C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		F451E3CC195B8CD80051434C /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		F451E3D2195B8CD80051434C /* OAuthSwiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OAuthSwiftTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F451E3D7195B8CD80051434C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F451E3D8195B8CD80051434C /* OAuthSwiftTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthSwiftTests.swift; sourceTree = "<group>"; };
+		F451E3E3195B8D030051434C /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		F451E3E4195B8D030051434C /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		F451E3E5195B8D030051434C /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F451E3EA195B8D5B0051434C /* Dictionary+OAuthSwift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dictionary+OAuthSwift.swift"; sourceTree = "<group>"; };
+		F451E3EB195B8D5B0051434C /* HMACSHA1Signature.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HMACSHA1Signature.h; sourceTree = "<group>"; };
+		F451E3EC195B8D5B0051434C /* HMACSHA1Signature.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HMACSHA1Signature.m; sourceTree = "<group>"; };
+		F451E3ED195B8D5B0051434C /* NSURL+OAuthSwift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSURL+OAuthSwift.swift"; sourceTree = "<group>"; };
+		F451E3EE195B8D5B0051434C /* OAuth1Swift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OAuth1Swift.swift; sourceTree = "<group>"; };
+		F451E3EF195B8D5B0051434C /* OAuth2Swift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OAuth2Swift.swift; sourceTree = "<group>"; };
+		F451E3F0195B8D5B0051434C /* OAuthSwift-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "OAuthSwift-Bridging-Header.h"; sourceTree = "<group>"; };
+		F451E3F1195B8D5B0051434C /* OAuthSwiftClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OAuthSwiftClient.swift; sourceTree = "<group>"; };
+		F451E3F2195B8D5B0051434C /* OAuthSwiftCredential.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OAuthSwiftCredential.swift; sourceTree = "<group>"; };
+		F451E3F3195B8D5B0051434C /* OAuthSwiftHTTPRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OAuthSwiftHTTPRequest.swift; sourceTree = "<group>"; };
+		F451E3F4195B8D5B0051434C /* String+OAuthSwift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+OAuthSwift.swift"; sourceTree = "<group>"; };
+		F451E3FE195B8E910051434C /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,7 +76,8 @@
 		F451E3BC195B8CD80051434C = {
 			isa = PBXGroup;
 			children = (
-				F451E3C7195B8CD80051434C /* OAuthSwift */,
+				F451E3E9195B8D5B0051434C /* OAuthSwift */,
+				F451E3E2195B8D030051434C /* OAuthSwiftDemo */,
 				F451E3D5195B8CD80051434C /* OAuthSwiftTests */,
 				F451E3C6195B8CD80051434C /* Products */,
 			);
@@ -66,24 +90,6 @@
 				F451E3D2195B8CD80051434C /* OAuthSwiftTests.xctest */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		F451E3C7195B8CD80051434C /* OAuthSwift */ = {
-			isa = PBXGroup;
-			children = (
-				F451E3CA195B8CD80051434C /* AppDelegate.swift */,
-				F451E3CC195B8CD80051434C /* Images.xcassets */,
-				F451E3C8195B8CD80051434C /* Supporting Files */,
-			);
-			path = OAuthSwift;
-			sourceTree = "<group>";
-		};
-		F451E3C8195B8CD80051434C /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				F451E3C9195B8CD80051434C /* Info.plist */,
-			);
-			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		F451E3D5195B8CD80051434C /* OAuthSwiftTests */ = {
@@ -101,6 +107,35 @@
 				F451E3D7195B8CD80051434C /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		F451E3E2195B8D030051434C /* OAuthSwiftDemo */ = {
+			isa = PBXGroup;
+			children = (
+				F451E3E3195B8D030051434C /* AppDelegate.swift */,
+				F451E3FE195B8E910051434C /* ViewController.swift */,
+				F451E3E4195B8D030051434C /* Images.xcassets */,
+				F451E3E5195B8D030051434C /* Info.plist */,
+			);
+			path = OAuthSwiftDemo;
+			sourceTree = "<group>";
+		};
+		F451E3E9195B8D5B0051434C /* OAuthSwift */ = {
+			isa = PBXGroup;
+			children = (
+				F451E3EE195B8D5B0051434C /* OAuth1Swift.swift */,
+				F451E3EF195B8D5B0051434C /* OAuth2Swift.swift */,
+				F451E3F1195B8D5B0051434C /* OAuthSwiftClient.swift */,
+				F451E3F2195B8D5B0051434C /* OAuthSwiftCredential.swift */,
+				F451E3F3195B8D5B0051434C /* OAuthSwiftHTTPRequest.swift */,
+				F451E3EA195B8D5B0051434C /* Dictionary+OAuthSwift.swift */,
+				F451E3ED195B8D5B0051434C /* NSURL+OAuthSwift.swift */,
+				F451E3F4195B8D5B0051434C /* String+OAuthSwift.swift */,
+				F451E3EB195B8D5B0051434C /* HMACSHA1Signature.h */,
+				F451E3EC195B8D5B0051434C /* HMACSHA1Signature.m */,
+				F451E3F0195B8D5B0051434C /* OAuthSwift-Bridging-Header.h */,
+			);
+			path = OAuthSwift;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -182,7 +217,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F451E3CD195B8CD80051434C /* Images.xcassets in Resources */,
+				F451E3E7195B8D030051434C /* Images.xcassets in Resources */,
+				F451E3E8195B8D030051434C /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -200,7 +236,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F451E3CB195B8CD80051434C /* AppDelegate.swift in Sources */,
+				F451E3FD195B8D5B0051434C /* String+OAuthSwift.swift in Sources */,
+				F451E3FC195B8D5B0051434C /* OAuthSwiftHTTPRequest.swift in Sources */,
+				F451E3F8195B8D5B0051434C /* OAuth1Swift.swift in Sources */,
+				F451E3F6195B8D5B0051434C /* HMACSHA1Signature.m in Sources */,
+				F451E3FF195B8E910051434C /* ViewController.swift in Sources */,
+				F451E3F9195B8D5B0051434C /* OAuth2Swift.swift in Sources */,
+				F451E3E6195B8D030051434C /* AppDelegate.swift in Sources */,
+				F451E3F7195B8D5B0051434C /* NSURL+OAuthSwift.swift in Sources */,
+				F451E3F5195B8D5B0051434C /* Dictionary+OAuthSwift.swift in Sources */,
+				F451E3FB195B8D5B0051434C /* OAuthSwiftCredential.swift in Sources */,
+				F451E3FA195B8D5B0051434C /* OAuthSwiftClient.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -307,9 +353,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				INFOPLIST_FILE = OAuthSwift/Info.plist;
+				INFOPLIST_FILE = OAuthSwiftDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "OAuthSwift/OAuthSwift-Bridging-Header.h";
 			};
 			name = Debug;
 		};
@@ -318,9 +365,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				INFOPLIST_FILE = OAuthSwift/Info.plist;
+				INFOPLIST_FILE = OAuthSwiftDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "OAuthSwift/OAuthSwift-Bridging-Header.h";
 			};
 			name = Release;
 		};

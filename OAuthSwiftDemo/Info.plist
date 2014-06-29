@@ -26,5 +26,16 @@
 	<array>
 		<string>armv7</string>
 	</array>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string></string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>oauth-swift</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>
