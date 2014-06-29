@@ -1,6 +1,6 @@
 //
 //  HMACSHA1Signature.m
-//  oauth-swift
+//  OAuthSwift
 //
 //  Created by Dongri Jin on 6/21/14.
 //  Copyright (c) 2014 Dongri Jin. All rights reserved.

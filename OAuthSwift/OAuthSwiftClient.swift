@@ -1,6 +1,6 @@
 //
 //  OAuthSwiftClient.swift
-//  oauth-swift
+//  OAuthSwift
 //
 //  Created by Dongri Jin on 6/21/14.
 //  Copyright (c) 2014 Dongri Jin. All rights reserved.
@@ -18,14 +18,9 @@ class OAuthSwiftClient {
         static let signatureMethod = "HMAC-SHA1"
     }
     
-    //var consumerKey: String
-    //var consumerSecret: String
-    
     var credential: OAuthSwiftCredential
     
     init(consumerKey: String, consumerSecret: String) {
-        //self.consumerKey = consumerKey
-        //self.consumerSecret = consumerSecret
         self.credential = OAuthSwiftCredential(consumer_key: consumerKey, consumer_secret: consumerSecret)
     }
     
@@ -80,10 +75,7 @@ class OAuthSwiftClient {
         authorizationParameters["oauth_timestamp"] = String(Int64(NSDate().timeIntervalSince1970))
         authorizationParameters["oauth_nonce"] = NSUUID().UUIDString.bridgeToObjectiveC().substringToIndex(8)
         
-        //if !self.credential?.oauth_token.isEmpty {
-        //if credential {
-            authorizationParameters["oauth_token"] = credential.oauth_token
-        //}
+        authorizationParameters["oauth_token"] = credential.oauth_token
         
         for (key, value: AnyObject) in parameters {
             if key.hasPrefix("oauth_") {
@@ -113,9 +105,7 @@ class OAuthSwiftClient {
     
     class func oauthSignatureForMethod(method: String, url: NSURL, parameters: Dictionary<String, AnyObject>, credential: OAuthSwiftCredential) -> String {
         var tokenSecret: NSString = ""
-        //if credential {
-            tokenSecret = credential.oauth_token_secret.urlEncodedStringWithEncoding(dataEncoding)
-        //}
+        tokenSecret = credential.oauth_token_secret.urlEncodedStringWithEncoding(dataEncoding)
         
         let encodedConsumerSecret = credential.consumer_secret.urlEncodedStringWithEncoding(dataEncoding)
         

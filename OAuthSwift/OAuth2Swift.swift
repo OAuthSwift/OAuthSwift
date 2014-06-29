@@ -1,6 +1,6 @@
 //
-//  OAuthSwiftTwitter.swift
-//  oauth-swift
+//  OAuth2Swift.swift
+//  OAuthSwift
 //
 //  Created by Dongri Jin on 6/22/14.
 //  Copyright (c) 2014 Dongri Jin. All rights reserved.

@@ -1,6 +1,6 @@
 //
-//  OAuthSwiftTwitter.swift
-//  oauth-swift
+//  OAuth1Swift.swift
+//  OAuthSwift
 //
 //  Created by Dongri Jin on 6/22/14.
 //  Copyright (c) 2014 Dongri Jin. All rights reserved.
@@ -28,8 +28,6 @@ class OAuth1Swift {
         self.authorize_url = authorizeUrl
         self.access_token_url = accessTokenUrl
         self.client = OAuthSwiftClient(consumerKey: consumerKey, consumerSecret: consumerSecret)
-        //self.client.credential = OAuthSwiftCredential()
-        //self.observer = AnyObject?
     }
     
     struct CallbackNotification {
