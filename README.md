@@ -3,6 +3,10 @@ OAuthSwift
 
 Swift based OAuth library for iOS
 
+### Support OAuth1.0, OAuth2.0 
+
+Twitter, Flickr, Github, Instagram, Foursquare. etc
+
 ### Setting Swift Compiler
 
 ![Image](OAuthSwiftDemo/Images/SwiftCompiler.png "Image")
@@ -10,10 +14,6 @@ Swift based OAuth library for iOS
 ### Setting URL Schemes
 
 ![Image](OAuthSwiftDemo/Images/URLSchemes.png "Image")
-
-### Support OAuth1.0, OAuth2.0 
-
-Twitter, Flickr, Github, Instagram, Foursquare
 
 ### Images
 
