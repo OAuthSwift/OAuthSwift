@@ -3,15 +3,15 @@ OAuthSwift
 
 Swift based OAuth library for iOS
 
-1. Setting Swift Compiler
+### Setting Swift Compiler
 
 ![Image](OAuthSwiftDemo/Images/SwiftCompiler.png "Image")
 
-2. Setting URL Schemes
+### Setting URL Schemes
 
 ![Image](OAuthSwiftDemo/Images/URLSchemes.png "Image")
 
-3. Images
+### Images
 
 ![Image](OAuthSwiftDemo/Images/Services.png "Image")
 ![Image](OAuthSwiftDemo/Images/TwitterOAuth.png "Image")
