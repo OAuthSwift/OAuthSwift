@@ -4,6 +4,8 @@ OAuthSwift
 Swift based OAuth library for iOS
 
 
-![Services](https://github.com/dongri/OAuthSwift/blob/master/OAuthSwiftDemo/Images/Services.png "Services")
-
-![Services](OAuthSwiftDemo/Images/Services.png "Services")
+![Image](OAuthSwiftDemo/Images/Services.png "Image")
+![Image](OAuthSwiftDemo/Images/TwitterOAuth.png "Image")
+![Image](OAuthSwiftDemo/Images/TwitterOAuthTokens.png "Image")
+![Image](OAuthSwiftDemo/Images/FoursquareOAuth.png "Image")
+![Image](OAuthSwiftDemo/Images/FoursquareOAuthTokens.png "Image")
