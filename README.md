@@ -7,6 +7,37 @@ Swift based OAuth library for iOS
 
 Twitter, Flickr, Github, Instagram, Foursquare. etc
 
+### Examples
+
+```
+// OAuth1.0
+let oauthswift = OAuth1Swift(
+    consumerKey:    "********",
+    consumerSecret: "********",
+    requestTokenUrl: "https://api.twitter.com/oauth/request_token",
+    authorizeUrl:    "https://api.twitter.com/oauth/authorize",
+    accessTokenUrl:  "https://api.twitter.com/oauth/access_token"
+)
+oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/twitter"), success: {
+    credential, response in
+    println(credential.oauth_token)
+    println(credential.oauth_token_secret)
+}, failure: failureHandler)
+
+// OAuth2.0
+let oauthswift = OAuth2Swift(
+    consumerKey:    "********",
+    consumerSecret: "********",
+    authorizeUrl:   "https://api.instagram.com/oauth/authorize",
+    responseType:   "token"
+)
+oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/instagram"), scope: "likes+comments", state:"INSTAGRAM", success: {
+    credential, response in
+    println(credential.oauth_token)
+}, failure: failureHandler)
+
+```
+
 ### Setting Swift Compiler
 
 ![Image](OAuthSwiftDemo/Images/SwiftCompiler.png "Image")
