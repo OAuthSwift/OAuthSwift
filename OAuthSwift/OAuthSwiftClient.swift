@@ -89,12 +89,12 @@ class OAuthSwiftClient {
         
         authorizationParameters["oauth_signature"] = self.oauthSignatureForMethod(method, url: url, parameters: finalParameters, credential: credential)
         
-        let authorizationParameterComponents = authorizationParameters.urlEncodedQueryStringWithEncoding(dataEncoding).componentsSeparatedByString("&") as String[]
+        var authorizationParameterComponents = authorizationParameters.urlEncodedQueryStringWithEncoding(dataEncoding).componentsSeparatedByString("&") as [String]
         authorizationParameterComponents.sort { $0 < $1 }
         
-        var headerComponents = String[]()
+        var headerComponents = [String]()
         for component in authorizationParameterComponents {
-            let subcomponent = component.componentsSeparatedByString("=") as String[]
+            let subcomponent = component.componentsSeparatedByString("=") as [String]
             if subcomponent.count == 2 {
                 headerComponents.append("\(subcomponent[0])=\"\(subcomponent[1])\"")
             }
@@ -112,7 +112,7 @@ class OAuthSwiftClient {
         let signingKey = "\(encodedConsumerSecret)&\(tokenSecret)"
         let signingKeyData = signingKey.bridgeToObjectiveC().dataUsingEncoding(dataEncoding)
         
-        let parameterComponents = parameters.urlEncodedQueryStringWithEncoding(dataEncoding).componentsSeparatedByString("&") as String[]
+        var parameterComponents = parameters.urlEncodedQueryStringWithEncoding(dataEncoding).componentsSeparatedByString("&") as [String]
         parameterComponents.sort { $0 < $1 }
         
         let parameterString = parameterComponents.bridgeToObjectiveC().componentsJoinedByString("&")

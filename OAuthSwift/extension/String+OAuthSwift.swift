@@ -44,9 +44,9 @@ extension String {
         return parameters
     }
     //分割字符
-    func split(s:String)->String[]{
+    func split(s:String)->[String]{
         if s.isEmpty{
-            var x=String[]()
+            var x=[String]()
             for y in self{
                 x.append(String(y))
             }
@@ -101,7 +101,7 @@ extension String {
     //重复字符串
     func repeat(times: Int) -> String{
         var result = ""
-        for i in 0..times {
+        for i in 0..<times {
             result += self
         }
         return result
