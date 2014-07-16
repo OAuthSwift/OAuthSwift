@@ -115,7 +115,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     func tableView(tableView: UITableView?, cellForRowAtIndexPath indexPath:NSIndexPath!) -> UITableViewCell! {
         let cell: UITableViewCell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "Cell")
-        cell.text = services[indexPath.row]
+        cell.textLabel.text = services[indexPath.row]
         return cell;
     }
     
