@@ -37,7 +37,7 @@ extension Dictionary {
     }
 
     func urlEncodedQueryStringWithEncoding(encoding: NSStringEncoding) -> String {
-        var parts = String[]()
+        var parts = [String]()
 
         for (key, value) in self {
             let keyString = "\(key)".urlEncodedStringWithEncoding(encoding)

@@ -44,9 +44,9 @@ extension String {
         return parameters
     }
     //分割字符
-    func split(s:String)->String[]{
+    func split(s:String)->[String]{
         if s.isEmpty{
-            var x=String[]()
+            var x=[String]()
             for y in self{
                 x.append(String(y))
             }
