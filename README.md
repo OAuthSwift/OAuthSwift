@@ -7,6 +7,19 @@ Swift based OAuth library for iOS
 
 Twitter, Flickr, Github, Instagram, Foursquare. etc
 
+### OAuth pages
+
+[Twitter](https://dev.twitter.com/docs/auth/oauth)
+
+[Flickr](https://www.flickr.com/services/api/auth.oauth.html)
+
+[Github](https://developer.github.com/v3/oauth)
+
+[Instagram](http://instagram.com/developer/authentication)
+
+[Foursquare](https://developer.foursquare.com/overview/auth)
+
+
 ### Examples
 
 ```
