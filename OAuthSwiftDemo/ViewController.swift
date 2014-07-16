@@ -32,8 +32,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 
     func doOAuthTwitter(){
         let oauthswift = OAuth1Swift(
-            consumerKey:    "t2U3FRYWOhMOAe26BSOpSo51v",
-            consumerSecret: "UTcxQH6kf2UBVDgzYcNiQl83XWkqVdTTQzbipiPlqwpsrlDRlH",
+            consumerKey:    Twitter["consumerKey"]!,
+            consumerSecret: Twitter["consumerSecret"]!,
             requestTokenUrl: "https://api.twitter.com/oauth/request_token",
             authorizeUrl:    "https://api.twitter.com/oauth/authorize",
             accessTokenUrl:  "https://api.twitter.com/oauth/access_token"
@@ -47,8 +47,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 
     func doOAuthFlickr(){
         let oauthswift = OAuth1Swift(
-            consumerKey:     "93ef032c7fc940daef72919669eb0f3f",
-            consumerSecret:  "2a6338717e0532dc",
+            consumerKey:    Flickr["consumerKey"]!,
+            consumerSecret: Flickr["consumerSecret"]!,
             requestTokenUrl: "https://www.flickr.com/services/oauth/request_token",
             authorizeUrl:    "https://www.flickr.com/services/oauth/authorize",
             accessTokenUrl:  "https://www.flickr.com/services/oauth/access_token"
@@ -62,8 +62,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 
     func doOAuthGithub(){
         let oauthswift = OAuth2Swift(
-            consumerKey:    "a80f8187bb1ead11e1ef",
-            consumerSecret: "bca5df25821d9d5bfdb7a3c6286c5b48b856f233",
+            consumerKey:    Github["consumerKey"]!,
+            consumerSecret: Github["consumerSecret"]!,
             authorizeUrl:   "https://github.com/login/oauth/authorize",
             accessTokenUrl: "https://github.com/login/oauth/access_token",
             responseType:   "code"
@@ -77,8 +77,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 
     func doOAuthInstagram(){
         let oauthswift = OAuth2Swift(
-            consumerKey:    "32319c77fdc94c43959f25206060c11a",
-            consumerSecret: "04e86de6a0e14b0ba2060bc5ae636c30",
+            consumerKey:    Instagram["consumerKey"]!,
+            consumerSecret: Instagram["consumerSecret"]!,
             authorizeUrl:   "https://api.instagram.com/oauth/authorize",
             responseType:   "token"
         )
@@ -91,8 +91,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 
     func doOAuthFoursquare(){
         let oauthswift = OAuth2Swift(
-            consumerKey:    "HW4EN2F4GBP1XZKSB4UWZXOMYVDVMDCRUASSK1RH5GDUBJ13",
-            consumerSecret: "JLMP4UAT4RR00J01Y4HGOZCZ4N5QZESMYL1D2HATO4RB0W2N",
+            consumerKey:    Foursquare["consumerKey"]!,
+            consumerSecret: Foursquare["consumerSecret"]!,
             authorizeUrl:   "https://foursquare.com/oauth2/authorize",
             responseType:   "token"
         )

@@ -13,7 +13,6 @@
 		F451E3D9195B8CD80051434C /* OAuthSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F451E3D8195B8CD80051434C /* OAuthSwiftTests.swift */; };
 		F451E3E6195B8D030051434C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F451E3E3195B8D030051434C /* AppDelegate.swift */; };
 		F451E3E7195B8D030051434C /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F451E3E4195B8D030051434C /* Images.xcassets */; };
-		F451E3E8195B8D030051434C /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F451E3E5195B8D030051434C /* Info.plist */; };
 		F451E3F6195B8D5B0051434C /* HMACSHA1Signature.m in Sources */ = {isa = PBXBuildFile; fileRef = F451E3EC195B8D5B0051434C /* HMACSHA1Signature.m */; };
 		F451E3F8195B8D5B0051434C /* OAuth1Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = F451E3EE195B8D5B0051434C /* OAuth1Swift.swift */; };
 		F451E3F9195B8D5B0051434C /* OAuth2Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = F451E3EF195B8D5B0051434C /* OAuth2Swift.swift */; };
@@ -21,9 +20,25 @@
 		F451E3FB195B8D5B0051434C /* OAuthSwiftCredential.swift in Sources */ = {isa = PBXBuildFile; fileRef = F451E3F2195B8D5B0051434C /* OAuthSwiftCredential.swift */; };
 		F451E3FC195B8D5B0051434C /* OAuthSwiftHTTPRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = F451E3F3195B8D5B0051434C /* OAuthSwiftHTTPRequest.swift */; };
 		F451E3FF195B8E910051434C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F451E3FE195B8E910051434C /* ViewController.swift */; };
+		F454D53119772AE500354060 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F454D53019772AE500354060 /* Constants.swift */; };
+		F454D5331977333800354060 /* apikeys.txt in Resources */ = {isa = PBXBuildFile; fileRef = F454D5321977333800354060 /* apikeys.txt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		F4187F0319772873000B1137 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F451E3BD195B8CD80051434C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F451E3C4195B8CD80051434C;
+			remoteInfo = OAuthSwift;
+		};
+		F4187F0519772873000B1137 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F451E3BD195B8CD80051434C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F451E3C4195B8CD80051434C;
+			remoteInfo = OAuthSwift;
+		};
 		F451E3D3195B8CD80051434C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = F451E3BD195B8CD80051434C /* Project object */;
@@ -53,6 +68,8 @@
 		F451E3F2195B8D5B0051434C /* OAuthSwiftCredential.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OAuthSwiftCredential.swift; sourceTree = "<group>"; };
 		F451E3F3195B8D5B0051434C /* OAuthSwiftHTTPRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OAuthSwiftHTTPRequest.swift; sourceTree = "<group>"; };
 		F451E3FE195B8E910051434C /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		F454D53019772AE500354060 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		F454D5321977333800354060 /* apikeys.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = apikeys.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -124,8 +141,10 @@
 			children = (
 				F451E3E3195B8D030051434C /* AppDelegate.swift */,
 				F451E3FE195B8E910051434C /* ViewController.swift */,
+				F454D53019772AE500354060 /* Constants.swift */,
 				F451E3E4195B8D030051434C /* Images.xcassets */,
 				F451E3E5195B8D030051434C /* Info.plist */,
+				F454D5321977333800354060 /* apikeys.txt */,
 			);
 			path = OAuthSwiftDemo;
 			sourceTree = "<group>";
@@ -178,6 +197,8 @@
 			);
 			dependencies = (
 				F451E3D4195B8CD80051434C /* PBXTargetDependency */,
+				F4187F0419772873000B1137 /* PBXTargetDependency */,
+				F4187F0619772873000B1137 /* PBXTargetDependency */,
 			);
 			name = OAuthSwiftTests;
 			productName = OAuthSwiftTests;
@@ -226,7 +247,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F451E3E7195B8D030051434C /* Images.xcassets in Resources */,
-				F451E3E8195B8D030051434C /* Info.plist in Resources */,
+				F454D5331977333800354060 /* apikeys.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -255,6 +276,7 @@
 				F451E3FB195B8D5B0051434C /* OAuthSwiftCredential.swift in Sources */,
 				F451E3FA195B8D5B0051434C /* OAuthSwiftClient.swift in Sources */,
 				F43FD6EC195FB03500743458 /* Dictionary+OAuthSwift.swift in Sources */,
+				F454D53119772AE500354060 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -269,6 +291,16 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		F4187F0419772873000B1137 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F451E3C4195B8CD80051434C /* OAuthSwift */;
+			targetProxy = F4187F0319772873000B1137 /* PBXContainerItemProxy */;
+		};
+		F4187F0619772873000B1137 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F451E3C4195B8CD80051434C /* OAuthSwift */;
+			targetProxy = F4187F0519772873000B1137 /* PBXContainerItemProxy */;
+		};
 		F451E3D4195B8CD80051434C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = F451E3C4195B8CD80051434C /* OAuthSwift */;
