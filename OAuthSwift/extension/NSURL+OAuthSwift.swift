@@ -12,14 +12,14 @@ import Foundation
 extension NSURL {
 
     func URLByAppendingQueryString(queryString: String) -> NSURL {
-        if queryString.utf16count == 0 {
+        if queryString.utf16Count == 0 {
             return self
         }
 
         var absoluteURLString = self.absoluteString
 
         if absoluteURLString.hasSuffix("?") {
-            absoluteURLString = absoluteURLString.substringToIndex(absoluteURLString.utf16count - 1)
+            absoluteURLString = (absoluteURLString as NSString).substringToIndex(absoluteURLString.utf16Count - 1)
         }
 
         let URLString = absoluteURLString + (absoluteURLString.rangeOfString("?") ? "&" : "?") + queryString

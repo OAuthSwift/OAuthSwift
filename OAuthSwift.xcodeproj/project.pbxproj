@@ -39,6 +39,13 @@
 			remoteGlobalIDString = F451E3C4195B8CD80051434C;
 			remoteInfo = OAuthSwift;
 		};
+		F41E4AFC1983CD2F007B3217 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F451E3BD195B8CD80051434C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F451E3C4195B8CD80051434C;
+			remoteInfo = OAuthSwift;
+		};
 		F451E3D3195B8CD80051434C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = F451E3BD195B8CD80051434C /* Project object */;
@@ -199,6 +206,7 @@
 				F451E3D4195B8CD80051434C /* PBXTargetDependency */,
 				F4187F0419772873000B1137 /* PBXTargetDependency */,
 				F4187F0619772873000B1137 /* PBXTargetDependency */,
+				F41E4AFD1983CD2F007B3217 /* PBXTargetDependency */,
 			);
 			name = OAuthSwiftTests;
 			productName = OAuthSwiftTests;
@@ -300,6 +308,11 @@
 			isa = PBXTargetDependency;
 			target = F451E3C4195B8CD80051434C /* OAuthSwift */;
 			targetProxy = F4187F0519772873000B1137 /* PBXContainerItemProxy */;
+		};
+		F41E4AFD1983CD2F007B3217 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F451E3C4195B8CD80051434C /* OAuthSwift */;
+			targetProxy = F41E4AFC1983CD2F007B3217 /* PBXContainerItemProxy */;
 		};
 		F451E3D4195B8CD80051434C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

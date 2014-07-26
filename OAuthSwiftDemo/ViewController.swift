@@ -96,7 +96,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             authorizeUrl:   "https://foursquare.com/oauth2/authorize",
             responseType:   "token"
         )
-        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/foursquare"), scope: nil, state: nil, success: {
+        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/foursquare"), scope: "", state: "", success: {
             credential, response in
             self.showAlertView("Foursquare", message: "oauth_token:\(credential.oauth_token)")
         }, failure: failureHandler)
