@@ -14,7 +14,9 @@ extension String {
         let charactersToBeEscaped = ":/?&=;+!@#$()',*" as CFStringRef
         let charactersToLeaveUnescaped = "[]." as CFStringRef
 
-        let result = CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, self.bridgeToObjectiveC(), charactersToLeaveUnescaped, charactersToBeEscaped, CFStringConvertNSStringEncodingToEncoding(encoding)) as String
+        var raw: NSString = self
+        
+        let result = CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, raw, charactersToLeaveUnescaped, charactersToBeEscaped, CFStringConvertNSStringEncodingToEncoding(encoding)) as NSString
 
         return result
     }
@@ -89,14 +91,6 @@ extension String {
     //统计长度(别名)
     func size()->Int{
         return countElements(self)
-    }
-    //截取字符串
-    func substr(range:Int...)->String{
-        if range[0]==0{
-            return self.substringToIndex(range[1])
-        }else{
-            return self.substringFromIndex(range[0])
-        }
     }
     //重复字符串
     func repeat(times: Int) -> String{
