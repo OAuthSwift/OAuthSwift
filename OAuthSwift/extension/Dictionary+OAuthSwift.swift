@@ -46,7 +46,7 @@ extension Dictionary {
             parts.append(query)
         }
 
-        return parts.bridgeToObjectiveC().componentsJoinedByString("&") as String
+        return (parts as NSArray).componentsJoinedByString("&") as String
     }
     
 }
