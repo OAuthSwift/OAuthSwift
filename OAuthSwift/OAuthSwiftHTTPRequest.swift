@@ -67,7 +67,7 @@ class OAuthSwiftHTTPRequest: NSObject, NSURLConnectionDataDelegate {
     }
     
     func start() {
-        if request == nil {
+        if request? == nil {
             self.request = NSMutableURLRequest(URL: self.URL)
             self.request!.HTTPMethod = self.HTTPMethod
             self.request!.timeoutInterval = self.timeoutInterval
@@ -159,7 +159,7 @@ class OAuthSwiftHTTPRequest: NSObject, NSURLConnectionDataDelegate {
     class func stringWithData(data: NSData, encodingName: String?) -> String {
         var encoding: UInt = NSUTF8StringEncoding
         
-        if encodingName != nil {
+        if encodingName? != nil {
             let encodingNameString: CFString = encodingName! as NSString
             encoding = CFStringConvertEncodingToNSStringEncoding(CFStringConvertIANACharSetNameToEncoding(encodingNameString))
             
@@ -218,7 +218,7 @@ class OAuthSwiftHTTPRequest: NSObject, NSURLConnectionDataDelegate {
         if status == 510 { description = "Not Extended" }
         if status == 511 { description = "Network Authentication Required" }
         
-        if description != nil {
+        if description? != nil {
             s = s + ": " + description! + ", Response: " + responseString
         }
         

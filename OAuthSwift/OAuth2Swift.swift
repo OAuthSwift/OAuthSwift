@@ -53,17 +53,17 @@ class OAuth2Swift {
             NSNotificationCenter.defaultCenter().removeObserver(self.observer)
             let url = notification.userInfo[CallbackNotification.optionsURLKey] as NSURL
             var parameters: Dictionary<String, String> = Dictionary()
-            if (url.query?){
+            if url.query? != nil {
                 parameters = url.query.parametersFromQueryString()
             }
-            if (url.fragment?){
+            if url.fragment? != nil {
                 parameters = url.fragment.parametersFromQueryString()
             }
-            if (parameters["access_token"]?){
+            if parameters["access_token"]? != nil {
                 self.client.credential.oauth_token = parameters["access_token"]!
                 success(credential: self.client.credential, response: nil)
             }
-            if (parameters["code"]?){
+            if parameters["code"]? != nil {
                 self.postOAuthAccessTokenWithRequestTokenByCode(parameters["code"]!, success: {
                     credential, response in
                     success(credential: credential, response: response)

@@ -21,8 +21,7 @@ extension NSURL {
         if absoluteURLString.hasSuffix("?") {
             absoluteURLString = (absoluteURLString as NSString).substringToIndex(absoluteURLString.utf16Count - 1)
         }
-
-        let URLString = absoluteURLString + (absoluteURLString.rangeOfString("?") ? "&" : "?") + queryString
+        let URLString = absoluteURLString + (absoluteURLString.rangeOfString("?") != nil ? "&" : "?") + queryString
 
         return NSURL(string: URLString)
     }
