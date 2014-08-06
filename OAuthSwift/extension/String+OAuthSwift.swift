@@ -38,7 +38,7 @@ extension String {
             scanner.scanUpToString("&", intoString: &value)
             scanner.scanString("&", intoString: nil)
 
-            if key && value {
+            if key != nil && value != nil {
                 parameters.updateValue(value!, forKey: key!)
             }
         }
@@ -62,7 +62,7 @@ extension String {
     }
     //是否包含字符串
     func has(s:String)->Bool{
-        if self.rangeOfString(s) {
+        if self.rangeOfString(s) != nil {
             return true
         }else{
             return false
