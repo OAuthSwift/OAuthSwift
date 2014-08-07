@@ -18,7 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIWebViewDelegate {
         // Override point for customization after application launch.
         self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
         
-        let viewController: ViewController = ViewController()
+        let viewController: ViewController = ViewController(coder: nil)
         let naviController: UINavigationController = UINavigationController(rootViewController: viewController)
         self.window!.rootViewController = naviController
         self.window!.makeKeyAndVisible()
