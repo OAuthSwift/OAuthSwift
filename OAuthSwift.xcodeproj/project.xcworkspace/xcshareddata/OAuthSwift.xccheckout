@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>A3B6E051-B7CB-4D0F-BDF5-12B15C3D96AC</string>
+	<key>IDESourceControlProjectName</key>
+	<string>OAuthSwift</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>A65BCAA9B7A77500BBF95593800C3F1B9D215F5E</key>
+		<string>github.com:dongri/OAuthSwift.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>OAuthSwift.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>A65BCAA9B7A77500BBF95593800C3F1B9D215F5E</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>github.com:dongri/OAuthSwift.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>A65BCAA9B7A77500BBF95593800C3F1B9D215F5E</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>A65BCAA9B7A77500BBF95593800C3F1B9D215F5E</string>
+			<key>IDESourceControlWCCName</key>
+			<string>OAuthSwift</string>
+		</dict>
+	</array>
+</dict>
+</plist>

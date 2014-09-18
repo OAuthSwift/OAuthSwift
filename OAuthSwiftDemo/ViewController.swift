@@ -12,11 +12,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 
     var services = ["Twitter", "Flickr", "Github", "Instagram", "Foursquare"]
     
-    let failureHandler: ((NSError) -> Void) = {
-        error in
-        println(error.localizedDescription)
-    }
-
+//    let failureHandler: (NSError) -> Void = {
+//        error in
+//        println(error.localizedDescription)
+//    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.title = "OAuth"
@@ -42,7 +42,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/twitter"), success: {
             credential, response in
             self.showAlertView("Twitter", message: "auth_token:\(credential.oauth_token)\n\noauth_toke_secret:\(credential.oauth_token_secret)")
-        }, failure: failureHandler)
+            }, failure: {(error:NSError!) -> Void in
+                println(error.localizedDescription)
+            })
     }
 
     func doOAuthFlickr(){
@@ -56,7 +58,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/flickr"), success: {
             credential, response in
             self.showAlertView("Flickr", message: "oauth_token:\(credential.oauth_token)\n\noauth_toke_secret:\(credential.oauth_token_secret)")
-        }, failure: failureHandler)
+            }, failure: {(error:NSError!) -> Void in
+                println(error.localizedDescription)
+            })
         
     }
 
@@ -71,7 +75,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/github"), scope: "user,repo", state: "GITHUB", success: {
             credential, response in
             self.showAlertView("Github", message: "oauth_token:\(credential.oauth_token)")
-        }, failure: failureHandler)
+            }, failure: {(error:NSError!) -> Void in
+                println(error.localizedDescription)
+            })
         
     }
 
@@ -85,7 +91,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/instagram"), scope: "likes+comments", state:"INSTAGRAM", success: {
             credential, response in
             self.showAlertView("Instagram", message: "oauth_token:\(credential.oauth_token)")
-        }, failure: failureHandler)
+            }, failure: {(error:NSError!) -> Void in
+                println(error.localizedDescription)
+            })
         
     }
 
@@ -99,8 +107,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/foursquare"), scope: "", state: "", success: {
             credential, response in
             self.showAlertView("Foursquare", message: "oauth_token:\(credential.oauth_token)")
-        }, failure: failureHandler)
-        
+            }, failure: {(error:NSError!) -> Void in
+                println(error.localizedDescription)
+            })
     }
     
     func showAlertView(title: String, message: String) {
@@ -109,17 +118,17 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         self.presentViewController(alert, animated: true, completion: nil)
     }
 
-    func tableView(tableView: UITableView!, numberOfRowsInSection section: Int) -> Int  {
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int  {
         return services.count
     }
     
-    func tableView(tableView: UITableView?, cellForRowAtIndexPath indexPath:NSIndexPath!) -> UITableViewCell! {
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath:NSIndexPath) -> UITableViewCell {
         let cell: UITableViewCell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "Cell")
-        cell.textLabel.text = services[indexPath.row]
+        cell.textLabel!.text = services[indexPath.row]
         return cell;
     }
     
-    func tableView(tableView: UITableView?, didSelectRowAtIndexPath indexPath:NSIndexPath!) {
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath:NSIndexPath) {
         var service: String = services[indexPath.row]
         switch service {
             case "Twitter":
@@ -135,7 +144,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             default:
                 println("default")
         }
-        tableView!.deselectRowAtIndexPath(indexPath, animated:true)
+        tableView.deselectRowAtIndexPath(indexPath, animated:true)
     }
+    
+    
 }
 

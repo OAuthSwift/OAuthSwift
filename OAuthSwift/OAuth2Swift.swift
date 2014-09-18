@@ -47,23 +47,23 @@ class OAuth2Swift {
     typealias TokenSuccessHandler = (credential: OAuthSwiftCredential, response: NSURLResponse?) -> Void
     typealias FailureHandler = (error: NSError) -> Void
     
-    func authorizeWithCallbackURL(callbackURL: NSURL, scope: String, state: String, success: TokenSuccessHandler, failure: ((error: NSError) -> Void)?) {
+    func authorizeWithCallbackURL(callbackURL: NSURL, scope: String, state: String, success: TokenSuccessHandler, failure: ((error: NSError) -> Void)) {
         self.observer = NSNotificationCenter.defaultCenter().addObserverForName(CallbackNotification.notificationName, object: nil, queue: NSOperationQueue.mainQueue(), usingBlock:{
             notification in
-            NSNotificationCenter.defaultCenter().removeObserver(self.observer)
-            let url = notification.userInfo[CallbackNotification.optionsURLKey] as NSURL
+            NSNotificationCenter.defaultCenter().removeObserver(self.observer!)
+            let url = notification.userInfo![CallbackNotification.optionsURLKey] as NSURL
             var parameters: Dictionary<String, String> = Dictionary()
-            if (url.query?){
-                parameters = url.query.parametersFromQueryString()
+            if ((url.query) != nil){
+                parameters = url.query!.parametersFromQueryString()
             }
-            if (url.fragment?){
-                parameters = url.fragment.parametersFromQueryString()
+            if ((url.fragment) != nil){
+                parameters = url.fragment!.parametersFromQueryString()
             }
-            if (parameters["access_token"]?){
+            if (parameters["access_token"] != nil){
                 self.client.credential.oauth_token = parameters["access_token"]!
                 success(credential: self.client.credential, response: nil)
             }
-            if (parameters["code"]?){
+            if (parameters["code"] != nil){
                 self.postOAuthAccessTokenWithRequestTokenByCode(parameters["code"]!, success: {
                     credential, response in
                     success(credential: credential, response: response)
@@ -75,12 +75,12 @@ class OAuth2Swift {
         var urlString = String()
         urlString += self.authorize_url
         urlString += "?client_id=\(self.consumer_key)"
-        urlString += "&redirect_uri=\(callbackURL.absoluteString)"
+        urlString += "&redirect_uri=\(callbackURL.absoluteString!)"
         urlString += "&response_type=\(self.response_type)"
-        if (scope != nil && scope != "") {
+        if (scope != "") {
           urlString += "&scope=\(scope)"
         }
-        if (state != nil && state != "") {
+        if (state != "") {
             urlString += "&state=\(state)"
         }
         let queryURL = NSURL(string: urlString)
