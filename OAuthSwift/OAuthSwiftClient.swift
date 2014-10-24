@@ -37,8 +37,8 @@ class OAuthSwiftClient {
         
         let method = "GET"
         
-        let request = OAuthSwiftHTTPRequest(URL: url, method: method, parameters: parameters)
-        request.headers = ["Authorization": OAuthSwiftClient.authorizationHeaderForMethod(method, url: url, parameters: parameters, credential: self.credential)]
+        let request = OAuthSwiftHTTPRequest(URL: url!, method: method, parameters: parameters)
+        request.headers = ["Authorization": OAuthSwiftClient.authorizationHeaderForMethod(method, url: url!, parameters: parameters, credential: self.credential)]
         
         request.successHandler = success
         request.failureHandler = failure
@@ -54,9 +54,9 @@ class OAuthSwiftClient {
         
         var localParameters = parameters
         
-        let request = OAuthSwiftHTTPRequest(URL: url, method: method, parameters: localParameters)
+        let request = OAuthSwiftHTTPRequest(URL: url!, method: method, parameters: localParameters)
         
-        request.headers = ["Authorization": OAuthSwiftClient.authorizationHeaderForMethod(method, url: url, parameters: localParameters, credential: self.credential)]
+        request.headers = ["Authorization": OAuthSwiftClient.authorizationHeaderForMethod(method, url: url!, parameters: localParameters, credential: self.credential)]
         
         request.successHandler = success
         request.failureHandler = failure
@@ -75,7 +75,7 @@ class OAuthSwiftClient {
         authorizationParameters["oauth_timestamp"] = String(Int64(NSDate().timeIntervalSince1970))
         authorizationParameters["oauth_nonce"] = (NSUUID().UUIDString as NSString).substringToIndex(8)
         
-        authorizationParameters["oauth_token"] = credential.oauth_token
+        //authorizationParameters["oauth_token"] = credential.oauth_token // Fitbit
         
         for (key, value: AnyObject) in parameters {
             if key.hasPrefix("oauth_") {

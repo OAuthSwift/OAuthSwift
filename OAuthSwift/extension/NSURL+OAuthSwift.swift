@@ -24,7 +24,7 @@ extension NSURL {
 
         let URLString = absoluteURLString + (absoluteURLString.rangeOfString("?") != nil ? "&" : "?") + queryString
 
-        return NSURL(string: URLString)
+        return NSURL(string: URLString)!
     }
 
 }

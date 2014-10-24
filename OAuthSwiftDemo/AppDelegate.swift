@@ -51,7 +51,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIWebViewDelegate {
     func application(application: UIApplication!, openURL url: NSURL!, sourceApplication: String!, annotation: AnyObject!) -> Bool {
         println(url)
         if (url.host == "oauth-callback") {
-            if (url.path!.hasPrefix("/twitter") || url.path!.hasPrefix("/flickr")) {
+            if (url.path!.hasPrefix("/twitter") || url.path!.hasPrefix("/flickr") || url.path!.hasPrefix("/fitbit")) {
                 OAuth1Swift.handleOpenURL(url)
             }
             if ( url.path!.hasPrefix("/github" ) || url.path!.hasPrefix("/instagram" ) || url.path!.hasPrefix("/foursquare")) {

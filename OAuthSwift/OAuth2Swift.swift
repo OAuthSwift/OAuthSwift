@@ -84,7 +84,7 @@ class OAuth2Swift {
             urlString += "&state=\(state)"
         }
         let queryURL = NSURL(string: urlString)
-        UIApplication.sharedApplication().openURL(queryURL)
+        UIApplication.sharedApplication().openURL(queryURL!)
     }
     
     func postOAuthAccessTokenWithRequestTokenByCode(code: String, success: TokenSuccessHandler, failure: FailureHandler?) {

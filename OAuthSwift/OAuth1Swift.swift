@@ -64,7 +64,7 @@ class OAuth1Swift {
             })
             // 2. Authorize
             let queryURL = NSURL(string: self.authorize_url + "?oauth_token=\(credential.oauth_token)")
-            UIApplication.sharedApplication().openURL(queryURL)
+            UIApplication.sharedApplication().openURL(queryURL!)
         }, failure: failure)
     }
 

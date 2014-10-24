@@ -146,7 +146,7 @@ class OAuthSwiftHTTPRequest: NSObject, NSURLConnectionDataDelegate {
         
         if self.response.statusCode >= 400 {
             let responseString = NSString(data: self.responseData, encoding: self.dataEncoding)
-            let localizedDescription = OAuthSwiftHTTPRequest.descriptionForHTTPStatus(self.response.statusCode, responseString: responseString)
+            let localizedDescription = OAuthSwiftHTTPRequest.descriptionForHTTPStatus(self.response.statusCode, responseString: responseString!)
             let userInfo = [NSLocalizedDescriptionKey: localizedDescription, "Response-Headers": self.response.allHeaderFields]
             let error = NSError(domain: NSURLErrorDomain, code: self.response.statusCode, userInfo: userInfo)
             self.failureHandler?(error: error)
@@ -168,7 +168,7 @@ class OAuthSwiftHTTPRequest: NSObject, NSURLConnectionDataDelegate {
             }
         }
         
-        return NSString(data: data, encoding: encoding)
+        return NSString(data: data, encoding: encoding)!
     }
     
     class func descriptionForHTTPStatus(status: Int, responseString: String) -> String {

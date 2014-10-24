@@ -9,27 +9,32 @@
 import Foundation
 
 let Twitter =
-                [
-                    "consumerKey": "***",
-                    "consumerSecret": "***"
-                ]
+[
+    "consumerKey": "***",
+    "consumerSecret": "***"
+]
 let Flickr =
-                [
-                    "consumerKey": "***",
-                    "consumerSecret": "***"
-                ]
+[
+    "consumerKey": "***",
+    "consumerSecret": "***"
+]
 let Github =
-                [
-                    "consumerKey": "***",
-                    "consumerSecret": "***"
-                ]
+[
+    "consumerKey": "***",
+    "consumerSecret": "***"
+]
 let Instagram =
-                [
-                    "consumerKey": "***",
-                    "consumerSecret": "***"
-                ]
+[
+    "consumerKey": "***",
+    "consumerSecret": "***"
+]
 let Foursquare =
-                [
-                    "consumerKey": "***",
-                    "consumerSecret": "***"
-                ]
+[
+    "consumerKey": "***",
+    "consumerSecret": "***"
+]
+let Fitbit =
+[
+    "consumerKey": "***",
+    "consumerSecret": "***"
+]
