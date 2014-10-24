@@ -75,7 +75,9 @@ class OAuthSwiftClient {
         authorizationParameters["oauth_timestamp"] = String(Int64(NSDate().timeIntervalSince1970))
         authorizationParameters["oauth_nonce"] = (NSUUID().UUIDString as NSString).substringToIndex(8)
         
-        //authorizationParameters["oauth_token"] = credential.oauth_token // Fitbit
+        if (credential.oauth_token != ""){
+            authorizationParameters["oauth_token"] = credential.oauth_token
+        }
         
         for (key, value: AnyObject) in parameters {
             if key.hasPrefix("oauth_") {

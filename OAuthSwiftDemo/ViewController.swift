@@ -42,6 +42,15 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/twitter")!, success: {
             credential, response in
             self.showAlertView("Twitter", message: "auth_token:\(credential.oauth_token)\n\noauth_toke_secret:\(credential.oauth_token_secret)")
+            var parameters =  Dictionary<String, AnyObject>()
+            oauthswift.client.get("https://api.twitter.com/1.1/statuses/mentions_timeline.json", parameters: parameters,
+                success: {
+                    data, response in
+                    let jsonDict: AnyObject! = NSJSONSerialization.JSONObjectWithData(data, options: nil, error: nil)
+                    println(jsonDict)
+                }, failure: {(error:NSError!) -> Void in
+                    println(error)
+                })
             }, failure: {(error:NSError!) -> Void in
                 println(error.localizedDescription)
             })
