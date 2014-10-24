@@ -13,7 +13,7 @@ Twitter, Flickr, Github, Instagram, Foursquare. Fitbit, etc
 [Flickr](https://www.flickr.com/services/api/auth.oauth.html)  
 [Github](https://developer.github.com/v3/oauth)  
 [Instagram](http://instagram.com/developer/authentication)  
-[Foursquare](https://developer.foursquare.com/overview/auth)
+[Foursquare](https://developer.foursquare.com/overview/auth)  
 [Fitbit](https://wiki.fitbit.com/display/API/OAuth+Authentication+in+the+Fitbit+API)
 
 ### Examples
