@@ -10,7 +10,7 @@ import UIKit
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
-    var services = ["Twitter", "Flickr", "Github", "Instagram", "Foursquare", "Fitbit"]
+    var services = ["Twitter", "Flickr", "Github", "Instagram", "Foursquare", "Fitbit", "Withings"]
     
 //    let failureHandler: (NSError) -> Void = {
 //        error in
@@ -137,6 +137,22 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         })
     }
 
+    func doOAuthWithings(){
+        let oauthswift = OAuth1Swift(
+            consumerKey:    Withings["consumerKey"]!,
+            consumerSecret: Withings["consumerSecret"]!,
+            requestTokenUrl: "https://oauth.withings.com/account/request_token",
+            authorizeUrl:    "https://oauth.withings.com/account/authorize",
+            accessTokenUrl:  "https://oauth.withings.com/account/access_token"
+        )
+        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/withings")!, success: {
+            credential, response in
+            self.showAlertView("Withings", message: "oauth_token:\(credential.oauth_token)\n\noauth_toke_secret:\(credential.oauth_token_secret)")
+            }, failure: {(error:NSError!) -> Void in
+                println(error.localizedDescription)
+        })
+    }
+
     func showAlertView(title: String, message: String) {
         var alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.Alert)
         alert.addAction(UIAlertAction(title: "Close", style: UIAlertActionStyle.Default, handler: nil))
@@ -168,8 +184,10 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 doOAuthFoursquare()
             case "Fitbit":
                 doOAuthFitbit()
+            case "Withings":
+                doOAuthWithings()
             default:
-                println("default")
+                println("default (check ViewController tableView)")
         }
         tableView.deselectRowAtIndexPath(indexPath, animated:true)
     }

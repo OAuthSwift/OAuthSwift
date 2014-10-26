@@ -38,3 +38,8 @@ let Fitbit =
     "consumerKey": "***",
     "consumerSecret": "***"
 ]
+let Withings =
+[
+    "consumerKey": "***",
+    "consumerSecret": "***"
+]
