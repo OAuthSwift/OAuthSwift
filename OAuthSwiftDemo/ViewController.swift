@@ -12,11 +12,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 
     var services = ["Twitter", "Flickr", "Github", "Instagram", "Foursquare", "Fitbit", "Withings"]
     
-//    let failureHandler: (NSError) -> Void = {
-//        error in
-//        println(error.localizedDescription)
-//    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.title = "OAuth"
@@ -67,9 +62,28 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/flickr")!, success: {
             credential, response in
             self.showAlertView("Flickr", message: "oauth_token:\(credential.oauth_token)\n\noauth_toke_secret:\(credential.oauth_token_secret)")
-            }, failure: {(error:NSError!) -> Void in
-                println(error.localizedDescription)
+            let url :String = "https://api.flickr.com/services/rest/"
+            let parameters :Dictionary = [
+                "method"         : "flickr.photos.search",
+                "api_key"        : Flickr["consumerKey"]!,
+                "user_id"        : "128483205@N08",
+                "format"         : "json",
+                "nojsoncallback" : "1",
+                "extras"         : "url_q,url_z"
+            ]
+            oauthswift.client.get(url, parameters: parameters,
+                success: {
+                    data, response in
+                    let jsonDict: AnyObject! = NSJSONSerialization.JSONObjectWithData(data, options: nil, error: nil)
+                    println(jsonDict)
+                }, failure: {(error:NSError!) -> Void in
+                    println(error)
             })
+
+
+        }, failure: {(error:NSError!) -> Void in
+            println(error.localizedDescription)
+        })
         
     }
 
