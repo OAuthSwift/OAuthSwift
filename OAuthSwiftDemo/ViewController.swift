@@ -114,10 +114,19 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/instagram")!, scope: "likes+comments", state:"INSTAGRAM", success: {
             credential, response in
             self.showAlertView("Instagram", message: "oauth_token:\(credential.oauth_token)")
-            }, failure: {(error:NSError!) -> Void in
-                println(error.localizedDescription)
+            let url :String = "https://api.instagram.com/v1/users/1574083/?access_token=\(credential.oauth_token)"
+            let parameters :Dictionary = Dictionary<String, AnyObject>()
+            oauthswift.client.get(url, parameters: parameters,
+                success: {
+                    data, response in
+                    let jsonDict: AnyObject! = NSJSONSerialization.JSONObjectWithData(data, options: nil, error: nil)
+                    println(jsonDict)
+                }, failure: {(error:NSError!) -> Void in
+                    println(error)
             })
-        
+        }, failure: {(error:NSError!) -> Void in
+            println(error.localizedDescription)
+        })
     }
 
     func doOAuthFoursquare(){
