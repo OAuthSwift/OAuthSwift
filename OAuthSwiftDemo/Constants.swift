@@ -43,3 +43,8 @@ let Withings =
     "consumerKey": "***",
     "consumerSecret": "***"
 ]
+let Linkedin =
+[
+    "consumerKey": "***",
+    "consumerSecret": "***"
+]

@@ -10,7 +10,7 @@ import UIKit
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
-    var services = ["Twitter", "Flickr", "Github", "Instagram", "Foursquare", "Fitbit", "Withings"]
+    var services = ["Twitter", "Flickr", "Github", "Instagram", "Foursquare", "Fitbit", "Withings", "Linkedin"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -175,6 +175,22 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 println(error.localizedDescription)
         })
     }
+    
+    func doOAuthLinkedin(){
+        let oauthswift = OAuth1Swift(
+            consumerKey:    Linkedin["consumerKey"]!,
+            consumerSecret: Linkedin["consumerSecret"]!,
+            requestTokenUrl: "https://api.linkedin.com/uas/oauth/requestToken",
+            authorizeUrl:    "https://api.linkedin.com/uas/oauth/authenticate",
+            accessTokenUrl:  "https://api.linkedin.com/uas/oauth/accessToken"
+        )
+        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/linkedin")!, success: {
+            credential, response in
+            self.showAlertView("Linkedin", message: "oauth_token:\(credential.oauth_token)\n\noauth_toke_secret:\(credential.oauth_token_secret)")
+            }, failure: {(error:NSError!) -> Void in
+                println(error.localizedDescription)
+        })
+    }
 
     func showAlertView(title: String, message: String) {
         var alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.Alert)
@@ -209,6 +225,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 doOAuthFitbit()
             case "Withings":
                 doOAuthWithings()
+            case "Linkedin":
+                doOAuthLinkedin()
             default:
                 println("default (check ViewController tableView)")
         }
