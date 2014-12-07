@@ -3,7 +3,7 @@ OAuthSwift
 
 Swift based OAuth library for iOS
 
-### Support OAuth1.0, OAuth2.0 
+### Support OAuth1.0, OAuth2.0
 
 Twitter, Flickr, Github, Instagram, Foursquare. Fitbit, Withings, Linkedin etc
 
@@ -21,6 +21,19 @@ Twitter, Flickr, Github, Instagram, Foursquare. Fitbit, Withings, Linkedin etc
 ### Examples
 
 ```
+/// AppDelegate
+func application(application: UIApplication!, openURL url: NSURL!, sourceApplication: String!, annotation: AnyObject!) -> Bool {
+  if (url.host == "oauth-callback") {
+    if (url.path!.hasPrefix("/twitter")){
+      OAuth1Swift.handleOpenURL(url)
+    }
+    if ( url.path!.hasPrefix("/github" )){
+      OAuth2Swift.handleOpenURL(url)
+    }
+  }
+  return true
+}
+
 // OAuth1.0
 let oauthswift = OAuth1Swift(
     consumerKey:    "********",
