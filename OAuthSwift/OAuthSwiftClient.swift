@@ -32,10 +32,28 @@ class OAuthSwiftClient {
     }
     
     func get(urlString: String, parameters: Dictionary<String, AnyObject>, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
-        
-        let url = NSURL(string: urlString)
-        
-        let method = "GET"
+        self.request(urlString, method: "GET", parameters: parameters, success, failure)
+    }
+    
+    func post(urlString: String, parameters: Dictionary<String, AnyObject>, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
+        self.request(urlString, method: "POST", parameters: parameters, success, failure)
+    }
+
+    func put(urlString: String, parameters: Dictionary<String, AnyObject>, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
+        self.request(urlString, method: "PUT", parameters: parameters, success, failure)
+    }
+
+    func delete(urlString: String, parameters: Dictionary<String, AnyObject>, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
+        self.request(urlString, method: "DELETE", parameters: parameters, success, failure)
+    }
+
+    func patch(urlString: String, parameters: Dictionary<String, AnyObject>, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
+        self.request(urlString, method: "PATCH", parameters: parameters, success, failure)
+    }
+
+    func request(url: String, method: String, parameters: Dictionary<String, AnyObject>, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
+
+        let url = NSURL(string: url)
         
         let request = OAuthSwiftHTTPRequest(URL: url!, method: method, parameters: parameters)
         request.headers = ["Authorization": OAuthSwiftClient.authorizationHeaderForMethod(method, url: url!, parameters: parameters, credential: self.credential)]
@@ -43,30 +61,11 @@ class OAuthSwiftClient {
         request.successHandler = success
         request.failureHandler = failure
         request.dataEncoding = dataEncoding
-        
-        request.start()
-    }
-    
-    func post(urlString: String, parameters: Dictionary<String, AnyObject>, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
-        let url = NSURL(string: urlString)
-        
-        let method = "POST"
-        
-        var localParameters = parameters
-        
-        let request = OAuthSwiftHTTPRequest(URL: url!, method: method, parameters: localParameters)
-        
-        request.headers = ["Authorization": OAuthSwiftClient.authorizationHeaderForMethod(method, url: url!, parameters: localParameters, credential: self.credential)]
-        
-        request.successHandler = success
-        request.failureHandler = failure
-        request.dataEncoding = dataEncoding
-        
         request.encodeParameters = true
-        
         request.start()
+
     }
-    
+
     class func authorizationHeaderForMethod(method: String, url: NSURL, parameters: Dictionary<String, AnyObject>, credential: OAuthSwiftCredential) -> String {
         var authorizationParameters = Dictionary<String, AnyObject>()
         authorizationParameters["oauth_version"] = OAuth.version

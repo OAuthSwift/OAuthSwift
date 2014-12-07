@@ -46,9 +46,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 }, failure: {(error:NSError!) -> Void in
                     println(error)
                 })
+            
             }, failure: {(error:NSError!) -> Void in
                 println(error.localizedDescription)
-            })
+            }
+        )
     }
 
     func doOAuthFlickr(){
@@ -204,7 +206,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath:NSIndexPath) -> UITableViewCell {
         let cell: UITableViewCell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "Cell")
-        cell.textLabel.text = services[indexPath.row]
+        cell.textLabel?.text = services[indexPath.row]
         return cell;
     }
     
