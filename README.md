@@ -5,7 +5,7 @@ Swift based OAuth library for iOS
 
 ### Support OAuth1.0, OAuth2.0
 
-Twitter, Flickr, Github, Instagram, Foursquare. Fitbit, Withings, Linkedin etc
+Twitter, Flickr, Github, Instagram, Foursquare. Fitbit, Withings, Linkedin, Dropbox etc
 
 ### OAuth pages
 
@@ -17,6 +17,7 @@ Twitter, Flickr, Github, Instagram, Foursquare. Fitbit, Withings, Linkedin etc
 [Fitbit](https://wiki.fitbit.com/display/API/OAuth+Authentication+in+the+Fitbit+API)  
 [Withings](http://oauth.withings.com/api)  
 [Linkedin](https://developer.linkedin.com/documents/authentication)  
+[Dropbox](https://www.dropbox.com/developers/core/docs)  
 
 ### Examples
 
