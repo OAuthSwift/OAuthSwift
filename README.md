@@ -21,8 +21,8 @@ Twitter, Flickr, Github, Instagram, Foursquare. Fitbit, Withings, Linkedin, Drop
 
 ### Examples
 
-```
-/// AppDelegate
+```swift
+// AppDelegate
 func application(application: UIApplication!, openURL url: NSURL!, sourceApplication: String!, annotation: AnyObject!) -> Bool {
   if (url.host == "oauth-callback") {
     if (url.path!.hasPrefix("/twitter")){
