@@ -48,3 +48,8 @@ let Linkedin =
     "consumerKey": "***",
     "consumerSecret": "***"
 ]
+let Dropbox =
+[
+    "consumerKey": "***",
+    "consumerSecret": "***"
+]
