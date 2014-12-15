@@ -47,7 +47,8 @@ class OAuth2Swift {
     typealias TokenSuccessHandler = (credential: OAuthSwiftCredential, response: NSURLResponse?) -> Void
     typealias FailureHandler = (error: NSError) -> Void
     
-    func authorizeWithCallbackURL(callbackURL: NSURL, scope: String, state: String, success: TokenSuccessHandler, failure: ((error: NSError) -> Void)) {
+
+    func authorizeWithCallbackURL(callbackURL: NSURL, scope: String, state: String, params: Dictionary<String, String> = Dictionary<String, String>(), success: TokenSuccessHandler, failure: ((error: NSError) -> Void)) {
         self.observer = NSNotificationCenter.defaultCenter().addObserverForName(CallbackNotification.notificationName, object: nil, queue: NSOperationQueue.mainQueue(), usingBlock:{
             notification in
             NSNotificationCenter.defaultCenter().removeObserver(self.observer!)
@@ -83,6 +84,11 @@ class OAuth2Swift {
         if (state != "") {
             urlString += "&state=\(state)"
         }
+
+        for param in params {
+            urlString += "&\(param.0)=\(param.1)"
+        }
+
         let queryURL = NSURL(string: urlString)
         UIApplication.sharedApplication().openURL(queryURL!)
     }
