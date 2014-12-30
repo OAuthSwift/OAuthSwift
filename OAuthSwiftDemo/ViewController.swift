@@ -189,6 +189,15 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/linkedin")!, success: {
             credential, response in
             self.showAlertView("Linkedin", message: "oauth_token:\(credential.oauth_token)\n\noauth_toke_secret:\(credential.oauth_token_secret)")
+                var parameters =  Dictionary<String, AnyObject>()
+                oauthswift.client.get("https://api.linkedin.com/v1/people/~", parameters: parameters,
+                    success: {
+                        data, response in
+                        let dataString = NSString(data: data, encoding: NSUTF8StringEncoding)
+                        println(dataString)
+                    }, failure: {(error:NSError!) -> Void in
+                        println(error)
+                })
             }, failure: {(error:NSError!) -> Void in
                 println(error.localizedDescription)
         })
