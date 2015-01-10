@@ -95,14 +95,14 @@ oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback
 
 ### Setting Swift Compiler
 
-![Image](OAuthSwiftDemo/Images/SwiftCompiler.png "Image")
+![Image](Example/OAuthSwiftDemo/Images/SwiftCompiler.png "Image")
 
 ### Setting URL Schemes
 
-![Image](OAuthSwiftDemo/Images/URLSchemes.png "Image")
+![Image](Example/OAuthSwiftDemo/Images/URLSchemes.png "Image")
 
 ### Images
 
-![Image](OAuthSwiftDemo/Images/Services.png "Image")
-![Image](OAuthSwiftDemo/Images/TwitterOAuth.png "Image")
-![Image](OAuthSwiftDemo/Images/TwitterOAuthTokens.png "Image")
+![Image](Example/OAuthSwiftDemo/Images/Services.png "Image")
+![Image](Example/OAuthSwiftDemo/Images/TwitterOAuth.png "Image")
+![Image](Example/OAuthSwiftDemo/Images/TwitterOAuthTokens.png "Image")
