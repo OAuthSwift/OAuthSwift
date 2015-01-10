@@ -14,11 +14,11 @@
 		<string>github.com:dongri/OAuthSwift.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>OAuthSwift.xcodeproj</string>
+	<string>Example/OAuthSwift.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>A65BCAA9B7A77500BBF95593800C3F1B9D215F5E</key>
-		<string>../..</string>
+		<string>../../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>github.com:dongri/OAuthSwift.git</string>
