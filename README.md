@@ -1,34 +1,9 @@
-# OAuthSwift
-
-[![CI Status](http://img.shields.io/travis/Dongri Jin/OAuthSwift.svg?style=flat)](https://travis-ci.org/Dongri Jin/OAuthSwift)
-[![Version](https://img.shields.io/cocoapods/v/OAuthSwift.svg?style=flat)](http://cocoadocs.org/docsets/OAuthSwift)
-[![License](https://img.shields.io/cocoapods/l/OAuthSwift.svg?style=flat)](http://cocoadocs.org/docsets/OAuthSwift)
-[![Platform](https://img.shields.io/cocoapods/p/OAuthSwift.svg?style=flat)](http://cocoadocs.org/docsets/OAuthSwift)
-
-## Usage
-
-To run the example project, clone the repo, and run `pod install` from the Example directory first.
-
-
-## Installation
-
-OAuthSwift is available through [CocoaPods](http://cocoapods.org). To install
-it, simply add the following line to your Podfile:
-
-```
-pod "OAuthSwift"
-```
-
-## Author
-
-Dongri Jin, dongriat@gmail.com
-
 ## License
 
 OAuthSwift is available under the MIT license. See the LICENSE file for more info.
 
 
-OAuthSwift
+## OAuthSwift
 ==========
 
 Swift based OAuth library for iOS
