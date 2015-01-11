@@ -124,6 +124,7 @@ class OAuthSwiftClient {
         let signatureBaseString = "\(method)&\(encodedURL)&\(encodedParameterString)"
         let signatureBaseStringData = signatureBaseString.dataUsingEncoding(dataEncoding)
         
-        return HMACSHA1Signature.signatureForKey(signingKeyData, data: signatureBaseStringData).base64EncodedStringWithOptions(nil)
+        return signatureBaseString.SHA1DigestWithKey(signingKey).base64EncodedStringWithOptions(nil)
     }
 }
+

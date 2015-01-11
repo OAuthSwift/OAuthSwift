@@ -9,7 +9,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "OAuthSwift"
-  s.version          = "0.1.0"
+  s.version          = "0.1.3"
   s.summary          = "Swift based OAuth library for iOS."
   s.description      = <<-DESC
                        * Swift based OAuth library for iOS.
@@ -19,17 +19,19 @@ Pod::Spec.new do |s|
   s.license          = 'MIT'
   s.author           = { "Dongri Jin" => "dongriat@gmail.com" }
   s.source           = { :git => "https://github.com/dongri/OAuthSwift.git", :tag => s.version.to_s }
-  # s.social_media_url = 'https://twitter.com/dongriat'
+  s.social_media_url = 'https://twitter.com/dongriat'
 
   s.platform     = :ios, '7.0'
   s.requires_arc = true
 
-  s.source_files = 'Pod/Classes'
+
+  s.source_files = 'Pod/Classes/**/*.{h,swift}'
   s.resource_bundles = {
     'OAuthSwift' => ['Pod/Assets/*.png']
   }
 
-  s.public_header_files = 'Pod/Classes/**/*.h'
+  # s.public_header_files = 'Pod/Classes/**/*.h'
   # s.frameworks = 'UIKit', 'MapKit'
   # s.dependency 'AFNetworking', '~> 2.3'
+
 end

@@ -9,7 +9,41 @@
 import Foundation
 
 extension String {
+
+    internal func indexOf(sub: String) -> Int? {
+        var pos: Int?
+        
+        if let range = self.rangeOfString(sub) {
+            if !range.isEmpty {
+                pos = distance(self.startIndex, range.startIndex)
+            }
+        }
+        
+        return pos
+    }
     
+    internal subscript (r: Range<Int>) -> String {
+        get {
+            let startIndex = advance(self.startIndex, r.startIndex)
+            let endIndex = advance(startIndex, r.endIndex - r.startIndex)
+            
+            return self[Range(start: startIndex, end: endIndex)]
+        }
+    }
+    
+    func SHA1DigestWithKey(key: String) -> NSData {
+        let str = self.cStringUsingEncoding(NSUTF8StringEncoding)
+        let strLen = UInt(self.lengthOfBytesUsingEncoding(NSUTF8StringEncoding))
+        let digestLen = Int(CC_SHA1_DIGEST_LENGTH)
+        let result = UnsafeMutablePointer<CUnsignedChar>.alloc(digestLen)
+        let keyStr = key.cStringUsingEncoding(NSUTF8StringEncoding)
+        let keyLen = UInt(key.lengthOfBytesUsingEncoding(NSUTF8StringEncoding))
+        
+        CCHmac(CCHmacAlgorithm(kCCHmacAlgSHA1), keyStr!, keyLen, str!, strLen, result)
+        
+        return NSData(bytes: result, length: digestLen)
+    }
+
     func urlEncodedStringWithEncoding(encoding: NSStringEncoding) -> String {
         let charactersToBeEscaped = ":/?&=;+!@#$()',*" as CFStringRef
         let charactersToLeaveUnescaped = "[]." as CFStringRef

@@ -15,7 +15,6 @@
 		F46616F51A6125780030DB44 /* OAuthSwift.podspec in Resources */ = {isa = PBXBuildFile; fileRef = F46616F21A6125780030DB44 /* OAuthSwift.podspec */; };
 		F46616F61A6125780030DB44 /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = F46616F31A6125780030DB44 /* README.md */; };
 		F46617031A6127730030DB44 /* Dictionary+OAuthSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46616F81A6127730030DB44 /* Dictionary+OAuthSwift.swift */; };
-		F46617041A6127730030DB44 /* HMACSHA1Signature.m in Sources */ = {isa = PBXBuildFile; fileRef = F46616FA1A6127730030DB44 /* HMACSHA1Signature.m */; };
 		F46617051A6127730030DB44 /* NSURL+OAuthSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46616FB1A6127730030DB44 /* NSURL+OAuthSwift.swift */; };
 		F46617061A6127730030DB44 /* OAuth1Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46616FC1A6127730030DB44 /* OAuth1Swift.swift */; };
 		F46617071A6127730030DB44 /* OAuth2Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46616FD1A6127730030DB44 /* OAuth2Swift.swift */; };
@@ -68,8 +67,6 @@
 		F46616F21A6125780030DB44 /* OAuthSwift.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = OAuthSwift.podspec; path = ../OAuthSwift.podspec; sourceTree = "<group>"; };
 		F46616F31A6125780030DB44 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		F46616F81A6127730030DB44 /* Dictionary+OAuthSwift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Dictionary+OAuthSwift.swift"; path = "../Pod/Classes/Dictionary+OAuthSwift.swift"; sourceTree = "<group>"; };
-		F46616F91A6127730030DB44 /* HMACSHA1Signature.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HMACSHA1Signature.h; path = ../Pod/Classes/HMACSHA1Signature.h; sourceTree = "<group>"; };
-		F46616FA1A6127730030DB44 /* HMACSHA1Signature.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HMACSHA1Signature.m; path = ../Pod/Classes/HMACSHA1Signature.m; sourceTree = "<group>"; };
 		F46616FB1A6127730030DB44 /* NSURL+OAuthSwift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "NSURL+OAuthSwift.swift"; path = "../Pod/Classes/NSURL+OAuthSwift.swift"; sourceTree = "<group>"; };
 		F46616FC1A6127730030DB44 /* OAuth1Swift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OAuth1Swift.swift; path = ../Pod/Classes/OAuth1Swift.swift; sourceTree = "<group>"; };
 		F46616FD1A6127730030DB44 /* OAuth2Swift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OAuth2Swift.swift; path = ../Pod/Classes/OAuth2Swift.swift; sourceTree = "<group>"; };
@@ -78,6 +75,8 @@
 		F46617001A6127730030DB44 /* OAuthSwiftCredential.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OAuthSwiftCredential.swift; path = ../Pod/Classes/OAuthSwiftCredential.swift; sourceTree = "<group>"; };
 		F46617011A6127730030DB44 /* OAuthSwiftHTTPRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OAuthSwiftHTTPRequest.swift; path = ../Pod/Classes/OAuthSwiftHTTPRequest.swift; sourceTree = "<group>"; };
 		F46617021A6127730030DB44 /* String+OAuthSwift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "String+OAuthSwift.swift"; path = "../Pod/Classes/String+OAuthSwift.swift"; sourceTree = "<group>"; };
+		F46F9D6C1A61F5FC006708E1 /* libcommonCrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcommonCrypto.dylib; path = usr/lib/system/libcommonCrypto.dylib; sourceTree = SDKROOT; };
+		F46F9D6E1A61F65E006708E1 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,6 +103,7 @@
 				F46616F01A6125690030DB44 /* Podspec Metadata */,
 				F46616F71A6126F40030DB44 /* OAuthSwift */,
 				F451E3E2195B8D030051434C /* OAuthSwiftDemo */,
+				F46F9D6B1A61F5DF006708E1 /* Frameworks */,
 				F451E3C6195B8CD80051434C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -146,8 +146,6 @@
 				F46616F81A6127730030DB44 /* Dictionary+OAuthSwift.swift */,
 				F46617021A6127730030DB44 /* String+OAuthSwift.swift */,
 				F46616FB1A6127730030DB44 /* NSURL+OAuthSwift.swift */,
-				F46616F91A6127730030DB44 /* HMACSHA1Signature.h */,
-				F46616FA1A6127730030DB44 /* HMACSHA1Signature.m */,
 				F46616FC1A6127730030DB44 /* OAuth1Swift.swift */,
 				F46616FD1A6127730030DB44 /* OAuth2Swift.swift */,
 				F46616FF1A6127730030DB44 /* OAuthSwiftClient.swift */,
@@ -155,6 +153,15 @@
 				F46617011A6127730030DB44 /* OAuthSwiftHTTPRequest.swift */,
 			);
 			name = OAuthSwift;
+			sourceTree = "<group>";
+		};
+		F46F9D6B1A61F5DF006708E1 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F46F9D6E1A61F65E006708E1 /* SystemConfiguration.framework */,
+				F46F9D6C1A61F5FC006708E1 /* libcommonCrypto.dylib */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -259,7 +266,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F46617041A6127730030DB44 /* HMACSHA1Signature.m in Sources */,
 				F46616F61A6125780030DB44 /* README.md in Sources */,
 				F451E3FF195B8E910051434C /* ViewController.swift in Sources */,
 				F46617061A6127730030DB44 /* OAuth1Swift.swift in Sources */,
@@ -394,7 +400,12 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				INFOPLIST_FILE = OAuthSwiftDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SDKROOT)/usr/lib/system",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_INCLUDE_PATHS = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "../Pod/Classes/OAuthSwift-Bridging-Header.h";
 			};
 			name = Debug;
@@ -406,7 +417,12 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				INFOPLIST_FILE = OAuthSwiftDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SDKROOT)/usr/lib/system",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_INCLUDE_PATHS = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "../Pod/Classes/OAuthSwift-Bridging-Header.h";
 			};
 			name = Release;

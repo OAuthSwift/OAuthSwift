@@ -6,4 +6,4 @@
 //  Copyright (c) 2014 Dongri Jin. All rights reserved.
 //
 
-#import "HMACSHA1Signature.h"
+#import <CommonCrypto/CommonCrypto.h>
