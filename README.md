@@ -4,7 +4,6 @@ OAuthSwift is available under the MIT license. See the LICENSE file for more inf
 
 
 ## OAuthSwift
-==========
 
 Swift based OAuth library for iOS
 
@@ -70,14 +69,14 @@ oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback
 
 ### Setting Swift Compiler
 
-![Image](Example/OAuthSwiftDemo/Images/SwiftCompiler.png "Image")
+![Image](Example/Images/SwiftCompiler.png "Image")
 
 ### Setting URL Schemes
 
-![Image](Example/OAuthSwiftDemo/Images/URLSchemes.png "Image")
+![Image](Example/Images/URLSchemes.png "Image")
 
 ### Images
 
-![Image](Example/OAuthSwiftDemo/Images/Services.png "Image")
-![Image](Example/OAuthSwiftDemo/Images/TwitterOAuth.png "Image")
-![Image](Example/OAuthSwiftDemo/Images/TwitterOAuthTokens.png "Image")
+![Image](Example/Images/Services.png "Image")
+![Image](Example/Images/TwitterOAuth.png "Image")
+![Image](Example/Images/TwitterOAuthTokens.png "Image")
