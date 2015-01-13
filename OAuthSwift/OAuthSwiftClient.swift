@@ -88,13 +88,13 @@ class OAuthSwiftClient {
         
         let finalParameters = combinedParameters
         
-        authorizationParameters["oauth_signature"] = self.oauthSignatureForMethod(method, url: url, parameters: finalParameters, credential: credential)
+        authorizationParameters["oauth_signature"] = self.signatureForMethod(method, url: url, parameters: finalParameters, credential: credential)
         
-        var authorizationParameterComponents = authorizationParameters.urlEncodedQueryStringWithEncoding(dataEncoding).componentsSeparatedByString("&") as [String]
-        authorizationParameterComponents.sort { $0 < $1 }
+        var parameterComponents = authorizationParameters.urlEncodedQueryStringWithEncoding(dataEncoding).componentsSeparatedByString("&") as [String]
+        parameterComponents.sort { $0 < $1 }
         
         var headerComponents = [String]()
-        for component in authorizationParameterComponents {
+        for component in parameterComponents {
             let subcomponent = component.componentsSeparatedByString("=") as [String]
             if subcomponent.count == 2 {
                 headerComponents.append("\(subcomponent[0])=\"\(subcomponent[1])\"")
@@ -104,14 +104,13 @@ class OAuthSwiftClient {
         return "OAuth " + ", ".join(headerComponents)
     }
     
-    class func oauthSignatureForMethod(method: String, url: NSURL, parameters: Dictionary<String, AnyObject>, credential: OAuthSwiftCredential) -> String {
+    class func signatureForMethod(method: String, url: NSURL, parameters: Dictionary<String, AnyObject>, credential: OAuthSwiftCredential) -> String {
         var tokenSecret: NSString = ""
         tokenSecret = credential.oauth_token_secret.urlEncodedStringWithEncoding(dataEncoding)
         
         let encodedConsumerSecret = credential.consumer_secret.urlEncodedStringWithEncoding(dataEncoding)
         
         let signingKey = "\(encodedConsumerSecret)&\(tokenSecret)"
-        let signingKeyData = signingKey.dataUsingEncoding(dataEncoding)
         
         var parameterComponents = parameters.urlEncodedQueryStringWithEncoding(dataEncoding).componentsSeparatedByString("&") as [String]
         parameterComponents.sort { $0 < $1 }
@@ -122,9 +121,8 @@ class OAuthSwiftClient {
         let encodedURL = url.absoluteString!.urlEncodedStringWithEncoding(dataEncoding)
         
         let signatureBaseString = "\(method)&\(encodedURL)&\(encodedParameterString)"
-        let signatureBaseStringData = signatureBaseString.dataUsingEncoding(dataEncoding)
         
-        return signatureBaseString.SHA1DigestWithKey(signingKey).base64EncodedStringWithOptions(nil)
+        return signatureBaseString.SHA1WithKey(signingKey).base64EncodedStringWithOptions(nil)
     }
 }
 
