@@ -53,3 +53,8 @@ let Dropbox =
     "consumerKey": "***",
     "consumerSecret": "***"
 ]
+let Dribbble =
+[
+    "consumerKey": "***",
+    "consumerSecret": "***"
+]
