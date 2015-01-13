@@ -21,40 +21,8 @@
 		F4D550131A62054000C759F5 /* OAuthSwiftHTTPRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D5500B1A62054000C759F5 /* OAuthSwiftHTTPRequest.swift */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		F4187F0319772873000B1137 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F451E3BD195B8CD80051434C /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = F451E3C4195B8CD80051434C;
-			remoteInfo = OAuthSwift;
-		};
-		F4187F0519772873000B1137 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F451E3BD195B8CD80051434C /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = F451E3C4195B8CD80051434C;
-			remoteInfo = OAuthSwift;
-		};
-		F41E4AFC1983CD2F007B3217 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F451E3BD195B8CD80051434C /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = F451E3C4195B8CD80051434C;
-			remoteInfo = OAuthSwift;
-		};
-		F451E3D3195B8CD80051434C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F451E3BD195B8CD80051434C /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = F451E3C4195B8CD80051434C;
-			remoteInfo = OAuthSwift;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
 		F451E3C5195B8CD80051434C /* OAuthSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OAuthSwift.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		F451E3D2195B8CD80051434C /* OAuthSwiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OAuthSwiftTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F451E3E3195B8D030051434C /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F451E3E4195B8D030051434C /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		F451E3E5195B8D030051434C /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -79,13 +47,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		F451E3CF195B8CD80051434C /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -102,7 +63,6 @@
 			isa = PBXGroup;
 			children = (
 				F451E3C5195B8CD80051434C /* OAuthSwift.app */,
-				F451E3D2195B8CD80051434C /* OAuthSwiftTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -164,27 +124,6 @@
 			productReference = F451E3C5195B8CD80051434C /* OAuthSwift.app */;
 			productType = "com.apple.product-type.application";
 		};
-		F451E3D1195B8CD80051434C /* OAuthSwiftTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = F451E3DF195B8CD80051434C /* Build configuration list for PBXNativeTarget "OAuthSwiftTests" */;
-			buildPhases = (
-				F451E3CE195B8CD80051434C /* Sources */,
-				F451E3CF195B8CD80051434C /* Frameworks */,
-				F451E3D0195B8CD80051434C /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				F451E3D4195B8CD80051434C /* PBXTargetDependency */,
-				F4187F0419772873000B1137 /* PBXTargetDependency */,
-				F4187F0619772873000B1137 /* PBXTargetDependency */,
-				F41E4AFD1983CD2F007B3217 /* PBXTargetDependency */,
-			);
-			name = OAuthSwiftTests;
-			productName = OAuthSwiftTests;
-			productReference = F451E3D2195B8CD80051434C /* OAuthSwiftTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -196,10 +135,6 @@
 				TargetAttributes = {
 					F451E3C4195B8CD80051434C = {
 						CreatedOnToolsVersion = 6.0;
-					};
-					F451E3D1195B8CD80051434C = {
-						CreatedOnToolsVersion = 6.0;
-						TestTargetID = F451E3C4195B8CD80051434C;
 					};
 				};
 			};
@@ -216,7 +151,6 @@
 			projectRoot = "";
 			targets = (
 				F451E3C4195B8CD80051434C /* OAuthSwift */,
-				F451E3D1195B8CD80051434C /* OAuthSwiftTests */,
 			);
 		};
 /* End PBXProject section */
@@ -227,13 +161,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				F451E3E7195B8D030051434C /* Images.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		F451E3D0195B8CD80051434C /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -258,37 +185,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		F451E3CE195B8CD80051434C /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		F4187F0419772873000B1137 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = F451E3C4195B8CD80051434C /* OAuthSwift */;
-			targetProxy = F4187F0319772873000B1137 /* PBXContainerItemProxy */;
-		};
-		F4187F0619772873000B1137 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = F451E3C4195B8CD80051434C /* OAuthSwift */;
-			targetProxy = F4187F0519772873000B1137 /* PBXContainerItemProxy */;
-		};
-		F41E4AFD1983CD2F007B3217 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = F451E3C4195B8CD80051434C /* OAuthSwift */;
-			targetProxy = F41E4AFC1983CD2F007B3217 /* PBXContainerItemProxy */;
-		};
-		F451E3D4195B8CD80051434C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = F451E3C4195B8CD80051434C /* OAuthSwift */;
-			targetProxy = F451E3D3195B8CD80051434C /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		F451E3DA195B8CD80051434C /* Debug */ = {
@@ -404,42 +301,6 @@
 			};
 			name = Release;
 		};
-		F451E3E0195B8CD80051434C /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/OAuthSwift.app/OAuthSwift";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = OAuthSwiftTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				METAL_ENABLE_DEBUG_INFO = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
-			};
-			name = Debug;
-		};
-		F451E3E1195B8CD80051434C /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/OAuthSwift.app/OAuthSwift";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = OAuthSwiftTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				METAL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -457,15 +318,6 @@
 			buildConfigurations = (
 				F451E3DD195B8CD80051434C /* Debug */,
 				F451E3DE195B8CD80051434C /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		F451E3DF195B8CD80051434C /* Build configuration list for PBXNativeTarget "OAuthSwiftTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				F451E3E0195B8CD80051434C /* Debug */,
-				F451E3E1195B8CD80051434C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

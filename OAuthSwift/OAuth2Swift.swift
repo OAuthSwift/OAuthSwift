@@ -102,9 +102,16 @@ class OAuth2Swift {
         
         self.client.post(self.access_token_url!, parameters: parameters, success: {
             data, response in
-            let responseString = NSString(data: data, encoding: NSUTF8StringEncoding) as String
-            let parameters = responseString.parametersFromQueryString()
-            self.client.credential.oauth_token = parameters["access_token"]!
+            var responseJSON: AnyObject? = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers, error: nil)
+            var accessToken = ""
+            if let parameters:NSDictionary = responseJSON as? NSDictionary{
+                accessToken = parameters["access_token"] as String
+            } else {
+                let responseString = NSString(data: data, encoding: NSUTF8StringEncoding) as String
+                let parameters = responseString.parametersFromQueryString()
+                accessToken = parameters["access_token"]!
+            }
+            self.client.credential.oauth_token = accessToken
             success(credential: self.client.credential, response: response)
         }, failure: failure)
     }

@@ -10,7 +10,7 @@ import UIKit
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
-    var services = ["Twitter", "Flickr", "Github", "Instagram", "Foursquare", "Fitbit", "Withings", "Linkedin", "Dropbox"]
+    var services = ["Twitter", "Flickr", "Github", "Instagram", "Foursquare", "Fitbit", "Withings", "Linkedin", "Dropbox", "Dribbble"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -230,6 +230,32 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         })
     }
 
+    func doOAuthDribbble(){
+        let oauthswift = OAuth2Swift(
+            consumerKey:    Dribbble["consumerKey"]!,
+            consumerSecret: Dribbble["consumerSecret"]!,
+            authorizeUrl:   "https://dribbble.com/oauth/authorize",
+            accessTokenUrl: "https://dribbble.com/oauth/token",
+            responseType:   "code"
+        )
+        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/dribbble")!, scope: "", state: "", success: {
+            credential, response in
+            self.showAlertView("Dropbox", message: "oauth_token:\(credential.oauth_token)")
+            // Get User
+            var parameters =  Dictionary<String, AnyObject>()
+            oauthswift.client.get("https://api.dribbble.com/v1/user?access_token=\(credential.oauth_token)", parameters: parameters,
+                success: {
+                    data, response in
+                    let jsonDict: AnyObject! = NSJSONSerialization.JSONObjectWithData(data, options: nil, error: nil)
+                    println(jsonDict)
+                }, failure: {(error:NSError!) -> Void in
+                    println(error)
+                })
+            }, failure: {(error:NSError!) -> Void in
+                println(error.localizedDescription)
+        })
+    }
+
     func showAlertView(title: String, message: String) {
         var alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.Alert)
         alert.addAction(UIAlertAction(title: "Close", style: UIAlertActionStyle.Default, handler: nil))
@@ -267,6 +293,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 doOAuthLinkedin()
             case "Dropbox":
                 doOAuthDropbox()
+            case "Dribbble":
+                doOAuthDribbble();
             default:
                 println("default (check ViewController tableView)")
         }
