@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CommonCrypto
 
 enum HMACAlgorithm {
     case MD5, SHA1, SHA224, SHA256, SHA384, SHA512

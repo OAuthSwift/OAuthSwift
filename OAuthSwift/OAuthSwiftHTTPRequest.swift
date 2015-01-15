@@ -10,10 +10,10 @@ import Foundation
 
 import UIKit
 
-class OAuthSwiftHTTPRequest: NSObject, NSURLConnectionDataDelegate {
+public class OAuthSwiftHTTPRequest: NSObject, NSURLConnectionDataDelegate {
     
-    typealias SuccessHandler = (data: NSData, response: NSHTTPURLResponse) -> Void
-    typealias FailureHandler = (error: NSError) -> Void
+    public typealias SuccessHandler = (data: NSData, response: NSHTTPURLResponse) -> Void
+    public typealias FailureHandler = (error: NSError) -> Void
     
     var URL: NSURL
     var HTTPMethod: String

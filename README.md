@@ -1,7 +1,4 @@
-## License
-
-OAuthSwift is available under the MIT license. See the LICENSE file for more info.
-
+![Image](Assets/OAuthSwift-icon.png "Image")
 
 ## OAuthSwift
 
@@ -9,19 +6,42 @@ Swift based OAuth library for iOS
 
 ### Support OAuth1.0, OAuth2.0
 
-Twitter, Flickr, Github, Instagram, Foursquare. Fitbit, Withings, Linkedin, Dropbox etc
+Twitter, Flickr, Github, Instagram, Foursquare. Fitbit, Withings, Linkedin, Dropbox, Dribbble etc
 
-### OAuth pages
+### Installation
 
-[Twitter](https://dev.twitter.com/docs/auth/oauth)  
-[Flickr](https://www.flickr.com/services/api/auth.oauth.html)  
-[Github](https://developer.github.com/v3/oauth)  
-[Instagram](http://instagram.com/developer/authentication)  
-[Foursquare](https://developer.foursquare.com/overview/auth)  
-[Fitbit](https://wiki.fitbit.com/display/API/OAuth+Authentication+in+the+Fitbit+API)  
-[Withings](http://oauth.withings.com/api)  
-[Linkedin](https://developer.linkedin.com/documents/authentication)  
-[Dropbox](https://www.dropbox.com/developers/core/docs)  
+OAuthSwift is packaged as a Swift framework. Currently this is the simplest way to add it to your app:
+
+* Drag OAuthSwift.xcodeproj to your project in the Project Navigator.
+* Select your project and then your app target. Open the Build Phases panel.
+* Expand the Target Dependencies group, and add OAuthSwift framework.
+* Create a CommonCrypto directory inside the project directory. create a module.map file. The module map will allow us to use the CommonCrypto library as a module within Swift. Its contents are:
+```
+module CommonCrypto [system] {
+    header "/usr/include/CommonCrypto/CommonCrypto.h"
+    link "CommonCrypto"
+    export *
+}
+```
+* import OAuthSwift whenever you want to use OAuthSwift.
+
+### Support Carthage
+
+* Install Carthage (https://github.com/Carthage/Carthage)
+* Create Carhfile file
+```
+github "dongri/OAuthSwift" ~> 0.1.7
+```
+* Run `carthage update`.
+* On your application targets’ “General” settings tab, in the “Embedded Binaries” section, drag and drop OAuthSwift.framework from the Carthage/Build/iOS folder on disk.
+
+### Setting Import Paths
+
+![Image](Assets/ImportPaths.png "Image")
+
+### Setting URL Schemes
+
+![Image](Assets/URLSchemes.png "Image")
 
 ### Examples
 
@@ -67,16 +87,27 @@ oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback
 
 ```
 
-### Setting Swift Compiler
+### OAuth pages
 
-![Image](Example/Images/SwiftCompiler.png "Image")
+* [Twitter](https://dev.twitter.com/docs/auth/oauth)  
+* [Flickr](https://www.flickr.com/services/api/auth.oauth.html)  
+* [Github](https://developer.github.com/v3/oauth)  
+* [Instagram](http://instagram.com/developer/authentication)  
+* [Foursquare](https://developer.foursquare.com/overview/auth)  
+* [Fitbit](https://wiki.fitbit.com/display/API/OAuth+Authentication+in+the+Fitbit+API)  
+* [Withings](http://oauth.withings.com/api)  
+* [Linkedin](https://developer.linkedin.com/documents/authentication)  
+* [Dropbox](https://www.dropbox.com/developers/core/docs)  
+* [Dribbble](http://developer.dribbble.com/v1/oauth/)
 
-### Setting URL Schemes
-
-![Image](Example/Images/URLSchemes.png "Image")
 
 ### Images
 
-![Image](Example/Images/Services.png "Image")
-![Image](Example/Images/TwitterOAuth.png "Image")
-![Image](Example/Images/TwitterOAuthTokens.png "Image")
+![Image](Assets/Services.png "Image")
+![Image](Assets/TwitterOAuth.png "Image")
+![Image](Assets/TwitterOAuthTokens.png "Image")
+
+## License
+
+OAuthSwift is available under the MIT license. See the LICENSE file for more info.
+

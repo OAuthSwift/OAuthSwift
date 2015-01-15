@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0600"
+   LastUpgradeVersion = "0610"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,9 +14,23 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "F451E3C4195B8CD80051434C"
-               BuildableName = "OAuthSwift.app"
+               BlueprintIdentifier = "F43502791A6791B200038A29"
+               BuildableName = "OAuthSwift.framework"
                BlueprintName = "OAuthSwift"
+               ReferencedContainer = "container:OAuthSwift.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "F43502831A6791B200038A29"
+               BuildableName = "OAuthSwiftTests.xctest"
+               BlueprintName = "OAuthSwiftTests"
                ReferencedContainer = "container:OAuthSwift.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -28,12 +42,22 @@
       shouldUseLaunchSchemeArgsEnv = "YES"
       buildConfiguration = "Debug">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "F43502831A6791B200038A29"
+               BuildableName = "OAuthSwiftTests.xctest"
+               BlueprintName = "OAuthSwiftTests"
+               ReferencedContainer = "container:OAuthSwift.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "F451E3C4195B8CD80051434C"
-            BuildableName = "OAuthSwift.app"
+            BlueprintIdentifier = "F43502791A6791B200038A29"
+            BuildableName = "OAuthSwift.framework"
             BlueprintName = "OAuthSwift"
             ReferencedContainer = "container:OAuthSwift.xcodeproj">
          </BuildableReference>
@@ -48,15 +72,15 @@
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable>
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "F451E3C4195B8CD80051434C"
-            BuildableName = "OAuthSwift.app"
+            BlueprintIdentifier = "F43502791A6791B200038A29"
+            BuildableName = "OAuthSwift.framework"
             BlueprintName = "OAuthSwift"
             ReferencedContainer = "container:OAuthSwift.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
@@ -66,15 +90,15 @@
       useCustomWorkingDirectory = "NO"
       buildConfiguration = "Release"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable>
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "F451E3C4195B8CD80051434C"
-            BuildableName = "OAuthSwift.app"
+            BlueprintIdentifier = "F43502791A6791B200038A29"
+            BuildableName = "OAuthSwift.framework"
             BlueprintName = "OAuthSwift"
             ReferencedContainer = "container:OAuthSwift.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
