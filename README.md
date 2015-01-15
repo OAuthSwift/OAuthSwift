@@ -12,10 +12,10 @@ Twitter, Flickr, Github, Instagram, Foursquare. Fitbit, Withings, Linkedin, Drop
 
 OAuthSwift is packaged as a Swift framework. Currently this is the simplest way to add it to your app:
 
-1. Drag OAuthSwift.xcodeproj to your project in the Project Navigator.
-2. Select your project and then your app target. Open the Build Phases panel.
-3. Expand the Target Dependencies group, and add OAuthSwift framework.
-4. Create a CommonCrypto directory inside the project directory. create a module.map file. The module map will allow us to use the CommonCrypto library as a module within Swift. Its contents are:
+* Drag OAuthSwift.xcodeproj to your project in the Project Navigator.
+* Select your project and then your app target. Open the Build Phases panel.
+* Expand the Target Dependencies group, and add OAuthSwift framework.
+* Create a CommonCrypto directory inside the project directory. create a module.map file. The module map will allow us to use the CommonCrypto library as a module within Swift. Its contents are:
 ```
 module CommonCrypto [system] {
     header "/usr/include/CommonCrypto/CommonCrypto.h"
@@ -23,17 +23,17 @@ module CommonCrypto [system] {
     export *
 }
 ```
-5. import OAuthSwift whenever you want to use OAuthSwift.
+* import OAuthSwift whenever you want to use OAuthSwift.
 
 ### Support Carthage
 
-1. Install Carthage (https://github.com/Carthage/Carthage)
-2. Create Carhfile file
+* Install Carthage (https://github.com/Carthage/Carthage)
+* Create Carhfile file
 ```
 github "dongri/OAuthSwift" ~> 0.1.7
 ```
-3. Run `carthage update`.
-4. On your application targets’ “General” settings tab, in the “Embedded Binaries” section, drag and drop OAuthSwift.framework from the Carthage/Build/iOS folder on disk.
+* Run `carthage update`.
+* On your application targets’ “General” settings tab, in the “Embedded Binaries” section, drag and drop OAuthSwift.framework from the Carthage/Build/iOS folder on disk.
 
 ### Setting Import Paths
 
