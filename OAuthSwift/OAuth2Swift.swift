@@ -9,9 +9,9 @@
 import Foundation
 import UIKit
 
-class OAuth2Swift {
+public class OAuth2Swift: NSObject {
     
-    var client: OAuthSwiftClient
+    public var client: OAuthSwiftClient
     
     var consumer_key: String
     var consumer_secret: String
@@ -20,12 +20,12 @@ class OAuth2Swift {
     var response_type: String
     var observer: AnyObject?
     
-    convenience init(consumerKey: String, consumerSecret: String, authorizeUrl: String, accessTokenUrl: String, responseType: String){
+    public convenience init(consumerKey: String, consumerSecret: String, authorizeUrl: String, accessTokenUrl: String, responseType: String){
         self.init(consumerKey: consumerKey, consumerSecret: consumerSecret, authorizeUrl: authorizeUrl, responseType: responseType)
         self.access_token_url = accessTokenUrl
     }
 
-    init(consumerKey: String, consumerSecret: String, authorizeUrl: String, responseType: String){
+    public init(consumerKey: String, consumerSecret: String, authorizeUrl: String, responseType: String){
         self.consumer_key = consumerKey
         self.consumer_secret = consumerSecret
         self.authorize_url = authorizeUrl
@@ -44,11 +44,11 @@ class OAuth2Swift {
         static let appOnlyAuthenticationErrorCode = 1
     }
     
-    typealias TokenSuccessHandler = (credential: OAuthSwiftCredential, response: NSURLResponse?) -> Void
-    typealias FailureHandler = (error: NSError) -> Void
+    public typealias TokenSuccessHandler = (credential: OAuthSwiftCredential, response: NSURLResponse?) -> Void
+    public typealias FailureHandler = (error: NSError) -> Void
     
 
-    func authorizeWithCallbackURL(callbackURL: NSURL, scope: String, state: String, params: Dictionary<String, String> = Dictionary<String, String>(), success: TokenSuccessHandler, failure: ((error: NSError) -> Void)) {
+    public func authorizeWithCallbackURL(callbackURL: NSURL, scope: String, state: String, params: Dictionary<String, String> = Dictionary<String, String>(), success: TokenSuccessHandler, failure: ((error: NSError) -> Void)) {
         self.observer = NSNotificationCenter.defaultCenter().addObserverForName(CallbackNotification.notificationName, object: nil, queue: NSOperationQueue.mainQueue(), usingBlock:{
             notification in
             NSNotificationCenter.defaultCenter().removeObserver(self.observer!)
@@ -116,7 +116,7 @@ class OAuth2Swift {
         }, failure: failure)
     }
     
-    class func handleOpenURL(url: NSURL) {
+    public class func handleOpenURL(url: NSURL) {
         let notification = NSNotification(name: CallbackNotification.notificationName, object: nil,
             userInfo: [CallbackNotification.optionsURLKey: url])
         NSNotificationCenter.defaultCenter().postNotification(notification)

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import OAuthSwift
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
@@ -240,7 +241,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         )
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/dribbble")!, scope: "", state: "", success: {
             credential, response in
-            self.showAlertView("Dropbox", message: "oauth_token:\(credential.oauth_token)")
+            self.showAlertView("Dribbble", message: "oauth_token:\(credential.oauth_token)")
             // Get User
             var parameters =  Dictionary<String, AnyObject>()
             oauthswift.client.get("https://api.dribbble.com/v1/user?access_token=\(credential.oauth_token)", parameters: parameters,
