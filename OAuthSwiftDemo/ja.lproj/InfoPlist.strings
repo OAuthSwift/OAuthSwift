@@ -1,0 +1,8 @@
+/* 
+  InfoPlist.strings
+  OAuthSwift
+
+  Created by Dongri Jin on 1/15/15.
+  Copyright (c) 2015 Dongri Jin. All rights reserved.
+*/
+CFBundleDisplayName = "OAuth Demo";

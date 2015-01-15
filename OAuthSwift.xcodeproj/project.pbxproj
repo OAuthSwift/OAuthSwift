@@ -13,6 +13,7 @@
 		F451E3E7195B8D030051434C /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F451E3E4195B8D030051434C /* Images.xcassets */; };
 		F451E3FF195B8E910051434C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F451E3FE195B8E910051434C /* ViewController.swift */; };
 		F454D53119772AE500354060 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F454D53019772AE500354060 /* Constants.swift */; };
+		F490AA261A67EA7D00765D10 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = F490AA281A67EA7D00765D10 /* InfoPlist.strings */; };
 		F4E9A4D91A67944C00B4F3C8 /* Dictionary+OAuthSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = F43502651A6790EC00038A29 /* Dictionary+OAuthSwift.swift */; };
 		F4E9A4DA1A67944C00B4F3C8 /* NSURL+OAuthSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = F43502661A6790EC00038A29 /* NSURL+OAuthSwift.swift */; };
 		F4E9A4DB1A67944C00B4F3C8 /* String+OAuthSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = F43502671A6790EC00038A29 /* String+OAuthSwift.swift */; };
@@ -53,6 +54,8 @@
 		F451E3E5195B8D030051434C /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F451E3FE195B8E910051434C /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		F454D53019772AE500354060 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		F490AA271A67EA7D00765D10 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		F490AA291A67EAE900765D10 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -133,6 +136,7 @@
 				F454D53019772AE500354060 /* Constants.swift */,
 				F451E3E4195B8D030051434C /* Images.xcassets */,
 				F451E3E5195B8D030051434C /* Info.plist */,
+				F490AA281A67EA7D00765D10 /* InfoPlist.strings */,
 			);
 			path = OAuthSwiftDemo;
 			sourceTree = "<group>";
@@ -210,6 +214,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				ja,
 			);
 			mainGroup = F451E3BC195B8CD80051434C;
 			productRefGroup = F451E3C6195B8CD80051434C /* Products */;
@@ -235,6 +240,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F451E3E7195B8D030051434C /* Images.xcassets in Resources */,
+				F490AA261A67EA7D00765D10 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -268,6 +274,18 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXVariantGroup section */
+		F490AA281A67EA7D00765D10 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F490AA271A67EA7D00765D10 /* en */,
+				F490AA291A67EAE900765D10 /* ja */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
 /* Begin XCBuildConfiguration section */
 		F435028E1A6791B200038A29 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -283,7 +301,7 @@
 				);
 				INFOPLIST_FILE = OAuthSwift/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -308,7 +326,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = OAuthSwift/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
