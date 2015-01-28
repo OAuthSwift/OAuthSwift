@@ -15,14 +15,6 @@ OAuthSwift is packaged as a Swift framework. Currently this is the simplest way 
 * Drag OAuthSwift.xcodeproj to your project in the Project Navigator.
 * Select your project and then your app target. Open the Build Phases panel.
 * Expand the Target Dependencies group, and add OAuthSwift framework.
-* Create a CommonCrypto directory inside the project directory. create a module.map file. The module map will allow us to use the CommonCrypto library as a module within Swift. Its contents are:
-```
-module CommonCrypto [system] {
-    header "/usr/include/CommonCrypto/CommonCrypto.h"
-    link "CommonCrypto"
-    export *
-}
-```
 * import OAuthSwift whenever you want to use OAuthSwift.
 
 ### Support Carthage
@@ -30,14 +22,18 @@ module CommonCrypto [system] {
 * Install Carthage (https://github.com/Carthage/Carthage)
 * Create Carhfile file
 ```
-github "dongri/OAuthSwift" ~> 0.1.7
+github "dongri/OAuthSwift" ~> 0.3.0
 ```
 * Run `carthage update`.
 * On your application targets’ “General” settings tab, in the “Embedded Binaries” section, drag and drop OAuthSwift.framework from the Carthage/Build/iOS folder on disk.
 
-### Setting Import Paths
+### Support CocoaPods
 
-![Image](Assets/ImportPaths.png "Image")
+* Podfile
+```
+platform :ios, '7.0'
+pod "OAuthSwift", "~> 0.3.0"
+```
 
 ### Setting URL Schemes
 

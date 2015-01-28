@@ -1,5 +1,0 @@
-module CommonCrypto [system] {
-    header "/usr/include/CommonCrypto/CommonCrypto.h"
-    link "CommonCrypto"
-    export *
-}
