@@ -14,6 +14,11 @@
 		F451E3E7195B8D030051434C /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F451E3E4195B8D030051434C /* Images.xcassets */; };
 		F451E3FF195B8E910051434C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F451E3FE195B8E910051434C /* ViewController.swift */; };
 		F454D53119772AE500354060 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F454D53019772AE500354060 /* Constants.swift */; };
+		F47599AD1A78FF23004A96C1 /* SHA1.swift in Sources */ = {isa = PBXBuildFile; fileRef = F47599AC1A78FF23004A96C1 /* SHA1.swift */; };
+		F47599AF1A78FFAF004A96C1 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = F47599AE1A78FFAF004A96C1 /* Utils.swift */; };
+		F47599B11A79001B004A96C1 /* NSData+OAuthSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = F47599B01A79001B004A96C1 /* NSData+OAuthSwift.swift */; };
+		F47599B31A7901DF004A96C1 /* HMAC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F47599B21A7901DF004A96C1 /* HMAC.swift */; };
+		F47599B51A7903C9004A96C1 /* Int+OAuthSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = F47599B41A7903C9004A96C1 /* Int+OAuthSwift.swift */; };
 		F4805E211A6BB5DD00F7677E /* Dictionary+OAuthSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4805E1E1A6BB5DD00F7677E /* Dictionary+OAuthSwift.swift */; };
 		F4805E221A6BB5DD00F7677E /* NSURL+OAuthSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4805E1F1A6BB5DD00F7677E /* NSURL+OAuthSwift.swift */; };
 		F4805E231A6BB5DD00F7677E /* String+OAuthSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4805E201A6BB5DD00F7677E /* String+OAuthSwift.swift */; };
@@ -76,6 +81,11 @@
 		F451E3E5195B8D030051434C /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F451E3FE195B8E910051434C /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		F454D53019772AE500354060 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		F47599AC1A78FF23004A96C1 /* SHA1.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SHA1.swift; sourceTree = "<group>"; };
+		F47599AE1A78FFAF004A96C1 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		F47599B01A79001B004A96C1 /* NSData+OAuthSwift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSData+OAuthSwift.swift"; sourceTree = "<group>"; };
+		F47599B21A7901DF004A96C1 /* HMAC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HMAC.swift; sourceTree = "<group>"; };
+		F47599B41A7903C9004A96C1 /* Int+OAuthSwift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Int+OAuthSwift.swift"; sourceTree = "<group>"; };
 		F4805E1E1A6BB5DD00F7677E /* Dictionary+OAuthSwift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dictionary+OAuthSwift.swift"; sourceTree = "<group>"; };
 		F4805E1F1A6BB5DD00F7677E /* NSURL+OAuthSwift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSURL+OAuthSwift.swift"; sourceTree = "<group>"; };
 		F4805E201A6BB5DD00F7677E /* String+OAuthSwift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+OAuthSwift.swift"; sourceTree = "<group>"; };
@@ -110,9 +120,14 @@
 				F435026A1A6790EC00038A29 /* OAuthSwiftClient.swift */,
 				F435026B1A6790EC00038A29 /* OAuthSwiftCredential.swift */,
 				F435026C1A6790EC00038A29 /* OAuthSwiftHTTPRequest.swift */,
+				F47599AE1A78FFAF004A96C1 /* Utils.swift */,
+				F47599AC1A78FF23004A96C1 /* SHA1.swift */,
+				F47599B21A7901DF004A96C1 /* HMAC.swift */,
 				F4805E1E1A6BB5DD00F7677E /* Dictionary+OAuthSwift.swift */,
 				F4805E1F1A6BB5DD00F7677E /* NSURL+OAuthSwift.swift */,
 				F4805E201A6BB5DD00F7677E /* String+OAuthSwift.swift */,
+				F47599B01A79001B004A96C1 /* NSData+OAuthSwift.swift */,
+				F47599B41A7903C9004A96C1 /* Int+OAuthSwift.swift */,
 				F435027E1A6791B200038A29 /* OAuthSwift.h */,
 				F435027C1A6791B200038A29 /* Supporting Files */,
 			);
@@ -272,12 +287,17 @@
 			files = (
 				F4E9A4DC1A67944C00B4F3C8 /* OAuth1Swift.swift in Sources */,
 				F4E9A4DD1A67944C00B4F3C8 /* OAuth2Swift.swift in Sources */,
+				F47599B31A7901DF004A96C1 /* HMAC.swift in Sources */,
 				F4805E231A6BB5DD00F7677E /* String+OAuthSwift.swift in Sources */,
 				F4E9A4DE1A67944C00B4F3C8 /* OAuthSwiftClient.swift in Sources */,
 				F4E9A4DF1A67944C00B4F3C8 /* OAuthSwiftCredential.swift in Sources */,
+				F47599AF1A78FFAF004A96C1 /* Utils.swift in Sources */,
+				F47599AD1A78FF23004A96C1 /* SHA1.swift in Sources */,
 				F4805E221A6BB5DD00F7677E /* NSURL+OAuthSwift.swift in Sources */,
 				F4E9A4E01A67944C00B4F3C8 /* OAuthSwiftHTTPRequest.swift in Sources */,
+				F47599B51A7903C9004A96C1 /* Int+OAuthSwift.swift in Sources */,
 				F4805E211A6BB5DD00F7677E /* Dictionary+OAuthSwift.swift in Sources */,
+				F47599B11A79001B004A96C1 /* NSData+OAuthSwift.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -337,7 +357,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_INCLUDE_PATHS = CommonCrypto;
+				SWIFT_INCLUDE_PATHS = "";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -362,7 +382,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_INCLUDE_PATHS = CommonCrypto;
+				SWIFT_INCLUDE_PATHS = "";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -460,7 +480,7 @@
 					"$(SDKROOT)/usr/lib/system",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_INCLUDE_PATHS = OAuthSwift/CommonCrypto;
+				SWIFT_INCLUDE_PATHS = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 			};
 			name = Debug;
@@ -478,7 +498,7 @@
 					"$(SDKROOT)/usr/lib/system",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_INCLUDE_PATHS = OAuthSwift/CommonCrypto;
+				SWIFT_INCLUDE_PATHS = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 			};
 			name = Release;
