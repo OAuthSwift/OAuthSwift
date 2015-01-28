@@ -65,9 +65,10 @@ public class OAuth2Swift: NSObject {
                 success(credential: self.client.credential, response: nil)
             }
             if (parameters["code"] != nil){
-                self.postOAuthAccessTokenWithRequestTokenByCode(parameters["code"]!, success: {
-                    credential, response in
-                    success(credential: credential, response: response)
+                self.postOAuthAccessTokenWithRequestTokenByCode(parameters["code"]!,
+                    callbackURL:callbackURL,
+                    success: { credential, response in
+                        success(credential: credential, response: response)
                 }, failure: failure)
                     
             }
@@ -93,12 +94,13 @@ public class OAuth2Swift: NSObject {
         UIApplication.sharedApplication().openURL(queryURL!)
     }
     
-    func postOAuthAccessTokenWithRequestTokenByCode(code: String, success: TokenSuccessHandler, failure: FailureHandler?) {
+    func postOAuthAccessTokenWithRequestTokenByCode(code: String, callbackURL: NSURL, success: TokenSuccessHandler, failure: FailureHandler?) {
         var parameters = Dictionary<String, AnyObject>()
         parameters["client_id"] = self.consumer_key
         parameters["client_secret"] = self.consumer_secret
         parameters["code"] = code
         parameters["grant_type"] = "authorization_code"
+        parameters["redirect_uri"] = callbackURL.absoluteString!
         
         self.client.post(self.access_token_url!, parameters: parameters, success: {
             data, response in
