@@ -7,14 +7,14 @@
 //
 
 
-public class OAuthSwiftCredential: NSCoding {
+public class OAuthSwiftCredential: NSObject, NSCoding {
     
     var consumer_key: String = String()
     var consumer_secret: String = String()
     public var oauth_token: String = String()
     public var oauth_token_secret: String = String()
     var oauth_verifier: String = String()
-    init(){
+    override init(){
         
     }
     init(consumer_key: String, consumer_secret: String){
@@ -27,7 +27,7 @@ public class OAuthSwiftCredential: NSCoding {
     }
     
     private struct CodingKeys {
-        static let base = "com.dongri.OAuthSwift."
+        static let base = NSBundle.mainBundle().bundleIdentifier! + "."
         static let consumerKey = base + "comsumer_key"
         static let consumerSecret = base + "consumer_secret"
         static let oauthToken = base + "oauth_token"
