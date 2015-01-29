@@ -1,4 +1,6 @@
-![Image](Assets/OAuthSwift-icon.png "Image")
+<p align="center">
+  <img src="Assets/OAuthSwift-icon.png?raw=true" alt="OAuthSwift"/>
+</p>
 
 ## OAuthSwift
 
