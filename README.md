@@ -20,7 +20,7 @@ OAuthSwift is packaged as a Swift framework. Currently this is the simplest way 
 ### Support Carthage
 
 * Install Carthage (https://github.com/Carthage/Carthage)
-* Create Carhfile file
+* Create Cartfile file
 ```
 github "dongri/OAuthSwift" ~> 0.3.0
 ```
