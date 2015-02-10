@@ -35,6 +35,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             accessTokenUrl:  "https://api.twitter.com/oauth/access_token"
         )
         
+        oauthswift.webViewController = WebViewController()
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/twitter")!, success: {
             credential, response in
             self.showAlertView("Twitter", message: "auth_token:\(credential.oauth_token)\n\noauth_toke_secret:\(credential.oauth_token_secret)")
@@ -114,6 +115,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             authorizeUrl:   "https://api.instagram.com/oauth/authorize",
             responseType:   "token"
         )
+
+        oauthswift.webViewController = WebViewController()
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/instagram")!, scope: "likes+comments", state:"INSTAGRAM", success: {
             credential, response in
             self.showAlertView("Instagram", message: "oauth_token:\(credential.oauth_token)")

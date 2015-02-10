@@ -10,9 +10,11 @@ import Foundation
 import UIKit
 
 public class OAuth2Swift: NSObject {
-    
+
     public var client: OAuthSwiftClient
-    
+
+    public var webViewController: OAuthWebViewController?
+
     var consumer_key: String
     var consumer_secret: String
     var authorize_url: String
@@ -91,7 +93,13 @@ public class OAuth2Swift: NSObject {
         }
 
         let queryURL = NSURL(string: urlString)
-        UIApplication.sharedApplication().openURL(queryURL!)
+        if ( self.webViewController != nil ) {
+            self.webViewController!.setUrl(queryURL!)
+            UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(
+                self.webViewController!, animated: true, completion: nil)
+        } else {
+            UIApplication.sharedApplication().openURL(queryURL!)
+        }
     }
     
     func postOAuthAccessTokenWithRequestTokenByCode(code: String, callbackURL: NSURL, success: TokenSuccessHandler, failure: FailureHandler?) {
