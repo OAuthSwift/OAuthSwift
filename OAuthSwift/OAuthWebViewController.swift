@@ -8,6 +8,8 @@
 
 import Foundation
 
+import UIKit
+
 protocol WebViewProtocol {
     func setUrl(url: NSURL)
 }
