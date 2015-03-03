@@ -31,9 +31,9 @@ class WebViewController: OAuthWebViewController, UIWebViewDelegate {
         let req = NSURLRequest(URL: targetURL)
         webView.loadRequest(req)
     }
-    func webView(webView: UIWebView!, shouldStartLoadWithRequest request: NSURLRequest!, navigationType: UIWebViewNavigationType) -> Bool {
-        println(request.URL.scheme)
-        if (request.URL.scheme == "oauth-swift"){
+    func webView(webView: UIWebView, shouldStartLoadWithRequest request: NSURLRequest, navigationType: UIWebViewNavigationType) -> Bool {
+        println(request.URL)
+        if (request.URL!.scheme == "oauth-swift"){
             self.dismissViewControllerAnimated(true, completion: nil)
         }
         return true

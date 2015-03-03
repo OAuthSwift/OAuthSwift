@@ -55,7 +55,7 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLConnectionDataDelegate {
     
     init(request: NSURLRequest) {
         self.request = request as? NSMutableURLRequest
-        self.URL = request.URL
+        self.URL = request.URL!
         self.HTTPMethod = request.HTTPMethod!
         self.headers = [:]
         self.parameters = [:]
@@ -118,20 +118,21 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLConnectionDataDelegate {
         }
     }
     
-    func connection(connection: NSURLConnection!, didReceiveResponse response: NSURLResponse!) {
+
+    public func connection(connection: NSURLConnection, didReceiveResponse response: NSURLResponse) {
         self.response = response as? NSHTTPURLResponse
         
         self.responseData.length = 0
     }
     
-    func connection(connection: NSURLConnection!, didSendBodyData bytesWritten: Int, totalBytesWritten: Int, totalBytesExpectedToWrite: Int) {
+    public func connection(connection: NSURLConnection, didSendBodyData bytesWritten: Int, totalBytesWritten: Int, totalBytesExpectedToWrite: Int) {
     }
     
-    func connection(connection: NSURLConnection!, didReceiveData data: NSData!) {
+    public func connection(connection: NSURLConnection, didReceiveData data: NSData) {
         self.responseData.appendData(data)
     }
     
-    func connection(connection: NSURLConnection!, didFailWithError error: NSError!) {
+    public func connection(connection: NSURLConnection, didFailWithError error: NSError) {
         #if os(iOS)
             UIApplication.sharedApplication().networkActivityIndicatorVisible = false
         #endif
@@ -139,15 +140,15 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLConnectionDataDelegate {
         self.failureHandler?(error: error)
     }
     
-    func connectionDidFinishLoading(connection: NSURLConnection!) {
+    public func connectionDidFinishLoading(connection: NSURLConnection) {
         #if os(iOS)
             UIApplication.sharedApplication().networkActivityIndicatorVisible = false
         #endif
         
         if self.response.statusCode >= 400 {
             let responseString = NSString(data: self.responseData, encoding: self.dataEncoding)
-            let localizedDescription = OAuthSwiftHTTPRequest.descriptionForHTTPStatus(self.response.statusCode, responseString: responseString!)
-            let userInfo = [NSLocalizedDescriptionKey: localizedDescription, "Response-Headers": self.response.allHeaderFields]
+            let localizedDescription = OAuthSwiftHTTPRequest.descriptionForHTTPStatus(self.response.statusCode, responseString: responseString! as! String)
+            let userInfo : [NSObject : AnyObject] = [NSLocalizedDescriptionKey: localizedDescription, "Response-Headers": self.response.allHeaderFields]
             let error = NSError(domain: NSURLErrorDomain, code: self.response.statusCode, userInfo: userInfo)
             self.failureHandler?(error: error)
             return
@@ -168,7 +169,7 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLConnectionDataDelegate {
             }
         }
         
-        return NSString(data: data, encoding: encoding)!
+        return NSString(data: data, encoding: encoding)! as! String
     }
     
     class func descriptionForHTTPStatus(status: Int, responseString: String) -> String {

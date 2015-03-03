@@ -17,11 +17,11 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
     override init(){
         
     }
-    init(consumer_key: String, consumer_secret: String){
+    public init(consumer_key: String, consumer_secret: String){
         self.consumer_key = consumer_key
         self.consumer_secret = consumer_secret
     }
-    init(oauth_token: String, oauth_token_secret: String){
+    public init(oauth_token: String, oauth_token_secret: String){
         self.oauth_token = oauth_token
         self.oauth_token_secret = oauth_token_secret
     }
@@ -39,11 +39,11 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
     // extension OAuthSwiftCredential: NSCoding {
     public required convenience init(coder decoder: NSCoder) {
         self.init()
-        self.consumer_key = decoder.decodeObjectForKey(CodingKeys.consumerKey) as? String ?? String()
-        self.consumer_secret = decoder.decodeObjectForKey(CodingKeys.consumerSecret) as? String ?? String()
-        self.oauth_token = decoder.decodeObjectForKey(CodingKeys.oauthToken) as? String ?? String()
-        self.oauth_token_secret = decoder.decodeObjectForKey(CodingKeys.oauthTokenSecret) as? String ?? String()
-        self.oauth_verifier = decoder.decodeObjectForKey(CodingKeys.oauthVerifier) as? String ?? String()
+        self.consumer_key = (decoder.decodeObjectForKey(CodingKeys.consumerKey) as? String) ?? String()
+        self.consumer_secret = (decoder.decodeObjectForKey(CodingKeys.consumerSecret) as? String) ?? String()
+        self.oauth_token = (decoder.decodeObjectForKey(CodingKeys.oauthToken) as? String) ?? String()
+        self.oauth_token_secret = (decoder.decodeObjectForKey(CodingKeys.oauthTokenSecret) as? String) ?? String()
+        self.oauth_verifier = (decoder.decodeObjectForKey(CodingKeys.oauthVerifier) as? String) ?? String()
     }
     
     public func encodeWithCoder(coder: NSCoder) {
