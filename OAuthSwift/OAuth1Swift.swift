@@ -16,7 +16,7 @@ public class OAuth1Swift: NSObject {
 
     public var client: OAuthSwiftClient
 
-    public var webViewController: OAuthWebViewController?
+    public var webViewController: UIViewController?
 
     var consumer_key: String
     var consumer_secret: String
@@ -76,9 +76,11 @@ public class OAuth1Swift: NSObject {
             // 2. Authorize
             let queryURL = NSURL(string: self.authorize_url + "?oauth_token=\(credential.oauth_token)")
             if ( self.webViewController != nil ) {
-                self.webViewController!.setUrl(queryURL!)
-                UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(
-                    self.webViewController!, animated: true, completion: nil)
+                if let webView = self.webViewController as? WebViewProtocol {
+                    webView.setUrl(queryURL!)
+                    UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(
+                        self.webViewController!, animated: true, completion: nil)
+                }
             } else {
                 UIApplication.sharedApplication().openURL(queryURL!)
             }

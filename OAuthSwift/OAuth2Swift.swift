@@ -13,7 +13,8 @@ public class OAuth2Swift: NSObject {
 
     public var client: OAuthSwiftClient
 
-    public var webViewController: OAuthWebViewController?
+    public var webViewController: UIViewController?
+
 
     var consumer_key: String
     var consumer_secret: String
@@ -94,9 +95,11 @@ public class OAuth2Swift: NSObject {
 
         let queryURL = NSURL(string: urlString)
         if ( self.webViewController != nil ) {
-            self.webViewController!.setUrl(queryURL!)
-            UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(
-                self.webViewController!, animated: true, completion: nil)
+            if let webView = self.webViewController as? WebViewProtocol {
+                webView.setUrl(queryURL!)
+                UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(
+                    self.webViewController!, animated: true, completion: nil)
+            }
         } else {
             UIApplication.sharedApplication().openURL(queryURL!)
         }
