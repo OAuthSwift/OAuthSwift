@@ -16,7 +16,7 @@ public class OAuth1Swift: NSObject {
 
     public var client: OAuthSwiftClient
 
-    public var webViewController: OAuthWebViewController?
+    public var webViewController: UIViewController?
 
     var consumer_key: String
     var consumer_secret: String
@@ -57,7 +57,7 @@ public class OAuth1Swift: NSObject {
                 notification in
                 //NSNotificationCenter.defaultCenter().removeObserver(self)
                 NSNotificationCenter.defaultCenter().removeObserver(self.observer!)
-                let url = notification.userInfo![CallbackNotification.optionsURLKey] as NSURL
+                let url = notification.userInfo![CallbackNotification.optionsURLKey] as! NSURL
                 let parameters = url.query!.parametersFromQueryString()
                 if (parameters["oauth_token"] != nil && parameters["oauth_verifier"] != nil) {
                     var credential: OAuthSwiftCredential = self.client.credential
@@ -76,9 +76,11 @@ public class OAuth1Swift: NSObject {
             // 2. Authorize
             let queryURL = NSURL(string: self.authorize_url + "?oauth_token=\(credential.oauth_token)")
             if ( self.webViewController != nil ) {
-                self.webViewController!.setUrl(queryURL!)
-                UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(
-                    self.webViewController!, animated: true, completion: nil)
+                if let webView = self.webViewController as? WebViewProtocol {
+                    webView.setUrl(queryURL!)
+                    UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(
+                        self.webViewController!, animated: true, completion: nil)
+                }
             } else {
                 UIApplication.sharedApplication().openURL(queryURL!)
             }
@@ -93,7 +95,7 @@ public class OAuth1Swift: NSObject {
         }
         self.client.post(self.request_token_url, parameters: parameters, success: {
             data, response in
-            let responseString = NSString(data: data, encoding: NSUTF8StringEncoding) as String
+            let responseString = NSString(data: data, encoding: NSUTF8StringEncoding) as! String
             let parameters = responseString.parametersFromQueryString()
             self.client.credential.oauth_token = parameters["oauth_token"]!
             self.client.credential.oauth_token_secret = parameters["oauth_token_secret"]!
@@ -108,7 +110,7 @@ public class OAuth1Swift: NSObject {
         parameters["oauth_verifier"] = self.client.credential.oauth_verifier
         self.client.post(self.access_token_url, parameters: parameters, success: {
             data, response in
-            let responseString = NSString(data: data, encoding: NSUTF8StringEncoding) as String
+            let responseString = NSString(data: data, encoding: NSUTF8StringEncoding) as! String
             let parameters = responseString.parametersFromQueryString()
             self.client.credential.oauth_token = parameters["oauth_token"]!
             self.client.credential.oauth_token_secret = parameters["oauth_token_secret"]!
