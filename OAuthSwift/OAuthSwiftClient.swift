@@ -20,11 +20,11 @@ public class OAuthSwiftClient {
     
     var credential: OAuthSwiftCredential
     
-    init(consumerKey: String, consumerSecret: String) {
+    public init(consumerKey: String, consumerSecret: String) {
         self.credential = OAuthSwiftCredential(consumer_key: consumerKey, consumer_secret: consumerSecret)
     }
     
-    init(consumerKey: String, consumerSecret: String, accessToken: String, accessTokenSecret: String) {
+    public init(consumerKey: String, consumerSecret: String, accessToken: String, accessTokenSecret: String) {
         self.credential = OAuthSwiftCredential(oauth_token: accessToken, oauth_token_secret: accessTokenSecret)
         self.credential.consumer_key = consumerKey
         self.credential.consumer_secret = consumerSecret
@@ -32,23 +32,23 @@ public class OAuthSwiftClient {
     }
     
     public func get(urlString: String, parameters: Dictionary<String, AnyObject>, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
-        self.request(urlString, method: "GET", parameters: parameters, success, failure)
+        self.request(urlString, method: "GET", parameters: parameters, success: success, failure: failure)
     }
     
     public func post(urlString: String, parameters: Dictionary<String, AnyObject>, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
-        self.request(urlString, method: "POST", parameters: parameters, success, failure)
+        self.request(urlString, method: "POST", parameters: parameters, success: success, failure: failure)
     }
 
     public func put(urlString: String, parameters: Dictionary<String, AnyObject>, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
-        self.request(urlString, method: "PUT", parameters: parameters, success, failure)
+        self.request(urlString, method: "PUT", parameters: parameters, success: success, failure: failure)
     }
 
     public func delete(urlString: String, parameters: Dictionary<String, AnyObject>, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
-        self.request(urlString, method: "DELETE", parameters: parameters, success, failure)
+        self.request(urlString, method: "DELETE", parameters: parameters, success: success, failure: failure)
     }
 
     public func patch(urlString: String, parameters: Dictionary<String, AnyObject>, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
-        self.request(urlString, method: "PATCH", parameters: parameters, success, failure)
+        self.request(urlString, method: "PATCH", parameters: parameters, success: success, failure: failure)
     }
 
     func request(url: String, method: String, parameters: Dictionary<String, AnyObject>, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
@@ -66,7 +66,7 @@ public class OAuthSwiftClient {
 
     }
 
-    class func authorizationHeaderForMethod(method: String, url: NSURL, parameters: Dictionary<String, AnyObject>, credential: OAuthSwiftCredential) -> String {
+    public class func authorizationHeaderForMethod(method: String, url: NSURL, parameters: Dictionary<String, AnyObject>, credential: OAuthSwiftCredential) -> String {
         var authorizationParameters = Dictionary<String, AnyObject>()
         authorizationParameters["oauth_version"] = OAuth.version
         authorizationParameters["oauth_signature_method"] =  OAuth.signatureMethod
@@ -104,7 +104,7 @@ public class OAuthSwiftClient {
         return "OAuth " + ", ".join(headerComponents)
     }
     
-    class func signatureForMethod(method: String, url: NSURL, parameters: Dictionary<String, AnyObject>, credential: OAuthSwiftCredential) -> String {
+    public class func signatureForMethod(method: String, url: NSURL, parameters: Dictionary<String, AnyObject>, credential: OAuthSwiftCredential) -> String {
         var tokenSecret: NSString = ""
         tokenSecret = credential.oauth_token_secret.urlEncodedStringWithEncoding(dataEncoding)
         

@@ -37,9 +37,9 @@ extension String {
 
         var raw: NSString = self
         
-        let result = CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, raw, charactersToLeaveUnescaped, charactersToBeEscaped, CFStringConvertNSStringEncodingToEncoding(encoding)) as NSString
+        let result = CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, raw, charactersToLeaveUnescaped, charactersToBeEscaped, CFStringConvertNSStringEncodingToEncoding(encoding))
 
-        return result
+        return result as String
     }
 
     func parametersFromQueryString() -> Dictionary<String, String> {
@@ -60,7 +60,7 @@ extension String {
             scanner.scanString("&", intoString: nil)
 
             if (key != nil && value != nil) {
-                parameters.updateValue(value!, forKey: key!)
+                parameters.updateValue(value! as String, forKey: key! as String)
             }
         }
         
@@ -107,11 +107,11 @@ extension String {
     }
     //统计长度
     func length()->Int{
-        return countElements(self)
+        return count(self)
     }
     //统计长度(别名)
     func size()->Int{
-        return countElements(self)
+        return count(self)
     }
     //重复字符串
     func repeat(times: Int) -> String{

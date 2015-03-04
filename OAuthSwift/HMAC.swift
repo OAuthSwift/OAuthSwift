@@ -11,7 +11,7 @@ import Foundation
 
 public class HMAC {
     
-    let key:[Byte] = []
+    let key:[UInt8] = []
     
     class internal func sha1(# key: NSData, message: NSData) -> NSData? {
         var key = key.bytes()
@@ -23,15 +23,15 @@ public class HMAC {
         }
         
         if (key.count < 64) {
-            key = key + [Byte](count: 64 - key.count, repeatedValue: 0)
+            key = key + [UInt8](count: 64 - key.count, repeatedValue: 0)
         }
         
         //
-        var opad = [Byte](count: 64, repeatedValue: 0x5c)
+        var opad = [UInt8](count: 64, repeatedValue: 0x5c)
         for (idx, val) in enumerate(key) {
             opad[idx] = key[idx] ^ opad[idx]
         }
-        var ipad = [Byte](count: 64, repeatedValue: 0x36)
+        var ipad = [UInt8](count: 64, repeatedValue: 0x36)
         for (idx, val) in enumerate(key) {
             ipad[idx] = key[idx] ^ ipad[idx]
         }
