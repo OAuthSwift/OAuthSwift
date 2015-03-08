@@ -68,7 +68,7 @@ public class OAuth2Swift: NSObject {
                 success(credential: self.client.credential, response: nil)
             }
             if (parameters["code"] != nil){
-                self.postOAuthAccessTokenWithRequestTokenByCode(parameters["code"]!,
+                self.postOAuthAccessTokenWithRequestTokenByCode(parameters["code"]!.stringByRemovingPercentEncoding!,
                     callbackURL:callbackURL,
                     success: { credential, response in
                         success(credential: credential, response: response)

@@ -13,6 +13,11 @@ let Twitter =
     "consumerKey": "***",
     "consumerSecret": "***"
 ]
+let Salesforce =
+[
+    "consumerKey": "***",
+    "consumerSecret": "***"
+]
 let Flickr =
 [
     "consumerKey": "***",
