@@ -57,7 +57,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIWebViewDelegate {
              || url.path!.hasPrefix("/withings") || url.path!.hasPrefix("/linkedin")) {
                 OAuth1Swift.handleOpenURL(url)
             }
-            if ( url.path!.hasPrefix("/github" ) || url.path!.hasPrefix("/instagram" ) || url.path!.hasPrefix("/foursquare") || url.path!.hasPrefix("/dropbox") || url.path!.hasPrefix("/dribbble") ) {
+            if ( url.path!.hasPrefix("/github" ) || url.path!.hasPrefix("/instagram" ) || url.path!.hasPrefix("/foursquare") || url.path!.hasPrefix("/dropbox") || url.path!.hasPrefix("/dribbble") || url.path!.hasPrefix("/salesforce") ) {
                 OAuth2Swift.handleOpenURL(url)
             }
         }

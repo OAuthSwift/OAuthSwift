@@ -11,7 +11,7 @@ import OAuthSwift
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
-    var services = ["Twitter", "Flickr", "Github", "Instagram", "Foursquare", "Fitbit", "Withings", "Linkedin", "Dropbox", "Dribbble"]
+    var services = ["Twitter", "Salesforce", "Flickr", "Github", "Instagram", "Foursquare", "Fitbit", "Withings", "Linkedin", "Dropbox", "Dribbble"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -105,6 +105,23 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             }, failure: {(error:NSError!) -> Void in
                 println(error.localizedDescription)
             })
+        
+    }
+    
+    func doOAuthSalesforce(){
+        let oauthswift = OAuth2Swift(
+            consumerKey:    Salesforce["consumerKey"]!,
+            consumerSecret: Salesforce["consumerSecret"]!,
+            authorizeUrl:   "https://login.salesforce.com/services/oauth2/authorize",
+            accessTokenUrl: "https://login.salesforce.com/services/oauth2/token",
+            responseType:   "code"
+        )
+        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/salesforce")!, scope: "full", state: "SALESFORCE", success: {
+            credential, response in
+            self.showAlertView("Salesforce", message: "oauth_token:\(credential.oauth_token)")
+            }, failure: {(error:NSError!) -> Void in
+                println(error.localizedDescription)
+        })
         
     }
 
@@ -281,6 +298,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         switch service {
             case "Twitter":
                 doOAuthTwitter()
+            case "Salesforce":
+                doOAuthSalesforce()
             case "Flickr":
                 doOAuthFlickr()
             case "Github":
