@@ -15,8 +15,8 @@ let Twitter =
 ]
 let Salesforce =
 [
-    "consumerKey": "3MVG9fMtCkV6eLhdjZ8TO0bd8hB1S7vtYzaYRkr8PDg92amDvVDSHzbYLaHinwTyYx25jZmdVgPpZ7f18Hyo2",
-    "consumerSecret": "2395602594367212505"
+    "consumerKey": "***",
+    "consumerSecret": "***"
 ]
 let Flickr =
 [
