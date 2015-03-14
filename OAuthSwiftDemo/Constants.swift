@@ -63,3 +63,8 @@ let Dribbble =
     "consumerKey": "***",
     "consumerSecret": "***"
 ]
+let BitBucket =
+[
+	"consumerKey": "***",
+	"consumerSecret": "***"
+]
