@@ -342,9 +342,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             case "Dropbox":
                 doOAuthDropbox()
             case "Dribbble":
-                doOAuthDribbble();
+                doOAuthDribbble()
             case "BitBucket":
-                doOAuthBitBucket();
+                doOAuthBitBucket()
             default:
                 println("default (check ViewController tableView)")
         }
