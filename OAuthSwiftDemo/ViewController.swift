@@ -11,7 +11,7 @@ import OAuthSwift
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
-    var services = ["Twitter", "Salesforce", "Flickr", "Github", "Instagram", "Foursquare", "Fitbit", "Withings", "Linkedin", "Dropbox", "Dribbble"]
+    var services = ["Twitter", "Salesforce", "Flickr", "Github", "Instagram", "Foursquare", "Fitbit", "Withings", "Linkedin", "Dropbox", "Dribbble", "BitBucket"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -277,6 +277,31 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         })
     }
 
+	func doOAuthBitBucket(){
+		let oauthswift = OAuth1Swift(
+			consumerKey:    BitBucket["consumerKey"]!,
+			consumerSecret: BitBucket["consumerSecret"]!,
+			requestTokenUrl: "https://bitbucket.org/api/1.0/oauth/request_token",
+			authorizeUrl:    "https://bitbucket.org/api/1.0/oauth/authenticate",
+			accessTokenUrl:  "https://bitbucket.org/api/1.0/oauth/access_token"
+		)
+		oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/bitbucket")!, success: {
+			credential, response in
+			self.showAlertView("BitBucket", message: "oauth_token:\(credential.oauth_token)\n\noauth_toke_secret:\(credential.oauth_token_secret)")
+			var parameters =  Dictionary<String, AnyObject>()
+			oauthswift.client.get("https://bitbucket.org/api/1.0/user", parameters: parameters,
+				success: {
+					data, response in
+					let dataString = NSString(data: data, encoding: NSUTF8StringEncoding)
+					println(dataString)
+				}, failure: {(error:NSError!) -> Void in
+					println(error)
+			})
+			}, failure: {(error:NSError!) -> Void in
+				println(error.localizedDescription)
+		})
+	}
+
     func showAlertView(title: String, message: String) {
         var alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.Alert)
         alert.addAction(UIAlertAction(title: "Close", style: UIAlertActionStyle.Default, handler: nil))
@@ -317,7 +342,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             case "Dropbox":
                 doOAuthDropbox()
             case "Dribbble":
-                doOAuthDribbble();
+                doOAuthDribbble()
+            case "BitBucket":
+                doOAuthBitBucket()
             default:
                 println("default (check ViewController tableView)")
         }

@@ -54,7 +54,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIWebViewDelegate {
         println(url)
         if (url.host == "oauth-callback") {
             if (url.path!.hasPrefix("/twitter") || url.path!.hasPrefix("/flickr") || url.path!.hasPrefix("/fitbit")
-             || url.path!.hasPrefix("/withings") || url.path!.hasPrefix("/linkedin")) {
+             || url.path!.hasPrefix("/withings") || url.path!.hasPrefix("/linkedin") || url.path!.hasPrefix("/bitbucket") ) {
                 OAuth1Swift.handleOpenURL(url)
             }
             if ( url.path!.hasPrefix("/github" ) || url.path!.hasPrefix("/instagram" ) || url.path!.hasPrefix("/foursquare") || url.path!.hasPrefix("/dropbox") || url.path!.hasPrefix("/dribbble") || url.path!.hasPrefix("/salesforce") ) {
