@@ -11,7 +11,7 @@ import OAuthSwift
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
-    var services = ["Twitter", "Salesforce", "Flickr", "Github", "Instagram", "Foursquare", "Fitbit", "Withings", "Linkedin", "Dropbox", "Dribbble", "BitBucket", "Google"]
+    var services = ["Twitter", "Salesforce", "Flickr", "Github", "Instagram", "Foursquare", "Fitbit", "Withings", "Linkedin", "Dropbox", "Dribbble", "BitBucket", "GoogleDrive"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -304,8 +304,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     func doOAuthGoogle(){
         let oauthswift = OAuth2Swift(
-            consumerKey:    Google["consumerKey"]!,
-            consumerSecret: Google["consumerSecret"]!,
+            consumerKey:    GoogleDrive["consumerKey"]!,
+            consumerSecret: GoogleDrive["consumerSecret"]!,
             authorizeUrl:   "https://accounts.google.com/o/oauth2/auth",
             accessTokenUrl: "https://accounts.google.com/o/oauth2/token",
             responseType:   "code"
@@ -383,7 +383,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 doOAuthDribbble()
             case "BitBucket":
                 doOAuthBitBucket()
-            case "Google":
+            case "GoogleDrive":
                 doOAuthGoogle()
             default:
                 println("default (check ViewController tableView)")

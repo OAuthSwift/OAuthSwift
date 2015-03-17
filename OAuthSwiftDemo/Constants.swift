@@ -68,7 +68,7 @@ let BitBucket =
 	"consumerKey": "***",
 	"consumerSecret": "***"
 ]
-let Google =
+let GoogleDrive =
 [
     "consumerKey": "***",
     "consumerSecret": "***"
