@@ -89,7 +89,7 @@ public class OAuthSwiftClient {
         
         var parmaImage = [String: AnyObject]()
         parmaImage["media"] = image
-        let boundary = "AG-boundary-\(arc4random())-\(arc4random())"
+        let boundary = "AS-boundary-\(arc4random())-\(arc4random())"
         var type = "multipart/form-data; boundary=\(boundary)"
         var body = self.multiPartBodyFromParams(parmaImage, boundary: boundary)
         

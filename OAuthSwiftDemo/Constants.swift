@@ -68,3 +68,8 @@ let BitBucket =
 	"consumerKey": "***",
 	"consumerSecret": "***"
 ]
+let Google =
+[
+    "consumerKey": "***",
+    "consumerSecret": "***"
+]
