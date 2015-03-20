@@ -11,7 +11,7 @@ import OAuthSwift
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
-    var services = ["Twitter", "Flickr", "Github", "Instagram", "Foursquare", "Fitbit", "Withings", "Linkedin", "Dropbox", "Dribbble"]
+    var services = ["Twitter", "Flickr", "Github", "Instagram", "Foursquare", "Fitbit", "Withings", "Linkedin", "Dropbox", "Dribbble", "Smugmug"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -181,7 +181,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 println(error.localizedDescription)
         })
     }
-    
+
     func doOAuthLinkedin(){
         let oauthswift = OAuth1Swift(
             consumerKey:    Linkedin["consumerKey"]!,
@@ -193,17 +193,35 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/linkedin")!, success: {
             credential, response in
             self.showAlertView("Linkedin", message: "oauth_token:\(credential.oauth_token)\n\noauth_toke_secret:\(credential.oauth_token_secret)")
-                var parameters =  Dictionary<String, AnyObject>()
-                oauthswift.client.get("https://api.linkedin.com/v1/people/~", parameters: parameters,
+            var parameters =  Dictionary<String, AnyObject>()
+            oauthswift.client.get("https://api.linkedin.com/v1/people/~", parameters: parameters,
                     success: {
                         data, response in
                         let dataString = NSString(data: data, encoding: NSUTF8StringEncoding)
                         println(dataString)
                     }, failure: {(error:NSError!) -> Void in
-                        println(error)
-                })
-            }, failure: {(error:NSError!) -> Void in
-                println(error.localizedDescription)
+                println(error)
+            })
+        }, failure: {(error:NSError!) -> Void in
+            println(error.localizedDescription)
+        })
+    }
+
+    func doOAuthSmugmug(){
+        let oauthswift = OAuth1Swift(
+            consumerKey:    Smugmug["consumerKey"]!,
+            consumerSecret: Smugmug["consumerSecret"]!,
+            requestTokenUrl: "http://api.smugmug.com/services/oauth/getRequestToken.mg",
+            authorizeUrl:    "http://api.smugmug.com/services/oauth/authorize.mg",
+            accessTokenUrl:  "http://api.smugmug.com/services/oauth/getAccessToken.mg"
+        )
+        oauthswift.allowMissingOauthVerifier = true
+        // NOTE: Smugmug's callback URL is configured on their site and the one passed in is ignored.
+        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/smugmug")!, success: {
+            credential, response in
+            self.showAlertView("Smugmug", message: "oauth_token:\(credential.oauth_token)\n\noauth_toke_secret:\(credential.oauth_token_secret)")
+        }, failure: {(error:NSError!) -> Void in
+            println(error.localizedDescription)
         })
     }
 
@@ -299,6 +317,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 doOAuthDropbox()
             case "Dribbble":
                 doOAuthDribbble();
+            case "Smugmug":
+                doOAuthSmugmug()
             default:
                 println("default (check ViewController tableView)")
         }

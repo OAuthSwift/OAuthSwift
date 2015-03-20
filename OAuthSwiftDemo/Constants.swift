@@ -58,3 +58,8 @@ let Dribbble =
     "consumerKey": "***",
     "consumerSecret": "***"
 ]
+let Smugmug =
+[
+    "consumerKey": "***",
+    "consumerSecret": "***"
+]
