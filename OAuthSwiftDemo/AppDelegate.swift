@@ -54,12 +54,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIWebViewDelegate {
         println(url)
         if (url.host == "oauth-callback") {
             if (url.path!.hasPrefix("/twitter") || url.path!.hasPrefix("/flickr") || url.path!.hasPrefix("/fitbit")
-             || url.path!.hasPrefix("/withings") || url.path!.hasPrefix("/linkedin")) {
+             || url.path!.hasPrefix("/withings") || url.path!.hasPrefix("/linkedin") || url.path!.hasPrefix("/bitbucket") ) {
                 OAuth1Swift.handleOpenURL(url)
             }
-            if ( url.path!.hasPrefix("/github" ) || url.path!.hasPrefix("/instagram" ) || url.path!.hasPrefix("/foursquare") || url.path!.hasPrefix("/dropbox") || url.path!.hasPrefix("/dribbble") ) {
+            if ( url.path!.hasPrefix("/github" ) || url.path!.hasPrefix("/instagram" ) || url.path!.hasPrefix("/foursquare") || url.path!.hasPrefix("/dropbox") || url.path!.hasPrefix("/dribbble") || url.path!.hasPrefix("/salesforce") ) {
                 OAuth2Swift.handleOpenURL(url)
             }
+        } else {
+            // Google provider is the only one wuth your.bundle.id url schema.
+            OAuth2Swift.handleOpenURL(url)
         }
         return true
     }

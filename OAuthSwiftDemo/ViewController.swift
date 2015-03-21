@@ -11,7 +11,7 @@ import OAuthSwift
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
-    var services = ["Twitter", "Flickr", "Github", "Instagram", "Foursquare", "Fitbit", "Withings", "Linkedin", "Dropbox", "Dribbble"]
+    var services = ["Twitter", "Salesforce", "Flickr", "Github", "Instagram", "Foursquare", "Fitbit", "Withings", "Linkedin", "Dropbox", "Dribbble", "BitBucket", "GoogleDrive"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -105,6 +105,23 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             }, failure: {(error:NSError!) -> Void in
                 println(error.localizedDescription)
             })
+        
+    }
+    
+    func doOAuthSalesforce(){
+        let oauthswift = OAuth2Swift(
+            consumerKey:    Salesforce["consumerKey"]!,
+            consumerSecret: Salesforce["consumerSecret"]!,
+            authorizeUrl:   "https://login.salesforce.com/services/oauth2/authorize",
+            accessTokenUrl: "https://login.salesforce.com/services/oauth2/token",
+            responseType:   "code"
+        )
+        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/salesforce")!, scope: "full", state: "SALESFORCE", success: {
+            credential, response in
+            self.showAlertView("Salesforce", message: "oauth_token:\(credential.oauth_token)")
+            }, failure: {(error:NSError!) -> Void in
+                println(error.localizedDescription)
+        })
         
     }
 
@@ -260,6 +277,69 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         })
     }
 
+	func doOAuthBitBucket(){
+		let oauthswift = OAuth1Swift(
+			consumerKey:    BitBucket["consumerKey"]!,
+			consumerSecret: BitBucket["consumerSecret"]!,
+			requestTokenUrl: "https://bitbucket.org/api/1.0/oauth/request_token",
+			authorizeUrl:    "https://bitbucket.org/api/1.0/oauth/authenticate",
+			accessTokenUrl:  "https://bitbucket.org/api/1.0/oauth/access_token"
+		)
+		oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/bitbucket")!, success: {
+			credential, response in
+			self.showAlertView("BitBucket", message: "oauth_token:\(credential.oauth_token)\n\noauth_toke_secret:\(credential.oauth_token_secret)")
+			var parameters =  Dictionary<String, AnyObject>()
+			oauthswift.client.get("https://bitbucket.org/api/1.0/user", parameters: parameters,
+				success: {
+					data, response in
+					let dataString = NSString(data: data, encoding: NSUTF8StringEncoding)
+					println(dataString)
+				}, failure: {(error:NSError!) -> Void in
+					println(error)
+			})
+			}, failure: {(error:NSError!) -> Void in
+				println(error.localizedDescription)
+		})
+	}
+    
+    func doOAuthGoogle(){
+        let oauthswift = OAuth2Swift(
+            consumerKey:    GoogleDrive["consumerKey"]!,
+            consumerSecret: GoogleDrive["consumerSecret"]!,
+            authorizeUrl:   "https://accounts.google.com/o/oauth2/auth",
+            accessTokenUrl: "https://accounts.google.com/o/oauth2/token",
+            responseType:   "code"
+        )
+        // For googgle the redirect_uri should match your this syntax: your.bundle.id:/oauth2Callback
+        // in plist define a url schem with: your.bundle.id:
+        oauthswift.authorizeWithCallbackURL( NSURL(string: "your.bundle.id:/oauth2Callback")!, scope: "https://www.googleapis.com/auth/drive", state: "", success: {
+            credential, response in
+            
+            var parameters =  Dictionary<String, AnyObject>()
+            // Multi-part upload
+            oauthswift.client.postImage("https://www.googleapis.com/upload/drive/v2/files", parameters: parameters, image: self.snapshot(),
+                success: {
+                    data, response in
+                    let jsonDict: AnyObject! = NSJSONSerialization.JSONObjectWithData(data, options: nil, error: nil)
+                    println("SUCCESS: \(jsonDict)")
+                }, failure: {(error:NSError!) -> Void in
+                    println(error)
+            })
+            
+            }, failure: {(error:NSError!) -> Void in
+                println("ERROR: \(error.localizedDescription)")
+        })
+    }
+    
+    func snapshot() -> NSData {
+        UIGraphicsBeginImageContext(self.view.frame.size)
+        self.view.layer.renderInContext(UIGraphicsGetCurrentContext())
+        let fullScreenshot = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        UIImageWriteToSavedPhotosAlbum(fullScreenshot, nil, nil, nil)
+        return  UIImageJPEGRepresentation(fullScreenshot, 0.5)
+    }
+
     func showAlertView(title: String, message: String) {
         var alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.Alert)
         alert.addAction(UIAlertAction(title: "Close", style: UIAlertActionStyle.Default, handler: nil))
@@ -281,6 +361,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         switch service {
             case "Twitter":
                 doOAuthTwitter()
+            case "Salesforce":
+                doOAuthSalesforce()
             case "Flickr":
                 doOAuthFlickr()
             case "Github":
@@ -298,7 +380,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             case "Dropbox":
                 doOAuthDropbox()
             case "Dribbble":
-                doOAuthDribbble();
+                doOAuthDribbble()
+            case "BitBucket":
+                doOAuthBitBucket()
+            case "GoogleDrive":
+                doOAuthGoogle()
             default:
                 println("default (check ViewController tableView)")
         }

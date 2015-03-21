@@ -8,7 +8,7 @@ Swift based OAuth library for iOS
 
 ### Support OAuth1.0, OAuth2.0
 
-Twitter, Flickr, Github, Instagram, Foursquare. Fitbit, Withings, Linkedin, Dropbox, Dribbble etc
+Twitter, Flickr, Github, Instagram, Foursquare. Fitbit, Withings, Linkedin, Dropbox, Dribbble, Salesforce etc
 
 ### Installation
 
@@ -97,7 +97,8 @@ oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback
 * [Linkedin](https://developer.linkedin.com/documents/authentication)  
 * [Dropbox](https://www.dropbox.com/developers/core/docs)  
 * [Dribbble](http://developer.dribbble.com/v1/oauth/)
-
+* [Salesforce](https://www.salesforce.com/us/developer/docs/api_rest/)
+* [GoogleDrive](https://developers.google.com/drive/v2/reference/)
 
 ### Images
 

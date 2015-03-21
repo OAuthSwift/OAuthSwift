@@ -13,6 +13,11 @@ let Twitter =
     "consumerKey": "***",
     "consumerSecret": "***"
 ]
+let Salesforce =
+[
+    "consumerKey": "***",
+    "consumerSecret": "***"
+]
 let Flickr =
 [
     "consumerKey": "***",
@@ -54,6 +59,16 @@ let Dropbox =
     "consumerSecret": "***"
 ]
 let Dribbble =
+[
+    "consumerKey": "***",
+    "consumerSecret": "***"
+]
+let BitBucket =
+[
+	"consumerKey": "***",
+	"consumerSecret": "***"
+]
+let GoogleDrive =
 [
     "consumerKey": "***",
     "consumerSecret": "***"
