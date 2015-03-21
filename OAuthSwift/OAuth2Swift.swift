@@ -125,6 +125,7 @@ public class OAuth2Swift: NSObject {
                 accessToken = parameters["access_token"]!
             }
             self.client.credential.oauth_token = accessToken
+            self.client.credential.oauth2 = true
             success(credential: self.client.credential, response: response)
         }, failure: failure)
     }

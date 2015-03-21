@@ -98,6 +98,7 @@ oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback
 * [Dropbox](https://www.dropbox.com/developers/core/docs)  
 * [Dribbble](http://developer.dribbble.com/v1/oauth/)
 * [Salesforce](https://www.salesforce.com/us/developer/docs/api_rest/)
+* [GoogleDrive](https://developers.google.com/drive/v2/reference/)
 
 ### Images
 

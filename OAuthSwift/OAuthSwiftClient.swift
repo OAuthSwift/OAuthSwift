@@ -65,6 +65,79 @@ public class OAuthSwiftClient {
         request.start()
 
     }
+    
+    public func postImage(urlString: String, parameters: Dictionary<String, AnyObject>, image: NSData, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
+        self.multiPartRequest(urlString, method: "POST", parameters: parameters, image: image, success: success, failure: failure)
+    }
+    
+    func multiPartRequest(url: String, method: String, parameters: Dictionary<String, AnyObject>, image: NSData, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
+        
+        
+        let url = NSURL(string: url)
+        
+        var request = OAuthSwiftHTTPRequest(URL: url!, method: method, parameters: parameters)
+        if self.credential.oauth2 {
+            request.headers = ["Authorization": "Bearer \(self.credential.oauth_token)"]
+        } else {
+            request.headers = ["Authorization": OAuthSwiftClient.authorizationHeaderForMethod(method, url: url!, parameters: parameters, credential: self.credential)]
+        }
+        request.successHandler = success
+        request.failureHandler = failure
+        request.dataEncoding = dataEncoding
+        request.encodeParameters = true
+        
+        
+        var parmaImage = [String: AnyObject]()
+        parmaImage["media"] = image
+        let boundary = "AS-boundary-\(arc4random())-\(arc4random())"
+        var type = "multipart/form-data; boundary=\(boundary)"
+        var body = self.multiPartBodyFromParams(parmaImage, boundary: boundary)
+        
+        request.HTTPBodyMultipart = body
+        request.contentTypeMultipart = type
+        request.start()
+        
+    }
+    
+    public func multiPartBodyFromParams(parameters: [String: AnyObject], boundary: String) -> NSData {
+        var data = NSMutableData()
+        
+        let prefixData = "--\(boundary)\r\n".dataUsingEncoding(NSUTF8StringEncoding)
+        let seperData = "\r\n".dataUsingEncoding(NSUTF8StringEncoding)
+        
+        for (key, value) in parameters {
+            var sectionData: NSData?
+            var sectionType: String?
+            var sectionFilename = ""
+            
+            if key == "media" {
+                let multiData = value as! NSData
+                sectionData = multiData
+                sectionType = "image/jpeg"
+                sectionFilename = " filename=\"file\""
+            } else {
+                sectionData = "\(value)".dataUsingEncoding(NSUTF8StringEncoding)
+            }
+            
+            data.appendData(prefixData!)
+            
+            let sectionDisposition = "Content-Disposition: form-data; name=\"media\";\(sectionFilename)\r\n".dataUsingEncoding(NSUTF8StringEncoding)
+            data.appendData(sectionDisposition!)
+            
+            if let type = sectionType {
+                let contentType = "Content-Type: \(type)\r\n".dataUsingEncoding(NSUTF8StringEncoding)
+                data.appendData(contentType!)
+            }
+            
+            // append data
+            data.appendData(seperData!)
+            data.appendData(sectionData!)
+            data.appendData(seperData!)
+        }
+        
+        data.appendData("--\(boundary)--\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+        return data
+    }
 
     public class func authorizationHeaderForMethod(method: String, url: NSURL, parameters: Dictionary<String, AnyObject>, credential: OAuthSwiftCredential) -> String {
         var authorizationParameters = Dictionary<String, AnyObject>()

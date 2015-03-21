@@ -11,7 +11,7 @@ import OAuthSwift
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
-    var services = ["Twitter", "Salesforce", "Flickr", "Github", "Instagram", "Foursquare", "Fitbit", "Withings", "Linkedin", "Dropbox", "Dribbble", "BitBucket"]
+    var services = ["Twitter", "Salesforce", "Flickr", "Github", "Instagram", "Foursquare", "Fitbit", "Withings", "Linkedin", "Dropbox", "Dribbble", "BitBucket", "GoogleDrive"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -301,6 +301,44 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 				println(error.localizedDescription)
 		})
 	}
+    
+    func doOAuthGoogle(){
+        let oauthswift = OAuth2Swift(
+            consumerKey:    GoogleDrive["consumerKey"]!,
+            consumerSecret: GoogleDrive["consumerSecret"]!,
+            authorizeUrl:   "https://accounts.google.com/o/oauth2/auth",
+            accessTokenUrl: "https://accounts.google.com/o/oauth2/token",
+            responseType:   "code"
+        )
+        // For googgle the redirect_uri should match your this syntax: your.bundle.id:/oauth2Callback
+        // in plist define a url schem with: your.bundle.id:
+        oauthswift.authorizeWithCallbackURL( NSURL(string: "your.bundle.id:/oauth2Callback")!, scope: "https://www.googleapis.com/auth/drive", state: "", success: {
+            credential, response in
+            
+            var parameters =  Dictionary<String, AnyObject>()
+            // Multi-part upload
+            oauthswift.client.postImage("https://www.googleapis.com/upload/drive/v2/files", parameters: parameters, image: self.snapshot(),
+                success: {
+                    data, response in
+                    let jsonDict: AnyObject! = NSJSONSerialization.JSONObjectWithData(data, options: nil, error: nil)
+                    println("SUCCESS: \(jsonDict)")
+                }, failure: {(error:NSError!) -> Void in
+                    println(error)
+            })
+            
+            }, failure: {(error:NSError!) -> Void in
+                println("ERROR: \(error.localizedDescription)")
+        })
+    }
+    
+    func snapshot() -> NSData {
+        UIGraphicsBeginImageContext(self.view.frame.size)
+        self.view.layer.renderInContext(UIGraphicsGetCurrentContext())
+        let fullScreenshot = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        UIImageWriteToSavedPhotosAlbum(fullScreenshot, nil, nil, nil)
+        return  UIImageJPEGRepresentation(fullScreenshot, 0.5)
+    }
 
     func showAlertView(title: String, message: String) {
         var alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.Alert)
@@ -345,6 +383,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 doOAuthDribbble()
             case "BitBucket":
                 doOAuthBitBucket()
+            case "GoogleDrive":
+                doOAuthGoogle()
             default:
                 println("default (check ViewController tableView)")
         }
