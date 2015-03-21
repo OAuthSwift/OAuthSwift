@@ -11,7 +11,7 @@ import OAuthSwift
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
-    var services = ["Twitter", "Salesforce", "Flickr", "Github", "Instagram", "Foursquare", "Fitbit", "Withings", "Linkedin", "Dropbox", "Dribbble", "BitBucket", "GoogleDrive", "Smugmug"]
+    var services = ["Twitter", "Flickr", "Github", "Instagram", "Foursquare", "Fitbit", "Withings", "Linkedin", "Dropbox", "Dribbble", "Salesforce", "BitBucket", "GoogleDrive", "Smugmug"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,7 +35,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             accessTokenUrl:  "https://api.twitter.com/oauth/access_token"
         )
         
-        oauthswift.webViewController = WebViewController()
+        //oauthswift.webViewController = WebViewController()
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/twitter")!, success: {
             credential, response in
             self.showAlertView("Twitter", message: "auth_token:\(credential.oauth_token)\n\noauth_toke_secret:\(credential.oauth_token_secret)")
@@ -332,7 +332,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         // in plist define a url schem with: your.bundle.id:
         oauthswift.authorizeWithCallbackURL( NSURL(string: "https://oauthswift.herokuapp.com/google")!, scope: "https://www.googleapis.com/auth/drive", state: "", success: {
             credential, response in
-            
+            self.showAlertView("Github", message: "oauth_token:\(credential.oauth_token)")
             var parameters =  Dictionary<String, AnyObject>()
             // Multi-part upload
             oauthswift.client.postImage("https://www.googleapis.com/upload/drive/v2/files", parameters: parameters, image: self.snapshot(),
@@ -379,8 +379,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         switch service {
             case "Twitter":
                 doOAuthTwitter()
-            case "Salesforce":
-                doOAuthSalesforce()
             case "Flickr":
                 doOAuthFlickr()
             case "Github":
@@ -399,6 +397,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 doOAuthDropbox()
             case "Dribbble":
                 doOAuthDribbble()
+            case "Salesforce":
+                doOAuthSalesforce()
             case "BitBucket":
                 doOAuthBitBucket()
             case "GoogleDrive":
