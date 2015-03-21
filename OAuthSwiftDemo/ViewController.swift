@@ -172,7 +172,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             consumerKey:    Fitbit["consumerKey"]!,
             consumerSecret: Fitbit["consumerSecret"]!,
             requestTokenUrl: "https://api.fitbit.com/oauth/request_token",
-            authorizeUrl:    "https://www.fitbit.com/oauth/authorize",
+            authorizeUrl:    "https://www.fitbit.com/oauth/authorize?display=touch",
             accessTokenUrl:  "https://api.fitbit.com/oauth/access_token"
         )
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/fitbit")!, success: {
