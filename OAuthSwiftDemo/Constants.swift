@@ -65,10 +65,15 @@ let Dribbble =
 ]
 let BitBucket =
 [
-	"consumerKey": "***",
-	"consumerSecret": "***"
+    "consumerKey": "***",
+    "consumerSecret": "***"
 ]
 let GoogleDrive =
+[
+    "consumerKey": "***",
+    "consumerSecret": "***"
+]
+let Smugmug =
 [
     "consumerKey": "***",
     "consumerSecret": "***"

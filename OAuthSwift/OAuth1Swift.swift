@@ -18,6 +18,8 @@ public class OAuth1Swift: NSObject {
 
     public var webViewController: UIViewController?
 
+    public var allowMissingOauthVerifier: Bool = false
+
     var consumer_key: String
     var consumer_secret: String
     var request_token_url: String
@@ -59,10 +61,12 @@ public class OAuth1Swift: NSObject {
                 NSNotificationCenter.defaultCenter().removeObserver(self.observer!)
                 let url = notification.userInfo![CallbackNotification.optionsURLKey] as! NSURL
                 let parameters = url.query!.parametersFromQueryString()
-                if (parameters["oauth_token"] != nil && parameters["oauth_verifier"] != nil) {
+                if (parameters["oauth_token"] != nil && (self.allowMissingOauthVerifier || parameters["oauth_verifier"] != nil)) {
                     var credential: OAuthSwiftCredential = self.client.credential
                     self.client.credential.oauth_token = parameters["oauth_token"]!
-                    self.client.credential.oauth_verifier = parameters["oauth_verifier"]!
+                    if (parameters["oauth_verifier"] != nil) {
+                        self.client.credential.oauth_verifier = parameters["oauth_verifier"]!
+                    }
                     self.postOAuthAccessTokenWithRequestToken({
                         credential, response in
                         success(credential: credential, response: response)
