@@ -74,7 +74,7 @@ public class OAuth1Swift: NSObject {
                 }
             })
             // 2. Authorize
-            let queryURL = NSURL(string: self.authorize_url + "?oauth_token=\(credential.oauth_token)")
+            let queryURL = NSURL(string: self.authorize_url + (self.authorize_url.has("?") ? "&" : "?") + "oauth_token=\(credential.oauth_token)")
             if ( self.webViewController != nil ) {
                 if let webView = self.webViewController as? WebViewProtocol {
                     webView.setUrl(queryURL!)

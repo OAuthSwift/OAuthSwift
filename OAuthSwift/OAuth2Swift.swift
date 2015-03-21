@@ -79,7 +79,7 @@ public class OAuth2Swift: NSObject {
         //let authorizeURL = NSURL(string: )
         var urlString = String()
         urlString += self.authorize_url
-        urlString += "?client_id=\(self.consumer_key)"
+        urlString += (self.authorize_url.has("?") ? "&" : "?") + "client_id=\(self.consumer_key)"
         urlString += "&redirect_uri=\(callbackURL.absoluteString!)"
         urlString += "&response_type=\(self.response_type)"
         if (scope != "") {
