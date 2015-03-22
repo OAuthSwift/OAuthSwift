@@ -330,7 +330,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         )
         // For googgle the redirect_uri should match your this syntax: your.bundle.id:/oauth2Callback
         // in plist define a url schem with: your.bundle.id:
-        oauthswift.authorizeWithCallbackURL( NSURL(string: "https://oauthswift.herokuapp.com/google")!, scope: "https://www.googleapis.com/auth/drive", state: "", success: {
+        oauthswift.authorizeWithCallbackURL( NSURL(string: "https://oauthswift.herokuapp.com/callback/google")!, scope: "https://www.googleapis.com/auth/drive", state: "", success: {
             credential, response in
             self.showAlertView("Github", message: "oauth_token:\(credential.oauth_token)")
             var parameters =  Dictionary<String, AnyObject>()
