@@ -78,3 +78,8 @@ let Smugmug =
     "consumerKey": "***",
     "consumerSecret": "***"
 ]
+let Intuit =
+[
+    "consumerKey": "***",
+    "consumerSecret": "***"
+]

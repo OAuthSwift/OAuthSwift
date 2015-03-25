@@ -11,7 +11,7 @@ import OAuthSwift
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
-    var services = ["Twitter", "Flickr", "Github", "Instagram", "Foursquare", "Fitbit", "Withings", "Linkedin", "Dropbox", "Dribbble", "Salesforce", "BitBucket", "GoogleDrive", "Smugmug"]
+    var services = ["Twitter", "Flickr", "Github", "Instagram", "Foursquare", "Fitbit", "Withings", "Linkedin", "Dropbox", "Dribbble", "Salesforce", "BitBucket", "GoogleDrive", "Smugmug", "Intuit"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -348,7 +348,23 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 println("ERROR: \(error.localizedDescription)")
         })
     }
-    
+
+    func doOAuthIntuit(){
+        let oauthswift = OAuth1Swift(
+            consumerKey:    Intuit["consumerKey"]!,
+            consumerSecret: Intuit["consumerSecret"]!,
+            requestTokenUrl: "https://oauth.intuit.com/oauth/v1/get_request_token",
+            authorizeUrl:    "https://appcenter.intuit.com/Connect/Begin",
+            accessTokenUrl:  "https://oauth.intuit.com/oauth/v1/get_access_token"
+        )
+        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/intuit")!, success: {
+            credential, response in
+            self.showAlertView("Intuit", message: "oauth_token:\(credential.oauth_token)\n\noauth_toke_secret:\(credential.oauth_token_secret)")
+            }, failure: {(error:NSError!) -> Void in
+                println(error.localizedDescription)
+        })
+    }
+
     func snapshot() -> NSData {
         UIGraphicsBeginImageContext(self.view.frame.size)
         self.view.layer.renderInContext(UIGraphicsGetCurrentContext())
@@ -405,6 +421,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 doOAuthGoogle()
             case "Smugmug":
                 doOAuthSmugmug()
+            case "Intuit":
+                doOAuthIntuit();
             default:
                 println("default (check ViewController tableView)")
         }
