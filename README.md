@@ -33,7 +33,7 @@ github "dongri/OAuthSwift" ~> 0.3.3
 
 * Podfile
 ```
-platform :ios, '7.0'
+platform :ios, '8.0'
 pod "OAuthSwift", "~> 0.3.3"
 ```
 
