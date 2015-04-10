@@ -8,6 +8,7 @@ Pod::Spec.new do |s|
   s.authors = { 'Dongri Jin' => 'dongriat@gmail.com' }
   s.source = { :git => 'https://github.com/dongri/OAuthSwift.git', :tag => s.version }
   s.source_files = 'OAuthSwift/*.swift'
+  s.platform = :ios, '8.0'
   s.requires_arc = false
 end
 
