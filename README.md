@@ -34,6 +34,8 @@ github "dongri/OAuthSwift" ~> 0.3.3
 * Podfile
 ```
 platform :ios, '8.0'
+use_frameworks!
+
 pod "OAuthSwift", "~> 0.3.3"
 ```
 
