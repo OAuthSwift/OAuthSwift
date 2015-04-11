@@ -59,7 +59,7 @@ public class OAuth1Swift: NSObject {
                 notification in
                 //NSNotificationCenter.defaultCenter().removeObserver(self)
                 NSNotificationCenter.defaultCenter().removeObserver(self.observer!)
-                let url = notification.userInfo![CallbackNotification.optionsURLKey] as! NSURL!
+                let url = notification.userInfo![CallbackNotification.optionsURLKey] as! NSURL
                 let parameters = url.query!.parametersFromQueryString()
                 if (parameters["oauth_token"] != nil && (self.allowMissingOauthVerifier || parameters["oauth_verifier"] != nil)) {
                     var credential: OAuthSwiftCredential = self.client.credential
