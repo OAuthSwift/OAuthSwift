@@ -111,7 +111,7 @@ public class OAuthSwiftClient {
             var sectionFilename = ""
             
             if key == "media" {
-                let multiData = value as NSData
+                let multiData = value as! NSData
                 sectionData = multiData
                 sectionType = "image/jpeg"
                 sectionFilename = " filename=\"file\""

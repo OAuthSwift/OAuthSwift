@@ -129,6 +129,6 @@ class SHA1 {
             buf.appendBytes(&i, length: sizeofValue(i))
         })
         
-        return buf.copy() as NSData;
+        return buf.copy() as! NSData;
     }
 }

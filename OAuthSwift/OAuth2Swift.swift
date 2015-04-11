@@ -55,7 +55,7 @@ public class OAuth2Swift: NSObject {
         self.observer = NSNotificationCenter.defaultCenter().addObserverForName(CallbackNotification.notificationName, object: nil, queue: NSOperationQueue.mainQueue(), usingBlock:{
             notification in
             NSNotificationCenter.defaultCenter().removeObserver(self.observer!)
-            let url = notification.userInfo![CallbackNotification.optionsURLKey] as NSURL!
+            let url = notification.userInfo![CallbackNotification.optionsURLKey] as! NSURL!
             var parameters: Dictionary<String, String> = Dictionary()
             if ((url.query) != nil){
                 parameters = url.query!.parametersFromQueryString()
@@ -118,7 +118,7 @@ public class OAuth2Swift: NSObject {
             var responseJSON: AnyObject? = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers, error: nil)
             var accessToken = ""
             if let parameters:NSDictionary = responseJSON as? NSDictionary{
-                accessToken = parameters["access_token"] as String!
+                accessToken = parameters["access_token"] as! String!
             } else {
                 let responseString = NSString(data: data, encoding: NSUTF8StringEncoding) as String!
                 let parameters = responseString.parametersFromQueryString()
