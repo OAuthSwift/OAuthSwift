@@ -11,7 +11,7 @@ import OAuthSwift
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
-    var services = ["Twitter", "Flickr", "Github", "Instagram", "Foursquare", "Fitbit", "Withings", "Linkedin", "Dropbox", "Dribbble", "Salesforce", "BitBucket", "GoogleDrive", "Smugmug", "Intuit"]
+    var services = ["Twitter", "Flickr", "Github", "Instagram", "Foursquare", "Fitbit", "Withings", "Linkedin", "Linkedin2", "Dropbox", "Dribbble", "Salesforce", "BitBucket", "GoogleDrive", "Smugmug", "Intuit"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -224,6 +224,31 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         })
     }
 
+    func doOAuthLinkedin2(){
+        let oauthswift = OAuth2Swift(
+            consumerKey:    Linkedin2["consumerKey"]!,
+            consumerSecret: Linkedin2["consumerSecret"]!,
+            authorizeUrl:   "https://www.linkedin.com/uas/oauth2/authorization",
+            accessTokenUrl: "https://www.linkedin.com/uas/oauth2/accessToken",
+            responseType:   "code"
+        )
+        oauthswift.authorizeWithCallbackURL( NSURL(string: "http://oauthswift.herokuapp.com/callback/linkedin2")!, scope: "r_fullprofile", state: "DCEeFWf45A53sdfKef424-fjdasjfkdl;ajfkdl;sajkLINKEDIN",success: {
+            credential, response in
+            self.showAlertView("Linkedin2", message: "oauth_token:\(credential.oauth_token)")
+            var parameters =  Dictionary<String, AnyObject>()
+            oauthswift.client.get("https://api.linkedin.com/v1/people/~?format=json", parameters: parameters,
+                success: {
+                    data, response in
+                    let dataString = NSString(data: data, encoding: NSUTF8StringEncoding)
+                    println(dataString)
+                }, failure: {(error:NSError!) -> Void in
+                    println(error)
+            })
+            }, failure: {(error:NSError!) -> Void in
+                println(error.localizedDescription)
+        })
+    }
+
     func doOAuthSmugmug(){
         let oauthswift = OAuth1Swift(
             consumerKey:    Smugmug["consumerKey"]!,
@@ -409,6 +434,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 doOAuthWithings()
             case "Linkedin":
                 doOAuthLinkedin()
+            case "Linkedin2":
+                doOAuthLinkedin2()
             case "Dropbox":
                 doOAuthDropbox()
             case "Dribbble":

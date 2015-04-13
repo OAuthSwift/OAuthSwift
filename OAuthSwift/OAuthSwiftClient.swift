@@ -28,7 +28,6 @@ public class OAuthSwiftClient {
         self.credential = OAuthSwiftCredential(oauth_token: accessToken, oauth_token_secret: accessTokenSecret)
         self.credential.consumer_key = consumerKey
         self.credential.consumer_secret = consumerSecret
-        
     }
     
     public func get(urlString: String, parameters: Dictionary<String, AnyObject>, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
@@ -56,7 +55,11 @@ public class OAuthSwiftClient {
         let url = NSURL(string: url)
         
         let request = OAuthSwiftHTTPRequest(URL: url!, method: method, parameters: parameters)
-        request.headers = ["Authorization": OAuthSwiftClient.authorizationHeaderForMethod(method, url: url!, parameters: parameters, credential: self.credential)]
+        if self.credential.oauth2 {
+            request.headers = ["Authorization": "Bearer \(self.credential.oauth_token)"]
+        } else {
+            request.headers = ["Authorization": OAuthSwiftClient.authorizationHeaderForMethod(method, url: url!, parameters: parameters, credential: self.credential)]
+        }
         
         request.successHandler = success
         request.failureHandler = failure

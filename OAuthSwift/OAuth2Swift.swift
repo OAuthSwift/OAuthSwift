@@ -34,7 +34,6 @@ public class OAuth2Swift: NSObject {
         self.authorize_url = authorizeUrl
         self.response_type = responseType
         self.client = OAuthSwiftClient(consumerKey: consumerKey, consumerSecret: consumerSecret)
-        self.client.credential = OAuthSwiftCredential()
     }
     
     struct CallbackNotification {
