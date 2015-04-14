@@ -37,3 +37,14 @@ func reverseBytes(value: UInt32) -> UInt32 {
     var tmp2 = ((value & 0x00FF0000) >> 8)  | ((value & 0xFF000000) >> 24)
     return tmp1 | tmp2
 }
+
+public func generateStateWithLength (len : Int) -> NSString {
+    let letters : NSString = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+    var randomString : NSMutableString = NSMutableString(capacity: len)
+    for (var i=0; i < len; i++){
+        var length = UInt32 (letters.length)
+        var rand = arc4random_uniform(length)
+        randomString.appendFormat("%C", letters.characterAtIndex(Int(rand)))
+    }
+    return randomString
+}

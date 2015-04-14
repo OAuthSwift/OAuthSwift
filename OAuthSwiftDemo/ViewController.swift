@@ -99,7 +99,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             accessTokenUrl: "https://github.com/login/oauth/access_token",
             responseType:   "code"
         )
-        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/github")!, scope: "user,repo", state: "GITHUB", success: {
+        let state: String = generateStateWithLength(20) as String
+        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/github")!, scope: "user,repo", state: state, success: {
             credential, response in
             self.showAlertView("Github", message: "oauth_token:\(credential.oauth_token)")
             }, failure: {(error:NSError!) -> Void in
@@ -116,7 +117,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             accessTokenUrl: "https://login.salesforce.com/services/oauth2/token",
             responseType:   "code"
         )
-        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/salesforce")!, scope: "full", state: "SALESFORCE", success: {
+        let state: String = generateStateWithLength(20) as String
+        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/salesforce")!, scope: "full", state: state, success: {
             credential, response in
             self.showAlertView("Salesforce", message: "oauth_token:\(credential.oauth_token)")
             }, failure: {(error:NSError!) -> Void in
@@ -133,8 +135,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             responseType:   "token"
         )
 
+        let state: String = generateStateWithLength(20) as String
         oauthswift.webViewController = WebViewController()
-        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/instagram")!, scope: "likes+comments", state:"INSTAGRAM", success: {
+        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/instagram")!, scope: "likes+comments", state:state, success: {
             credential, response in
             self.showAlertView("Instagram", message: "oauth_token:\(credential.oauth_token)")
             let url :String = "https://api.instagram.com/v1/users/1574083/?access_token=\(credential.oauth_token)"
@@ -232,7 +235,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             accessTokenUrl: "https://www.linkedin.com/uas/oauth2/accessToken",
             responseType:   "code"
         )
-        oauthswift.authorizeWithCallbackURL( NSURL(string: "http://oauthswift.herokuapp.com/callback/linkedin2")!, scope: "r_fullprofile", state: "DCEeFWf45A53sdfKef424-fjdasjfkdl;ajfkdl;sajkLINKEDIN",success: {
+        let state: String = generateStateWithLength(20) as String
+        oauthswift.authorizeWithCallbackURL( NSURL(string: "http://oauthswift.herokuapp.com/callback/linkedin2")!, scope: "r_fullprofile", state: state, success: {
             credential, response in
             self.showAlertView("Linkedin2", message: "oauth_token:\(credential.oauth_token)")
             var parameters =  Dictionary<String, AnyObject>()
