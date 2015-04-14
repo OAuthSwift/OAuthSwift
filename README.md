@@ -24,7 +24,7 @@ OAuthSwift is packaged as a Swift framework. Currently this is the simplest way 
 * Install Carthage (https://github.com/Carthage/Carthage)
 * Create Cartfile file
 ```
-github "dongri/OAuthSwift" ~> 0.3.3
+github "dongri/OAuthSwift" ~> 0.3.4
 ```
 * Run `carthage update`.
 * On your application targets’ “General” settings tab, in the “Embedded Binaries” section, drag and drop OAuthSwift.framework from the Carthage/Build/iOS folder on disk.
@@ -36,7 +36,7 @@ github "dongri/OAuthSwift" ~> 0.3.3
 platform :ios, '8.0'
 use_frameworks!
 
-pod "OAuthSwift", "~> 0.3.3"
+pod "OAuthSwift", "~> 0.3.4"
 ```
 
 ### Setting URL Schemes
