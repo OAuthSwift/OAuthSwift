@@ -59,7 +59,7 @@ public class OAuth2Swift: NSObject {
             if ((url.query) != nil){
                 parameters = url.query!.parametersFromQueryString()
             }
-            if ((url.fragment) != nil){
+            if ((url.fragment) != nil && url.fragment!.isEmpty == false) {
                 parameters = url.fragment!.parametersFromQueryString()
             }
             if (parameters["access_token"] != nil){
