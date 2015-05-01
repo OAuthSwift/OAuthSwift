@@ -119,7 +119,7 @@ public class OAuth2Swift: NSObject {
             if let parameters:NSDictionary = responseJSON as? NSDictionary{
                 accessToken = parameters["access_token"] as! String
             } else {
-                let responseString = NSString(data: data, encoding: NSUTF8StringEncoding) as! String
+                let responseString = NSString(data: data, encoding: NSUTF8StringEncoding) as String!
                 let parameters = responseString.parametersFromQueryString()
                 accessToken = parameters["access_token"]!
             }

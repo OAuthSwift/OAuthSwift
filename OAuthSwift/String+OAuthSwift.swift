@@ -107,11 +107,11 @@ extension String {
     }
     //统计长度
     func length()->Int{
-        return count(self)
+        return count(self.utf16)
     }
     //统计长度(别名)
     func size()->Int{
-        return count(self)
+        return count(self.utf16)
     }
     //重复字符串
     func repeat(times: Int) -> String{
