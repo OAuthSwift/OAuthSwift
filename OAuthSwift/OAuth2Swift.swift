@@ -7,14 +7,12 @@
 //
 
 import Foundation
-import UIKit
 
 public class OAuth2Swift: NSObject {
 
     public var client: OAuthSwiftClient
 
-    public var webViewController: UIViewController?
-
+    public var authorize_url_handler: OAuthSwiftURLHandlerType = OAuthSwiftOpenURLExternally.sharedInstance
 
     var consumer_key: String
     var consumer_secret: String
@@ -92,15 +90,8 @@ public class OAuth2Swift: NSObject {
             urlString += "&\(param.0)=\(param.1)"
         }
 
-        let queryURL = NSURL(string: urlString)
-        if ( self.webViewController != nil ) {
-            if let webView = self.webViewController as? WebViewProtocol {
-                webView.setUrl(queryURL!)
-                UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(
-                    self.webViewController!, animated: true, completion: nil)
-            }
-        } else {
-            UIApplication.sharedApplication().openURL(queryURL!)
+        if let queryURL = NSURL(string: urlString) {
+           self.authorize_url_handler.handle(queryURL)
         }
     }
     

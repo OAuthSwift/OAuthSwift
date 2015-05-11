@@ -8,8 +8,6 @@
 
 import Foundation
 
-import UIKit
-
 public class OAuthSwiftHTTPRequest: NSObject, NSURLConnectionDataDelegate {
     
     public typealias SuccessHandler = (data: NSData, response: NSHTTPURLResponse) -> Void
