@@ -54,7 +54,8 @@ extension WebViewController: WKNavigationDelegate {
     func webView(webView: WKWebView, decidePolicyForNavigationAction navigationAction: WKNavigationAction, decisionHandler: (WKNavigationActionPolicy) -> Void) {
         
         if let url = navigationAction.request.URL where url.scheme == "oauth-swift" {
-            AppDelegate.sharedInstance.applicationHandleOpenURL(url)
+            //AppDelegate.sharedInstance.applicationHandleOpenURL(url) // if common code
+            OAuthSwift.handleOpenURL(url)
             decisionHandler(.Cancel)
             
             self.dismissWebViewController()
