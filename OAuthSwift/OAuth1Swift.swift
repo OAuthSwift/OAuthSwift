@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import UIKit
 
 // OAuthSwift errors
 public let OAuthSwiftErrorDomain = "oauthswift.error"
@@ -16,7 +15,7 @@ public class OAuth1Swift: NSObject {
 
     public var client: OAuthSwiftClient
 
-    public var webViewController: UIViewController?
+    public var authorize_url_handler: OAuthSwiftURLHandlerType = OAuthSwiftOpenURLExternally.sharedInstance
 
     public var allowMissingOauthVerifier: Bool = false
 
@@ -60,7 +59,16 @@ public class OAuth1Swift: NSObject {
                 //NSNotificationCenter.defaultCenter().removeObserver(self)
                 NSNotificationCenter.defaultCenter().removeObserver(self.observer!)
                 let url = notification.userInfo![CallbackNotification.optionsURLKey] as! NSURL
-                let parameters = url.query!.parametersFromQueryString()
+                var parameters: Dictionary<String, String> = Dictionary()
+                if ((url.query) != nil){
+                    parameters = url.query!.parametersFromQueryString()
+                }
+                if ((url.fragment) != nil && url.fragment!.isEmpty == false) {
+                    parameters = url.fragment!.parametersFromQueryString()
+                }
+                if let token = parameters["token"] {
+                    parameters["oauth_token"] = token
+                }
                 if (parameters["oauth_token"] != nil && (self.allowMissingOauthVerifier || parameters["oauth_verifier"] != nil)) {
                     var credential: OAuthSwiftCredential = self.client.credential
                     self.client.credential.oauth_token = parameters["oauth_token"]!
@@ -78,15 +86,8 @@ public class OAuth1Swift: NSObject {
                 }
             })
             // 2. Authorize
-            let queryURL = NSURL(string: self.authorize_url + (self.authorize_url.has("?") ? "&" : "?") + "oauth_token=\(credential.oauth_token)")
-            if ( self.webViewController != nil ) {
-                if let webView = self.webViewController as? WebViewProtocol {
-                    webView.setUrl(queryURL!)
-                    UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(
-                        self.webViewController!, animated: true, completion: nil)
-                }
-            } else {
-                UIApplication.sharedApplication().openURL(queryURL!)
+            if let queryURL = NSURL(string: self.authorize_url + (self.authorize_url.has("?") ? "&" : "?") + "key=\(self.consumer_key)&oauth_callback=\(callbackURL.absoluteString!)") {
+                self.authorize_url_handler.handle(queryURL)
             }
         }, failure: failure)
     }
