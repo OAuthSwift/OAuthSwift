@@ -23,13 +23,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Insert code here to tear down your application
     }
 
-    private func handleGetURLEvent(event: NSAppleEventDescriptor, withReplyEvent replyEvent: NSAppleEventDescriptor)
-    {
+    func handleGetURLEvent(event: NSAppleEventDescriptor!, withReplyEvent: NSAppleEventDescriptor!) {
         if let urlString = event.paramDescriptorForKeyword(AEKeyword(keyDirectObject))?.stringValue, url = NSURL(string: urlString) {
             applicationHandleOpenURL(url)
         }
     }
-    
+
     internal func applicationHandleOpenURL(url: NSURL) {
         println(url)
         if (url.host == "oauth-callback") {
