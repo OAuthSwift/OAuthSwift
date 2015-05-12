@@ -4,7 +4,7 @@
 
 ## OAuthSwift
 
-Swift based OAuth library for iOS
+Swift based OAuth library for iOS and OSX.
 
 ### Support OAuth1.0, OAuth2.0
 
