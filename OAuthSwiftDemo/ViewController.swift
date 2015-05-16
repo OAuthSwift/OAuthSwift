@@ -11,7 +11,7 @@ import OAuthSwift
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
-    var services = ["Twitter", "Flickr", "Github", "Instagram", "Foursquare", "Fitbit", "Withings", "Linkedin", "Linkedin2", "Dropbox", "Dribbble", "Salesforce", "BitBucket", "GoogleDrive", "Smugmug", "Intuit"]
+    var services = ["Twitter", "Flickr", "Github", "Instagram", "Foursquare", "Fitbit", "Withings", "Linkedin", "Linkedin2", "Dropbox", "Dribbble", "Salesforce", "BitBucket", "GoogleDrive", "Smugmug", "Intuit", "Zaim"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -394,6 +394,22 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 println(error.localizedDescription)
         })
     }
+    
+    func doOAuthZaim(){
+        let oauthswift = OAuth1Swift(
+            consumerKey:    Zaim["consumerKey"]!,
+            consumerSecret: Zaim["consumerSecret"]!,
+            requestTokenUrl: "https://api.zaim.net/v2/auth/request",
+            authorizeUrl:    "https://auth.zaim.net/users/auth",
+            accessTokenUrl:  "https://api.zaim.net/v2/auth/access"
+        )
+        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/zaim")!, success: {
+            credential, response in
+            self.showAlertView("Zaim", message: "oauth_token:\(credential.oauth_token)\n\noauth_toke_secret:\(credential.oauth_token_secret)")
+            }, failure: {(error:NSError!) -> Void in
+                println(error.localizedDescription)
+        })
+    }
 
     func snapshot() -> NSData {
         UIGraphicsBeginImageContext(self.view.frame.size)
@@ -455,6 +471,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 doOAuthSmugmug()
             case "Intuit":
                 doOAuthIntuit()
+            case "Zaim":
+                doOAuthZaim()
             default:
                 println("default (check ViewController tableView)")
         }
