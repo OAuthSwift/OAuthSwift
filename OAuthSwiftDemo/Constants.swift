@@ -88,3 +88,8 @@ let Intuit =
     "consumerKey": "***",
     "consumerSecret": "***"
 ]
+let Zaim =
+[
+    "consumerKey": "***",
+    "consumerSecret": "***"
+]
