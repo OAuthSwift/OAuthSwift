@@ -52,6 +52,7 @@
 		F4E9A4DE1A67944C00B4F3C8 /* OAuthSwiftClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = F435026A1A6790EC00038A29 /* OAuthSwiftClient.swift */; };
 		F4E9A4DF1A67944C00B4F3C8 /* OAuthSwiftCredential.swift in Sources */ = {isa = PBXBuildFile; fileRef = F435026B1A6790EC00038A29 /* OAuthSwiftCredential.swift */; };
 		F4E9A4E01A67944C00B4F3C8 /* OAuthSwiftHTTPRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = F435026C1A6790EC00038A29 /* OAuthSwiftHTTPRequest.swift */; };
+		F4E9A8011B08635E0003988B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F451E3E4195B8D030051434C /* Images.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -435,6 +436,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F4E9A8011B08635E0003988B /* Images.xcassets in Resources */,
 				C49FD5301AFB5DF500791E1A /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -619,7 +621,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = OSX;
-				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -640,7 +641,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = OSX;
-				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
