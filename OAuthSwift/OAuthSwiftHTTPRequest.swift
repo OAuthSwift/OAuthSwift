@@ -192,7 +192,7 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLConnectionDataDelegate {
             encoding = CFStringConvertEncodingToNSStringEncoding(CFStringConvertIANACharSetNameToEncoding(encodingNameString))
             
             if encoding == UInt(kCFStringEncodingInvalidId) {
-                encoding = NSUTF8StringEncoding; // by default
+                encoding = NSUTF8StringEncoding // by default
             }
         }
         

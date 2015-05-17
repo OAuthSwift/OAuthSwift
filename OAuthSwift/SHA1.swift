@@ -51,7 +51,7 @@ class SHA1 {
         var hh = h
         
         // append message length, in a 64-bit big-endian integer. So now the message length is a multiple of 512 bits.
-        tmpMessage.appendBytes((self.message.length * 8).bytes(64 / 8));
+        tmpMessage.appendBytes((self.message.length * 8).bytes(64 / 8))
         
         // Process the message in successive 512-bit chunks:
         let chunkSizeBytes = 512 / 8 // 64
@@ -65,7 +65,7 @@ class SHA1 {
                 switch (x) {
                 case 0...15:
                     var le:UInt32 = 0
-                    chunk.getBytes(&le, range:NSRange(location:x * sizeofValue(M[x]), length: sizeofValue(M[x])));
+                    chunk.getBytes(&le, range:NSRange(location:x * sizeofValue(M[x]), length: sizeofValue(M[x])))
                     M[x] = le.bigEndian
                     break
                 default:
@@ -82,7 +82,7 @@ class SHA1 {
             
             // Main loop
             for j in 0...79 {
-                var f: UInt32 = 0;
+                var f: UInt32 = 0
                 var k: UInt32 = 0
                 
                 switch (j) {
@@ -123,12 +123,12 @@ class SHA1 {
         }
         
         // Produce the final hash value (big-endian) as a 160 bit number:
-        var buf: NSMutableData = NSMutableData();
+        var buf: NSMutableData = NSMutableData()
         hh.map({ (item) -> () in
             var i:UInt32 = item.bigEndian
             buf.appendBytes(&i, length: sizeofValue(i))
         })
         
-        return buf.copy() as! NSData;
+        return buf.copy() as! NSData
     }
 }
