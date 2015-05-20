@@ -403,7 +403,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             authorizeUrl:    "https://auth.zaim.net/users/auth",
             accessTokenUrl:  "https://api.zaim.net/v2/auth/access"
         )
-        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/zaim")!, success: {
+        oauthswift.authorizeWithCallbackURL( NSURL(string: "http://oauthswift.herokuapp.com/callback/zaim")!, success: {
             credential, response in
             self.showAlertView("Zaim", message: "oauth_token:\(credential.oauth_token)\n\noauth_toke_secret:\(credential.oauth_token_secret)")
             }, failure: {(error:NSError!) -> Void in
