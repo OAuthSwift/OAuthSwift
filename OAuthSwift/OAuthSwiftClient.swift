@@ -52,20 +52,21 @@ public class OAuthSwiftClient {
 
     func request(url: String, method: String, parameters: Dictionary<String, AnyObject>, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
 
-        let url = NSURL(string: url)
+        if let url = NSURL(string: url) {
         
-        let request = OAuthSwiftHTTPRequest(URL: url!, method: method, parameters: parameters)
-        if self.credential.oauth2 {
-            request.headers = ["Authorization": "Bearer \(self.credential.oauth_token)"]
-        } else {
-            request.headers = ["Authorization": OAuthSwiftClient.authorizationHeaderForMethod(method, url: url!, parameters: parameters, credential: self.credential)]
+            let request = OAuthSwiftHTTPRequest(URL: url, method: method, parameters: parameters)
+            if self.credential.oauth2 {
+                request.headers = ["Authorization": "Bearer \(self.credential.oauth_token)"]
+            } else {
+                request.headers = ["Authorization": OAuthSwiftClient.authorizationHeaderForMethod(method, url: url, parameters: parameters, credential: self.credential)]
+            }
+            
+            request.successHandler = success
+            request.failureHandler = failure
+            request.dataEncoding = dataEncoding
+            request.encodeParameters = true
+            request.start()
         }
-        
-        request.successHandler = success
-        request.failureHandler = failure
-        request.dataEncoding = dataEncoding
-        request.encodeParameters = true
-        request.start()
 
     }
     
@@ -76,29 +77,30 @@ public class OAuthSwiftClient {
     func multiPartRequest(url: String, method: String, parameters: Dictionary<String, AnyObject>, image: NSData, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
         
         
-        let url = NSURL(string: url)
+        if let url = NSURL(string: url) {
         
-        var request = OAuthSwiftHTTPRequest(URL: url!, method: method, parameters: parameters)
-        if self.credential.oauth2 {
-            request.headers = ["Authorization": "Bearer \(self.credential.oauth_token)"]
-        } else {
-            request.headers = ["Authorization": OAuthSwiftClient.authorizationHeaderForMethod(method, url: url!, parameters: parameters, credential: self.credential)]
+            var request = OAuthSwiftHTTPRequest(URL: url, method: method, parameters: parameters)
+            if self.credential.oauth2 {
+                request.headers = ["Authorization": "Bearer \(self.credential.oauth_token)"]
+            } else {
+                request.headers = ["Authorization": OAuthSwiftClient.authorizationHeaderForMethod(method, url: url, parameters: parameters, credential: self.credential)]
+            }
+            request.successHandler = success
+            request.failureHandler = failure
+            request.dataEncoding = dataEncoding
+            request.encodeParameters = true
+            
+            
+            var parmaImage = [String: AnyObject]()
+            parmaImage["media"] = image
+            let boundary = "AS-boundary-\(arc4random())-\(arc4random())"
+            var type = "multipart/form-data; boundary=\(boundary)"
+            var body = self.multiPartBodyFromParams(parmaImage, boundary: boundary)
+            
+            request.HTTPBodyMultipart = body
+            request.contentTypeMultipart = type
+            request.start()
         }
-        request.successHandler = success
-        request.failureHandler = failure
-        request.dataEncoding = dataEncoding
-        request.encodeParameters = true
-        
-        
-        var parmaImage = [String: AnyObject]()
-        parmaImage["media"] = image
-        let boundary = "AS-boundary-\(arc4random())-\(arc4random())"
-        var type = "multipart/form-data; boundary=\(boundary)"
-        var body = self.multiPartBodyFromParams(parmaImage, boundary: boundary)
-        
-        request.HTTPBodyMultipart = body
-        request.contentTypeMultipart = type
-        request.start()
         
     }
     
