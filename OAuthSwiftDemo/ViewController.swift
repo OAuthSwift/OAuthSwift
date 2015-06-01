@@ -11,7 +11,7 @@ import OAuthSwift
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
-    var services = ["Twitter", "Flickr", "Github", "Instagram", "Foursquare", "Fitbit", "Withings", "Linkedin", "Linkedin2", "Dropbox", "Dribbble", "Salesforce", "BitBucket", "GoogleDrive", "Smugmug", "Intuit", "Zaim"]
+    var services = ["Twitter", "Flickr", "Github", "Instagram", "Foursquare", "Fitbit", "Withings", "Linkedin", "Linkedin2", "Dropbox", "Dribbble", "Salesforce", "BitBucket", "GoogleDrive", "Smugmug", "Intuit", "Zaim", "Tumblr"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -410,6 +410,22 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 println(error.localizedDescription)
         })
     }
+    
+    func doOAuthTumblr(){
+        let oauthswift = OAuth1Swift(
+            consumerKey:    Tumblr["consumerKey"]!,
+            consumerSecret: Tumblr["consumerSecret"]!,
+            requestTokenUrl: "http://www.tumblr.com/oauth/request_token",
+            authorizeUrl:    "http://www.tumblr.com/oauth/authorize",
+            accessTokenUrl:  "http://www.tumblr.com/oauth/access_token"
+        )
+        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/tumblr")!, success: {
+            credential, response in
+            self.showAlertView("Tumblr", message: "oauth_token:\(credential.oauth_token)\n\noauth_toke_secret:\(credential.oauth_token_secret)")
+            }, failure: {(error:NSError!) -> Void in
+                println(error.localizedDescription)
+        })
+    }
 
     func snapshot() -> NSData {
         UIGraphicsBeginImageContext(self.view.frame.size)
@@ -473,6 +489,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 doOAuthIntuit()
             case "Zaim":
                 doOAuthZaim()
+            case "Tumblr":
+                doOAuthTumblr()
             default:
                 println("default (check ViewController tableView)")
         }

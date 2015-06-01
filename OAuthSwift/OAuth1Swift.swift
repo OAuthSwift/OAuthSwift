@@ -62,8 +62,7 @@ public class OAuth1Swift: NSObject {
                 var parameters: Dictionary<String, String> = Dictionary()
                 if ((url.query) != nil){
                     parameters = url.query!.parametersFromQueryString()
-                }
-                if ((url.fragment) != nil && url.fragment!.isEmpty == false) {
+                } else if ((url.fragment) != nil && url.fragment!.isEmpty == false) {
                     parameters = url.fragment!.parametersFromQueryString()
                 }
                 if let token = parameters["token"] {
