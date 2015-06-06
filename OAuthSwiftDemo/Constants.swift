@@ -98,4 +98,10 @@ let Tumblr =
     "consumerKey": "***",
     "consumerSecret": "***"
 ]
-
+let Yelp =
+[
+    "consumerKey": "***",
+    "consumerSecret": "***",
+    "accessToken": "***",
+    "accessTokenSecret": "***"
+]

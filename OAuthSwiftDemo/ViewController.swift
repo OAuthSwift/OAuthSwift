@@ -11,7 +11,7 @@ import OAuthSwift
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
-    var services = ["Twitter", "Flickr", "Github", "Instagram", "Foursquare", "Fitbit", "Withings", "Linkedin", "Linkedin2", "Dropbox", "Dribbble", "Salesforce", "BitBucket", "GoogleDrive", "Smugmug", "Intuit", "Zaim", "Tumblr"]
+    var services = ["Twitter", "Flickr", "Github", "Instagram", "Foursquare", "Fitbit", "Withings", "Linkedin", "Linkedin2", "Dropbox", "Dribbble", "Salesforce", "BitBucket", "GoogleDrive", "Smugmug", "Intuit", "Zaim", "Tumblr", "Yelp"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -426,6 +426,28 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 println(error.localizedDescription)
         })
     }
+    
+    func doOAuthYelp(){
+        let oauthClient = OAuthSwiftClient(
+            consumerKey:        Yelp["consumerKey"]!,
+            consumerSecret:     Yelp["consumerSecret"]!,
+            accessToken:        Yelp["accessToken"]!,
+            accessTokenSecret:  Yelp["accessTokenSecret"]!
+        )
+        let params: [String: String] = [
+            "location": "San+Francisco",
+            "term": "seafood"
+        ]
+        oauthClient.get("http://api.yelp.com/v2/search",
+            parameters: params,
+            success: { (data, response) -> Void in
+                let json: NSDictionary = NSJSONSerialization.JSONObjectWithData(data, options: nil, error: nil) as! NSDictionary
+                println(json)
+                self.showAlertView("Yelp", message: "See console for results")
+            }) { (error) -> Void in
+                println("there was an error: \(error)")
+        }
+    }
 
     func snapshot() -> NSData {
         UIGraphicsBeginImageContext(self.view.frame.size)
@@ -491,6 +513,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 doOAuthZaim()
             case "Tumblr":
                 doOAuthTumblr()
+            case "Yelp":
+                doOAuthYelp()
             default:
                 println("default (check ViewController tableView)")
         }
