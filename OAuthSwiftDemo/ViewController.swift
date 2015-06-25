@@ -11,7 +11,7 @@ import OAuthSwift
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
-    var services = ["Twitter", "Flickr", "Github", "Instagram", "Foursquare", "Fitbit", "Withings", "Linkedin", "Linkedin2", "Dropbox", "Dribbble", "Salesforce", "BitBucket", "GoogleDrive", "Smugmug", "Intuit"]
+    var services = ["Twitter", "Flickr", "Github", "Instagram", "Foursquare", "Fitbit", "Withings", "Linkedin", "Linkedin2", "Dropbox", "Dribbble", "Salesforce", "BitBucket", "GoogleDrive", "Smugmug", "Intuit", "Zaim", "Tumblr"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,7 +19,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         let tableView: UITableView = UITableView(frame: self.view.bounds, style: .Plain)
         tableView.delegate = self
         tableView.dataSource = self
-        self.view.addSubview(tableView);
+        self.view.addSubview(tableView)
     }
 
     override func didReceiveMemoryWarning() {
@@ -101,7 +101,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         )
         let state: String = generateStateWithLength(20) as String
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/github")!, scope: "user,repo", state: state, success: {
-            credential, response in
+            credential, response, parameters in
             self.showAlertView("Github", message: "oauth_token:\(credential.oauth_token)")
             }, failure: {(error:NSError!) -> Void in
                 println(error.localizedDescription)
@@ -119,7 +119,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         )
         let state: String = generateStateWithLength(20) as String
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/salesforce")!, scope: "full", state: state, success: {
-            credential, response in
+            credential, response, parameters in
             self.showAlertView("Salesforce", message: "oauth_token:\(credential.oauth_token)")
             }, failure: {(error:NSError!) -> Void in
                 println(error.localizedDescription)
@@ -138,7 +138,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         let state: String = generateStateWithLength(20) as String
         oauthswift.authorize_url_handler = WebViewController()
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/instagram")!, scope: "likes+comments", state:state, success: {
-            credential, response in
+            credential, response, parameters in
             self.showAlertView("Instagram", message: "oauth_token:\(credential.oauth_token)")
             let url :String = "https://api.instagram.com/v1/users/1574083/?access_token=\(credential.oauth_token)"
             let parameters :Dictionary = Dictionary<String, AnyObject>()
@@ -163,7 +163,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             responseType:   "token"
         )
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/foursquare")!, scope: "", state: "", success: {
-            credential, response in
+            credential, response, parameters in
             self.showAlertView("Foursquare", message: "oauth_token:\(credential.oauth_token)")
             }, failure: {(error:NSError!) -> Void in
                 println(error.localizedDescription)
@@ -237,7 +237,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         )
         let state: String = generateStateWithLength(20) as String
         oauthswift.authorizeWithCallbackURL( NSURL(string: "http://oauthswift.herokuapp.com/callback/linkedin2")!, scope: "r_fullprofile", state: state, success: {
-            credential, response in
+            credential, response, parameters in
             self.showAlertView("Linkedin2", message: "oauth_token:\(credential.oauth_token)")
             var parameters =  Dictionary<String, AnyObject>()
             oauthswift.client.get("https://api.linkedin.com/v1/people/~?format=json", parameters: parameters,
@@ -281,7 +281,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         )
         oauthswift.authorize_url_handler = WebViewController()
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/dropbox")!, scope: "", state: "", success: {
-            credential, response in
+            credential, response, parameters in
             self.showAlertView("Dropbox", message: "oauth_token:\(credential.oauth_token)")
             // Get Dropbox Account Info
             var parameters =  Dictionary<String, AnyObject>()
@@ -308,7 +308,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             responseType:   "code"
         )
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/dribbble")!, scope: "", state: "", success: {
-            credential, response in
+            credential, response, parameters in
             self.showAlertView("Dribbble", message: "oauth_token:\(credential.oauth_token)")
             // Get User
             var parameters =  Dictionary<String, AnyObject>()
@@ -361,7 +361,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         // For googgle the redirect_uri should match your this syntax: your.bundle.id:/oauth2Callback
         // in plist define a url schem with: your.bundle.id:
         oauthswift.authorizeWithCallbackURL( NSURL(string: "https://oauthswift.herokuapp.com/callback/google")!, scope: "https://www.googleapis.com/auth/drive", state: "", success: {
-            credential, response in
+            credential, response, parameters in
             self.showAlertView("Github", message: "oauth_token:\(credential.oauth_token)")
             var parameters =  Dictionary<String, AnyObject>()
             // Multi-part upload
@@ -394,6 +394,38 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 println(error.localizedDescription)
         })
     }
+    
+    func doOAuthZaim(){
+        let oauthswift = OAuth1Swift(
+            consumerKey:    Zaim["consumerKey"]!,
+            consumerSecret: Zaim["consumerSecret"]!,
+            requestTokenUrl: "https://api.zaim.net/v2/auth/request",
+            authorizeUrl:    "https://auth.zaim.net/users/auth",
+            accessTokenUrl:  "https://api.zaim.net/v2/auth/access"
+        )
+        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/zaim")!, success: {
+            credential, response in
+            self.showAlertView("Zaim", message: "oauth_token:\(credential.oauth_token)\n\noauth_toke_secret:\(credential.oauth_token_secret)")
+            }, failure: {(error:NSError!) -> Void in
+                println(error.localizedDescription)
+        })
+    }
+    
+    func doOAuthTumblr(){
+        let oauthswift = OAuth1Swift(
+            consumerKey:    Tumblr["consumerKey"]!,
+            consumerSecret: Tumblr["consumerSecret"]!,
+            requestTokenUrl: "http://www.tumblr.com/oauth/request_token",
+            authorizeUrl:    "http://www.tumblr.com/oauth/authorize",
+            accessTokenUrl:  "http://www.tumblr.com/oauth/access_token"
+        )
+        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/tumblr")!, success: {
+            credential, response in
+            self.showAlertView("Tumblr", message: "oauth_token:\(credential.oauth_token)\n\noauth_toke_secret:\(credential.oauth_token_secret)")
+            }, failure: {(error:NSError!) -> Void in
+                println(error.localizedDescription)
+        })
+    }
 
     func snapshot() -> NSData {
         UIGraphicsBeginImageContext(self.view.frame.size)
@@ -417,7 +449,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath:NSIndexPath) -> UITableViewCell {
         let cell: UITableViewCell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "Cell")
         cell.textLabel?.text = services[indexPath.row]
-        return cell;
+        return cell
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath:NSIndexPath) {
@@ -455,6 +487,10 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 doOAuthSmugmug()
             case "Intuit":
                 doOAuthIntuit()
+            case "Zaim":
+                doOAuthZaim()
+            case "Tumblr":
+                doOAuthTumblr()
             default:
                 println("default (check ViewController tableView)")
         }

@@ -39,9 +39,8 @@ public class OAuthSwift: NSObject {
         static let appOnlyAuthenticationErrorCode = 1
     }
 
-    public typealias TokenSuccessHandler = (credential: OAuthSwiftCredential, response: NSURLResponse?) -> Void
+    public typealias TokenSuccessHandler = (credential: OAuthSwiftCredential, response: NSURLResponse?, parameters: NSDictionary) -> Void
     public typealias FailureHandler = (error: NSError) -> Void
-    
     
     public class func handleOpenURL(url: NSURL) {
         let notification = NSNotification(name: CallbackNotification.notificationName, object: nil,

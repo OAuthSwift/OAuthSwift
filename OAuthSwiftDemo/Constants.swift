@@ -88,3 +88,14 @@ let Intuit =
     "consumerKey": "***",
     "consumerSecret": "***"
 ]
+let Zaim =
+[
+    "consumerKey": "***",
+    "consumerSecret": "***"
+]
+let Tumblr =
+[
+    "consumerKey": "***",
+    "consumerSecret": "***"
+]
+
