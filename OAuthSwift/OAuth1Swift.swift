@@ -8,51 +8,23 @@
 
 import Foundation
 
-// OAuthSwift errors
-public let OAuthSwiftErrorDomain = "oauthswift.error"
+public class OAuth1Swift: OAuthSwift {
 
-public class OAuth1Swift: NSObject {
-
-    public var client: OAuthSwiftClient
-
-    public var authorize_url_handler: OAuthSwiftURLHandlerType = OAuthSwiftOpenURLExternally.sharedInstance
-
-    public var allowMissingOauthVerifier: Bool = false
-
-    var consumer_key: String
-    var consumer_secret: String
     var request_token_url: String
     var authorize_url: String
     var access_token_url: String
 
-    var observer: AnyObject?
-
     public init(consumerKey: String, consumerSecret: String, requestTokenUrl: String, authorizeUrl: String, accessTokenUrl: String){
-        self.consumer_key = consumerKey
-        self.consumer_secret = consumerSecret
         self.request_token_url = requestTokenUrl
         self.authorize_url = authorizeUrl
         self.access_token_url = accessTokenUrl
-        self.client = OAuthSwiftClient(consumerKey: consumerKey, consumerSecret: consumerSecret)
+        super.init(consumerKey: consumerKey, consumerSecret: consumerSecret)
     }
-
-    struct CallbackNotification {
-        static let notificationName = "OAuthSwiftCallbackNotificationName"
-        static let optionsURLKey = "OAuthSwiftCallbackNotificationOptionsURLKey"
-    }
-
-    struct OAuthSwiftError {
-        static let domain = "OAuthSwiftErrorDomain"
-        static let appOnlyAuthenticationErrorCode = 1
-    }
-
-    public typealias TokenSuccessHandler = (credential: OAuthSwiftCredential, response: NSURLResponse) -> Void
-    public typealias FailureHandler = (error: NSError) -> Void
 
     // 0. Start
     public func authorizeWithCallbackURL(callbackURL: NSURL, success: TokenSuccessHandler, failure: ((error: NSError) -> Void)) {
         self.postOAuthRequestTokenWithCallbackURL(callbackURL, success: {
-            credential, response in
+            credential, response, responseParameters in
 
             self.observer = NSNotificationCenter.defaultCenter().addObserverForName(CallbackNotification.notificationName, object: nil, queue: NSOperationQueue.mainQueue(), usingBlock:{
                 notification in
@@ -75,8 +47,8 @@ public class OAuth1Swift: NSObject {
                         self.client.credential.oauth_verifier = parameters["oauth_verifier"]!
                     }
                     self.postOAuthAccessTokenWithRequestToken({
-                        credential, response in
-                        success(credential: credential, response: response)
+                        credential, response, parameters in
+                        success(credential: credential, response: response, parameters: parameters)
                     }, failure: failure)
                 } else {
                     let userInfo = [NSLocalizedFailureReasonErrorKey: NSLocalizedString("Oauth problem.", comment: "")]
@@ -103,12 +75,12 @@ public class OAuth1Swift: NSObject {
             let parameters = responseString.parametersFromQueryString()
             self.client.credential.oauth_token = parameters["oauth_token"]!
             self.client.credential.oauth_token_secret = parameters["oauth_token_secret"]!
-            success(credential: self.client.credential, response: response)
+            success(credential: self.client.credential, response: response, parameters: parameters)
         }, failure: failure)
     }
 
     // 3. Get Access token
-    func postOAuthAccessTokenWithRequestToken(success: TokenSuccessHandler, failure: FailureHandler?) {
+    public func postOAuthAccessTokenWithRequestToken(success: TokenSuccessHandler, failure: FailureHandler?) {
         var parameters = Dictionary<String, AnyObject>()
         parameters["oauth_token"] = self.client.credential.oauth_token
         parameters["oauth_verifier"] = self.client.credential.oauth_verifier
@@ -118,14 +90,8 @@ public class OAuth1Swift: NSObject {
             let parameters = responseString.parametersFromQueryString()
             self.client.credential.oauth_token = parameters["oauth_token"]!
             self.client.credential.oauth_token_secret = parameters["oauth_token_secret"]!
-            success(credential: self.client.credential, response: response)
+            success(credential: self.client.credential, response: response, parameters: parameters)
         }, failure: failure)
-    }
-
-    public class func handleOpenURL(url: NSURL) {
-        let notification = NSNotification(name: CallbackNotification.notificationName, object: nil,
-            userInfo: [CallbackNotification.optionsURLKey: url])
-        NSNotificationCenter.defaultCenter().postNotification(notification)
     }
 
 }

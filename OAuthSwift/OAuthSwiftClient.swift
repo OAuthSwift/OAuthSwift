@@ -18,8 +18,8 @@ public class OAuthSwiftClient {
         static let signatureMethod = "HMAC-SHA1"
     }
     
-    var credential: OAuthSwiftCredential
-    
+    public private(set) var credential: OAuthSwiftCredential
+
     public init(consumerKey: String, consumerSecret: String) {
         self.credential = OAuthSwiftCredential(consumer_key: consumerKey, consumer_secret: consumerSecret)
     }
@@ -29,7 +29,7 @@ public class OAuthSwiftClient {
         self.credential.consumer_key = consumerKey
         self.credential.consumer_secret = consumerSecret
     }
-    
+
     public func get(urlString: String, parameters: Dictionary<String, AnyObject>, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
         self.request(urlString, method: "GET", parameters: parameters, success: success, failure: failure)
     }

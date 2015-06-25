@@ -49,12 +49,7 @@ pod "OAuthSwift", "~> 0.3.4"
 // AppDelegate
 func application(application: UIApplication!, openURL url: NSURL!, sourceApplication: String!, annotation: AnyObject!) -> Bool {
   if (url.host == "oauth-callback") {
-    if (url.path!.hasPrefix("/twitter")){
-      OAuth1Swift.handleOpenURL(url)
-    }
-    if ( url.path!.hasPrefix("/github" )){
-      OAuth2Swift.handleOpenURL(url)
-    }
+     OAuthSwift.handleOpenURL(url)
   }
   return true
 }
