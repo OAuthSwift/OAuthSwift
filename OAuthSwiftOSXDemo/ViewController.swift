@@ -123,7 +123,7 @@ class ViewController: NSViewController , NSTableViewDelegate, NSTableViewDataSou
         )
         let state: String = generateStateWithLength(20) as String
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/github")!, scope: "user,repo", state: state, success: {
-            credential, response in
+            credential, response, parameters in
             self.showAlertView("Github", message: "oauth_token:\(credential.oauth_token)")
             }, failure: {(error:NSError!) -> Void in
                 println(error.localizedDescription)
@@ -141,7 +141,7 @@ class ViewController: NSViewController , NSTableViewDelegate, NSTableViewDataSou
         )
         let state: String = generateStateWithLength(20) as String
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/salesforce")!, scope: "full", state: state, success: {
-            credential, response in
+            credential, response, parameters in
             self.showAlertView("Salesforce", message: "oauth_token:\(credential.oauth_token)")
             }, failure: {(error:NSError!) -> Void in
                 println(error.localizedDescription)
@@ -161,7 +161,7 @@ class ViewController: NSViewController , NSTableViewDelegate, NSTableViewDataSou
         let state: String = generateStateWithLength(20) as String
         oauthswift.authorize_url_handler = get_url_handler()
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/instagram")!, scope: "likes+comments", state:state, success: {
-            credential, response in
+            credential, response, parameters in
             self.showAlertView("Instagram", message: "oauth_token:\(credential.oauth_token)")
             let url :String = "https://api.instagram.com/v1/users/1574083/?access_token=\(credential.oauth_token)"
             let parameters :Dictionary = Dictionary<String, AnyObject>()
@@ -186,7 +186,7 @@ class ViewController: NSViewController , NSTableViewDelegate, NSTableViewDataSou
             responseType:   "token"
         )
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/foursquare")!, scope: "", state: "", success: {
-            credential, response in
+            credential, response, parameters in
             self.showAlertView("Foursquare", message: "oauth_token:\(credential.oauth_token)")
             }, failure: {(error:NSError!) -> Void in
                 println(error.localizedDescription)
@@ -260,7 +260,7 @@ class ViewController: NSViewController , NSTableViewDelegate, NSTableViewDataSou
         )
         let state: String = generateStateWithLength(20) as String
         oauthswift.authorizeWithCallbackURL( NSURL(string: "http://oauthswift.herokuapp.com/callback/linkedin2")!, scope: "r_fullprofile", state: state, success: {
-            credential, response in
+            credential, response, parameters in
             self.showAlertView("Linkedin2", message: "oauth_token:\(credential.oauth_token)")
             var parameters =  Dictionary<String, AnyObject>()
             oauthswift.client.get("https://api.linkedin.com/v1/people/~?format=json", parameters: parameters,
@@ -305,7 +305,7 @@ class ViewController: NSViewController , NSTableViewDelegate, NSTableViewDataSou
         
         oauthswift.authorize_url_handler = get_url_handler()
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/dropbox")!, scope: "", state: "", success: {
-            credential, response in
+            credential, response, parameters in
             self.showAlertView("Dropbox", message: "oauth_token:\(credential.oauth_token)")
             // Get Dropbox Account Info
             var parameters =  Dictionary<String, AnyObject>()
@@ -332,7 +332,7 @@ class ViewController: NSViewController , NSTableViewDelegate, NSTableViewDataSou
             responseType:   "code"
         )
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/dribbble")!, scope: "", state: "", success: {
-            credential, response in
+            credential, response, parameters in
             self.showAlertView("Dribbble", message: "oauth_token:\(credential.oauth_token)")
             // Get User
             var parameters =  Dictionary<String, AnyObject>()
@@ -385,7 +385,7 @@ class ViewController: NSViewController , NSTableViewDelegate, NSTableViewDataSou
         // For googgle the redirect_uri should match your this syntax: your.bundle.id:/oauth2Callback
         // in plist define a url schem with: your.bundle.id:
         oauthswift.authorizeWithCallbackURL( NSURL(string: "https://oauthswift.herokuapp.com/callback/google")!, scope: "https://www.googleapis.com/auth/drive", state: "", success: {
-            credential, response in
+            credential, response, parameters in
             self.showAlertView("Github", message: "oauth_token:\(credential.oauth_token)")
             var parameters =  Dictionary<String, AnyObject>()
             // Multi-part upload
