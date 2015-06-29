@@ -18,7 +18,7 @@ public class OAuthSwiftClient {
         static let signatureMethod = "HMAC-SHA1"
     }
     
-    var credential: OAuthSwiftCredential
+    private(set) public var credential: OAuthSwiftCredential
     
     public init(consumerKey: String, consumerSecret: String) {
         self.credential = OAuthSwiftCredential(consumer_key: consumerKey, consumer_secret: consumerSecret)
