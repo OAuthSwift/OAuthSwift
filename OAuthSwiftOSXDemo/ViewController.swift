@@ -11,7 +11,7 @@ import OAuthSwiftOSX
 
 class ViewController: NSViewController , NSTableViewDelegate, NSTableViewDataSource {
 
-    var services = ["Twitter", "Flickr", "Github", "Instagram", "Foursquare", "Fitbit", "Withings", "Linkedin", "Linkedin2", "Dropbox", "Dribbble", "Salesforce", "BitBucket", "GoogleDrive", "Smugmug", "Intuit", "Zaim"]
+    var services = ["Twitter", "Flickr", "Github", "Instagram", "Foursquare", "Fitbit", "Withings", "Linkedin", "Linkedin2", "Dropbox", "Dribbble", "Salesforce", "BitBucket", "GoogleDrive", "Smugmug", "Intuit", "Zaim", "Yelp"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -434,6 +434,28 @@ class ViewController: NSViewController , NSTableViewDelegate, NSTableViewDataSou
                 println(error.localizedDescription)
         })
     }
+    
+    func doOAuthYelp(){
+        let oauthClient = OAuthSwiftClient(
+            consumerKey:        Yelp["consumerKey"]!,
+            consumerSecret:     Yelp["consumerSecret"]!,
+            accessToken:        Yelp["accessToken"]!,
+            accessTokenSecret:  Yelp["accessTokenSecret"]!
+        )
+        let params: [String: String] = [
+            "location": "San+Francisco",
+            "term": "seafood"
+        ]
+        oauthClient.get("http://api.yelp.com/v2/search",
+            parameters: params,
+            success: { (data, response) -> Void in
+                let json: NSDictionary = NSJSONSerialization.JSONObjectWithData(data, options: nil, error: nil) as! NSDictionary
+                println(json)
+                self.showAlertView("Yelp", message: "See console for results")
+            }) { (error) -> Void in
+                println("there was an error: \(error)")
+        }
+    }
 
     func snapshot() -> NSData {
         var rep: NSBitmapImageRep = self.view.bitmapImageRepForCachingDisplayInRect(self.view.bounds)!
@@ -503,6 +525,8 @@ class ViewController: NSViewController , NSTableViewDelegate, NSTableViewDataSou
                     doOAuthIntuit()
                 case "Zaim":
                     doOAuthZaim()
+                case "Yelp":
+                    doOAuthYelp()
                 default:
                     println("default (check ViewController tableView)")
                 }

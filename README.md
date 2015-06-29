@@ -105,6 +105,7 @@ oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback
 * [Smugmug](https://smugmug.atlassian.net/wiki/display/API/OAuth)
 * [Intuit](https://developer.intuit.com/docs/0100_accounting/0060_authentication_and_authorization/oauth_management_api)
 * [Zaim](https://dev.zaim.net/home/api/authorize)
+* [Yelp](https://www.yelp.com/developers/documentation)
 
 ### Images
 
