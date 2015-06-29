@@ -46,13 +46,13 @@ public class OAuth1Swift: NSObject {
         static let appOnlyAuthenticationErrorCode = 1
     }
 
-    public typealias TokenSuccessHandler = (credential: OAuthSwiftCredential, response: NSURLResponse) -> Void
+    public typealias TokenSuccessHandler = (credential: OAuthSwiftCredential, response: NSURLResponse, parameters: NSDictionary) -> Void
     public typealias FailureHandler = (error: NSError) -> Void
 
     // 0. Start
     public func authorizeWithCallbackURL(callbackURL: NSURL, success: TokenSuccessHandler, failure: ((error: NSError) -> Void)) {
         self.postOAuthRequestTokenWithCallbackURL(callbackURL, success: {
-            credential, response in
+            credential, response, parameters in
 
             self.observer = NSNotificationCenter.defaultCenter().addObserverForName(CallbackNotification.notificationName, object: nil, queue: NSOperationQueue.mainQueue(), usingBlock:{
                 notification in
@@ -74,10 +74,7 @@ public class OAuth1Swift: NSObject {
                     if (parameters["oauth_verifier"] != nil) {
                         self.client.credential.oauth_verifier = parameters["oauth_verifier"]!
                     }
-                    self.postOAuthAccessTokenWithRequestToken({
-                        credential, response in
-                        success(credential: credential, response: response)
-                    }, failure: failure)
+                    self.postOAuthAccessTokenWithRequestToken(success, failure: failure)
                 } else {
                     let userInfo = [NSLocalizedFailureReasonErrorKey: NSLocalizedString("Oauth problem.", comment: "")]
                     failure(error: NSError(domain: OAuthSwiftErrorDomain, code: -1, userInfo: userInfo))
@@ -103,7 +100,7 @@ public class OAuth1Swift: NSObject {
             let parameters = responseString.parametersFromQueryString()
             self.client.credential.oauth_token = parameters["oauth_token"]!
             self.client.credential.oauth_token_secret = parameters["oauth_token_secret"]!
-            success(credential: self.client.credential, response: response)
+            success(credential: self.client.credential, response: response, parameters: parameters)
         }, failure: failure)
     }
 
@@ -118,7 +115,7 @@ public class OAuth1Swift: NSObject {
             let parameters = responseString.parametersFromQueryString()
             self.client.credential.oauth_token = parameters["oauth_token"]!
             self.client.credential.oauth_token_secret = parameters["oauth_token_secret"]!
-            success(credential: self.client.credential, response: response)
+            success(credential: self.client.credential, response: response, parameters: parameters)
         }, failure: failure)
     }
 

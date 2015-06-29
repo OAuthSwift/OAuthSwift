@@ -37,7 +37,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         //oauthswift.authorize_url_handler = WebViewController()
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/twitter")!, success: {
-            credential, response in
+            credential, response, parameters in
             self.showAlertView("Twitter", message: "auth_token:\(credential.oauth_token)\n\noauth_toke_secret:\(credential.oauth_token_secret)")
             var parameters =  Dictionary<String, AnyObject>()
             oauthswift.client.get("https://api.twitter.com/1.1/statuses/mentions_timeline.json", parameters: parameters,
@@ -64,7 +64,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             accessTokenUrl:  "https://www.flickr.com/services/oauth/access_token"
         )
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/flickr")!, success: {
-            credential, response in
+            credential, response, parameters in
             self.showAlertView("Flickr", message: "oauth_token:\(credential.oauth_token)\n\noauth_toke_secret:\(credential.oauth_token_secret)")
             let url :String = "https://api.flickr.com/services/rest/"
             let parameters :Dictionary = [
@@ -179,7 +179,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             accessTokenUrl:  "https://api.fitbit.com/oauth/access_token"
         )
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/fitbit")!, success: {
-            credential, response in
+            credential, response, parameters in
             self.showAlertView("Fitbit", message: "oauth_token:\(credential.oauth_token)\n\noauth_toke_secret:\(credential.oauth_token_secret)")
             }, failure: {(error:NSError!) -> Void in
                 println(error.localizedDescription)
@@ -195,7 +195,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             accessTokenUrl:  "https://oauth.withings.com/account/access_token"
         )
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/withings")!, success: {
-            credential, response in
+            credential, response, parameters in
             self.showAlertView("Withings", message: "oauth_token:\(credential.oauth_token)\n\noauth_toke_secret:\(credential.oauth_token_secret)")
             }, failure: {(error:NSError!) -> Void in
                 println(error.localizedDescription)
@@ -211,7 +211,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             accessTokenUrl:  "https://api.linkedin.com/uas/oauth/accessToken"
         )
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/linkedin")!, success: {
-            credential, response in
+            credential, response, parameters in
             self.showAlertView("Linkedin", message: "oauth_token:\(credential.oauth_token)\n\noauth_toke_secret:\(credential.oauth_token_secret)")
             var parameters =  Dictionary<String, AnyObject>()
             oauthswift.client.get("https://api.linkedin.com/v1/people/~", parameters: parameters,
@@ -264,7 +264,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         oauthswift.allowMissingOauthVerifier = true
         // NOTE: Smugmug's callback URL is configured on their site and the one passed in is ignored.
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/smugmug")!, success: {
-            credential, response in
+            credential, response, parameters in
             self.showAlertView("Smugmug", message: "oauth_token:\(credential.oauth_token)\n\noauth_toke_secret:\(credential.oauth_token_secret)")
         }, failure: {(error:NSError!) -> Void in
             println(error.localizedDescription)
@@ -334,7 +334,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 			accessTokenUrl:  "https://bitbucket.org/api/1.0/oauth/access_token"
 		)
 		oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/bitbucket")!, success: {
-			credential, response in
+			credential, response, parameters in
 			self.showAlertView("BitBucket", message: "oauth_token:\(credential.oauth_token)\n\noauth_toke_secret:\(credential.oauth_token_secret)")
 			var parameters =  Dictionary<String, AnyObject>()
 			oauthswift.client.get("https://bitbucket.org/api/1.0/user", parameters: parameters,
@@ -388,7 +388,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             accessTokenUrl:  "https://oauth.intuit.com/oauth/v1/get_access_token"
         )
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/intuit")!, success: {
-            credential, response in
+            credential, response, parameters in
             self.showAlertView("Intuit", message: "oauth_token:\(credential.oauth_token)\n\noauth_toke_secret:\(credential.oauth_token_secret)")
             }, failure: {(error:NSError!) -> Void in
                 println(error.localizedDescription)
@@ -404,7 +404,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             accessTokenUrl:  "https://api.zaim.net/v2/auth/access"
         )
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/zaim")!, success: {
-            credential, response in
+            credential, response, parameters in
             self.showAlertView("Zaim", message: "oauth_token:\(credential.oauth_token)\n\noauth_toke_secret:\(credential.oauth_token_secret)")
             }, failure: {(error:NSError!) -> Void in
                 println(error.localizedDescription)
@@ -420,7 +420,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             accessTokenUrl:  "http://www.tumblr.com/oauth/access_token"
         )
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/tumblr")!, success: {
-            credential, response in
+            credential, response, parameters in
             self.showAlertView("Tumblr", message: "oauth_token:\(credential.oauth_token)\n\noauth_toke_secret:\(credential.oauth_token_secret)")
             }, failure: {(error:NSError!) -> Void in
                 println(error.localizedDescription)
