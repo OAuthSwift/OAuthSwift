@@ -34,7 +34,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             authorizeUrl:    "https://api.twitter.com/oauth/authorize",
             accessTokenUrl:  "https://api.twitter.com/oauth/access_token"
         )
-
         //oauthswift.authorize_url_handler = WebViewController()
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/twitter")!, success: {
             credential, response in
@@ -48,7 +47,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 }, failure: {(error:NSError!) -> Void in
                     println(error)
                 })
-
             }, failure: {(error:NSError!) -> Void in
                 println(error.localizedDescription)
             }
@@ -101,11 +99,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                     println(error)
             })
 
-
         }, failure: {(error:NSError!) -> Void in
             println(error.localizedDescription)
         })
-
     }
 
     func doOAuthGithub(){
@@ -123,7 +119,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             }, failure: {(error:NSError!) -> Void in
                 println(error.localizedDescription)
             })
-
     }
 
     func doOAuthSalesforce(){
@@ -141,7 +136,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             }, failure: {(error:NSError!) -> Void in
                 println(error.localizedDescription)
         })
-
     }
 
     func doOAuthInstagram(){
@@ -310,7 +304,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 }, failure: {(error:NSError!) -> Void in
                     println(error)
                 })
-
             }, failure: {(error:NSError!) -> Void in
                 println(error.localizedDescription)
         })
@@ -390,7 +383,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 }, failure: {(error:NSError!) -> Void in
                     println(error)
             })
-
             }, failure: {(error:NSError!) -> Void in
                 println("ERROR: \(error.localizedDescription)")
         })
@@ -515,6 +507,4 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
         tableView.deselectRowAtIndexPath(indexPath, animated:true)
     }
-
-
 }
