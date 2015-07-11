@@ -56,7 +56,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func doOAuthSlack(){
     let oauthswift = OAuth2Swift(
         consumerKey:    Slack["consumerKey"]!,
-        consumerSecret: Slack["consumerSecret"],
+        consumerSecret: Slack["consumerSecret"]!,
         authorizeUrl:   "https://slack.com/oauth/authorize",
         accessTokenUrl: "https://slack.com/api/oauth.access",
         responseType:   "code"
