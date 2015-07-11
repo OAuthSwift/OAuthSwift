@@ -119,7 +119,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 println(error.localizedDescription)
             })
     }
-
     func doOAuthSalesforce(){
         let oauthswift = OAuth2Swift(
             consumerKey:    Salesforce["consumerKey"]!,
@@ -415,7 +414,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 println(error.localizedDescription)
         })
     }
-
     func doOAuthTumblr(){
         let oauthswift = OAuth1Swift(
             consumerKey:    Tumblr["consumerKey"]!,
@@ -450,13 +448,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int  {
         return services.count
     }
-
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath:NSIndexPath) -> UITableViewCell {
         let cell: UITableViewCell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "Cell")
         cell.textLabel?.text = services[indexPath.row]
         return cell
     }
-
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath:NSIndexPath) {
         var service: String = services[indexPath.row]
         switch service {
