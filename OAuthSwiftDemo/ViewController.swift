@@ -98,7 +98,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 }, failure: {(error:NSError!) -> Void in
                     println(error)
             })
-
         }, failure: {(error:NSError!) -> Void in
             println(error.localizedDescription)
         })
@@ -180,7 +179,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 println(error.localizedDescription)
             })
     }
-
     func doOAuthFitbit(){
         let oauthswift = OAuth1Swift(
             consumerKey:    Fitbit["consumerKey"]!,
@@ -359,7 +357,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 				println(error.localizedDescription)
 		})
 	}
-
     func doOAuthGoogle(){
         let oauthswift = OAuth2Swift(
             consumerKey:    GoogleDrive["consumerKey"]!,
@@ -403,7 +400,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 println(error.localizedDescription)
         })
     }
-
     func doOAuthZaim(){
         let oauthswift = OAuth1Swift(
             consumerKey:    Zaim["consumerKey"]!,
