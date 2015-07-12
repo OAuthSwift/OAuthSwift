@@ -13,11 +13,6 @@ let Twitter =
     "consumerKey": "***",
     "consumerSecret": "***"
 ]
-let Slack =
-[
-    "consumerKey": "***",
-    "consumerSecret": "***"
-]
 let Salesforce =
 [
     "consumerKey": "***",
@@ -99,6 +94,11 @@ let Zaim =
     "consumerSecret": "***"
 ]
 let Tumblr =
+[
+    "consumerKey": "***",
+    "consumerSecret": "***"
+]
+let Slack =
 [
     "consumerKey": "***",
     "consumerSecret": "***"

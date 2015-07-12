@@ -11,7 +11,7 @@ import OAuthSwiftOSX
 
 class ViewController: NSViewController , NSTableViewDelegate, NSTableViewDataSource {
 
-    var services = ["Twitter", "Slack", "Flickr", "Github", "Instagram", "Foursquare", "Fitbit", "Withings", "Linkedin", "Linkedin2", "Dropbox", "Dribbble", "Salesforce", "BitBucket", "GoogleDrive", "Smugmug", "Intuit", "Zaim"]
+    var services = ["Twitter", "Flickr", "Github", "Instagram", "Foursquare", "Fitbit", "Withings", "Linkedin", "Linkedin2", "Dropbox", "Dribbble", "Salesforce", "BitBucket", "GoogleDrive", "Smugmug", "Intuit", "Zaim", "Tumblr", "Slack"]
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -75,23 +75,6 @@ class ViewController: NSViewController , NSTableViewDelegate, NSTableViewDataSou
                 println(error.localizedDescription)
             }
         )
-    }
-
-    func doOAuthSlack(){
-        let oauthswift = OAuth2Swift(
-            consumerKey:    Slack["consumerKey"]!,
-            consumerSecret: Slack["consumerSecret"]!,
-            authorizeUrl:   "https://slack.com/oauth/authorize",
-            accessTokenUrl: "https://slack.com/api/oauth.access",
-            responseType:   "code"
-        )
-        let state: String = generateStateWithLength(20) as String
-        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/slack")!, scope: "", state: state, success: {
-            credential, response, parameters in
-            self.showAlertView("Slack", message: "oauth_token:\(credential.oauth_token)")
-            }, failure: {(error:NSError!) -> Void in
-                print(error.localizedDescription)
-      })
     }
 
     func doOAuthFlickr(){
@@ -452,6 +435,39 @@ class ViewController: NSViewController , NSTableViewDelegate, NSTableViewDataSou
         })
     }
 
+    func doOAuthTumblr(){
+        let oauthswift = OAuth1Swift(
+            consumerKey:    Tumblr["consumerKey"]!,
+            consumerSecret: Tumblr["consumerSecret"]!,
+            requestTokenUrl: "http://www.tumblr.com/oauth/request_token",
+            authorizeUrl:    "http://www.tumblr.com/oauth/authorize",
+            accessTokenUrl:  "http://www.tumblr.com/oauth/access_token"
+        )
+        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/tumblr")!, success: {
+            credential, response in
+            self.showAlertView("Tumblr", message: "oauth_token:\(credential.oauth_token)\n\noauth_toke_secret:\(credential.oauth_token_secret)")
+            }, failure: {(error:NSError!) -> Void in
+                println(error.localizedDescription)
+        })
+    }
+
+    func doOAuthSlack(){
+        let oauthswift = OAuth2Swift(
+            consumerKey:    Slack["consumerKey"]!,
+            consumerSecret: Slack["consumerSecret"]!,
+            authorizeUrl:   "https://slack.com/oauth/authorize",
+            accessTokenUrl: "https://slack.com/api/oauth.access",
+            responseType:   "code"
+        )
+        let state: String = generateStateWithLength(20) as String
+        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/slack")!, scope: "", state: state, success: {
+            credential, response, parameters in
+            self.showAlertView("Slack", message: "oauth_token:\(credential.oauth_token)")
+            }, failure: {(error:NSError!) -> Void in
+                print(error.localizedDescription)
+        })
+    }
+
     func snapshot() -> NSData {
         var rep: NSBitmapImageRep = self.view.bitmapImageRepForCachingDisplayInRect(self.view.bounds)!
         self.view.cacheDisplayInRect(self.view.bounds, toBitmapImageRep:rep)
@@ -488,8 +504,6 @@ class ViewController: NSViewController , NSTableViewDelegate, NSTableViewDataSou
                 switch service {
                 case "Twitter":
                     doOAuthTwitter()
-                case "Slack":
-                    doOAuthSlack()
                 case "Flickr":
                     doOAuthFlickr()
                 case "Github":
@@ -522,6 +536,10 @@ class ViewController: NSViewController , NSTableViewDelegate, NSTableViewDataSou
                     doOAuthIntuit()
                 case "Zaim":
                     doOAuthZaim()
+                case "Tumblr":
+                    doOAuthTumblr()
+                case "Slack":
+                    doOAuthSlack()
                 default:
                     println("default (check ViewController tableView)")
                 }

@@ -11,7 +11,7 @@ import OAuthSwift
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
-    var services = ["Twitter", "Slack", "Flickr", "Github", "Instagram", "Foursquare", "Fitbit", "Withings", "Linkedin", "Linkedin2", "Dropbox", "Dribbble", "Salesforce", "BitBucket", "GoogleDrive", "Smugmug", "Intuit", "Zaim", "Tumblr"]
+    var services = ["Twitter", "Flickr", "Github", "Instagram", "Foursquare", "Fitbit", "Withings", "Linkedin", "Linkedin2", "Dropbox", "Dribbble", "Salesforce", "BitBucket", "GoogleDrive", "Smugmug", "Intuit", "Zaim", "Tumblr", "Slack"]
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -52,23 +52,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             }
         )
     }
-
-    func doOAuthSlack(){
-    let oauthswift = OAuth2Swift(
-        consumerKey:    Slack["consumerKey"]!,
-        consumerSecret: Slack["consumerSecret"]!,
-        authorizeUrl:   "https://slack.com/oauth/authorize",
-        accessTokenUrl: "https://slack.com/api/oauth.access",
-        responseType:   "code"
-    )
-    let state: String = generateStateWithLength(20) as String
-    oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/slack")!, scope: "", state: state, success: {
-        credential, response, parameters in
-        self.showAlertView("Slack", message: "oauth_token:\(credential.oauth_token)")
-        }, failure: {(error:NSError!) -> Void in
-            print(error.localizedDescription)
-    })
-  }
 
     func doOAuthFlickr(){
         let oauthswift = OAuth1Swift(
@@ -429,6 +412,22 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 println(error.localizedDescription)
         })
     }
+    func doOAuthSlack(){
+        let oauthswift = OAuth2Swift(
+            consumerKey:    Slack["consumerKey"]!,
+            consumerSecret: Slack["consumerSecret"]!,
+            authorizeUrl:   "https://slack.com/oauth/authorize",
+            accessTokenUrl: "https://slack.com/api/oauth.access",
+            responseType:   "code"
+        )
+        let state: String = generateStateWithLength(20) as String
+        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/slack")!, scope: "", state: state, success: {
+            credential, response, parameters in
+            self.showAlertView("Slack", message: "oauth_token:\(credential.oauth_token)")
+            }, failure: {(error:NSError!) -> Void in
+                print(error.localizedDescription)
+        })
+    }
 
     func snapshot() -> NSData {
         UIGraphicsBeginImageContext(self.view.frame.size)
@@ -458,8 +457,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         switch service {
             case "Twitter":
                 doOAuthTwitter()
-            case "Slack":
-                doOAuthSlack()
             case "Flickr":
                 doOAuthFlickr()
             case "Github":
@@ -494,6 +491,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 doOAuthZaim()
             case "Tumblr":
                 doOAuthTumblr()
+            case "Slack":
+                doOAuthSlack()
             default:
                 println("default (check ViewController tableView)")
         }
