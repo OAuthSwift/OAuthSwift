@@ -33,17 +33,17 @@ func rotateRight(x:UInt64, n:UInt64) -> UInt64 {
 }
 
 func reverseBytes(value: UInt32) -> UInt32 {
-    var tmp1 = ((value & 0x000000FF) << 24) | ((value & 0x0000FF00) << 8)
-    var tmp2 = ((value & 0x00FF0000) >> 8)  | ((value & 0xFF000000) >> 24)
+    let tmp1 = ((value & 0x000000FF) << 24) | ((value & 0x0000FF00) << 8)
+    let tmp2 = ((value & 0x00FF0000) >> 8)  | ((value & 0xFF000000) >> 24)
     return tmp1 | tmp2
 }
 
 public func generateStateWithLength (len : Int) -> NSString {
     let letters : NSString = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-    var randomString : NSMutableString = NSMutableString(capacity: len)
+    let randomString : NSMutableString = NSMutableString(capacity: len)
     for (var i=0; i < len; i++){
-        var length = UInt32 (letters.length)
-        var rand = arc4random_uniform(length)
+        let length = UInt32 (letters.length)
+        let rand = arc4random_uniform(length)
         randomString.appendFormat("%C", letters.characterAtIndex(Int(rand)))
     }
     return randomString
