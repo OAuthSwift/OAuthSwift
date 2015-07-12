@@ -98,4 +98,8 @@ let Tumblr =
     "consumerKey": "***",
     "consumerSecret": "***"
 ]
-
+let Slack =
+[
+    "consumerKey": "***",
+    "consumerSecret": "***"
+]
