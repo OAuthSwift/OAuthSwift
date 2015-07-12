@@ -39,18 +39,21 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/twitter")!, success: {
             credential, response in
             self.showAlertView("Twitter", message: "auth_token:\(credential.oauth_token)\n\noauth_toke_secret:\(credential.oauth_token_secret)")
-            var parameters =  Dictionary<String, AnyObject>()
+            let parameters =  Dictionary<String, AnyObject>()
             oauthswift.client.get("https://api.twitter.com/1.1/statuses/mentions_timeline.json", parameters: parameters,
-                success: {
-                    data, response in
-                    let jsonDict: AnyObject! = NSJSONSerialization.JSONObjectWithData(data, options: nil, error: nil)
-                    println(jsonDict)
+                success: { data, response in
+                    do {
+                        let jsonDict: AnyObject! = try NSJSONSerialization.JSONObjectWithData(data, options: [])
+                        print(jsonDict)
+                    } catch {
+                        print("Error deserializing JSON")
+                    }
                 }, failure: {(error:NSError!) -> Void in
-                    println(error)
+                    print(error)
                 })
             
             }, failure: {(error:NSError!) -> Void in
-                println(error.localizedDescription)
+                print(error.localizedDescription)
             }
         )
     }
@@ -78,15 +81,19 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             oauthswift.client.get(url, parameters: parameters,
                 success: {
                     data, response in
-                    let jsonDict: AnyObject! = NSJSONSerialization.JSONObjectWithData(data, options: nil, error: nil)
-                    println(jsonDict)
+                    do {
+                        let jsonDict: AnyObject! = try NSJSONSerialization.JSONObjectWithData(data, options: [])
+                        print(jsonDict)
+                    } catch {
+                        print("Error deserializing JSON")
+                    }
                 }, failure: {(error:NSError!) -> Void in
-                    println(error)
+                    print(error)
             })
 
 
         }, failure: {(error:NSError!) -> Void in
-            println(error.localizedDescription)
+            print(error.localizedDescription)
         })
         
     }
@@ -104,7 +111,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             credential, response, parameters in
             self.showAlertView("Github", message: "oauth_token:\(credential.oauth_token)")
             }, failure: {(error:NSError!) -> Void in
-                println(error.localizedDescription)
+                print(error.localizedDescription)
             })
         
     }
@@ -122,7 +129,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             credential, response, parameters in
             self.showAlertView("Salesforce", message: "oauth_token:\(credential.oauth_token)")
             }, failure: {(error:NSError!) -> Void in
-                println(error.localizedDescription)
+                print(error.localizedDescription)
         })
         
     }
@@ -143,15 +150,18 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             let url :String = "https://api.instagram.com/v1/users/1574083/?access_token=\(credential.oauth_token)"
             let parameters :Dictionary = Dictionary<String, AnyObject>()
             oauthswift.client.get(url, parameters: parameters,
-                success: {
-                    data, response in
-                    let jsonDict: AnyObject! = NSJSONSerialization.JSONObjectWithData(data, options: nil, error: nil)
-                    println(jsonDict)
+                success: { data, response in
+                    do {
+                        let jsonDict: AnyObject! = try NSJSONSerialization.JSONObjectWithData(data, options: [])
+                        print(jsonDict)
+                    } catch {
+                        print("Error deserializing JSON")
+                    }
                 }, failure: {(error:NSError!) -> Void in
-                    println(error)
+                    print(error)
             })
         }, failure: {(error:NSError!) -> Void in
-            println(error.localizedDescription)
+            print(error.localizedDescription)
         })
     }
 
@@ -166,7 +176,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             credential, response, parameters in
             self.showAlertView("Foursquare", message: "oauth_token:\(credential.oauth_token)")
             }, failure: {(error:NSError!) -> Void in
-                println(error.localizedDescription)
+                print(error.localizedDescription)
             })
     }
     
@@ -182,7 +192,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             credential, response in
             self.showAlertView("Fitbit", message: "oauth_token:\(credential.oauth_token)\n\noauth_toke_secret:\(credential.oauth_token_secret)")
             }, failure: {(error:NSError!) -> Void in
-                println(error.localizedDescription)
+                print(error.localizedDescription)
         })
     }
 
@@ -198,7 +208,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             credential, response in
             self.showAlertView("Withings", message: "oauth_token:\(credential.oauth_token)\n\noauth_toke_secret:\(credential.oauth_token_secret)")
             }, failure: {(error:NSError!) -> Void in
-                println(error.localizedDescription)
+                print(error.localizedDescription)
         })
     }
 
@@ -213,17 +223,17 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/linkedin")!, success: {
             credential, response in
             self.showAlertView("Linkedin", message: "oauth_token:\(credential.oauth_token)\n\noauth_toke_secret:\(credential.oauth_token_secret)")
-            var parameters =  Dictionary<String, AnyObject>()
+            let parameters =  Dictionary<String, AnyObject>()
             oauthswift.client.get("https://api.linkedin.com/v1/people/~", parameters: parameters,
                     success: {
                         data, response in
                         let dataString = NSString(data: data, encoding: NSUTF8StringEncoding)
-                        println(dataString)
+                        print(dataString)
                     }, failure: {(error:NSError!) -> Void in
-                println(error)
+                print(error)
             })
         }, failure: {(error:NSError!) -> Void in
-            println(error.localizedDescription)
+            print(error.localizedDescription)
         })
     }
 
@@ -239,17 +249,17 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         oauthswift.authorizeWithCallbackURL( NSURL(string: "http://oauthswift.herokuapp.com/callback/linkedin2")!, scope: "r_fullprofile", state: state, success: {
             credential, response, parameters in
             self.showAlertView("Linkedin2", message: "oauth_token:\(credential.oauth_token)")
-            var parameters =  Dictionary<String, AnyObject>()
+            let parameters =  Dictionary<String, AnyObject>()
             oauthswift.client.get("https://api.linkedin.com/v1/people/~?format=json", parameters: parameters,
                 success: {
                     data, response in
                     let dataString = NSString(data: data, encoding: NSUTF8StringEncoding)
-                    println(dataString)
+                    print(dataString)
                 }, failure: {(error:NSError!) -> Void in
-                    println(error)
+                    print(error)
             })
             }, failure: {(error:NSError!) -> Void in
-                println(error.localizedDescription)
+                print(error.localizedDescription)
         })
     }
 
@@ -267,7 +277,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             credential, response in
             self.showAlertView("Smugmug", message: "oauth_token:\(credential.oauth_token)\n\noauth_toke_secret:\(credential.oauth_token_secret)")
         }, failure: {(error:NSError!) -> Void in
-            println(error.localizedDescription)
+            print(error.localizedDescription)
         })
     }
 
@@ -284,18 +294,21 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             credential, response, parameters in
             self.showAlertView("Dropbox", message: "oauth_token:\(credential.oauth_token)")
             // Get Dropbox Account Info
-            var parameters =  Dictionary<String, AnyObject>()
+            let parameters =  Dictionary<String, AnyObject>()
             oauthswift.client.get("https://api.dropbox.com/1/account/info?access_token=\(credential.oauth_token)", parameters: parameters,
-                success: {
-                    data, response in
-                    let jsonDict: AnyObject! = NSJSONSerialization.JSONObjectWithData(data, options: nil, error: nil)
-                    println(jsonDict)
+                success: { data, response in
+                    do {
+                        let jsonDict: AnyObject! = try NSJSONSerialization.JSONObjectWithData(data, options: [])
+                        print(jsonDict)
+                    } catch {
+                        print("Error deserializing JSON")
+                    }
                 }, failure: {(error:NSError!) -> Void in
-                    println(error)
+                    print(error)
                 })
 
             }, failure: {(error:NSError!) -> Void in
-                println(error.localizedDescription)
+                print(error.localizedDescription)
         })
     }
 
@@ -311,17 +324,20 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             credential, response, parameters in
             self.showAlertView("Dribbble", message: "oauth_token:\(credential.oauth_token)")
             // Get User
-            var parameters =  Dictionary<String, AnyObject>()
+            let parameters =  Dictionary<String, AnyObject>()
             oauthswift.client.get("https://api.dribbble.com/v1/user?access_token=\(credential.oauth_token)", parameters: parameters,
-                success: {
-                    data, response in
-                    let jsonDict: AnyObject! = NSJSONSerialization.JSONObjectWithData(data, options: nil, error: nil)
-                    println(jsonDict)
+                success: { data, response in
+                    do {
+                        let jsonDict: AnyObject! = try NSJSONSerialization.JSONObjectWithData(data, options: [])
+                        print(jsonDict)
+                    } catch {
+                        print("Error deserializing JSON")
+                    }
                 }, failure: {(error:NSError!) -> Void in
-                    println(error)
+                    print(error)
                 })
             }, failure: {(error:NSError!) -> Void in
-                println(error.localizedDescription)
+                print(error.localizedDescription)
         })
     }
 
@@ -336,17 +352,17 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 		oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/bitbucket")!, success: {
 			credential, response in
 			self.showAlertView("BitBucket", message: "oauth_token:\(credential.oauth_token)\n\noauth_toke_secret:\(credential.oauth_token_secret)")
-			var parameters =  Dictionary<String, AnyObject>()
+			let parameters =  Dictionary<String, AnyObject>()
 			oauthswift.client.get("https://bitbucket.org/api/1.0/user", parameters: parameters,
 				success: {
 					data, response in
 					let dataString = NSString(data: data, encoding: NSUTF8StringEncoding)
-					println(dataString)
+					print(dataString)
 				}, failure: {(error:NSError!) -> Void in
-					println(error)
+					print(error)
 			})
 			}, failure: {(error:NSError!) -> Void in
-				println(error.localizedDescription)
+				print(error.localizedDescription)
 		})
 	}
     
@@ -363,19 +379,22 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         oauthswift.authorizeWithCallbackURL( NSURL(string: "https://oauthswift.herokuapp.com/callback/google")!, scope: "https://www.googleapis.com/auth/drive", state: "", success: {
             credential, response, parameters in
             self.showAlertView("Github", message: "oauth_token:\(credential.oauth_token)")
-            var parameters =  Dictionary<String, AnyObject>()
+            let parameters =  Dictionary<String, AnyObject>()
             // Multi-part upload
             oauthswift.client.postImage("https://www.googleapis.com/upload/drive/v2/files", parameters: parameters, image: self.snapshot(),
-                success: {
-                    data, response in
-                    let jsonDict: AnyObject! = NSJSONSerialization.JSONObjectWithData(data, options: nil, error: nil)
-                    println("SUCCESS: \(jsonDict)")
+                success: { data, response in
+                    do {
+                        let jsonDict: AnyObject! = try NSJSONSerialization.JSONObjectWithData(data, options: [])
+                        print(jsonDict)
+                    } catch {
+                        print("Error deserializing JSON")
+                    }
                 }, failure: {(error:NSError!) -> Void in
-                    println(error)
+                    print(error)
             })
             
             }, failure: {(error:NSError!) -> Void in
-                println("ERROR: \(error.localizedDescription)")
+                print("ERROR: \(error.localizedDescription)")
         })
     }
 
@@ -391,7 +410,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             credential, response in
             self.showAlertView("Intuit", message: "oauth_token:\(credential.oauth_token)\n\noauth_toke_secret:\(credential.oauth_token_secret)")
             }, failure: {(error:NSError!) -> Void in
-                println(error.localizedDescription)
+                print(error.localizedDescription)
         })
     }
     
@@ -407,7 +426,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             credential, response in
             self.showAlertView("Zaim", message: "oauth_token:\(credential.oauth_token)\n\noauth_toke_secret:\(credential.oauth_token_secret)")
             }, failure: {(error:NSError!) -> Void in
-                println(error.localizedDescription)
+                print(error.localizedDescription)
         })
     }
     
@@ -423,7 +442,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             credential, response in
             self.showAlertView("Tumblr", message: "oauth_token:\(credential.oauth_token)\n\noauth_toke_secret:\(credential.oauth_token_secret)")
             }, failure: {(error:NSError!) -> Void in
-                println(error.localizedDescription)
+                print(error.localizedDescription)
         })
     }
 
@@ -433,11 +452,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         let fullScreenshot = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         UIImageWriteToSavedPhotosAlbum(fullScreenshot, nil, nil, nil)
-        return  UIImageJPEGRepresentation(fullScreenshot, 0.5)
+        return  UIImageJPEGRepresentation(fullScreenshot, 0.5)!
     }
 
     func showAlertView(title: String, message: String) {
-        var alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.Alert)
+        let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.Alert)
         alert.addAction(UIAlertAction(title: "Close", style: UIAlertActionStyle.Default, handler: nil))
         self.presentViewController(alert, animated: true, completion: nil)
     }
@@ -453,7 +472,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath:NSIndexPath) {
-        var service: String = services[indexPath.row]
+        let service: String = services[indexPath.row]
         switch service {
             case "Twitter":
                 doOAuthTwitter()
@@ -492,7 +511,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             case "Tumblr":
                 doOAuthTumblr()
             default:
-                println("default (check ViewController tableView)")
+                print("default (check ViewController tableView)", appendNewline: false)
         }
         tableView.deselectRowAtIndexPath(indexPath, animated:true)
     }
