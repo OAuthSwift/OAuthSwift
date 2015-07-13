@@ -24,8 +24,8 @@ class WebViewController: OAuthWebViewController {
         
         self.webView.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(self.webView)
-        self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-0-[view]-0-|", options: nil, metrics: nil, views: ["view":self.webView]))
-        self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[view]-0-|", options: nil, metrics: nil, views: ["view":self.webView]))
+        self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-0-[view]-0-|", options: [], metrics: nil, views: ["view":self.webView]))
+        self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[view]-0-|", options: [], metrics: nil, views: ["view":self.webView]))
     }
     
     override func handle(url: NSURL) {
