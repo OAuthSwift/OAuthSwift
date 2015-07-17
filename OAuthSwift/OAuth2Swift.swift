@@ -124,6 +124,12 @@ public class OAuth2Swift: NSObject {
             }
 
             let accessToken = responseParameters["access_token"] as! String
+            if let refreshToken = responseParameters["refresh_token"] as? String {
+                self.client.credential.oauth_refresh_token = refreshToken
+            }
+            if let expiresIn = responseParameters["expires_in"] as? Double {
+                self.client.credential.oauth_expires_in = expiresIn
+            }
             self.client.credential.oauth_token = accessToken
             self.client.credential.oauth2 = true
             success(credential: self.client.credential, response: response, parameters: responseParameters)
