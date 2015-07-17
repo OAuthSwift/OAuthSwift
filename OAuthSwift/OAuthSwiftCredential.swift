@@ -39,7 +39,7 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
     
     // Cannot declare a required initializer within an extension.
     // extension OAuthSwiftCredential: NSCoding {
-    public required convenience init(coder decoder: NSCoder) {
+    public required convenience init?(coder decoder: NSCoder) {
         self.init()
         self.consumer_key = (decoder.decodeObjectForKey(CodingKeys.consumerKey) as? String) ?? String()
         self.consumer_secret = (decoder.decodeObjectForKey(CodingKeys.consumerSecret) as? String) ?? String()
