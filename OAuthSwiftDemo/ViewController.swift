@@ -8,8 +8,9 @@
 
 import UIKit
 import OAuthSwift
+import SafariServices
 
-class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, SFSafariViewControllerDelegate {
 
     var services = ["Twitter", "Flickr", "Github", "Instagram", "Foursquare", "Fitbit", "Withings", "Linkedin", "Linkedin2", "Dropbox", "Dribbble", "Salesforce", "BitBucket", "GoogleDrive", "Smugmug", "Intuit", "Zaim", "Tumblr", "Slack"]
 
@@ -138,7 +139,12 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         )
 
         let state: String = generateStateWithLength(20) as String
-        oauthswift.authorize_url_handler = WebViewController()
+        oauthswift.authorize_url_block = { queryURL in
+            let svc = SFSafariViewController(URL: queryURL, entersReaderIfAvailable: true)
+            svc.delegate = self
+            self.presentViewController(svc, animated: true, completion: nil)
+        }
+        
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/instagram")!, scope: "likes+comments", state:state, success: {
             credential, response, parameters in
             self.showAlertView("Instagram", message: "oauth_token:\(credential.oauth_token)")
@@ -523,5 +529,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 print("default (check ViewController tableView)")
         }
         tableView.deselectRowAtIndexPath(indexPath, animated:true)
+    }
+    
+    func safariViewControllerDidFinish(controller: SFSafariViewController) {
+        controller.dismissViewControllerAnimated(true, completion: nil)
     }
 }

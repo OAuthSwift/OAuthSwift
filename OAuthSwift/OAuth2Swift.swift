@@ -13,6 +13,7 @@ public class OAuth2Swift: NSObject {
     public var client: OAuthSwiftClient
 
     public var authorize_url_handler: OAuthSwiftURLHandlerType = OAuthSwiftOpenURLExternally.sharedInstance
+    public var authorize_url_block: (NSURL) -> () = {_ in }
 
     var consumer_key: String
     var consumer_secret: String
@@ -91,7 +92,8 @@ public class OAuth2Swift: NSObject {
         }
 
         if let queryURL = NSURL(string: urlString) {
-           self.authorize_url_handler.handle(queryURL)
+           //self.authorize_url_handler.handle(queryURL)
+           self.authorize_url_block(queryURL)
         }
     }
     
