@@ -70,7 +70,10 @@ public class OAuth2Swift: NSObject {
                     success: { credential, response, responseParameters in
                         success(credential: credential, response: response, parameters: responseParameters)
                 }, failure: failure)
-                    
+            }
+            if let error = responseParameters["error"], error_description = responseParameters["error_description"] {
+                let errorInfo = [NSLocalizedFailureReasonErrorKey: NSLocalizedString(error, comment: error_description)]
+                failure(error: NSError(domain: OAuthSwiftErrorDomain, code: -1, userInfo: errorInfo))
             }
         })
         //let authorizeURL = NSURL(string: )
@@ -116,6 +119,8 @@ public class OAuth2Swift: NSObject {
                 responseParameters = responseString.parametersFromQueryString()
             }
 
+            let expirationDate = Int(responseParameters["expires_in"] as! NSNumber)
+            self.client.credential.expires_in = expirationDate
             let accessToken = responseParameters["access_token"] as! String
             self.client.credential.oauth_token = accessToken
             self.client.credential.oauth2 = true
