@@ -12,8 +12,8 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
     var consumer_key: String = String()
     var consumer_secret: String = String()
     public var oauth_token: String = String()
-    public var expires_in: Int = Int()
     public var oauth_token_secret: String = String()
+    public var expires_in: Int = Int()
     var oauth_verifier: String = String()
     public var oauth2 = false
     
