@@ -11,14 +11,14 @@ import OAuthSwiftOSX
 
 class ViewController: NSViewController , NSTableViewDelegate, NSTableViewDataSource {
 
-    var services = ["Twitter", "Flickr", "Github", "Instagram", "Foursquare", "Fitbit", "Withings", "Linkedin", "Linkedin2", "Dropbox", "Dribbble", "Salesforce", "BitBucket", "GoogleDrive", "Smugmug", "Intuit", "Zaim"]
-    
+    var services = ["Twitter", "Flickr", "Github", "Instagram", "Foursquare", "Fitbit", "Withings", "Linkedin", "Linkedin2", "Dropbox", "Dribbble", "Salesforce", "BitBucket", "GoogleDrive", "Smugmug", "Intuit", "Zaim", "Tumblr", "Slack"]
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
     }
-    
+
     func createWebViewController() -> WebViewController {
         let controller = WebViewController()
         controller.view = NSView(frame: NSRect(x:0, y:0, width: 450, height: 500)) // needed if no nib or not loaded from storyboard
@@ -31,23 +31,23 @@ class ViewController: NSViewController , NSTableViewDelegate, NSTableViewDataSou
         let url_handler = createWebViewController()
         self.addChildViewController(url_handler) // allow WebViewController to use this ViewController as parent to be presented
         return url_handler
-        
-        // a better way is 
+
+        // a better way is
         // - to make this ViewController implement OAuthSwiftURLHandlerType and assigned in oauthswift object
         /* return self */
         // - have an instance of WebViewController here (I) or a segue name to launch (S)
-        // - in handle(url) 
+        // - in handle(url)
         //    (I) : affect url to WebViewController, and  self.presentViewControllerAsModalWindow(self.webViewController)
         //    (S) : affect url to a temp variable (ex: urlForWebView), then perform segue
         /* performSegueWithIdentifier("oauthwebview", sender:nil) */
         //         then override prepareForSegue() to affect url to destination controller WebViewController
-        
+
     }
     //(I)
     //let webViewController: WebViewController = createWebViewController()
     //(S)
     //var urlForWebView:?NSURL = nil
-    
+
     func doOAuthTwitter(){
         let oauthswift = OAuth1Swift(
             consumerKey:    Twitter["consumerKey"]!,
@@ -56,7 +56,7 @@ class ViewController: NSViewController , NSTableViewDelegate, NSTableViewDataSou
             authorizeUrl:    "https://api.twitter.com/oauth/authorize",
             accessTokenUrl:  "https://api.twitter.com/oauth/access_token"
         )
-        
+
         //oauthswift.authorize_url_handler = createWebViewController()
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/twitter")!, success: {
             credential, response, parameters in
@@ -70,13 +70,13 @@ class ViewController: NSViewController , NSTableViewDelegate, NSTableViewDataSou
                 }, failure: {(error:NSError!) -> Void in
                     println(error)
             })
-            
+
             }, failure: {(error:NSError!) -> Void in
                 println(error.localizedDescription)
             }
         )
     }
-    
+
     func doOAuthFlickr(){
         let oauthswift = OAuth1Swift(
             consumerKey:    Flickr["consumerKey"]!,
@@ -105,14 +105,14 @@ class ViewController: NSViewController , NSTableViewDelegate, NSTableViewDataSou
                 }, failure: {(error:NSError!) -> Void in
                     println(error)
             })
-            
-            
+
+
             }, failure: {(error:NSError!) -> Void in
                 println(error.localizedDescription)
         })
-        
+
     }
-    
+
     func doOAuthGithub(){
         let oauthswift = OAuth2Swift(
             consumerKey:    Github["consumerKey"]!,
@@ -128,9 +128,9 @@ class ViewController: NSViewController , NSTableViewDelegate, NSTableViewDataSou
             }, failure: {(error:NSError!) -> Void in
                 println(error.localizedDescription)
         })
-        
+
     }
-    
+
     func doOAuthSalesforce(){
         let oauthswift = OAuth2Swift(
             consumerKey:    Salesforce["consumerKey"]!,
@@ -146,10 +146,10 @@ class ViewController: NSViewController , NSTableViewDelegate, NSTableViewDataSou
             }, failure: {(error:NSError!) -> Void in
                 println(error.localizedDescription)
         })
-        
+
     }
 
-    
+
     func doOAuthInstagram(){
         let oauthswift = OAuth2Swift(
             consumerKey:    Instagram["consumerKey"]!,
@@ -157,7 +157,7 @@ class ViewController: NSViewController , NSTableViewDelegate, NSTableViewDataSou
             authorizeUrl:   "https://api.instagram.com/oauth/authorize",
             responseType:   "token"
         )
-        
+
         let state: String = generateStateWithLength(20) as String
         oauthswift.authorize_url_handler = get_url_handler()
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/instagram")!, scope: "likes+comments", state:state, success: {
@@ -177,7 +177,7 @@ class ViewController: NSViewController , NSTableViewDelegate, NSTableViewDataSou
                 println(error.localizedDescription)
         })
     }
-    
+
     func doOAuthFoursquare(){
         let oauthswift = OAuth2Swift(
             consumerKey:    Foursquare["consumerKey"]!,
@@ -192,7 +192,7 @@ class ViewController: NSViewController , NSTableViewDelegate, NSTableViewDataSou
                 println(error.localizedDescription)
         })
     }
-    
+
     func doOAuthFitbit(){
         let oauthswift = OAuth1Swift(
             consumerKey:    Fitbit["consumerKey"]!,
@@ -208,7 +208,7 @@ class ViewController: NSViewController , NSTableViewDelegate, NSTableViewDataSou
                 println(error.localizedDescription)
         })
     }
-    
+
     func doOAuthWithings(){
         let oauthswift = OAuth1Swift(
             consumerKey:    Withings["consumerKey"]!,
@@ -224,7 +224,7 @@ class ViewController: NSViewController , NSTableViewDelegate, NSTableViewDataSou
                 println(error.localizedDescription)
         })
     }
-    
+
     func doOAuthLinkedin(){
         let oauthswift = OAuth1Swift(
             consumerKey:    Linkedin["consumerKey"]!,
@@ -249,7 +249,7 @@ class ViewController: NSViewController , NSTableViewDelegate, NSTableViewDataSou
                 println(error.localizedDescription)
         })
     }
-    
+
     func doOAuthLinkedin2(){
         let oauthswift = OAuth2Swift(
             consumerKey:    Linkedin2["consumerKey"]!,
@@ -275,7 +275,7 @@ class ViewController: NSViewController , NSTableViewDelegate, NSTableViewDataSou
                 println(error.localizedDescription)
         })
     }
-    
+
     func doOAuthSmugmug(){
         let oauthswift = OAuth1Swift(
             consumerKey:    Smugmug["consumerKey"]!,
@@ -293,7 +293,7 @@ class ViewController: NSViewController , NSTableViewDelegate, NSTableViewDataSou
                 println(error.localizedDescription)
         })
     }
-    
+
     func doOAuthDropbox(){
         let oauthswift = OAuth2Swift(
             consumerKey:    Dropbox["consumerKey"]!,
@@ -302,7 +302,7 @@ class ViewController: NSViewController , NSTableViewDelegate, NSTableViewDataSou
             accessTokenUrl: "https://api.dropbox.com/1/oauth2/token",
             responseType:   "token"
         )
-        
+
         oauthswift.authorize_url_handler = get_url_handler()
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/dropbox")!, scope: "", state: "", success: {
             credential, response, parameters in
@@ -317,12 +317,12 @@ class ViewController: NSViewController , NSTableViewDelegate, NSTableViewDataSou
                 }, failure: {(error:NSError!) -> Void in
                     println(error)
             })
-            
+
             }, failure: {(error:NSError!) -> Void in
                 println(error.localizedDescription)
         })
     }
-    
+
     func doOAuthDribbble(){
         let oauthswift = OAuth2Swift(
             consumerKey:    Dribbble["consumerKey"]!,
@@ -348,7 +348,7 @@ class ViewController: NSViewController , NSTableViewDelegate, NSTableViewDataSou
                 println(error.localizedDescription)
         })
     }
-    
+
     func doOAuthBitBucket(){
         let oauthswift = OAuth1Swift(
             consumerKey:    BitBucket["consumerKey"]!,
@@ -373,7 +373,7 @@ class ViewController: NSViewController , NSTableViewDelegate, NSTableViewDataSou
                 println(error.localizedDescription)
         })
     }
-    
+
     func doOAuthGoogle(){
         let oauthswift = OAuth2Swift(
             consumerKey:    GoogleDrive["consumerKey"]!,
@@ -397,12 +397,12 @@ class ViewController: NSViewController , NSTableViewDelegate, NSTableViewDataSou
                 }, failure: {(error:NSError!) -> Void in
                     println(error)
             })
-            
+
             }, failure: {(error:NSError!) -> Void in
                 println("ERROR: \(error.localizedDescription)")
         })
     }
-    
+
     func doOAuthIntuit(){
         let oauthswift = OAuth1Swift(
             consumerKey:    Intuit["consumerKey"]!,
@@ -418,7 +418,7 @@ class ViewController: NSViewController , NSTableViewDelegate, NSTableViewDataSou
                 println(error.localizedDescription)
         })
     }
-    
+
     func doOAuthZaim(){
         let oauthswift = OAuth1Swift(
             consumerKey:    Zaim["consumerKey"]!,
@@ -435,12 +435,45 @@ class ViewController: NSViewController , NSTableViewDelegate, NSTableViewDataSou
         })
     }
 
+    func doOAuthTumblr(){
+        let oauthswift = OAuth1Swift(
+            consumerKey:    Tumblr["consumerKey"]!,
+            consumerSecret: Tumblr["consumerSecret"]!,
+            requestTokenUrl: "http://www.tumblr.com/oauth/request_token",
+            authorizeUrl:    "http://www.tumblr.com/oauth/authorize",
+            accessTokenUrl:  "http://www.tumblr.com/oauth/access_token"
+        )
+        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/tumblr")!, success: {
+            credential, response in
+            self.showAlertView("Tumblr", message: "oauth_token:\(credential.oauth_token)\n\noauth_toke_secret:\(credential.oauth_token_secret)")
+            }, failure: {(error:NSError!) -> Void in
+                println(error.localizedDescription)
+        })
+    }
+
+    func doOAuthSlack(){
+        let oauthswift = OAuth2Swift(
+            consumerKey:    Slack["consumerKey"]!,
+            consumerSecret: Slack["consumerSecret"]!,
+            authorizeUrl:   "https://slack.com/oauth/authorize",
+            accessTokenUrl: "https://slack.com/api/oauth.access",
+            responseType:   "code"
+        )
+        let state: String = generateStateWithLength(20) as String
+        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/slack")!, scope: "", state: state, success: {
+            credential, response, parameters in
+            self.showAlertView("Slack", message: "oauth_token:\(credential.oauth_token)")
+            }, failure: {(error:NSError!) -> Void in
+                print(error.localizedDescription)
+        })
+    }
+
     func snapshot() -> NSData {
         var rep: NSBitmapImageRep = self.view.bitmapImageRepForCachingDisplayInRect(self.view.bounds)!
         self.view.cacheDisplayInRect(self.view.bounds, toBitmapImageRep:rep)
         return rep.TIFFRepresentation!
     }
-    
+
     func showAlertView(title: String, message: String) {
         var alert = NSAlert()
         alert.messageText = title
@@ -450,24 +483,24 @@ class ViewController: NSViewController , NSTableViewDelegate, NSTableViewDataSou
     }
 
     // MARK: NSTableViewDataSource
-    
+
     func numberOfRowsInTableView(tableView: NSTableView) -> Int {
         return self.services.count
     }
-    
+
     // MARK: NSTableViewDelegate
-    
+
     func tableView(tableView: NSTableView, objectValueForTableColumn tableColumn: NSTableColumn?, row: Int) -> AnyObject? {
         return self.services[row]
     }
-    
+
     func tableViewSelectionDidChange(notification: NSNotification) {
         if let tableView = notification.object as? NSTableView {
             let row = tableView.selectedRow
             if  row != -1 {
-                
+
                 let service: String = self.services[row]
-                
+
                 switch service {
                 case "Twitter":
                     doOAuthTwitter()
@@ -503,15 +536,17 @@ class ViewController: NSViewController , NSTableViewDelegate, NSTableViewDataSou
                     doOAuthIntuit()
                 case "Zaim":
                     doOAuthZaim()
+                case "Tumblr":
+                    doOAuthTumblr()
+                case "Slack":
+                    doOAuthSlack()
                 default:
                     println("default (check ViewController tableView)")
                 }
-                
+
                 tableView.deselectRow(row)
             }
         }
     }
 
 }
-
-
