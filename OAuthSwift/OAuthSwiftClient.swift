@@ -179,7 +179,7 @@ public class OAuthSwiftClient {
             }
         }
         
-        return "OAuth " + ", ".join(headerComponents)
+        return "OAuth " + headerComponents.joinWithSeparator(", ")
     }
     
     public class func signatureForMethod(method: String, url: NSURL, parameters: Dictionary<String, AnyObject>, credential: OAuthSwiftCredential) -> String {
@@ -193,7 +193,7 @@ public class OAuthSwiftClient {
         var parameterComponents = parameters.urlEncodedQueryStringWithEncoding(dataEncoding).componentsSeparatedByString("&") as [String]
         parameterComponents.sortInPlace { $0 < $1 }
         
-        let parameterString = "&".join(parameterComponents)
+        let parameterString = parameterComponents.joinWithSeparator("&")
         let encodedParameterString = parameterString.urlEncodedStringWithEncoding(dataEncoding)
         
         let encodedURL = url.absoluteString.urlEncodedStringWithEncoding(dataEncoding)

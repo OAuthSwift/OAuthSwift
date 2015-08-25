@@ -110,7 +110,7 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLConnectionDataDelegate {
             
             let charset = CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(dataEncoding))
             
-            var nonOAuthParameters = parameters.filter { key, _ in !key.hasPrefix("oauth_") }
+            let nonOAuthParameters = parameters.filter { key, _ in !key.hasPrefix("oauth_") }
             
             if (body != nil && contentType != nil) {
                 request.setValue(contentType!, forHTTPHeaderField: "Content-Type")

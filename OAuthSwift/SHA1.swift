@@ -124,10 +124,10 @@ class SHA1 {
         
         // Produce the final hash value (big-endian) as a 160 bit number:
         let buf: NSMutableData = NSMutableData()
-        hh.map({ (item) -> () in
+        for item in hh {
             var i:UInt32 = item.bigEndian
             buf.appendBytes(&i, length: sizeofValue(i))
-        })
+        }
         
         return buf.copy() as! NSData
     }
