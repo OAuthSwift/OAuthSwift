@@ -36,7 +36,7 @@ github "dongri/OAuthSwift" ~> 0.3.4
 platform :ios, '8.0'
 use_frameworks!
 
-pod "OAuthSwift", "~> 0.3.4"
+pod "OAuthSwift", "~> 0.3.7"
 ```
 
 ### Setting URL Schemes
