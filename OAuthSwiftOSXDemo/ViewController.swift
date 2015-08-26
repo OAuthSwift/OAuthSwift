@@ -11,7 +11,7 @@ import OAuthSwiftOSX
 
 class ViewController: NSViewController , NSTableViewDelegate, NSTableViewDataSource {
 
-    var services = ["Twitter", "Flickr", "Github", "Instagram", "Foursquare", "Fitbit", "Withings", "Linkedin", "Linkedin2", "Dropbox", "Dribbble", "Salesforce", "BitBucket", "GoogleDrive", "Smugmug", "Intuit", "Zaim", "Tumblr", "Slack"]
+    var services = ["Twitter", "Flickr", "Github", "Instagram", "Foursquare", "Fitbit", "Withings", "Linkedin", "Linkedin2", "Dropbox", "Dribbble", "Salesforce", "BitBucket", "GoogleDrive", "Smugmug", "Intuit", "Zaim", "Tumblr", "Slack", "Uber"]
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -467,6 +467,25 @@ class ViewController: NSViewController , NSTableViewDelegate, NSTableViewDataSou
                 print(error.localizedDescription)
         })
     }
+    
+    func doOAuthUber(){
+        let oauthswift = OAuth2Swift(
+            consumerKey:    Uber["consumerKey"]!,
+            consumerSecret: Uber["consumerSecret"]!,
+            authorizeUrl:   "https://login.uber.com/oauth/authorize",
+            accessTokenUrl: "https://login.uber.com/oauth/token",
+            responseType:   "code",
+            contentType:    "multipart/form-data"
+        )
+        let state: String = generateStateWithLength(20) as String
+        let redirectURL = "https://oauthswift.herokuapp.com/callback/uber".stringByAddingPercentEncodingWithAllowedCharacters(.URLHostAllowedCharacterSet())
+        oauthswift.authorizeWithCallbackURL( NSURL(string: redirectURL!)!, scope: "profile", state: state, success: {
+            credential, response, parameters in
+            self.showAlertView("Uber", message: "oauth_token:\(credential.oauth_token)")
+            }, failure: {(error:NSError!) -> Void in
+                print(error.localizedDescription)
+        })
+    }
 
     func snapshot() -> NSData {
         var rep: NSBitmapImageRep = self.view.bitmapImageRepForCachingDisplayInRect(self.view.bounds)!
@@ -540,6 +559,8 @@ class ViewController: NSViewController , NSTableViewDelegate, NSTableViewDataSou
                     doOAuthTumblr()
                 case "Slack":
                     doOAuthSlack()
+                case "Uber":
+                    doOAuthUber()
                 default:
                     println("default (check ViewController tableView)")
                 }
