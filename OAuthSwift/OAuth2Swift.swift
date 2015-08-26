@@ -69,6 +69,7 @@ public class OAuth2Swift: NSObject {
             }
             if let accessToken = responseParameters["access_token"] {
                 self.client.credential.oauth_token = accessToken
+                self.client.credential.oauth2 = true
                 success(credential: self.client.credential, response: nil, parameters: responseParameters)
             }
             if let code = responseParameters["code"] {
