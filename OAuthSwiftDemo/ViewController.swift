@@ -11,7 +11,7 @@ import OAuthSwift
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
-    var services = ["Twitter", "Flickr", "Github", "Instagram", "Foursquare", "Fitbit", "Withings", "Linkedin", "Linkedin2", "Dropbox", "Dribbble", "Salesforce", "BitBucket", "GoogleDrive", "Smugmug", "Intuit", "Zaim", "Tumblr", "Slack"]
+    var services = ["Twitter", "Flickr", "Github", "Instagram", "Foursquare", "Fitbit", "Withings", "Linkedin", "Linkedin2", "Dropbox", "Dribbble", "Salesforce", "BitBucket", "GoogleDrive", "Smugmug", "Intuit", "Zaim", "Tumblr", "Slack", "Uber"]
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -351,7 +351,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         // in plist define a url schem with: your.bundle.id:
         oauthswift.authorizeWithCallbackURL( NSURL(string: "https://oauthswift.herokuapp.com/callback/google")!, scope: "https://www.googleapis.com/auth/drive", state: "", success: {
             credential, response, parameters in
-            self.showAlertView("Github", message: "oauth_token:\(credential.oauth_token)")
+            self.showAlertView("Google", message: "oauth_token:\(credential.oauth_token)")
             var parameters =  Dictionary<String, AnyObject>()
             // Multi-part upload
             oauthswift.client.postImage("https://www.googleapis.com/upload/drive/v2/files", parameters: parameters, image: self.snapshot(),
@@ -429,6 +429,25 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         })
     }
 
+    func doOAuthUber(){
+        let oauthswift = OAuth2Swift(
+            consumerKey:    Uber["consumerKey"]!,
+            consumerSecret: Uber["consumerSecret"]!,
+            authorizeUrl:   "https://login.uber.com/oauth/authorize",
+            accessTokenUrl: "https://login.uber.com/oauth/token",
+            responseType:   "code",
+            contentType:    "multipart/form-data"
+        )
+        let state: String = generateStateWithLength(20) as String
+        let redirectURL = "https://oauthswift.herokuapp.com/callback/uber".stringByAddingPercentEncodingWithAllowedCharacters(.URLHostAllowedCharacterSet())
+        oauthswift.authorizeWithCallbackURL( NSURL(string: redirectURL!)!, scope: "profile", state: state, success: {
+            credential, response, parameters in
+            self.showAlertView("Uber", message: "oauth_token:\(credential.oauth_token)")
+            }, failure: {(error:NSError!) -> Void in
+                print(error.localizedDescription)
+        })
+    }
+
     func snapshot() -> NSData {
         UIGraphicsBeginImageContext(self.view.frame.size)
         self.view.layer.renderInContext(UIGraphicsGetCurrentContext())
@@ -493,6 +512,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 doOAuthTumblr()
             case "Slack":
                 doOAuthSlack()
+            case "Uber":
+                doOAuthUber()
             default:
                 println("default (check ViewController tableView)")
         }
