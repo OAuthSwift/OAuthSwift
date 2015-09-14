@@ -36,9 +36,9 @@ public class OAuthWebViewController: OAuthViewController, OAuthSwiftURLHandlerTy
         #if os(iOS)
             self.dismissViewControllerAnimated(true, completion: nil)
         #elseif os(OSX)
-            if let p = self.presentingViewController { // if presentViewControllerAsModalWindow
+            if self.presentingViewController != nil { // if presentViewControllerAsModalWindow
                 self.dismissController(nil)
-                if let p = self.parentViewController {
+                if self.parentViewController != nil {
                     self.removeFromParentViewController()
                 }
             }

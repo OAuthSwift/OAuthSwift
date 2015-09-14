@@ -15,7 +15,7 @@ extension String {
         
         if let range = self.rangeOfString(sub) {
             if !range.isEmpty {
-                pos = distance(self.startIndex, range.startIndex)
+                pos = self.startIndex.distanceTo(range.startIndex)
             }
         }
         
@@ -24,8 +24,8 @@ extension String {
     
     internal subscript (r: Range<Int>) -> String {
         get {
-            let startIndex = advance(self.startIndex, r.startIndex)
-            let endIndex = advance(startIndex, r.endIndex - r.startIndex)
+            let startIndex = self.startIndex.advancedBy(r.startIndex)
+            let endIndex = startIndex.advancedBy(r.endIndex - r.startIndex)
             
             return self[Range(start: startIndex, end: endIndex)]
         }
@@ -35,7 +35,7 @@ extension String {
         let charactersToBeEscaped = ":/?&=;+!@#$()',*" as CFStringRef
         let charactersToLeaveUnescaped = "[]." as CFStringRef
 
-        var raw: NSString = self
+        let raw: NSString = self
         
         let result = CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, raw, charactersToLeaveUnescaped, charactersToBeEscaped, CFStringConvertNSStringEncodingToEncoding(encoding))
 
@@ -70,7 +70,7 @@ extension String {
     func split(s:String)->[String]{
         if s.isEmpty{
             var x=[String]()
-            for y in self{
+            for y in self.characters{
                 x.append(String(y))
             }
             return x
@@ -107,23 +107,23 @@ extension String {
     }
     //统计长度
     func length()->Int{
-        return count(self.utf16)
+        return self.utf16.count
     }
     //统计长度(别名)
     func size()->Int{
-        return count(self.utf16)
+        return self.utf16.count
     }
     //重复字符串
-    func repeat(times: Int) -> String{
+    func `repeat`(times: Int) -> String{
         var result = ""
-        for i in 0..<times {
+        for _ in 0..<times {
             result += self
         }
         return result
     }
     //反转
     func reverse()-> String{
-        var s=self.split("").reverse()
+        let s=Array(self.split("").reverse())
         var x=""
         for y in s{
             x+=y
