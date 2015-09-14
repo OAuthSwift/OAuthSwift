@@ -40,15 +40,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIWebViewDelegate {
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
-    
-    func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
-        print(url, appendNewline: false)
+    func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject?) -> Bool {
         if (url.host == "oauth-callback") {
             if (url.path!.hasPrefix("/twitter") || url.path!.hasPrefix("/flickr") || url.path!.hasPrefix("/fitbit")
              || url.path!.hasPrefix("/withings") || url.path!.hasPrefix("/linkedin") || url.path!.hasPrefix("/bitbucket") || url.path!.hasPrefix("/smugmug") || url.path!.hasPrefix("/intuit") || url.path!.hasPrefix("/zaim") || url.path!.hasPrefix("/tumblr")) {
                 OAuth1Swift.handleOpenURL(url)
             }
-            if ( url.path!.hasPrefix("/github" ) || url.path!.hasPrefix("/instagram" ) || url.path!.hasPrefix("/foursquare") || url.path!.hasPrefix("/dropbox") || url.path!.hasPrefix("/dribbble") || url.path!.hasPrefix("/salesforce") || url.path!.hasPrefix("/google") || url.path!.hasPrefix("/linkedin2") || url.path!.hasPrefix("/slack")) {
+            if ( url.path!.hasPrefix("/github" ) || url.path!.hasPrefix("/instagram" ) || url.path!.hasPrefix("/foursquare") || url.path!.hasPrefix("/dropbox") || url.path!.hasPrefix("/dribbble") || url.path!.hasPrefix("/salesforce") || url.path!.hasPrefix("/google") || url.path!.hasPrefix("/linkedin2") || url.path!.hasPrefix("/slack") || url.path!.hasPrefix("/uber")) {
                 OAuth2Swift.handleOpenURL(url)
             }
         } else {

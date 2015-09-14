@@ -103,3 +103,8 @@ let Slack =
     "consumerKey": "***",
     "consumerSecret": "***"
 ]
+let Uber =
+[
+    "consumerKey": "***",
+    "consumerSecret": "***"
+]

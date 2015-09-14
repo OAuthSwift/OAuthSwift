@@ -20,10 +20,17 @@ public class OAuth2Swift: NSObject {
     var access_token_url: String?
     var response_type: String
     var observer: AnyObject?
-    
+    var content_type: String?
+
     public convenience init(consumerKey: String, consumerSecret: String, authorizeUrl: String, accessTokenUrl: String, responseType: String){
         self.init(consumerKey: consumerKey, consumerSecret: consumerSecret, authorizeUrl: authorizeUrl, responseType: responseType)
         self.access_token_url = accessTokenUrl
+    }
+
+    public convenience init(consumerKey: String, consumerSecret: String, authorizeUrl: String, accessTokenUrl: String, responseType: String, contentType: String){
+        self.init(consumerKey: consumerKey, consumerSecret: consumerSecret, authorizeUrl: authorizeUrl, responseType: responseType)
+        self.access_token_url = accessTokenUrl
+        self.content_type = contentType
     }
 
     public init(consumerKey: String, consumerSecret: String, authorizeUrl: String, responseType: String){
@@ -62,6 +69,7 @@ public class OAuth2Swift: NSObject {
             }
             if let accessToken = responseParameters["access_token"] {
                 self.client.credential.oauth_token = accessToken
+                self.client.credential.oauth2 = true
                 success(credential: self.client.credential, response: nil, parameters: responseParameters)
             }
             if let code = responseParameters["code"] {
@@ -70,7 +78,10 @@ public class OAuth2Swift: NSObject {
                     success: { credential, response, responseParameters in
                         success(credential: credential, response: response, parameters: responseParameters)
                 }, failure: failure)
-                    
+            }
+            if let error = responseParameters["error"], error_description = responseParameters["error_description"] {
+                let errorInfo = [NSLocalizedFailureReasonErrorKey: NSLocalizedString(error, comment: error_description)]
+                failure(error: NSError(domain: OAuthSwiftErrorDomain, code: -1, userInfo: errorInfo))
             }
         })
         //let authorizeURL = NSURL(string: )
@@ -101,31 +112,47 @@ public class OAuth2Swift: NSObject {
         parameters["client_secret"] = self.consumer_secret
         parameters["code"] = code
         parameters["grant_type"] = "authorization_code"
-        parameters["redirect_uri"] = callbackURL.absoluteString
+        parameters["redirect_uri"] = callbackURL.absoluteString.stringByRemovingPercentEncoding
         
-        self.client.post(self.access_token_url!, parameters: parameters, success: {
-            data, response in
-            var responseJSON: AnyObject?
-            do {
-                responseJSON = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers)
-            } catch _ {
-                responseJSON = nil
-            }
+        if self.content_type == "multipart/form-data" {
+            self.client.postMultiPartRequest(self.access_token_url!, method: "POST", parameters: parameters, success: {
+                data, response in
+                let responseJSON: AnyObject? = try! NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers)
+                
+                let responseParameters: NSDictionary
+                
+                if responseJSON != nil {
+                    responseParameters = responseJSON as! NSDictionary
+                } else {
+                    let responseString = NSString(data: data, encoding: NSUTF8StringEncoding) as String!
+                    responseParameters = responseString.parametersFromQueryString()
+                }
+                
+                let accessToken = responseParameters["access_token"] as! String
+                self.client.credential.oauth_token = accessToken
+                self.client.credential.oauth2 = true
+                success(credential: self.client.credential, response: response, parameters: responseParameters)
+                }, failure: failure)
+        } else {
+            self.client.post(self.access_token_url!, parameters: parameters, success: {
+                data, response in
+                let responseJSON: AnyObject? = try! NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers)
 
-            let responseParameters: NSDictionary
+                let responseParameters: NSDictionary
 
-            if responseJSON != nil {
-                responseParameters = responseJSON as! NSDictionary
-            } else {
-                let responseString = NSString(data: data, encoding: NSUTF8StringEncoding) as String!
-                responseParameters = responseString.parametersFromQueryString()
-            }
+                if responseJSON != nil {
+                    responseParameters = responseJSON as! NSDictionary
+                } else {
+                    let responseString = NSString(data: data, encoding: NSUTF8StringEncoding) as String!
+                    responseParameters = responseString.parametersFromQueryString()
+                }
 
-            let accessToken = responseParameters["access_token"] as! String
-            self.client.credential.oauth_token = accessToken
-            self.client.credential.oauth2 = true
-            success(credential: self.client.credential, response: response, parameters: responseParameters)
-        }, failure: failure)
+                let accessToken = responseParameters["access_token"] as! String
+                self.client.credential.oauth_token = accessToken
+                self.client.credential.oauth2 = true
+                success(credential: self.client.credential, response: response, parameters: responseParameters)
+            }, failure: failure)
+        }
     }
     
     public class func handleOpenURL(url: NSURL) {
