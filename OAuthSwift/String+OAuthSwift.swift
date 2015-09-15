@@ -15,7 +15,7 @@ extension String {
         
         if let range = self.rangeOfString(sub) {
             if !range.isEmpty {
-                pos = distance(self.startIndex, range.startIndex)
+                pos = self.startIndex.distanceTo(range.startIndex)
             }
         }
         
@@ -24,8 +24,8 @@ extension String {
     
     internal subscript (r: Range<Int>) -> String {
         get {
-            let startIndex = advance(self.startIndex, r.startIndex)
-            let endIndex = advance(startIndex, r.endIndex - r.startIndex)
+            let startIndex = self.startIndex.advancedBy(r.startIndex)
+            let endIndex = startIndex.advancedBy(r.endIndex - r.startIndex)
             
             return self[Range(start: startIndex, end: endIndex)]
         }
