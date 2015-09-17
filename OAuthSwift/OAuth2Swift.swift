@@ -13,6 +13,7 @@ public class OAuth2Swift: NSObject {
     public var client: OAuthSwiftClient
 
     public var authorize_url_handler: OAuthSwiftURLHandlerType = OAuthSwiftOpenURLExternally.sharedInstance
+    public var authorize_url_block: (NSURL) -> () = {_ in }
 
     var consumer_key: String
     var consumer_secret: String
@@ -112,47 +113,37 @@ public class OAuth2Swift: NSObject {
         parameters["client_secret"] = self.consumer_secret
         parameters["code"] = code
         parameters["grant_type"] = "authorization_code"
-        parameters["redirect_uri"] = callbackURL.absoluteString.stringByRemovingPercentEncoding
+        parameters["redirect_uri"] = callbackURL.absoluteString
         
-        if self.content_type == "multipart/form-data" {
-            self.client.postMultiPartRequest(self.access_token_url!, method: "POST", parameters: parameters, success: {
-                data, response in
-                let responseJSON: AnyObject? = try? NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers)
-                
-                let responseParameters: NSDictionary
-                
-                if responseJSON != nil {
-                    responseParameters = responseJSON as! NSDictionary
-                } else {
-                    let responseString = NSString(data: data, encoding: NSUTF8StringEncoding) as String!
-                    responseParameters = responseString.parametersFromQueryString()
-                }
-                
-                let accessToken = responseParameters["access_token"] as! String
-                self.client.credential.oauth_token = accessToken
-                self.client.credential.oauth2 = true
-                success(credential: self.client.credential, response: response, parameters: responseParameters)
-                }, failure: failure)
-        } else {
-            self.client.post(self.access_token_url!, parameters: parameters, success: {
-                data, response in
-                let responseJSON: AnyObject? = try? NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers)
+        self.client.post(self.access_token_url!, parameters: parameters, success: {
+            data, response in
+            var responseJSON: AnyObject?
+            do {
+                responseJSON = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers)
+            } catch _ {
+                responseJSON = nil
+            }
 
-                let responseParameters: NSDictionary
+            let responseParameters: NSDictionary
 
-                if responseJSON != nil {
-                    responseParameters = responseJSON as! NSDictionary
-                } else {
-                    let responseString = NSString(data: data, encoding: NSUTF8StringEncoding) as String!
+            if responseJSON != nil {
+                responseParameters = responseJSON as! NSDictionary
+            } else {
+                let responseString = NSString(data: data, encoding: NSUTF8StringEncoding) as String!
                     responseParameters = responseString.parametersFromQueryString()
                 }
 
-                let accessToken = responseParameters["access_token"] as! String
-                self.client.credential.oauth_token = accessToken
-                self.client.credential.oauth2 = true
-                success(credential: self.client.credential, response: response, parameters: responseParameters)
-            }, failure: failure)
-        }
+            let accessToken = responseParameters["access_token"] as! String
+            if let refreshToken = responseParameters["refresh_token"] as? String {
+                self.client.credential.oauth_refresh_token = refreshToken
+            }
+            if let expiresIn = responseParameters["expires_in"] as? Double {
+                self.client.credential.oauth_expires_in = expiresIn
+            }
+            self.client.credential.oauth_token = accessToken
+            self.client.credential.oauth2 = true
+            success(credential: self.client.credential, response: response, parameters: responseParameters)
+        }, failure: failure)
     }
     
     public class func handleOpenURL(url: NSURL) {

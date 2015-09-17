@@ -8,8 +8,9 @@
 
 import UIKit
 import OAuthSwift
+import SafariServices
 
-class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, SFSafariViewControllerDelegate {
 
     var services = ["Twitter", "Flickr", "Github", "Instagram", "Foursquare", "Fitbit", "Withings", "Linkedin", "Linkedin2", "Dropbox", "Dribbble", "Salesforce", "BitBucket", "GoogleDrive", "Smugmug", "Intuit", "Zaim", "Tumblr", "Slack", "Uber"]
 
@@ -42,8 +43,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             oauthswift.client.get("https://api.twitter.com/1.1/statuses/mentions_timeline.json", parameters: parameters,
                 success: {
                     data, response in
-                    let jsonDict: AnyObject! = try? NSJSONSerialization.JSONObjectWithData(data, options: [])
-                    print(jsonDict)
+                    
+                    do{
+                        let jsonDict: AnyObject! = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments)
+                        print(jsonDict)
+                    } catch {
+                        print(error)
+                    }
+
                 }, failure: {(error:NSError!) -> Void in
                     print(error)
                 })
@@ -76,8 +83,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             oauthswift.client.get(url, parameters: parameters,
                 success: {
                     data, response in
-                    let jsonDict: AnyObject! = try? NSJSONSerialization.JSONObjectWithData(data, options: [])
-                    print(jsonDict)
+
+                    do{
+                        let jsonDict: AnyObject! = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments)
+                        print(jsonDict)
+                    } catch {
+                        print(error)
+                    }
+
                 }, failure: {(error:NSError!) -> Void in
                     print(error)
             })
@@ -128,7 +141,12 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         )
 
         let state: String = generateStateWithLength(20) as String
-        oauthswift.authorize_url_handler = WebViewController()
+        oauthswift.authorize_url_block = { queryURL in
+            let svc = SFSafariViewController(URL: queryURL, entersReaderIfAvailable: true)
+            svc.delegate = self
+            self.presentViewController(svc, animated: true, completion: nil)
+        }
+        
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/instagram")!, scope: "likes+comments", state:state, success: {
             credential, response, parameters in
             self.showAlertView("Instagram", message: "oauth_token:\(credential.oauth_token)")
@@ -137,8 +155,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             oauthswift.client.get(url, parameters: parameters,
                 success: {
                     data, response in
-                    let jsonDict: AnyObject! = try? NSJSONSerialization.JSONObjectWithData(data, options: [])
-                    print(jsonDict)
+
+                    do{
+                        let jsonDict: AnyObject! = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments)
+                        print(jsonDict)
+                    } catch {
+                        print(error)
+                    }
+
                 }, failure: {(error:NSError!) -> Void in
                     print(error)
             })
@@ -279,8 +303,13 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             oauthswift.client.get("https://api.dropbox.com/1/account/info?access_token=\(credential.oauth_token)", parameters: parameters,
                 success: {
                     data, response in
-                    let jsonDict: AnyObject! = try? NSJSONSerialization.JSONObjectWithData(data, options: [])
-                    print(jsonDict)
+                    do{
+                        let jsonDict: AnyObject! = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments)
+                        print(jsonDict)
+                    } catch {
+                        print(error)
+                    }
+
                 }, failure: {(error:NSError!) -> Void in
                     print(error)
                 })
@@ -305,8 +334,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             oauthswift.client.get("https://api.dribbble.com/v1/user?access_token=\(credential.oauth_token)", parameters: parameters,
                 success: {
                     data, response in
-                    let jsonDict: AnyObject! = try? NSJSONSerialization.JSONObjectWithData(data, options: [])
-                    print(jsonDict)
+
+                    do{
+                        let jsonDict: AnyObject! = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments)
+                        print(jsonDict)
+                    } catch {
+                        print(error)
+                    }
+
                 }, failure: {(error:NSError!) -> Void in
                     print(error)
                 })
@@ -357,8 +392,12 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             oauthswift.client.postImage("https://www.googleapis.com/upload/drive/v2/files", parameters: parameters, image: self.snapshot(),
                 success: {
                     data, response in
-                    let jsonDict: AnyObject! = try? NSJSONSerialization.JSONObjectWithData(data, options: [])
-                    print("SUCCESS: \(jsonDict)")
+                    do{
+                        let jsonDict: AnyObject! = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments)
+                        print("SUCCESS: \(jsonDict)")
+                    } catch {
+                        print(error)
+                    }
                 }, failure: {(error:NSError!) -> Void in
                     print(error)
             })
@@ -518,5 +557,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 print("default (check ViewController tableView)")
         }
         tableView.deselectRowAtIndexPath(indexPath, animated:true)
+    }
+    
+    func safariViewControllerDidFinish(controller: SFSafariViewController) {
+        controller.dismissViewControllerAnimated(true, completion: nil)
     }
 }

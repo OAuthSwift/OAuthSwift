@@ -94,9 +94,7 @@ public class OAuth1Swift: NSObject {
     // 1. Request token
     public func postOAuthRequestTokenWithCallbackURL(callbackURL: NSURL, success: TokenSuccessHandler, failure: FailureHandler?) {
         var parameters =  Dictionary<String, AnyObject>()
-        if let callbackURLString: String = callbackURL.absoluteString {
-            parameters["oauth_callback"] = callbackURLString
-        }
+        parameters["oauth_callback"] = callbackURL.absoluteString
         self.client.post(self.request_token_url, parameters: parameters, success: {
             data, response in
             let responseString = NSString(data: data, encoding: NSUTF8StringEncoding) as String!

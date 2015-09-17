@@ -13,6 +13,8 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
     var consumer_secret: String = String()
     public var oauth_token: String = String()
     public var oauth_token_secret: String = String()
+    public var oauth_refresh_token: String = String()
+    public var oauth_expires_in: Double = Double()
     var oauth_verifier: String = String()
     public var oauth2 = false
     
@@ -34,6 +36,8 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
         static let consumerSecret = base + "consumer_secret"
         static let oauthToken = base + "oauth_token"
         static let oauthTokenSecret = base + "oauth_token_secret"
+        static let oauthRefreshToken = base + "oauth_refresh_token"
+        static let oauthExpiresIn = base + "oauth_expires_in"
         static let oauthVerifier = base + "oauth_verifier"
     }
     
@@ -46,6 +50,8 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
         self.oauth_token = (decoder.decodeObjectForKey(CodingKeys.oauthToken) as? String) ?? String()
         self.oauth_token_secret = (decoder.decodeObjectForKey(CodingKeys.oauthTokenSecret) as? String) ?? String()
         self.oauth_verifier = (decoder.decodeObjectForKey(CodingKeys.oauthVerifier) as? String) ?? String()
+        self.oauth_refresh_token = (decoder.decodeObjectForKey(CodingKeys.oauthRefreshToken) as? String) ?? String()
+        self.oauth_expires_in = (decoder.decodeObjectForKey(CodingKeys.oauthExpiresIn) as? Double) ?? Double()
     }
     
     public func encodeWithCoder(coder: NSCoder) {
@@ -54,6 +60,8 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
         coder.encodeObject(self.oauth_token, forKey: CodingKeys.oauthToken)
         coder.encodeObject(self.oauth_token_secret, forKey: CodingKeys.oauthTokenSecret)
         coder.encodeObject(self.oauth_verifier, forKey: CodingKeys.oauthVerifier)
+        coder.encodeObject(self.oauth_refresh_token, forKey: CodingKeys.oauthRefreshToken)
+        coder.encodeObject(self.oauth_expires_in, forKey: CodingKeys.oauthExpiresIn)
     }
     // } // End NSCoding extension
 }

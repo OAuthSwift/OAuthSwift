@@ -46,7 +46,7 @@ extension Dictionary {
             parts.append(query)
         }
 
-        return parts.joinWithSeparator("&") as String
+        return parts.joinWithSeparator("&")
     }
     
 }
