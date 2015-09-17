@@ -9,7 +9,7 @@
 import Foundation
 
 extension NSMutableData {
-    internal func appendBytes(var arrayOfBytes: [UInt8]) {
+    internal func appendBytes(arrayOfBytes: [UInt8]) {
         self.appendBytes(arrayOfBytes, length: arrayOfBytes.count)
     }
     

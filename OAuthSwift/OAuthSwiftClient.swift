@@ -144,6 +144,66 @@ public class OAuthSwiftClient {
         return data
     }
 
+    public func postMultiPartRequest(url: String, method: String, parameters: Dictionary<String, AnyObject>, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
+        if let url = NSURL(string: url) {
+            let request = OAuthSwiftHTTPRequest(URL: url, method: method, parameters: parameters)
+            request.successHandler = success
+            request.failureHandler = failure
+            request.dataEncoding = dataEncoding
+            request.encodeParameters = true
+
+            let boundary = "POST-boundary-\(arc4random())-\(arc4random())"
+            let type = "multipart/form-data; boundary=\(boundary)"
+            let body = self.multiDataFromObject(parameters, boundary: boundary)
+
+            request.HTTPBodyMultipart = body
+            request.contentTypeMultipart = type
+            request.start()
+        }
+    }
+
+    func multiDataFromObject(object: [String:AnyObject], boundary: String) -> NSData? {
+        let data = NSMutableData()
+
+        let prefixString = "--\(boundary)\r\n"
+        let prefixData = prefixString.dataUsingEncoding(NSUTF8StringEncoding)!
+
+        let seperatorString = "\r\n"
+        let seperatorData = seperatorString.dataUsingEncoding(NSUTF8StringEncoding)!
+
+        for (key, value) in object {
+
+            var valueData: NSData?
+            let valueType: String = ""
+            let filenameClause = ""
+
+            let stringValue = "\(value)"
+            valueData = stringValue.dataUsingEncoding(NSUTF8StringEncoding)!
+
+            if valueData == nil {
+                continue
+            }
+            data.appendData(prefixData)
+            let contentDispositionString = "Content-Disposition: form-data; name=\"\(key)\";\(filenameClause)\r\n"
+            let contentDispositionData = contentDispositionString.dataUsingEncoding(NSUTF8StringEncoding)
+            data.appendData(contentDispositionData!)
+            if let type: String = valueType {
+                let contentTypeString = "Content-Type: \(type)\r\n"
+                let contentTypeData = contentTypeString.dataUsingEncoding(NSUTF8StringEncoding)
+                data.appendData(contentTypeData!)
+            }
+            data.appendData(seperatorData)
+            data.appendData(valueData!)
+            data.appendData(seperatorData)
+        }
+
+        let endingString = "--\(boundary)--\r\n"
+        let endingData = endingString.dataUsingEncoding(NSUTF8StringEncoding)!
+        data.appendData(endingData)
+
+        return data
+    }
+
     public class func authorizationHeaderForMethod(method: String, url: NSURL, parameters: Dictionary<String, AnyObject>, credential: OAuthSwiftCredential) -> String {
         var authorizationParameters = Dictionary<String, AnyObject>()
         authorizationParameters["oauth_version"] = OAuth.version

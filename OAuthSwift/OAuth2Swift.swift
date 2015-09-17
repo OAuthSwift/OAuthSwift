@@ -21,10 +21,17 @@ public class OAuth2Swift: NSObject {
     var access_token_url: String?
     var response_type: String
     var observer: AnyObject?
-    
+    var content_type: String?
+
     public convenience init(consumerKey: String, consumerSecret: String, authorizeUrl: String, accessTokenUrl: String, responseType: String){
         self.init(consumerKey: consumerKey, consumerSecret: consumerSecret, authorizeUrl: authorizeUrl, responseType: responseType)
         self.access_token_url = accessTokenUrl
+    }
+
+    public convenience init(consumerKey: String, consumerSecret: String, authorizeUrl: String, accessTokenUrl: String, responseType: String, contentType: String){
+        self.init(consumerKey: consumerKey, consumerSecret: consumerSecret, authorizeUrl: authorizeUrl, responseType: responseType)
+        self.access_token_url = accessTokenUrl
+        self.content_type = contentType
     }
 
     public init(consumerKey: String, consumerSecret: String, authorizeUrl: String, responseType: String){
@@ -63,6 +70,7 @@ public class OAuth2Swift: NSObject {
             }
             if let accessToken = responseParameters["access_token"] {
                 self.client.credential.oauth_token = accessToken
+                self.client.credential.oauth2 = true
                 success(credential: self.client.credential, response: nil, parameters: responseParameters)
             }
             if let code = responseParameters["code"] {
@@ -95,8 +103,7 @@ public class OAuth2Swift: NSObject {
         }
 
         if let queryURL = NSURL(string: urlString) {
-           //self.authorize_url_handler.handle(queryURL)
-           self.authorize_url_block(queryURL)
+           self.authorize_url_handler.handle(queryURL)
         }
     }
     
@@ -123,8 +130,8 @@ public class OAuth2Swift: NSObject {
                 responseParameters = responseJSON as! NSDictionary
             } else {
                 let responseString = NSString(data: data, encoding: NSUTF8StringEncoding) as String!
-                responseParameters = responseString.parametersFromQueryString()
-            }
+                    responseParameters = responseString.parametersFromQueryString()
+                }
 
             let accessToken = responseParameters["access_token"] as! String
             if let refreshToken = responseParameters["refresh_token"] as? String {

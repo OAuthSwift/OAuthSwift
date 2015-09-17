@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name = 'OAuthSwift'
-  s.version = '0.3.6'
+  s.version = '0.4.0'
   s.license = 'MIT'
   s.summary = 'Swift based OAuth library for iOS and OSX.'
   s.homepage = 'https://github.com/dongri/OAuthSwift'

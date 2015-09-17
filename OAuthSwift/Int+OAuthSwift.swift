@@ -16,7 +16,6 @@ extension Int {
 
 func arrayOfBytes<T>(value:T, length:Int? = nil) -> [UInt8] {
     let totalBytes = length ?? (sizeofValue(value) * 8)
-    var v = value
     
     let valuePointer = UnsafeMutablePointer<T>.alloc(1)
     valuePointer.memory = value
