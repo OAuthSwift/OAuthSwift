@@ -17,8 +17,8 @@ class SHA1 {
     }
     
     /** Common part for hash calculation. Prepare header data. */
-    func prepare(_ len:Int = 64) -> NSMutableData {
-        var tmpMessage: NSMutableData = NSMutableData(data: self.message)
+    func prepare(len:Int = 64) -> NSMutableData {
+        let tmpMessage: NSMutableData = NSMutableData(data: self.message)
         
         // Step 1. Append Padding Bits
         tmpMessage.appendBytes([0x80]) // append one bit (Byte with one bit) to message
@@ -37,7 +37,7 @@ class SHA1 {
         let len = 64
         let h:[UInt32] = [0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476, 0xC3D2E1F0]
 
-        var tmpMessage: NSMutableData = NSMutableData(data: self.message)
+        let tmpMessage: NSMutableData = NSMutableData(data: self.message)
         
         // Step 1. Append Padding Bits
         tmpMessage.appendBytes([0x80]) // append one bit (Byte with one bit) to message
@@ -69,7 +69,7 @@ class SHA1 {
                     M[x] = le.bigEndian
                     break
                 default:
-                    M[x] = rotateLeft(M[x-3] ^ M[x-8] ^ M[x-14] ^ M[x-16], 1)
+                    M[x] = rotateLeft(M[x-3] ^ M[x-8] ^ M[x-14] ^ M[x-16], n: 1)
                     break
                 }
             }
@@ -106,10 +106,10 @@ class SHA1 {
                     break
                 }
                 
-                var temp = (rotateLeft(A,5) &+ f &+ E &+ M[j] &+ k) & 0xffffffff
+                let temp = (rotateLeft(A,n: 5) &+ f &+ E &+ M[j] &+ k) & 0xffffffff
                 E = D
                 D = C
-                C = rotateLeft(B, 30)
+                C = rotateLeft(B, n: 30)
                 B = A
                 A = temp
                 
@@ -123,8 +123,8 @@ class SHA1 {
         }
         
         // Produce the final hash value (big-endian) as a 160 bit number:
-        var buf: NSMutableData = NSMutableData()
-        hh.map({ (item) -> () in
+        let buf: NSMutableData = NSMutableData()
+        hh.forEach({ (item) -> () in
             var i:UInt32 = item.bigEndian
             buf.appendBytes(&i, length: sizeofValue(i))
         })
