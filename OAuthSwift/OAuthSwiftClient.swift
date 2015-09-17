@@ -79,7 +79,7 @@ public class OAuthSwiftClient {
         
         if let url = NSURL(string: url) {
         
-            var request = OAuthSwiftHTTPRequest(URL: url, method: method, parameters: parameters)
+            let request = OAuthSwiftHTTPRequest(URL: url, method: method, parameters: parameters)
             if self.credential.oauth2 {
                 request.headers = ["Authorization": "Bearer \(self.credential.oauth_token)"]
             } else {
@@ -94,8 +94,8 @@ public class OAuthSwiftClient {
             var parmaImage = [String: AnyObject]()
             parmaImage["media"] = image
             let boundary = "AS-boundary-\(arc4random())-\(arc4random())"
-            var type = "multipart/form-data; boundary=\(boundary)"
-            var body = self.multiPartBodyFromParams(parmaImage, boundary: boundary)
+            let type = "multipart/form-data; boundary=\(boundary)"
+            let body = self.multiPartBodyFromParams(parmaImage, boundary: boundary)
             
             request.HTTPBodyMultipart = body
             request.contentTypeMultipart = type
@@ -105,7 +105,7 @@ public class OAuthSwiftClient {
     }
     
     public func multiPartBodyFromParams(parameters: [String: AnyObject], boundary: String) -> NSData {
-        var data = NSMutableData()
+        let data = NSMutableData()
         
         let prefixData = "--\(boundary)\r\n".dataUsingEncoding(NSUTF8StringEncoding)
         let seperData = "\r\n".dataUsingEncoding(NSUTF8StringEncoding)
@@ -146,15 +146,15 @@ public class OAuthSwiftClient {
 
     public func postMultiPartRequest(url: String, method: String, parameters: Dictionary<String, AnyObject>, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
         if let url = NSURL(string: url) {
-            var request = OAuthSwiftHTTPRequest(URL: url, method: method, parameters: parameters)
+            let request = OAuthSwiftHTTPRequest(URL: url, method: method, parameters: parameters)
             request.successHandler = success
             request.failureHandler = failure
             request.dataEncoding = dataEncoding
             request.encodeParameters = true
 
             let boundary = "POST-boundary-\(arc4random())-\(arc4random())"
-            var type = "multipart/form-data; boundary=\(boundary)"
-            var body = self.multiDataFromObject(parameters, boundary: boundary)
+            let type = "multipart/form-data; boundary=\(boundary)"
+            let body = self.multiDataFromObject(parameters, boundary: boundary)
 
             request.HTTPBodyMultipart = body
             request.contentTypeMultipart = type
@@ -163,7 +163,7 @@ public class OAuthSwiftClient {
     }
 
     func multiDataFromObject(object: [String:AnyObject], boundary: String) -> NSData? {
-        var data = NSMutableData()
+        let data = NSMutableData()
 
         let prefixString = "--\(boundary)\r\n"
         let prefixData = prefixString.dataUsingEncoding(NSUTF8StringEncoding)!
@@ -174,8 +174,8 @@ public class OAuthSwiftClient {
         for (key, value) in object {
 
             var valueData: NSData?
-            var valueType: String?
-            var filenameClause = ""
+            let valueType: String = ""
+            let filenameClause = ""
 
             let stringValue = "\(value)"
             valueData = stringValue.dataUsingEncoding(NSUTF8StringEncoding)!
@@ -187,7 +187,7 @@ public class OAuthSwiftClient {
             let contentDispositionString = "Content-Disposition: form-data; name=\"\(key)\";\(filenameClause)\r\n"
             let contentDispositionData = contentDispositionString.dataUsingEncoding(NSUTF8StringEncoding)
             data.appendData(contentDispositionData!)
-            if let type = valueType {
+            if let type: String = valueType {
                 let contentTypeString = "Content-Type: \(type)\r\n"
                 let contentTypeData = contentTypeString.dataUsingEncoding(NSUTF8StringEncoding)
                 data.appendData(contentTypeData!)
@@ -216,7 +216,7 @@ public class OAuthSwiftClient {
             authorizationParameters["oauth_token"] = credential.oauth_token
         }
         
-        for (key, value: AnyObject) in parameters {
+        for (key, value) in parameters {
             if key.hasPrefix("oauth_") {
                 authorizationParameters.updateValue(value, forKey: key)
             }
@@ -229,7 +229,7 @@ public class OAuthSwiftClient {
         authorizationParameters["oauth_signature"] = self.signatureForMethod(method, url: url, parameters: finalParameters, credential: credential)
         
         var parameterComponents = authorizationParameters.urlEncodedQueryStringWithEncoding(dataEncoding).componentsSeparatedByString("&") as [String]
-        parameterComponents.sort { $0 < $1 }
+        parameterComponents.sortInPlace { $0 < $1 }
         
         var headerComponents = [String]()
         for component in parameterComponents {
@@ -239,7 +239,7 @@ public class OAuthSwiftClient {
             }
         }
         
-        return "OAuth " + ", ".join(headerComponents)
+        return "OAuth " + headerComponents.joinWithSeparator(", ")
     }
     
     public class func signatureForMethod(method: String, url: NSURL, parameters: Dictionary<String, AnyObject>, credential: OAuthSwiftCredential) -> String {
@@ -251,18 +251,18 @@ public class OAuthSwiftClient {
         let signingKey = "\(encodedConsumerSecret)&\(tokenSecret)"
         
         var parameterComponents = parameters.urlEncodedQueryStringWithEncoding(dataEncoding).componentsSeparatedByString("&") as [String]
-        parameterComponents.sort { $0 < $1 }
+        parameterComponents.sortInPlace { $0 < $1 }
         
-        let parameterString = "&".join(parameterComponents)
+        let parameterString = parameterComponents.joinWithSeparator("&")
         let encodedParameterString = parameterString.urlEncodedStringWithEncoding(dataEncoding)
         
-        let encodedURL = url.absoluteString!.urlEncodedStringWithEncoding(dataEncoding)
+        let encodedURL = url.absoluteString.urlEncodedStringWithEncoding(dataEncoding)
         
         let signatureBaseString = "\(method)&\(encodedURL)&\(encodedParameterString)"
         
         let key = signingKey.dataUsingEncoding(NSUTF8StringEncoding)!
         let msg = signatureBaseString.dataUsingEncoding(NSUTF8StringEncoding)!
         let sha1 = HMAC.sha1(key: key, message: msg)!
-        return sha1.base64EncodedStringWithOptions(nil)
+        return sha1.base64EncodedStringWithOptions([])
     }
 }
