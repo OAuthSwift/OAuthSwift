@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Dongri Jin. All rights reserved.
 //
 
-import Foundation
+import AppKit
 
 @objc public protocol OAuthSwiftURLHandlerType {
     func handle(url: NSURL)
