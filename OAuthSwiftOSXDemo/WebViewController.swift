@@ -7,7 +7,7 @@
 //
 
 import AppKit
-import OAuthSwiftOSX
+import OAuthSwift
 import WebKit
 
 class WebViewController: OAuthWebViewController {
