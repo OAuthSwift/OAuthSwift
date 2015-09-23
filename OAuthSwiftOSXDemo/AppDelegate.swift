@@ -7,7 +7,7 @@
 //
 
 import Cocoa
-import OAuthSwiftOSX
+import OAuthSwift
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {

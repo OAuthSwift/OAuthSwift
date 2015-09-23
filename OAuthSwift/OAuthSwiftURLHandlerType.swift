@@ -8,6 +8,12 @@
 
 import Foundation
 
+#if os(iOS)
+    import UIKit
+#elseif os(OSX)
+    import AppKit
+#endif
+
 @objc public protocol OAuthSwiftURLHandlerType {
     func handle(url: NSURL)
 }
