@@ -62,10 +62,10 @@ public class OAuth2Swift: NSObject {
             let url = notification.userInfo![CallbackNotification.optionsURLKey] as! NSURL
             var responseParameters: Dictionary<String, String> = Dictionary()
             if let query = url.query {
-                responseParameters = query.parametersFromQueryString()
+                responseParameters += query.parametersFromQueryString()
             }
             if ((url.fragment) != nil && url.fragment!.isEmpty == false) {
-                responseParameters = url.fragment!.parametersFromQueryString()
+                responseParameters += url.fragment!.parametersFromQueryString()
             }
             if let accessToken = responseParameters["access_token"] {
                 self.client.credential.oauth_token = accessToken
