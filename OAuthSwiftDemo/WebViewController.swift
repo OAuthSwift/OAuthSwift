@@ -15,7 +15,7 @@ class WebViewController: OAuthWebViewController, UIWebViewDelegate {
     let webView : UIWebView = UIWebView()
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.webView.frame = UIScreen.mainScreen().applicationFrame
+        self.webView.frame = UIScreen.mainScreen().bounds
         self.webView.scalesPageToFit = true
         self.webView.delegate = self
         self.view.addSubview(self.webView)
