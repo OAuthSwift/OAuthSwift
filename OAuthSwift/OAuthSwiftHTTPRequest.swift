@@ -71,7 +71,7 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLConnectionDataDelegate {
             var error: NSError?
             
             do {
-                self.request = try OAuthSwiftHTTPRequest.makeRequest(self.URL, method: self.HTTPMethod, headers: self.headers, parameters: self.parameters, dataEncoding: self.dataEncoding, encodeParameters: self.encodeParameters, body: self.HTTPBodyMultipart, contentType: self.contentTypeMultipart)
+                self.request = try self.makeRequest()
             } catch let error1 as NSError {
                 error = error1
                 self.request = nil
@@ -92,7 +92,12 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLConnectionDataDelegate {
         }
     }
     
-    public class func makeRequest(        URL: NSURL,
+    public func makeRequest() throws -> NSMutableURLRequest {
+        return try OAuthSwiftHTTPRequest.makeRequest(self.URL, method: self.HTTPMethod, headers: self.headers, parameters: self.parameters, dataEncoding: self.dataEncoding, encodeParameters: self.encodeParameters, body: self.HTTPBodyMultipart, contentType: self.contentTypeMultipart)
+    }
+    
+    public class func makeRequest(
+        URL: NSURL,
         method: String,
         headers: [String : String],
         parameters: Dictionary<String, AnyObject>,
