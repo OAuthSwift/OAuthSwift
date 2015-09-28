@@ -82,18 +82,40 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate {
             }
         }
 
-        dispatch_async(dispatch_get_main_queue()) {
+        dispatch_async(dispatch_get_main_queue(), {
             self.session = NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration(),
                 delegate: self,
-                delegateQueue: nil)
+                delegateQueue: NSOperationQueue.mainQueue())
+            let task: NSURLSessionDataTask = self.session.dataTaskWithRequest(self.request!) { data, response, error -> Void in
+                #if os(iOS)
+                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                #endif
+                
+                self.response = response as? NSHTTPURLResponse
+                self.responseData.length = 0
+                self.responseData.appendData(data!)
+                
+                if self.response.statusCode >= 400 {
+                    let responseString = NSString(data: self.responseData, encoding: self.dataEncoding)
+                    let localizedDescription = OAuthSwiftHTTPRequest.descriptionForHTTPStatus(self.response.statusCode, responseString: responseString! as String)
+                    let userInfo : [NSObject : AnyObject] = [NSLocalizedDescriptionKey: localizedDescription, "Response-Headers": self.response.allHeaderFields]
+                    let error = NSError(domain: NSURLErrorDomain, code: self.response.statusCode, userInfo: userInfo)
+                    self.failureHandler?(error: error)
+                    return
+                }
+                
+                self.successHandler?(data: self.responseData, response: self.response)
+            }
+            task.resume()
 
             #if os(iOS)
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = true
             #endif
-        }
+        })
     }
 
-    public class func makeRequest(        URL: NSURL,
+    public class func makeRequest(
+        URL: NSURL,
         method: String,
         headers: [String : String],
         parameters: Dictionary<String, AnyObject>,
@@ -150,30 +172,6 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate {
                 }
             }
             return request
-    }
-
-    public func URLSession(session: NSURLSession, didBecomeInvalidWithError error: NSError?) {
-        session.dataTaskWithRequest(request!) { data, response, error -> Void in
-            #if os(iOS)
-                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-            #endif
-
-            self.response = response as? NSHTTPURLResponse
-            self.responseData.length = 0
-            self.responseData.appendData(data!)
-
-            if self.response.statusCode >= 400 {
-                let responseString = NSString(data: self.responseData, encoding: self.dataEncoding)
-                let localizedDescription = OAuthSwiftHTTPRequest.descriptionForHTTPStatus(self.response.statusCode, responseString: responseString! as String)
-                let userInfo : [NSObject : AnyObject] = [NSLocalizedDescriptionKey: localizedDescription, "Response-Headers": self.response.allHeaderFields]
-                let error = NSError(domain: NSURLErrorDomain, code: self.response.statusCode, userInfo: userInfo)
-                self.failureHandler?(error: error)
-                return
-            }
-
-            self.successHandler?(data: self.responseData, response: self.response)
-            self.failureHandler?(error: error!)
-        }
     }
 
     class func stringWithData(data: NSData, encodingName: String?) -> String {
