@@ -98,6 +98,7 @@ public class OAuth1Swift: NSObject {
         if let callbackURLString: String = callbackURL.absoluteString {
             parameters["oauth_callback"] = callbackURLString
         }
+        self.client.credential.oauth_header_type = "oauth1"
         self.client.post(self.request_token_url, parameters: parameters, success: {
             data, response in
             let responseString = NSString(data: data, encoding: NSUTF8StringEncoding) as String!

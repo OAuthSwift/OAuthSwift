@@ -19,7 +19,7 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
     public var oauth_token: String = String()
     public var oauth_token_secret: String = String()
     var oauth_verifier: String = String()
-    public var oauth2 = false
+    public var oauth_header_type = String()
     
     override init(){
         
@@ -63,12 +63,13 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
     // } // End NSCoding extension
 
     public func makeHeaders(url:NSURL, method: String, parameters: Dictionary<String, AnyObject>) -> Dictionary<String, String> {
-        if self.oauth2 {
-            return ["Authorization": "Bearer \(self.oauth_token)"]
-        }
-        else {
+        if self.oauth_header_type == "oauth1" {
             return ["Authorization": self.authorizationHeaderForMethod(method, url: url, parameters: parameters)]
         }
+        if self.oauth_header_type == "oauth2" {
+            return ["Authorization": "Bearer \(self.oauth_token)"]
+        }
+        return [:]
     }
 
     public func authorizationHeaderForMethod(method: String, url: NSURL, parameters: Dictionary<String, AnyObject>) -> String {
