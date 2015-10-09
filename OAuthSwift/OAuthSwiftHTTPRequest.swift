@@ -91,6 +91,11 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate {
                     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                 #endif
                 
+                guard data != nil else {
+                    self.failureHandler?( error: error ?? NSError(domain: NSURLErrorDomain, code:NSURLErrorUnknown, userInfo: nil))
+                    return
+                }
+                
                 self.response = response as? NSHTTPURLResponse
                 self.responseData.length = 0
                 self.responseData.appendData(data!)
