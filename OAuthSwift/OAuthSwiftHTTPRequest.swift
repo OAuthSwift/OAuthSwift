@@ -91,18 +91,17 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate {
                 #if os(iOS)
                     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                 #endif
-
-                guard let response = response as? NSHTTPURLResponse where response.statusCode < 400
+                self.response = response as? NSHTTPURLResponse
+                guard let response = self.response where response.statusCode < 400
                 else {
-                    let responseString = NSString(data: self.responseData, encoding: self.dataEncoding)
-                    let localizedDescription = OAuthSwiftHTTPRequest.descriptionForHTTPStatus(self.response.statusCode, responseString: responseString! as String)
+                    let responseString = NSString(data: self.responseData, encoding: self.dataEncoding) as! String
+                    let localizedDescription = OAuthSwiftHTTPRequest.descriptionForHTTPStatus(self.response.statusCode, responseString: responseString)
                     let userInfo : [NSObject : AnyObject] = [NSLocalizedDescriptionKey: localizedDescription, "Response-Headers": self.response.allHeaderFields]
                     let error = NSError(domain: NSURLErrorDomain, code: self.response.statusCode, userInfo: userInfo)
                     self.failureHandler?(error: error)
                     return
                 }
 
-                self.response = response
                 self.responseData.length = 0
                 self.responseData.appendData(data!)
                 self.successHandler?(data: self.responseData, response: self.response)
