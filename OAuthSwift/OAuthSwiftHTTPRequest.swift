@@ -86,10 +86,19 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate {
             self.session = NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration(),
                 delegate: self,
                 delegateQueue: NSOperationQueue.mainQueue())
-            let task: NSURLSessionDataTask = self.session.dataTaskWithRequest(self.request!) { data, response, error -> Void in
+            let task: NSURLSessionDataTask = self.session.dataTaskWithRequest(self.request!) { [unowned self] data, response, error -> Void in
                 #if os(iOS)
                     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                 #endif
+                
+                guard self.response.statusCode == 400 && error != nil && data != nil else {
+                    let responseString = NSString(data: self.responseData, encoding: self.dataEncoding)
+                    let localizedDescription = OAuthSwiftHTTPRequest.descriptionForHTTPStatus(self.response.statusCode, responseString: responseString! as String)
+                    let userInfo : [NSObject : AnyObject] = [NSLocalizedDescriptionKey: localizedDescription, "Response-Headers": self.response.allHeaderFields]
+                    let error = NSError(domain: NSURLErrorDomain, code: self.response.statusCode, userInfo: userInfo)
+                    self.failureHandler?(error: error)
+                    return
+                }
                 
                 self.response = response as? NSHTTPURLResponse
                 self.responseData.length = 0
