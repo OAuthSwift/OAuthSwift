@@ -91,20 +91,23 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate {
                 #if os(iOS)
                     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                 #endif
-                self.response = response
-                guard let response = self.response as? NSHTTPURLResponse where response.statusCode < 400
-                else {
-                    let responseString = NSString(data: self.responseData, encoding: self.dataEncoding) as! String
-                    let localizedDescription = OAuthSwiftHTTPRequest.descriptionForHTTPStatus(self.response.statusCode, responseString: responseString)
-                    let userInfo : [NSObject : AnyObject] = [NSLocalizedDescriptionKey: localizedDescription, "Response-Headers": self.response.allHeaderFields]
-                    let error = NSError(domain: NSURLErrorDomain, code: self.response.statusCode, userInfo: userInfo)
+                if let resp = response as? NSHTTPURLResponse {
+                    self.response = resp
+                    guard self.response.statusCode < 400
+                        else {
+                            let responseString = NSString(data: self.responseData, encoding: self.dataEncoding) as! String
+                            let localizedDescription = OAuthSwiftHTTPRequest.descriptionForHTTPStatus(self.response.statusCode, responseString: responseString)
+                            let userInfo : [NSObject : AnyObject] = [NSLocalizedDescriptionKey: localizedDescription, "Response-Headers": self.response.allHeaderFields]
+                            let error = NSError(domain: NSURLErrorDomain, code: self.response.statusCode, userInfo: userInfo)
+                            self.failureHandler?(error: error)
+                            return
+                    }
+                    self.responseData.length = 0
+                    self.responseData.appendData(data!)
+                    self.successHandler?(data: self.responseData, response: self.response)
+                } else if let error = error{
                     self.failureHandler?(error: error)
-                    return
                 }
-
-                self.responseData.length = 0
-                self.responseData.appendData(data!)
-                self.successHandler?(data: self.responseData, response: self.response)
             }
             task.resume()
 
