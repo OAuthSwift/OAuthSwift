@@ -91,7 +91,12 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate {
                     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                 #endif
                 
-                guard response != nil && (response as? NSHTTPURLResponse) != nil && error == nil && data != nil else {
+                guard error == nil else {
+                    self.failureHandler?(error: error!)
+                    return
+                }
+
+                guard response != nil && (response as? NSHTTPURLResponse) != nil && data != nil else {
                     let responseString = NSString(data: self.responseData, encoding: self.dataEncoding)
                     let localizedDescription = OAuthSwiftHTTPRequest.descriptionForHTTPStatus(self.response.statusCode, responseString: responseString! as String)
                     let userInfo : [NSObject : AnyObject] = [NSLocalizedDescriptionKey: localizedDescription, "Response-Headers": self.response.allHeaderFields]
