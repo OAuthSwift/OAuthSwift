@@ -56,8 +56,35 @@ public class OAuthSwiftClient {
 
     public func makeRequest(urlString: String, method: String, parameters: Dictionary<String, AnyObject>) -> OAuthSwiftHTTPRequest? {
         if let url = NSURL(string: urlString) {
-            let request = OAuthSwiftHTTPRequest(URL: url, method: method, parameters: parameters)
-            request.headers = self.credential.makeHeaders(url, method: method, parameters: parameters)
+
+            // Need to account for the fact that some consumers will have additional parameters on the
+            // querystring, including in the case of fetching a request token. Especially in the case of
+            // additional parameters on the request, authorize, or access token exchanges, we need to 
+            // normalize the URL and add to the parametes collection.
+            
+            var finalUrl = url
+            var queryStringParameters = Dictionary<String, AnyObject>()
+            let urlComponents = NSURLComponents(URL: url, resolvingAgainstBaseURL: false )
+            if let queryItems = urlComponents!.queryItems {
+                for queryItem in queryItems {
+                    queryStringParameters.updateValue(queryItem.value!.stringByRemovingPercentEncoding!, forKey: queryItem.name)
+                }
+            }
+            
+            // According to the OAuth1.0a spec, the url used for signing is ONLY scheme, path, and query
+            if(queryStringParameters.count>0)
+            {
+                let scheme=url.scheme.lowercaseString
+                let host=url.host!.lowercaseString
+                let path=url.path!
+                // This is safe to unwrap because these just came from an NSURL
+                finalUrl=NSURL(scheme: scheme, host: host, path: path)!
+            }
+            let combinedParameters=parameters.join(queryStringParameters)
+            
+            let request = OAuthSwiftHTTPRequest(URL: finalUrl, method: method, parameters: combinedParameters)
+            request.headers = self.credential.makeHeaders(finalUrl, method: method, parameters: combinedParameters)
+            
             request.dataEncoding = dataEncoding
             request.encodeParameters = true
             return request
