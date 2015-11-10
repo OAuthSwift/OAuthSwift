@@ -144,7 +144,13 @@ public class OAuth2Swift: NSObject {
                     responseParameters = responseString.parametersFromQueryString()
                 }
 
-                let accessToken = responseParameters["access_token"] as! String
+                guard let accessToken = responseParameters["access_token"] as? String else {
+                    if let failure = failure {
+                        let errorInfo = [NSLocalizedFailureReasonErrorKey: NSLocalizedString("Could not get Access Token", comment: "Due to an error in the OAuth2 process, we couldn't get a valid token.")]
+                        failure(error: NSError(domain: OAuthSwiftErrorDomain, code: -1, userInfo: errorInfo))
+                    }
+                    return
+                }
                 self.client.credential.oauth_token = accessToken
                 success(credential: self.client.credential, response: response, parameters: responseParameters)
             }, failure: failure)
