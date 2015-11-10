@@ -9,9 +9,21 @@ import Foundation
 
 public class OAuthSwiftCredential: NSObject, NSCoding {
 
-    struct OAuth {
-        static let version = "1.0"
-        static let signatureMethod = "HMAC-SHA1"
+    public enum Version {
+        case OAuth1, OAuth2
+        
+        public var shortVersion : String {
+            switch self {
+            case .OAuth1:
+                return "1.0"
+            case .OAuth2:
+                return "2.0"
+            }
+        }
+        
+        public var signatureMethod: String {
+            return "HMAC-SHA1"
+        }
     }
     
     var consumer_key: String = String()
@@ -19,7 +31,7 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
     public var oauth_token: String = String()
     public var oauth_token_secret: String = String()
     var oauth_verifier: String = String()
-    public var oauth_header_type = String()
+    public var version: Version = .OAuth1
     
     override init(){
         
@@ -63,19 +75,19 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
     // } // End NSCoding extension
 
     public func makeHeaders(url:NSURL, method: String, parameters: Dictionary<String, AnyObject>) -> Dictionary<String, String> {
-        if self.oauth_header_type == "oauth1" {
+        switch self.version {
+        case .OAuth1:
             return ["Authorization": self.authorizationHeaderForMethod(method, url: url, parameters: parameters)]
-        }
-        if self.oauth_header_type == "oauth2" {
+        case .OAuth2:
             return ["Authorization": "Bearer \(self.oauth_token)"]
         }
-        return [:]
     }
 
     public func authorizationHeaderForMethod(method: String, url: NSURL, parameters: Dictionary<String, AnyObject>) -> String {
+        assert(self.version == .OAuth1)
         var authorizationParameters = Dictionary<String, AnyObject>()
-        authorizationParameters["oauth_version"] = OAuth.version
-        authorizationParameters["oauth_signature_method"] =  OAuth.signatureMethod
+        authorizationParameters["oauth_version"] = self.version.shortVersion
+        authorizationParameters["oauth_signature_method"] =  self.version.signatureMethod
         authorizationParameters["oauth_consumer_key"] = self.consumer_key
         authorizationParameters["oauth_timestamp"] = String(Int64(NSDate().timeIntervalSince1970))
         authorizationParameters["oauth_nonce"] = (NSUUID().UUIDString as NSString).substringToIndex(8)

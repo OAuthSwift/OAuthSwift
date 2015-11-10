@@ -13,8 +13,12 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate {
     public typealias SuccessHandler = (data: NSData, response: NSHTTPURLResponse) -> Void
     public typealias FailureHandler = (error: NSError) -> Void
 
+    public enum Method: String {
+        case GET, POST, PUT, DELETE, PATCH //, OPTIONS, HEAD, TRACE, CONNECT
+    }
+
     var URL: NSURL
-    var HTTPMethod: String
+    var HTTPMethod: Method
     var HTTPBodyMultipart: NSData?
     var contentTypeMultipart: String?
 
@@ -38,10 +42,10 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate {
     var failureHandler: FailureHandler?
 
     convenience init(URL: NSURL) {
-        self.init(URL: URL, method: "GET", parameters: [:])
+        self.init(URL: URL, method: .GET, parameters: [:])
     }
 
-    init(URL: NSURL, method: String, parameters: Dictionary<String, AnyObject>) {
+    init(URL: NSURL, method: Method, parameters: Dictionary<String, AnyObject>) {
         self.URL = URL
         self.HTTPMethod = method
         self.headers = [:]
@@ -56,7 +60,7 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate {
     init(request: NSURLRequest) {
         self.request = request as? NSMutableURLRequest
         self.URL = request.URL!
-        self.HTTPMethod = request.HTTPMethod!
+        self.HTTPMethod = Method(rawValue: request.HTTPMethod ?? "") ?? .GET
         self.headers = [:]
         self.parameters = [:]
         self.encodeParameters = false
@@ -124,7 +128,7 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate {
     
     public class func makeRequest(
         URL: NSURL,
-        method: String,
+        method: Method,
         headers: [String : String],
         parameters: Dictionary<String, AnyObject>,
         dataEncoding: NSStringEncoding,
@@ -133,7 +137,7 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate {
         contentType: String? = nil) throws -> NSMutableURLRequest {
             var error: NSError! = NSError(domain: "Migrator", code: 0, userInfo: nil)
             let request = NSMutableURLRequest(URL: URL)
-            request.HTTPMethod = method
+            request.HTTPMethod = method.rawValue
 
             for (key, value) in headers {
                 request.setValue(value, forHTTPHeaderField: key)
