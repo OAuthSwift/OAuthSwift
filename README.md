@@ -81,7 +81,7 @@ let oauthswift = OAuth2Swift(
     responseType:   "token"
 )
 oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/instagram"), scope: "likes+comments", state:"INSTAGRAM", success: {
-    credential, response in
+    credential, response, parameters in
     println(credential.oauth_token)
 }, failure: failureHandler)
 
