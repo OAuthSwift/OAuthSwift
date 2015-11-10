@@ -3,8 +3,13 @@
 </p>
 
 ## OAuthSwift
+[![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat
+            )](http://mit-license.org) [![Platform](http://img.shields.io/badge/platform-iOS_OSX-lightgrey.svg?style=flat
+             )](https://developer.apple.com/resources/) [![Language](http://img.shields.io/badge/language-swift-orange.svg?style=flat
+             )](https://developer.apple.com/swift) [![Cocoapod](http://img.shields.io/cocoapods/v/OAuthSwift.svg?style=flat)](http://cocoadocs.org/docsets/OAuthSwift/)  
 
 Swift based OAuth library for iOS and OSX.
+
 
 ### Support OAuth1.0, OAuth2.0
 
@@ -81,7 +86,7 @@ let oauthswift = OAuth2Swift(
     responseType:   "token"
 )
 oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/instagram"), scope: "likes+comments", state:"INSTAGRAM", success: {
-    credential, response in
+    credential, response, parameters in
     println(credential.oauth_token)
 }, failure: failureHandler)
 
