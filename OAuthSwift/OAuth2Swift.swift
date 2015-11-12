@@ -74,7 +74,7 @@ public class OAuth2Swift: NSObject {
                 success(credential: self.client.credential, response: nil, parameters: responseParameters)
             }
             if let code = responseParameters["code"] {
-                self.postOAuthAccessTokenWithRequestTokenByCode(code.stringByRemovingPercentEncoding!,
+                self.postOAuthAccessTokenWithRequestTokenByCode(code.safeStringByRemovingPercentEncoding,
                     callbackURL:callbackURL, success: success, failure: failure)
             }
             if let error = responseParameters["error"], error_description = responseParameters["error_description"] {
@@ -110,7 +110,7 @@ public class OAuth2Swift: NSObject {
         parameters["client_secret"] = self.consumer_secret
         parameters["code"] = code
         parameters["grant_type"] = "authorization_code"
-        parameters["redirect_uri"] = callbackURL.absoluteString.stringByRemovingPercentEncoding
+        parameters["redirect_uri"] = callbackURL.absoluteString.safeStringByRemovingPercentEncoding
         
         if self.content_type == "multipart/form-data" {
             self.client.postMultiPartRequest(self.access_token_url!, method: .POST, parameters: parameters, success: {

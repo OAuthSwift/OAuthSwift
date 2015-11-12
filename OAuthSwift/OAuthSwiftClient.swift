@@ -67,7 +67,8 @@ public class OAuthSwiftClient {
             let urlComponents = NSURLComponents(URL: url, resolvingAgainstBaseURL: false )
             if let queryItems = urlComponents!.queryItems {
                 for queryItem in queryItems {
-                    queryStringParameters.updateValue(queryItem.value!.stringByRemovingPercentEncoding!, forKey: queryItem.name)
+                    let value = queryItem.value?.safeStringByRemovingPercentEncoding ?? ""
+                    queryStringParameters.updateValue(value, forKey: queryItem.name)
                 }
             }
             

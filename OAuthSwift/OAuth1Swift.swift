@@ -102,10 +102,10 @@ public class OAuth1Swift: NSObject {
             let responseString = NSString(data: data, encoding: NSUTF8StringEncoding) as String!
             let parameters = responseString.parametersFromQueryString()
             if let oauthToken=parameters["oauth_token"] {
-                self.client.credential.oauth_token = oauthToken.stringByRemovingPercentEncoding!
+                self.client.credential.oauth_token = oauthToken.safeStringByRemovingPercentEncoding
             }
             if let oauthTokenSecret=parameters["oauth_token_secret"] {
-                self.client.credential.oauth_token_secret = oauthTokenSecret.stringByRemovingPercentEncoding!
+                self.client.credential.oauth_token_secret = oauthTokenSecret.safeStringByRemovingPercentEncoding
             }
             success(credential: self.client.credential, response: response)
         }, failure: failure)
@@ -121,10 +121,10 @@ public class OAuth1Swift: NSObject {
             let responseString = NSString(data: data, encoding: NSUTF8StringEncoding) as String!
             let parameters = responseString.parametersFromQueryString()
             if let oauthToken=parameters["oauth_token"] {
-                self.client.credential.oauth_token = oauthToken.stringByRemovingPercentEncoding!
+                self.client.credential.oauth_token = oauthToken.safeStringByRemovingPercentEncoding
             }
             if let oauthTokenSecret=parameters["oauth_token_secret"] {
-                self.client.credential.oauth_token_secret = oauthTokenSecret.stringByRemovingPercentEncoding!
+                self.client.credential.oauth_token_secret = oauthTokenSecret.safeStringByRemovingPercentEncoding
             }
             success(credential: self.client.credential, response: response)
         }, failure: failure)
