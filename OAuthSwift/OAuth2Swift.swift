@@ -11,6 +11,7 @@ import Foundation
 public class OAuth2Swift: NSObject {
 
     public var client: OAuthSwiftClient
+    public var version: OAuthSwiftCredential.Version { return self.client.credential.version }
 
     public var authorize_url_handler: OAuthSwiftURLHandlerType = OAuthSwiftOpenURLExternally.sharedInstance
 
@@ -39,6 +40,7 @@ public class OAuth2Swift: NSObject {
         self.authorize_url = authorizeUrl
         self.response_type = responseType
         self.client = OAuthSwiftClient(consumerKey: consumerKey, consumerSecret: consumerSecret)
+        self.client.credential.version = .OAuth2
     }
     
     struct CallbackNotification {
@@ -73,10 +75,7 @@ public class OAuth2Swift: NSObject {
             }
             if let code = responseParameters["code"] {
                 self.postOAuthAccessTokenWithRequestTokenByCode(code.stringByRemovingPercentEncoding!,
-                    callbackURL:callbackURL,
-                    success: { credential, response, responseParameters in
-                        success(credential: credential, response: response, parameters: responseParameters)
-                }, failure: failure)
+                    callbackURL:callbackURL, success: success, failure: failure)
             }
             if let error = responseParameters["error"], error_description = responseParameters["error_description"] {
                 let errorInfo = [NSLocalizedFailureReasonErrorKey: NSLocalizedString(error, comment: error_description)]
@@ -114,7 +113,7 @@ public class OAuth2Swift: NSObject {
         parameters["redirect_uri"] = callbackURL.absoluteString.stringByRemovingPercentEncoding
         
         if self.content_type == "multipart/form-data" {
-            self.client.postMultiPartRequest(self.access_token_url!, method: "POST", parameters: parameters, success: {
+            self.client.postMultiPartRequest(self.access_token_url!, method: .POST, parameters: parameters, success: {
                 data, response in
                 let responseJSON: AnyObject? = try? NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers)
                 
@@ -132,7 +131,6 @@ public class OAuth2Swift: NSObject {
                 success(credential: self.client.credential, response: response, parameters: responseParameters)
                 }, failure: failure)
         } else {
-            self.client.credential.oauth_header_type = "oauth2"
             self.client.post(self.access_token_url!, parameters: parameters, success: {
                 data, response in
                 let responseJSON: AnyObject? = try? NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers)
@@ -146,7 +144,13 @@ public class OAuth2Swift: NSObject {
                     responseParameters = responseString.parametersFromQueryString()
                 }
 
-                let accessToken = responseParameters["access_token"] as! String
+                guard let accessToken = responseParameters["access_token"] as? String else {
+                    if let failure = failure {
+                        let errorInfo = [NSLocalizedFailureReasonErrorKey: NSLocalizedString("Could not get Access Token", comment: "Due to an error in the OAuth2 process, we couldn't get a valid token.")]
+                        failure(error: NSError(domain: OAuthSwiftErrorDomain, code: -1, userInfo: errorInfo))
+                    }
+                    return
+                }
                 self.client.credential.oauth_token = accessToken
                 success(credential: self.client.credential, response: response, parameters: responseParameters)
             }, failure: failure)

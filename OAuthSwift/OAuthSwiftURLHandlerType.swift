@@ -32,9 +32,25 @@ public class OAuthSwiftOpenURLExternally: OAuthSwiftURLHandlerType {
     
     @objc public func handle(url: NSURL) {
         #if os(iOS)
-            UIApplication.sharedApplication().openURL(url)
+            #if !OAUTH_APP_EXTENSIONS
+                UIApplication.sharedApplication().openURL(url)
+            #endif
         #elseif os(OSX)
             NSWorkspace.sharedWorkspace().openURL(url)
         #endif
+    }
+}
+
+// Open url using NSExtensionContext
+public class ExtensionContextURLHandler: OAuthSwiftURLHandlerType {
+    
+    private var extensionContext: NSExtensionContext
+    
+    public init(extensionContext: NSExtensionContext) {
+        self.extensionContext = extensionContext
+    }
+    
+    @objc public func handle(url: NSURL) {
+        extensionContext.openURL(url, completionHandler: nil)
     }
 }

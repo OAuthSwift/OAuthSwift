@@ -14,6 +14,7 @@ public let OAuthSwiftErrorDomain = "oauthswift.error"
 public class OAuth1Swift: NSObject {
 
     public var client: OAuthSwiftClient
+    public var version: OAuthSwiftCredential.Version { return self.client.credential.version }
 
     public var authorize_url_handler: OAuthSwiftURLHandlerType = OAuthSwiftOpenURLExternally.sharedInstance
 
@@ -34,6 +35,7 @@ public class OAuth1Swift: NSObject {
         self.authorize_url = authorizeUrl
         self.access_token_url = accessTokenUrl
         self.client = OAuthSwiftClient(consumerKey: consumerKey, consumerSecret: consumerSecret)
+        self.client.credential.version = .OAuth1
     }
 
     struct CallbackNotification {
@@ -75,10 +77,7 @@ public class OAuth1Swift: NSObject {
                     if (parameters["oauth_verifier"] != nil) {
                         self.client.credential.oauth_verifier = parameters["oauth_verifier"]!
                     }
-                    self.postOAuthAccessTokenWithRequestToken({
-                        credential, response in
-                        success(credential: credential, response: response)
-                    }, failure: failure)
+                    self.postOAuthAccessTokenWithRequestToken(success, failure: failure)
                 } else {
                     let userInfo = [NSLocalizedFailureReasonErrorKey: NSLocalizedString("Oauth problem.", comment: "")]
                     failure(error: NSError(domain: OAuthSwiftErrorDomain, code: -1, userInfo: userInfo))
@@ -98,7 +97,6 @@ public class OAuth1Swift: NSObject {
         if let callbackURLString: String = callbackURL.absoluteString {
             parameters["oauth_callback"] = callbackURLString
         }
-        self.client.credential.oauth_header_type = "oauth1"
         self.client.post(self.request_token_url, parameters: parameters, success: {
             data, response in
             let responseString = NSString(data: data, encoding: NSUTF8StringEncoding) as String!
