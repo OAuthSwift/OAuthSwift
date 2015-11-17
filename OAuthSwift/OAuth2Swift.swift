@@ -66,8 +66,8 @@ public class OAuth2Swift: NSObject {
             if let query = url.query {
                 responseParameters += query.parametersFromQueryString()
             }
-            if ((url.fragment) != nil && url.fragment!.isEmpty == false) {
-                responseParameters += url.fragment!.parametersFromQueryString()
+            if let fragment = url.fragment where !fragment.isEmpty {
+                responseParameters += fragment.parametersFromQueryString()
             }
             if let accessToken = responseParameters["access_token"] {
                 self.client.credential.oauth_token = accessToken
