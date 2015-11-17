@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Accounts
 
 var dataEncoding: NSStringEncoding = NSUTF8StringEncoding
 
@@ -65,7 +64,7 @@ public class OAuthSwiftClient {
             var finalUrl = url
             var queryStringParameters = Dictionary<String, AnyObject>()
             let urlComponents = NSURLComponents(URL: url, resolvingAgainstBaseURL: false )
-            if let queryItems = urlComponents!.queryItems {
+            if let queryItems = urlComponents?.queryItems {
                 for queryItem in queryItems {
                     let value = queryItem.value?.safeStringByRemovingPercentEncoding ?? ""
                     queryStringParameters.updateValue(value, forKey: queryItem.name)
@@ -75,11 +74,9 @@ public class OAuthSwiftClient {
             // According to the OAuth1.0a spec, the url used for signing is ONLY scheme, path, and query
             if(queryStringParameters.count>0)
             {
-                let scheme=url.scheme.lowercaseString
-                let host=url.host!.lowercaseString
-                let path=url.path!
+                urlComponents?.query = nil
                 // This is safe to unwrap because these just came from an NSURL
-                finalUrl=NSURL(scheme: scheme, host: host, path: path)!
+                finalUrl = urlComponents?.URL ?? url
             }
             let combinedParameters=parameters.join(queryStringParameters)
             

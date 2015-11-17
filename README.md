@@ -124,6 +124,6 @@ OAuthSwift is available under the MIT license. See the LICENSE file for more inf
 
 [![Join the chat at https://gitter.im/dongri/OAuthSwift](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/dongri/OAuthSwift?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat
-            )](http://mit-license.org) [![Platform](http://img.shields.io/badge/platform-iOS_OSX-lightgrey.svg?style=flat
+            )](http://mit-license.org) [![Platform](http://img.shields.io/badge/platform-iOS_OSX_TVOS-lightgrey.svg?style=flat
              )](https://developer.apple.com/resources/) [![Language](http://img.shields.io/badge/language-swift-orange.svg?style=flat
-             )](https://developer.apple.com/swift) [![Cocoapod](http://img.shields.io/cocoapods/v/OAuthSwift.svg?style=flat)](http://cocoadocs.org/docsets/OAuthSwift/) 
+             )](https://developer.apple.com/swift) [![Cocoapod](http://img.shields.io/cocoapods/v/OAuthSwift.svg?style=flat)](http://cocoadocs.org/docsets/OAuthSwift/)

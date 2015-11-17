@@ -8,7 +8,7 @@
 
 import Foundation
 
-#if os(iOS)
+#if os(iOS) || os(watchOS) || os(tvOS)
     import UIKit
     public typealias OAuthViewController = UIViewController
 #elseif os(OSX)
@@ -19,7 +19,7 @@ import Foundation
 public class OAuthWebViewController: OAuthViewController, OAuthSwiftURLHandlerType {
 
     public func handle(url: NSURL){
-        #if os(iOS)
+        #if os(iOS) || os(watchOS) || os(tvOS)
             #if !OAUTH_APP_EXTENSIONS
                 UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(
                     self, animated: true, completion: nil)
