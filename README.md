@@ -8,7 +8,7 @@ Swift based OAuth library for iOS and OSX.
 
 ### Support OAuth1.0, OAuth2.0
 
-Twitter, Flickr, Github, Instagram, Foursquare. Fitbit, Withings, Linkedin, Dropbox, Dribbble, Salesforce, BitBucket, GoogleDrive, Smugmug, Intuit, Zaim, Tumblr, Slack, Uber etc
+Twitter, Flickr, Github, Instagram, Foursquare. Fitbit, Withings, Linkedin, Dropbox, Dribbble, Salesforce, BitBucket, GoogleDrive, Smugmug, Intuit, Zaim, Tumblr, Slack, Uber, Gitter etc
 
 ### Installation
 
@@ -108,6 +108,7 @@ oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback
 * [Tumblr](https://www.tumblr.com/docs/en/api/v2#auth)
 * [Slack](https://api.slack.com/docs/oauth)
 * [Uber](https://developer.uber.com/v1/auth/)
+* [Gitter](https://developer.gitter.im/docs/authentication)
 
 ### Images
 

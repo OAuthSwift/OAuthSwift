@@ -142,5 +142,12 @@
 		<key>consumerSecret</key>
 		<string></string>
 	</dict>
+	<key>Gitter</key>
+	<dict>
+		<key>consumerKey</key>
+		<string></string>
+		<key>consumerSecret</key>
+		<string></string>
+	</dict>
 </dict>
 </plist>
