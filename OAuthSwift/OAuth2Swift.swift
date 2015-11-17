@@ -73,12 +73,16 @@ public class OAuth2Swift: NSObject {
                 self.client.credential.oauth_token = accessToken
                 success(credential: self.client.credential, response: nil, parameters: responseParameters)
             }
-            if let code = responseParameters["code"] {
+            else if let code = responseParameters["code"] {
                 self.postOAuthAccessTokenWithRequestTokenByCode(code.safeStringByRemovingPercentEncoding,
                     callbackURL:callbackURL, success: success, failure: failure)
             }
-            if let error = responseParameters["error"], error_description = responseParameters["error_description"] {
+            else if let error = responseParameters["error"], error_description = responseParameters["error_description"] {
                 let errorInfo = [NSLocalizedFailureReasonErrorKey: NSLocalizedString(error, comment: error_description)]
+                failure(error: NSError(domain: OAuthSwiftErrorDomain, code: -1, userInfo: errorInfo))
+            }
+            else {
+                let errorInfo = [NSStringEncodingErrorKey: "No access_token, no code and no error provided by server"]
                 failure(error: NSError(domain: OAuthSwiftErrorDomain, code: -1, userInfo: errorInfo))
             }
         })
