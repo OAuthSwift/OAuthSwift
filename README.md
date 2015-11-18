@@ -2,15 +2,15 @@
   <img src="Assets/OAuthSwift-icon.png?raw=true" alt="OAuthSwift"/>
 </p>
 
-## OAuthSwift
+# OAuthSwift
 
 Swift based OAuth library for iOS and OSX.
 
-### Support OAuth1.0, OAuth2.0
+## Support OAuth1.0, OAuth2.0
 
 Twitter, Flickr, Github, Instagram, Foursquare. Fitbit, Withings, Linkedin, Dropbox, Dribbble, Salesforce, BitBucket, GoogleDrive, Smugmug, Intuit, Zaim, Tumblr, Slack, Uber, Gitter etc
 
-### Installation
+## Installation
 
 OAuthSwift is packaged as a Swift framework. Currently this is the simplest way to add it to your app:
 
@@ -32,21 +32,21 @@ github "dongri/OAuthSwift" ~> 0.4.6
 ### Support CocoaPods
 
 * Podfile
+
 ```
 platform :ios, '8.0'
 use_frameworks!
 
 pod "OAuthSwift", "~> 0.4.6"
 ```
-
+## How to
 ### Setting URL Schemes
-
 ![Image](Assets/URLSchemes.png "Image")
-
+Replace oauth-swift by your application name
 ### Examples
 
+#### Handle URL in AppDelegate
 ```swift
-// AppDelegate
 func application(application: UIApplication!, openURL url: NSURL!, sourceApplication: String!, annotation: AnyObject!) -> Bool {
   if (url.host == "oauth-callback") {
     if (url.path!.hasPrefix("/twitter")){
@@ -58,8 +58,9 @@ func application(application: UIApplication!, openURL url: NSURL!, sourceApplica
   }
   return true
 }
-
-// OAuth1.0
+```
+#### OAuth1.0
+```swift
 let oauthswift = OAuth1Swift(
     consumerKey:    "********",
     consumerSecret: "********",
@@ -67,27 +68,65 @@ let oauthswift = OAuth1Swift(
     authorizeUrl:    "https://api.twitter.com/oauth/authorize",
     accessTokenUrl:  "https://api.twitter.com/oauth/access_token"
 )
-oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/twitter"), success: {
-    credential, response in
-    println(credential.oauth_token)
-    println(credential.oauth_token_secret)
-}, failure: failureHandler)
-
-// OAuth2.0
+oauthswift.authorizeWithCallbackURL(
+    NSURL(string: "oauth-swift://oauth-callback/twitter"),
+    success: { credential, response in
+      println(credential.oauth_token)
+      println(credential.oauth_token_secret)
+    },
+    failure: { error in
+      print(error.localizedDescription)
+    }             
+)
+```
+#### OAuth2.0
+```swift
 let oauthswift = OAuth2Swift(
     consumerKey:    "********",
     consumerSecret: "********",
     authorizeUrl:   "https://api.instagram.com/oauth/authorize",
     responseType:   "token"
 )
-oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/instagram"), scope: "likes+comments", state:"INSTAGRAM", success: {
-    credential, response, parameters in
-    println(credential.oauth_token)
-}, failure: failureHandler)
+oauthswift.authorizeWithCallbackURL(
+    NSURL(string: "oauth-swift://oauth-callback/instagram"),
+    scope: "likes+comments", state:"INSTAGRAM",
+    success: { credential, response, parameters in
+      println(credential.oauth_token)
+    },
+    failure: { error in
+      print(error.localizedDescription)
+    }
+)
 
 ```
 
-### OAuth pages
+See demo for more examples
+
+### Handle authorize URL
+The authorize URL allow user to connect to a provider and give access to your application.
+
+By default this URL is opened into the external web browser (ie. safari)
+
+To change this behavior you must set an `OAuthSwiftURLHandlerType`
+```swift
+oauthswift.authorize_url_handler = ..
+```
+For instance you can embed a web view into your application by providing a controller that display a wev view (`UIWebView`, `WKWebView`).
+
+Then this controller must implement `OAuthSwiftURLHandlerType` to load URL web into view.
+```swift
+oauthswift.authorize_url_handler = WebViewController()
+```
+
+#### Use the SFSafariViewController (iOS9)
+You can create your own `OAuthSwiftURLHandlerType` to create a `SFSafariViewController` when handling the URL.
+
+A default implementation is provided with automatic view dismiss
+```swift
+oauthswift.authorize_url_handler = SafariURLHandler(viewController: self)
+```
+
+## OAuth provider pages
 
 * [Twitter](https://dev.twitter.com/docs/auth/oauth)  
 * [Flickr](https://www.flickr.com/services/api/auth.oauth.html)  
@@ -110,7 +149,7 @@ oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback
 * [Uber](https://developer.uber.com/v1/auth/)
 * [Gitter](https://developer.gitter.im/docs/authentication)
 
-### Images
+## Images
 
 ![Image](Assets/Services.png "Image")
 ![Image](Assets/TwitterOAuth.png "Image")

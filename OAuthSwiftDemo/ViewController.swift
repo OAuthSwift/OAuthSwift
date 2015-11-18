@@ -101,10 +101,10 @@ extension ViewController {
                     data, response in
                     let jsonDict: AnyObject! = try? NSJSONSerialization.JSONObjectWithData(data, options: [])
                     print(jsonDict)
-                }, failure: {(error:NSError!) -> Void in
+                }, failure: { error in
                     print(error)
                 })
-            }, failure: {(error:NSError!) -> Void in
+            }, failure: { error in
                 print(error.localizedDescription)
             }
         )
@@ -135,10 +135,10 @@ extension ViewController {
                     data, response in
                     let jsonDict: AnyObject! = try? NSJSONSerialization.JSONObjectWithData(data, options: [])
                     print(jsonDict)
-                }, failure: {(error:NSError!) -> Void in
+                }, failure: { error in
                     print(error)
             })
-        }, failure: {(error:NSError!) -> Void in
+        }, failure: { error in
             print(error.localizedDescription)
         })
     }
@@ -155,7 +155,7 @@ extension ViewController {
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/github")!, scope: "user,repo", state: state, success: {
             credential, response, parameters in
             self.showTokenAlert(serviceParameters["name"], credential: credential)
-            }, failure: {(error:NSError!) -> Void in
+            }, failure: { error in
                 print(error.localizedDescription)
             })
     }
@@ -171,7 +171,7 @@ extension ViewController {
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/salesforce")!, scope: "full", state: state, success: {
             credential, response, parameters in
             self.showTokenAlert(serviceParameters["name"], credential: credential)
-            }, failure: {(error:NSError!) -> Void in
+            }, failure: { error in
                 print(error.localizedDescription)
         })
     }
@@ -196,10 +196,10 @@ extension ViewController {
                     data, response in
                     let jsonDict: AnyObject! = try? NSJSONSerialization.JSONObjectWithData(data, options: [])
                     print(jsonDict)
-                }, failure: {(error:NSError!) -> Void in
+                }, failure: { error in
                     print(error)
             })
-        }, failure: {(error:NSError!) -> Void in
+        }, failure: { error in
             print(error.localizedDescription)
         })
     }
@@ -214,7 +214,7 @@ extension ViewController {
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/foursquare")!, scope: "", state: "", success: {
             credential, response, parameters in
             self.showTokenAlert(serviceParameters["name"], credential: credential)
-            }, failure: {(error:NSError!) -> Void in
+            }, failure: { error in
                 print(error.localizedDescription)
             })
     }
@@ -230,7 +230,7 @@ extension ViewController {
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/fitbit")!, success: {
             credential, response in
             self.showTokenAlert(serviceParameters["name"], credential: credential)
-            }, failure: {(error:NSError!) -> Void in
+            }, failure: { error in
                 print(error.localizedDescription)
         })
     }
@@ -246,7 +246,7 @@ extension ViewController {
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/withings")!, success: {
             credential, response in
             self.showTokenAlert(serviceParameters["name"], credential: credential)
-            }, failure: {(error:NSError!) -> Void in
+            }, failure: { error in
                 print(error.localizedDescription)
         })
     }
@@ -268,10 +268,10 @@ extension ViewController {
                         data, response in
                         let dataString = NSString(data: data, encoding: NSUTF8StringEncoding)
                         print(dataString)
-                    }, failure: {(error:NSError!) -> Void in
+                    }, failure: { error in
                 print(error)
             })
-        }, failure: {(error:NSError!) -> Void in
+        }, failure: { error in
             print(error.localizedDescription)
         })
     }
@@ -294,10 +294,10 @@ extension ViewController {
                     data, response in
                     let dataString = NSString(data: data, encoding: NSUTF8StringEncoding)
                     print(dataString)
-                }, failure: {(error:NSError!) -> Void in
+                }, failure: { error in
                     print(error)
             })
-            }, failure: {(error:NSError!) -> Void in
+            }, failure: { error in
                 print(error.localizedDescription)
         })
     }
@@ -315,7 +315,7 @@ extension ViewController {
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/smugmug")!, success: {
             credential, response in
             self.showTokenAlert(serviceParameters["name"], credential: credential)
-        }, failure: {(error:NSError!) -> Void in
+        }, failure: { error in
             print(error.localizedDescription)
         })
     }
@@ -339,10 +339,10 @@ extension ViewController {
                     data, response in
                     let jsonDict: AnyObject! = try? NSJSONSerialization.JSONObjectWithData(data, options: [])
                     print(jsonDict)
-                }, failure: {(error:NSError!) -> Void in
+                }, failure: { error in
                     print(error)
                 })
-            }, failure: {(error:NSError!) -> Void in
+            }, failure: { error in
                 print(error.localizedDescription)
         })
     }
@@ -365,10 +365,10 @@ extension ViewController {
                     data, response in
                     let jsonDict: AnyObject! = try? NSJSONSerialization.JSONObjectWithData(data, options: [])
                     print(jsonDict)
-                }, failure: {(error:NSError!) -> Void in
+                }, failure: { error in
                     print(error)
                 })
-            }, failure: {(error:NSError!) -> Void in
+            }, failure: { error in
                 print(error.localizedDescription)
         })
     }
@@ -390,10 +390,10 @@ extension ViewController {
 					data, response in
 					let dataString = NSString(data: data, encoding: NSUTF8StringEncoding)
 					print(dataString)
-				}, failure: {(error:NSError!) -> Void in
+				}, failure: { error in
 					print(error)
 			})
-			}, failure: {(error:NSError!) -> Void in
+			}, failure: { error in
 				print(error.localizedDescription)
 		})
 	}
@@ -417,10 +417,10 @@ extension ViewController {
                     data, response in
                     let jsonDict: AnyObject! = try? NSJSONSerialization.JSONObjectWithData(data, options: [])
                     print("SUCCESS: \(jsonDict)")
-                }, failure: {(error:NSError!) -> Void in
+                }, failure: { error in
                     print(error)
             })
-            }, failure: {(error:NSError!) -> Void in
+            }, failure: { error in
                 print("ERROR: \(error.localizedDescription)")
         })
     }
@@ -436,7 +436,7 @@ extension ViewController {
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/intuit")!, success: {
             credential, response in
             self.showTokenAlert(serviceParameters["name"], credential: credential)
-            }, failure: {(error:NSError!) -> Void in
+            }, failure: { error in
                 print(error.localizedDescription)
         })
     }
@@ -451,7 +451,7 @@ extension ViewController {
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/zaim")!, success: {
             credential, response in
             self.showTokenAlert(serviceParameters["name"], credential: credential)
-            }, failure: {(error:NSError!) -> Void in
+            }, failure: { error in
                 print(error.localizedDescription)
         })
     }
@@ -466,7 +466,7 @@ extension ViewController {
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/tumblr")!, success: {
             credential, response in
             self.showTokenAlert(serviceParameters["name"], credential: credential)
-            }, failure: {(error:NSError!) -> Void in
+            }, failure: { error in
                 print(error.localizedDescription)
         })
     }
@@ -482,7 +482,7 @@ extension ViewController {
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/slack")!, scope: "", state: state, success: {
             credential, response, parameters in
             self.showTokenAlert(serviceParameters["name"], credential: credential)
-            }, failure: {(error:NSError!) -> Void in
+            }, failure: { error in
                 print(error.localizedDescription, terminator: "")
         })
     }
@@ -501,7 +501,7 @@ extension ViewController {
         oauthswift.authorizeWithCallbackURL( NSURL(string: redirectURL!)!, scope: "profile", state: state, success: {
             credential, response, parameters in
             self.showTokenAlert(serviceParameters["name"], credential: credential)
-            }, failure: {(error:NSError!) -> Void in
+            }, failure: { error in
                 print(error.localizedDescription, terminator: "")
         })
     }
@@ -514,11 +514,16 @@ extension ViewController {
             accessTokenUrl: "https://gitter.im/login/oauth/token",
             responseType:   "code"
         )
+        #if os(iOS)
+            if #available(iOS 9.0, *) {
+                oauthswift.authorize_url_handler = SafariURLHandler(viewController: self)
+            }
+        #endif
         let state: String = generateStateWithLength(20) as String
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/gitter")!, scope: "flow", state: state, success: {
             credential, response, parameters in
             self.showTokenAlert(serviceParameters["name"], credential: credential)
-            }, failure: {(error:NSError!) -> Void in
+            }, failure: { error in
                 print(error.localizedDescription, terminator: "")
         })
     }
