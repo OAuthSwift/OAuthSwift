@@ -156,5 +156,12 @@
 		<key>consumerSecret</key>
 		<string></string>
 	</dict>
+	<key>Facebook</key>
+	<dict>
+		<key>consumerKey</key>
+		<string></string>
+		<key>consumerSecret</key>
+		<string></string>
+	</dict>
 </dict>
 </plist>

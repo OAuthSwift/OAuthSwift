@@ -97,6 +97,8 @@ extension ViewController {
             doOAuthUber(parameters)
         case "Gitter":
             doOAuthGitter(parameters)
+        case "Facebook":
+            doOAuthFacebook(parameters)
         default:
             print("\(service) not implemented")
         }
@@ -592,6 +594,35 @@ extension ViewController {
                 print(error.localizedDescription, terminator: "")
         })
     }
+
+    func doOAuthFacebook(serviceParameters: [String:String]) {
+        let oauthswift = OAuth2Swift(
+            consumerKey:    serviceParameters["consumerKey"]!,
+            consumerSecret: serviceParameters["consumerSecret"]!,
+            authorizeUrl:   "https://www.facebook.com/dialog/oauth",
+            accessTokenUrl: "https://graph.facebook.com/oauth/access_token",
+            responseType:   "code"
+        )
+        let state: String = generateStateWithLength(20) as String
+        oauthswift.authorizeWithCallbackURL( NSURL(string: "https://oauthswift.herokuapp.com/callback/facebook")!, scope: "public_profile", state: state, success: {
+            credential, response, parameters in
+            self.showTokenAlert(serviceParameters["name"], credential: credential)
+            self.testFacebook(oauthswift)
+            }, failure: { error in
+                print(error.localizedDescription, terminator: "")
+        })
+    }
+    func testFacebook(oauthswift: OAuth2Swift) {
+        oauthswift.client.get("https://graph.facebook.com/me?",
+            success: {
+                data, response in
+                let dataString = NSString(data: data, encoding: NSUTF8StringEncoding)
+                print(dataString)
+            }, failure: { error in
+                print(error)
+        })
+    }
+   
 }
 
 let services = Services()
