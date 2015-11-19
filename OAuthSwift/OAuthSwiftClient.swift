@@ -24,28 +24,28 @@ public class OAuthSwiftClient {
         self.credential.consumer_secret = consumerSecret
     }
     
-    public func get(urlString: String, parameters: Dictionary<String, AnyObject>, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
-        self.request(urlString, method: .GET, parameters: parameters, success: success, failure: failure)
+    public func get(urlString: String, parameters: [String: AnyObject] = [:], headers: [String:String]? = nil, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
+        self.request(urlString, method: .GET, parameters: parameters, headers: headers, success: success, failure: failure)
     }
     
-    public func post(urlString: String, parameters: Dictionary<String, AnyObject>, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
+    public func post(urlString: String, parameters: [String: AnyObject] = [:], headers: [String:String]? = nil, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
         self.request(urlString, method: .POST, parameters: parameters, success: success, failure: failure)
     }
 
-    public func put(urlString: String, parameters: Dictionary<String, AnyObject>, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
+    public func put(urlString: String, parameters: [String: AnyObject] = [:], headers: [String:String]? = nil, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
         self.request(urlString, method: .PUT, parameters: parameters, success: success, failure: failure)
     }
 
-    public func delete(urlString: String, parameters: Dictionary<String, AnyObject>, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
+    public func delete(urlString: String, parameters: [String: AnyObject] = [:], headers: [String:String]? = nil, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
         self.request(urlString, method: .DELETE, parameters: parameters, success: success, failure: failure)
     }
 
-    public func patch(urlString: String, parameters: Dictionary<String, AnyObject>, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
+    public func patch(urlString: String, parameters: [String: AnyObject] = [:], headers: [String:String]? = nil, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
         self.request(urlString, method: .PATCH, parameters: parameters, success: success, failure: failure)
     }
 
-    public func request(url: String, method: OAuthSwiftHTTPRequest.Method, parameters: Dictionary<String, AnyObject>, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
-        if let request = makeRequest(url, method: method, parameters: parameters) {
+    public func request(url: String, method: OAuthSwiftHTTPRequest.Method, parameters: [String: AnyObject] = [:], headers: [String:String]? = nil, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
+        if let request = makeRequest(url, method: method, parameters: parameters, headers: headers) {
             
             request.successHandler = success
             request.failureHandler = failure
@@ -53,7 +53,7 @@ public class OAuthSwiftClient {
         }
     }
 
-    public func makeRequest(urlString: String, method: OAuthSwiftHTTPRequest.Method, parameters: Dictionary<String, AnyObject>) -> OAuthSwiftHTTPRequest? {
+    public func makeRequest(urlString: String, method: OAuthSwiftHTTPRequest.Method, parameters: [String: AnyObject] = [:], headers: [String:String]? = nil) -> OAuthSwiftHTTPRequest? {
         if let url = NSURL(string: urlString) {
 
             // Need to account for the fact that some consumers will have additional parameters on the
@@ -81,8 +81,11 @@ public class OAuthSwiftClient {
             let combinedParameters=parameters.join(queryStringParameters)
             
             let request = OAuthSwiftHTTPRequest(URL: finalUrl, method: method, parameters: combinedParameters)
-            request.headers = self.credential.makeHeaders(finalUrl, method: method.rawValue, parameters: combinedParameters)
-            
+            var requestHeaders = self.credential.makeHeaders(finalUrl, method: method.rawValue, parameters: combinedParameters)
+            if let addHeaders = headers{
+                requestHeaders += addHeaders
+            }
+            request.headers = requestHeaders
 
             request.dataEncoding = dataEncoding
             request.encodeParameters = true

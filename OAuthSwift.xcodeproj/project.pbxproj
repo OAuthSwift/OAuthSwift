@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1F550577B20611034AE2B0D7 /* Pods_OAuthSwiftTVOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6ED87001F915BFE330338A9F /* Pods_OAuthSwiftTVOS.framework */; };
+		C4698E341BFDE25500FADE29 /* OAuthSwiftClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4698E331BFDE25500FADE29 /* OAuthSwiftClientTests.swift */; };
 		C48B28071AFA598D00C7DEF6 /* OAuthSwiftOSX.h in Headers */ = {isa = PBXBuildFile; fileRef = C48B28061AFA598D00C7DEF6 /* OAuthSwiftOSX.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C48B28211AFA599400C7DEF6 /* OAuth1Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = F43502681A6790EC00038A29 /* OAuth1Swift.swift */; };
 		C48B28221AFA599700C7DEF6 /* OAuth2Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = F43502691A6790EC00038A29 /* OAuth2Swift.swift */; };
@@ -138,6 +139,7 @@
 		5F382BA52ECA469B1FFEF052 /* Pods-OAuthSwiftTVOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OAuthSwiftTVOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-OAuthSwiftTVOS/Pods-OAuthSwiftTVOS.release.xcconfig"; sourceTree = "<group>"; };
 		6ED87001F915BFE330338A9F /* Pods_OAuthSwiftTVOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_OAuthSwiftTVOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7ADEDA1797D69CFED21B47D7 /* Pods-OAuthSwiftTVOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OAuthSwiftTVOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-OAuthSwiftTVOS/Pods-OAuthSwiftTVOS.debug.xcconfig"; sourceTree = "<group>"; };
+		C4698E331BFDE25500FADE29 /* OAuthSwiftClientTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OAuthSwiftClientTests.swift; sourceTree = "<group>"; };
 		C48B28021AFA598D00C7DEF6 /* OAuthSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OAuthSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C48B28051AFA598D00C7DEF6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C48B28061AFA598D00C7DEF6 /* OAuthSwiftOSX.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OAuthSwiftOSX.h; sourceTree = "<group>"; };
@@ -305,6 +307,7 @@
 			isa = PBXGroup;
 			children = (
 				C4D50E0A1BFB74240053B624 /* OAuthSwiftRequestTests.swift */,
+				C4698E331BFDE25500FADE29 /* OAuthSwiftClientTests.swift */,
 				C4D50DF91BFB693F0053B624 /* OAuth1SwiftTests.swift */,
 				C4D50E0C1BFB79D00053B624 /* OAuth2SwiftTests.swift */,
 				C4D50DFB1BFB693F0053B624 /* Info.plist */,
@@ -742,6 +745,7 @@
 			files = (
 				C4D50E071BFB6BB50053B624 /* TestOAuthSwiftURLHandler.swift in Sources */,
 				C4D50E0B1BFB74240053B624 /* OAuthSwiftRequestTests.swift in Sources */,
+				C4698E341BFDE25500FADE29 /* OAuthSwiftClientTests.swift in Sources */,
 				C4D50E031BFB6A340053B624 /* TestServer.swift in Sources */,
 				C4D50E0D1BFB79D00053B624 /* OAuth2SwiftTests.swift in Sources */,
 				C4D50DFA1BFB693F0053B624 /* OAuth1SwiftTests.swift in Sources */,

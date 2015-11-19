@@ -18,7 +18,19 @@ import Foundation
 
 public class OAuthWebViewController: OAuthViewController, OAuthSwiftURLHandlerType {
 
-    public func handle(url: NSURL){
+    public func handle(url: NSURL) {
+        // do UI in main thread
+        if NSThread.isMainThread() {
+             doHandle(url)
+        }
+        else {
+            dispatch_async(dispatch_get_main_queue()) {
+                self.doHandle(url)
+            }
+        }
+    }
+
+    public func doHandle(url: NSURL){
         #if os(iOS) || os(watchOS) || os(tvOS)
             #if !OAUTH_APP_EXTENSIONS
                 UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(
