@@ -503,10 +503,37 @@ extension ViewController {
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/intuit")!, success: {
             credential, response in
             self.showTokenAlert(serviceParameters["name"], credential: credential)
+            self.testIntuit(oauthswift, serviceParameters: serviceParameters)
             }, failure: { error in
                 print(error.localizedDescription)
         })
     }
+    func testIntuit(oauthswift: OAuth1Swift, serviceParameters: [String:String]){
+        if let companyId = serviceParameters["companyId"]  {
+            oauthswift.client.get("https://sandbox-quickbooks.api.intuit.com/v3/company/\(companyId)/account/1", headers: ["Accept":"application/json"],
+                success: {
+                    data, response in
+                    if let jsonDict = try? NSJSONSerialization.JSONObjectWithData(data, options: []) , dico = jsonDict as? [String: AnyObject] {
+                        print(dico)
+
+                        let jsonUpdate = dico // FIXME #80
+                        oauthswift.client.post("https://sandbox-quickbooks.api.intuit.com/v3/company/\(companyId)/account?operation=update", parameters: jsonUpdate, headers: ["Content-Type":"application/json"],
+                            success: {
+                                data, response in
+                            }, failure: { error in
+                                print(error)
+                        })
+                    }
+                    else {
+                        print("no json response")
+                    }
+                    
+                }, failure: { error in
+                    print(error)
+            })
+        }
+    }
+
     func doOAuthZaim(serviceParameters: [String:String]){
         let oauthswift = OAuth1Swift(
             consumerKey:    serviceParameters["consumerKey"]!,
