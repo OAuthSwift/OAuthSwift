@@ -61,7 +61,7 @@ public class OAuthSwiftClient {
             // additional parameters on the request, authorize, or access token exchanges, we need to 
             // normalize the URL and add to the parametes collection.
             
-            var finalUrl = url
+            var signatureUrl = url
             var queryStringParameters = Dictionary<String, AnyObject>()
             let urlComponents = NSURLComponents(URL: url, resolvingAgainstBaseURL: false )
             if let queryItems = urlComponents?.queryItems {
@@ -76,19 +76,18 @@ public class OAuthSwiftClient {
             {
                 urlComponents?.query = nil
                 // This is safe to unwrap because these just came from an NSURL
-                finalUrl = urlComponents?.URL ?? url
+                signatureUrl = urlComponents?.URL ?? url
             }
-            let combinedParameters=parameters.join(queryStringParameters)
+            let signatureParameters = parameters.join(queryStringParameters)
             
-            let request = OAuthSwiftHTTPRequest(URL: finalUrl, method: method, parameters: combinedParameters)
-            var requestHeaders = self.credential.makeHeaders(finalUrl, method: method.rawValue, parameters: combinedParameters)
+            let request = OAuthSwiftHTTPRequest(URL: url, method: method, parameters: parameters)
+            var requestHeaders = self.credential.makeHeaders(signatureUrl, method: method, parameters: signatureParameters)
             if let addHeaders = headers{
                 requestHeaders += addHeaders
             }
             request.headers = requestHeaders
 
             request.dataEncoding = dataEncoding
-            request.encodeParameters = true
             return request
         }
         return nil
@@ -108,8 +107,8 @@ public class OAuthSwiftClient {
             let type = "multipart/form-data; boundary=\(boundary)"
             let body = self.multiPartBodyFromParams(parmaImage, boundary: boundary)
             
-            request.HTTPBodyMultipart = body
-            request.contentTypeMultipart = type
+            request.HTTPBody = body
+            request.headers += ["Content-Type": type] // "Content-Length": body.length.description
             
             request.successHandler = success
             request.failureHandler = failure
@@ -165,8 +164,8 @@ public class OAuthSwiftClient {
             let type = "multipart/form-data; boundary=\(boundary)"
             let body = self.multiDataFromObject(parameters, boundary: boundary)
 
-            request.HTTPBodyMultipart = body
-            request.contentTypeMultipart = type
+            request.HTTPBody = body
+            request.headers += ["Content-Type": type] // "Content-Length": body.length.description
             
             request.successHandler = success
             request.failureHandler = failure
@@ -218,11 +217,11 @@ public class OAuthSwiftClient {
 
     @available(*, deprecated=0.4.6, message="Because method moved to OAuthSwiftCredential!")
     public class func authorizationHeaderForMethod(method: String, url: NSURL, parameters: Dictionary<String, AnyObject>, credential: OAuthSwiftCredential) -> String {
-        return credential.authorizationHeaderForMethod(method, url: url, parameters: parameters)
+        return credential.authorizationHeaderForMethod(OAuthSwiftHTTPRequest.Method(rawValue: method)!, url: url, parameters: parameters)
     }
     
     @available(*, deprecated=0.4.6, message="Because method moved to OAuthSwiftCredential!")
     public class func signatureForMethod(method: String, url: NSURL, parameters: Dictionary<String, AnyObject>, credential: OAuthSwiftCredential) -> String {
-        return credential.signatureForMethod(method, url: url, parameters: parameters)
+        return credential.signatureForMethod(OAuthSwiftHTTPRequest.Method(rawValue: method)!, url: url, parameters: parameters)
     }
 }

@@ -74,7 +74,7 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
     }
     // } // End NSCoding extension
 
-    public func makeHeaders(url:NSURL, method: String, parameters: Dictionary<String, AnyObject>) -> Dictionary<String, String> {
+    public func makeHeaders(url:NSURL, method: OAuthSwiftHTTPRequest.Method, parameters: Dictionary<String, AnyObject>) -> Dictionary<String, String> {
         switch self.version {
         case .OAuth1:
             return ["Authorization": self.authorizationHeaderForMethod(method, url: url, parameters: parameters)]
@@ -83,7 +83,7 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
         }
     }
 
-    public func authorizationHeaderForMethod(method: String, url: NSURL, parameters: Dictionary<String, AnyObject>) -> String {
+    public func authorizationHeaderForMethod(method: OAuthSwiftHTTPRequest.Method, url: NSURL, parameters: Dictionary<String, AnyObject>) -> String {
         assert(self.version == .OAuth1)
         var authorizationParameters = Dictionary<String, AnyObject>()
         authorizationParameters["oauth_version"] = self.version.shortVersion
@@ -122,7 +122,7 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
         return "OAuth " + headerComponents.joinWithSeparator(", ")
     }
 
-    public func signatureForMethod(method: String, url: NSURL, parameters: Dictionary<String, AnyObject>) -> String {
+    public func signatureForMethod(method: OAuthSwiftHTTPRequest.Method, url: NSURL, parameters: Dictionary<String, AnyObject>) -> String {
         var tokenSecret: NSString = ""
         tokenSecret = self.oauth_token_secret.urlEncodedStringWithEncoding(dataEncoding)
         
