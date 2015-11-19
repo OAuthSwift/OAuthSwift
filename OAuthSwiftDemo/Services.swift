@@ -34,9 +34,18 @@ class Services {
                 if parameters[service] != nil && Services.parametersEmpty(dico) { // no value to set
                     continue
                 }
-                self.parameters[service] = dico
+                updateService(service, dico: dico)
             }
         }
+    }
+
+    func updateService(service: String, dico: [String: String]) {
+        var resultdico = dico
+        if let oldDico = self.parameters[service] {
+            resultdico = oldDico
+            resultdico += dico
+        }
+        self.parameters[service] = resultdico
     }
     
     static func parametersEmpty(dico: [String: String]) -> Bool {
@@ -45,5 +54,11 @@ class Services {
 
     var keys: [String] {
         return Array(self.parameters.keys)
+    }
+}
+
+func += <KeyType, ValueType> (inout left: Dictionary<KeyType, ValueType>, right: Dictionary<KeyType, ValueType>) {
+    for (k, v) in right {
+        left.updateValue(v, forKey: k)
     }
 }

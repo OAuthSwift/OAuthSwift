@@ -14,6 +14,8 @@ public class OAuth2Swift: NSObject {
     public var version: OAuthSwiftCredential.Version { return self.client.credential.version }
 
     public var authorize_url_handler: OAuthSwiftURLHandlerType = OAuthSwiftOpenURLExternally.sharedInstance
+    
+    public var accessTokenBasicAuthentification = false
 
     var consumer_key: String
     var consumer_secret: String
@@ -135,7 +137,18 @@ public class OAuth2Swift: NSObject {
                 success(credential: self.client.credential, response: response, parameters: responseParameters)
                 }, failure: failure)
         } else {
-            self.client.post(self.access_token_url!, parameters: parameters, success: {
+            
+            // special headers
+            var headers: [String:String]? = nil
+            if accessTokenBasicAuthentification {
+                let authentification = "\(self.consumer_key):\(self.consumer_secret)".dataUsingEncoding(NSUTF8StringEncoding)
+                if let base64Encoded = authentification?.base64EncodedStringWithOptions(NSDataBase64EncodingOptions(rawValue: 0))
+                {
+                    headers = ["Authorization": "Basic \(base64Encoded)"]
+                }
+            }
+            
+            self.client.request(self.access_token_url!, method: .POST, parameters: parameters, headers: headers, success: {
                 data, response in
                 let responseJSON: AnyObject? = try? NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers)
 

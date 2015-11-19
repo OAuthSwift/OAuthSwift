@@ -44,6 +44,13 @@
 		<key>consumerSecret</key>
 		<string></string>
 	</dict>
+	<key>Fitbit2</key>
+	<dict>
+		<key>consumerKey</key>
+		<string></string>
+		<key>consumerSecret</key>
+		<string></string>
+	</dict>
 	<key>Withings</key>
 	<dict>
 		<key>consumerKey</key>
