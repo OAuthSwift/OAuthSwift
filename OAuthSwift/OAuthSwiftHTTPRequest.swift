@@ -15,6 +15,10 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate {
 
     public enum Method: String {
         case GET, POST, PUT, DELETE, PATCH, HEAD //, OPTIONS, TRACE, CONNECT
+        
+        var isBody: Bool {
+            return self == .POST || self == .PUT || self == .PATCH
+        }
     }
 
     var URL: NSURL
@@ -28,6 +32,9 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate {
     var parameters: Dictionary<String, AnyObject>
 
     var dataEncoding: NSStringEncoding
+    var charset: CFString {
+        return CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(self.dataEncoding))
+    }
 
     var timeoutInterval: NSTimeInterval
 
@@ -179,7 +186,7 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate {
                         }
                     }
                     else {
-                        if let contentType = headers["Content-Type"] where contentType.lowercaseString.rangeOfString("application/json") != nil {
+                        if let contentType = headers["Content-Type"] where contentType.rangeOfString("application/json") != nil {
                             let jsonData: NSData = try NSJSONSerialization.dataWithJSONObject(nonOAuthParameters, options: [])
                             request.setValue("application/json; charset=\(charset)", forHTTPHeaderField: "Content-Type")
                             request.HTTPBody = jsonData

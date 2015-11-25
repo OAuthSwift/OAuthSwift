@@ -513,13 +513,37 @@ extension ViewController {
             oauthswift.client.get("https://sandbox-quickbooks.api.intuit.com/v3/company/\(companyId)/account/1", headers: ["Accept":"application/json"],
                 success: {
                     data, response in
-                    if let jsonDict = try? NSJSONSerialization.JSONObjectWithData(data, options: []) , dico = jsonDict as? [String: AnyObject] {
+                    if let jsonDict = try? NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments) , dico = jsonDict as? [String: AnyObject] {
                         print(dico)
 
-                        let jsonUpdate = dico // FIXME #80
-                        oauthswift.client.post("https://sandbox-quickbooks.api.intuit.com/v3/company/\(companyId)/account?operation=update", parameters: jsonUpdate, headers: ["Content-Type":"application/json"],
+                        // XXX to generate with good date etc...
+                        let jsonUpdate = [
+                            "Name": "Accounts Payable (A/P)",
+                            "SubAccount": false,
+                            "FullyQualifiedName": "Accounts Payable (A/P)",
+                            "Active": true,
+                            "Classification": "Liability",
+                            "Description": "Description added during update.",
+                            "AccountType": "Accounts Payable",
+                            "AccountSubType": "AccountsPayable",
+                            "CurrentBalance": -1091.23,
+                            "CurrentBalanceWithSubAccounts": -1091.23,
+                            "domain": "QBO",
+                            "sparse": false,
+                            "Id": "33",
+                            "SyncToken": "0",
+                            "MetaData": [
+                                "CreateTime": "2014-09-12T10:12:02-07:00",
+                                "LastUpdatedTime": "2015-06-30T15:09:07-07:00"
+                            ]
+                        ]
+                        
+                        // FIXME #80
+                        oauthswift.client.post("https://sandbox-quickbooks.api.intuit.com/v3/company/\(companyId)/account?operation=update", parameters: jsonUpdate,
+                            headers: ["Accept": "application/json", "Content-Type":"application/json"],
                             success: {
                                 data, response in
+                                print(data)
                             }, failure: { error in
                                 print(error)
                         })

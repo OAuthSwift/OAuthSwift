@@ -84,7 +84,7 @@ public class OAuth2Swift: NSObject {
                 failure(error: NSError(domain: OAuthSwiftErrorDomain, code: -1, userInfo: errorInfo))
             }
             else {
-                let errorInfo = [NSStringEncodingErrorKey: "No access_token, no code and no error provided by server"]
+                let errorInfo = [NSLocalizedDescriptionKey: "No access_token, no code and no error provided by server"]
                 failure(error: NSError(domain: OAuthSwiftErrorDomain, code: -1, userInfo: errorInfo))
             }
         })

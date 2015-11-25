@@ -79,7 +79,7 @@ public class OAuth1Swift: NSObject {
                     }
                     self.postOAuthAccessTokenWithRequestToken(success, failure: failure)
                 } else {
-                    let userInfo = [NSStringEncodingErrorKey: "Oauth problem. oauth_token or oauth_verifier not returned"]
+                    let userInfo = [NSLocalizedDescriptionKey: "Oauth problem. oauth_token or oauth_verifier not returned"]
                     failure(error: NSError(domain: OAuthSwiftErrorDomain, code: -1, userInfo: userInfo))
                     return
                 }

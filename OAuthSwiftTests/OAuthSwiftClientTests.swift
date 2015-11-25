@@ -29,17 +29,17 @@ class OAuthSwiftClientTests: XCTestCase {
         testMakeRequest(url, ["a":"a", "b":"b"], url,   ["a":"a", "b":"b"])
     }
     
-    func testMakeRequestURLWithQuery() {
+    /*func testMakeRequestURLWithQuery() { // deprecated test if no url change
         testMakeRequest("\(url)?a=a", emptyParameters, url, ["a":"a"])
         testMakeRequest("\(url)?a=a&b=b", emptyParameters, url,   ["a":"a", "b":"b"])
         testMakeRequest("\(url)?b=b&a=a", emptyParameters, url,   ["a":"a", "b":"b"])
-    }
+    }*/
     
-    func testMakeRequestURLWithQueryAndParams() {
+    /*func testMakeRequestURLWithQueryAndParams() { // deprecated test if no url change
         testMakeRequest("\(url)?a=a", ["c":"c"], url, ["a":"a", "c":"c"])
         testMakeRequest("\(url)?a=a&b=b", ["c":"c"], url,   ["a":"a", "b":"b", "c":"c"])
         testMakeRequest("\(url)?b=b&a=a", ["c":"c"], url,   ["a":"a", "b":"b", "c":"c"])
-    }
+    }*/
     
     
     func testMakeRequest(url: String,_ parameters: [String:AnyObject],_ expectedURL: String,_ expectedParameters: [String:String]) {
@@ -92,7 +92,7 @@ extension XCTestCase {
     }
 
     func XCTAssertEqualDictionaries<S, T: Equatable>(first: [S:T], _ second: [S:T], _ message: String = "") {
-        XCTAssertTrue(first == second, message)
+        XCTAssertTrue(first == second, message.isEmpty ? "\(first) != \(second)" : message)
     }
 
 }

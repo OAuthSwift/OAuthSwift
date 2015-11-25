@@ -29,19 +29,19 @@ public class OAuthSwiftClient {
     }
     
     public func post(urlString: String, parameters: [String: AnyObject] = [:], headers: [String:String]? = nil, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
-        self.request(urlString, method: .POST, parameters: parameters, success: success, failure: failure)
+        self.request(urlString, method: .POST, parameters: parameters, headers: headers, success: success, failure: failure)
     }
 
     public func put(urlString: String, parameters: [String: AnyObject] = [:], headers: [String:String]? = nil, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
-        self.request(urlString, method: .PUT, parameters: parameters, success: success, failure: failure)
+        self.request(urlString, method: .PUT, parameters: parameters, headers: headers,success: success, failure: failure)
     }
 
     public func delete(urlString: String, parameters: [String: AnyObject] = [:], headers: [String:String]? = nil, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
-        self.request(urlString, method: .DELETE, parameters: parameters, success: success, failure: failure)
+        self.request(urlString, method: .DELETE, parameters: parameters, headers: headers,success: success, failure: failure)
     }
 
     public func patch(urlString: String, parameters: [String: AnyObject] = [:], headers: [String:String]? = nil, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
-        self.request(urlString, method: .PATCH, parameters: parameters, success: success, failure: failure)
+        self.request(urlString, method: .PATCH, parameters: parameters, headers: headers,success: success, failure: failure)
     }
 
     public func request(url: String, method: OAuthSwiftHTTPRequest.Method, parameters: [String: AnyObject] = [:], headers: [String:String]? = nil, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
@@ -56,12 +56,39 @@ public class OAuthSwiftClient {
     public func makeRequest(urlString: String, method: OAuthSwiftHTTPRequest.Method, parameters: [String: AnyObject] = [:], headers: [String:String]? = nil) -> OAuthSwiftHTTPRequest? {
         if let url = NSURL(string: urlString) {
 
+            let request = OAuthSwiftHTTPRequest(URL: url, method: method, parameters: parameters)
+            
+            var requestHeaders = [String:String]()
+            var signatureUrl = url
+            var signatureParameters = parameters
+    
+            // Check if body must be hashed (oauth1)
+            let body: NSData? = nil
+            if method.isBody {
+                if let addHeaders = headers, contentType = addHeaders["Content-Type"]?.lowercaseString {
+                    
+                    if contentType.rangeOfString("application/json") != nil {
+                        // TODO: oauth_body_hash create body before signing if implementing body hashing
+                        /*do {
+                        let jsonData: NSData = try NSJSONSerialization.dataWithJSONObject(parameters, options: [])
+                        request.HTTPBody = jsonData
+                        requestHeaders["Content-Length"] = "\(jsonData.length)"
+                        body = jsonData
+                        }
+                        catch {
+                        }*/
+                        
+                        signatureParameters = [:] // parameters are not used for general signature (could only be used for body hashing
+                    }
+                    // else other type are not supported, see setupRequestForOAuth()
+                }
+            }
+
             // Need to account for the fact that some consumers will have additional parameters on the
             // querystring, including in the case of fetching a request token. Especially in the case of
-            // additional parameters on the request, authorize, or access token exchanges, we need to 
+            // additional parameters on the request, authorize, or access token exchanges, we need to
             // normalize the URL and add to the parametes collection.
             
-            var signatureUrl = url
             var queryStringParameters = Dictionary<String, AnyObject>()
             let urlComponents = NSURLComponents(URL: url, resolvingAgainstBaseURL: false )
             if let queryItems = urlComponents?.queryItems {
@@ -78,11 +105,10 @@ public class OAuthSwiftClient {
                 // This is safe to unwrap because these just came from an NSURL
                 signatureUrl = urlComponents?.URL ?? url
             }
-            let signatureParameters = parameters.join(queryStringParameters)
+            signatureParameters = signatureParameters.join(queryStringParameters)
             
-            let request = OAuthSwiftHTTPRequest(URL: url, method: method, parameters: parameters)
-            var requestHeaders = self.credential.makeHeaders(signatureUrl, method: method, parameters: signatureParameters)
-            if let addHeaders = headers{
+            requestHeaders += self.credential.makeHeaders(signatureUrl, method: method, parameters: signatureParameters, body: body)
+            if let addHeaders = headers {
                 requestHeaders += addHeaders
             }
             request.headers = requestHeaders

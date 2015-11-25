@@ -21,8 +21,27 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
             }
         }
         
-        public var signatureMethod: String {
-            return "HMAC-SHA1"
+        public var signatureMethod: SignatureMethod {
+            return SignatureMethod.HMAC_SHA1
+        }
+    }
+    
+    public enum SignatureMethod: String {
+        case HMAC_SHA1 = "HMAC-SHA1"//, RSA_SHA1 = "RSA-SHA1", PLAINTEXT = "PLAINTEXT"
+  
+        func sign(key: NSData, message: NSData) -> NSData? {
+            switch (self) {
+            case .HMAC_SHA1:
+                return HMAC.sha1(key: key, message: message)
+            }
+        }
+        
+        func sign(data: NSData) -> NSData? {
+            switch (self) {
+            case .HMAC_SHA1:
+                let mac = SHA1(data).calculate().bytes()
+                return NSData(bytes: mac, length: mac.count)
+            }
         }
     }
     
@@ -74,23 +93,26 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
     }
     // } // End NSCoding extension
 
-    public func makeHeaders(url:NSURL, method: OAuthSwiftHTTPRequest.Method, parameters: Dictionary<String, AnyObject>) -> Dictionary<String, String> {
+    public func makeHeaders(url:NSURL, method: OAuthSwiftHTTPRequest.Method, parameters: Dictionary<String, AnyObject>, body: NSData? = nil) -> Dictionary<String, String> {
         switch self.version {
         case .OAuth1:
-            return ["Authorization": self.authorizationHeaderForMethod(method, url: url, parameters: parameters)]
+            return ["Authorization": self.authorizationHeaderForMethod(method, url: url, parameters: parameters, body: body)]
         case .OAuth2:
             return ["Authorization": "Bearer \(self.oauth_token)"]
         }
     }
 
-    public func authorizationHeaderForMethod(method: OAuthSwiftHTTPRequest.Method, url: NSURL, parameters: Dictionary<String, AnyObject>) -> String {
+    public func authorizationHeaderForMethod(method: OAuthSwiftHTTPRequest.Method, url: NSURL, parameters: Dictionary<String, AnyObject>, body: NSData? = nil) -> String {
         assert(self.version == .OAuth1)
         var authorizationParameters = Dictionary<String, AnyObject>()
         authorizationParameters["oauth_version"] = self.version.shortVersion
-        authorizationParameters["oauth_signature_method"] =  self.version.signatureMethod
+        authorizationParameters["oauth_signature_method"] =  self.version.signatureMethod.rawValue
         authorizationParameters["oauth_consumer_key"] = self.consumer_key
         authorizationParameters["oauth_timestamp"] = String(Int64(NSDate().timeIntervalSince1970))
         authorizationParameters["oauth_nonce"] = (NSUUID().UUIDString as NSString).substringToIndex(8)
+        if let b = body, hash = self.version.signatureMethod.sign(b) {
+            authorizationParameters["oauth_body_hash"] = hash.base64EncodedStringWithOptions([])
+        }
         
         if (self.oauth_token != ""){
             authorizationParameters["oauth_token"] = self.oauth_token
@@ -142,7 +164,8 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
         
         let key = signingKey.dataUsingEncoding(NSUTF8StringEncoding)!
         let msg = signatureBaseString.dataUsingEncoding(NSUTF8StringEncoding)!
-        let sha1 = HMAC.sha1(key: key, message: msg)!
+
+        let sha1 = self.version.signatureMethod.sign(key, message: msg)!
         return sha1.base64EncodedStringWithOptions([])
     }
 }
