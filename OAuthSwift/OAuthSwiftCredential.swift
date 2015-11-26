@@ -103,20 +103,18 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
     }
 
     public func authorizationHeaderForMethod(method: OAuthSwiftHTTPRequest.Method, url: NSURL, parameters: Dictionary<String, AnyObject>, body: NSData? = nil) -> String {
+        let timestamp = String(Int64(NSDate().timeIntervalSince1970))
+        let nonce = OAuthSwiftCredential.generateNonce()
+        return self.authorizationHeaderForMethod(method, url: url, parameters: parameters, body: body, timestamp: timestamp, nonce: nonce)
+    }
+    
+    public class func generateNonce() -> String {
+        return  (NSUUID().UUIDString as NSString).substringToIndex(8)
+    }
+  
+    public func authorizationHeaderForMethod(method: OAuthSwiftHTTPRequest.Method, url: NSURL, parameters: Dictionary<String, AnyObject>, body: NSData? = nil, timestamp: String, nonce: String) -> String {
         assert(self.version == .OAuth1)
-        var authorizationParameters = Dictionary<String, AnyObject>()
-        authorizationParameters["oauth_version"] = self.version.shortVersion
-        authorizationParameters["oauth_signature_method"] =  self.version.signatureMethod.rawValue
-        authorizationParameters["oauth_consumer_key"] = self.consumer_key
-        authorizationParameters["oauth_timestamp"] = String(Int64(NSDate().timeIntervalSince1970))
-        authorizationParameters["oauth_nonce"] = (NSUUID().UUIDString as NSString).substringToIndex(8)
-        if let b = body, hash = self.version.signatureMethod.sign(b) {
-            authorizationParameters["oauth_body_hash"] = hash.base64EncodedStringWithOptions([])
-        }
-        
-        if (self.oauth_token != ""){
-            authorizationParameters["oauth_token"] = self.oauth_token
-        }
+        var authorizationParameters = self.authorizationParameters(body, timestamp: timestamp, nonce: nonce)
         
         for (key, value) in parameters {
             if key.hasPrefix("oauth_") {
@@ -142,6 +140,23 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
         }
         
         return "OAuth " + headerComponents.joinWithSeparator(", ")
+    }
+    
+    public func authorizationParameters(body: NSData?, timestamp: String, nonce: String) -> Dictionary<String, AnyObject> {
+        var authorizationParameters = Dictionary<String, AnyObject>()
+        authorizationParameters["oauth_version"] = self.version.shortVersion
+        authorizationParameters["oauth_signature_method"] =  self.version.signatureMethod.rawValue
+        authorizationParameters["oauth_consumer_key"] = self.consumer_key
+        authorizationParameters["oauth_timestamp"] = timestamp
+        authorizationParameters["oauth_nonce"] = nonce
+        if let b = body, hash = self.version.signatureMethod.sign(b) {
+            authorizationParameters["oauth_body_hash"] = hash.base64EncodedStringWithOptions([])
+        }
+        
+        if (self.oauth_token != ""){
+            authorizationParameters["oauth_token"] = self.oauth_token
+        }
+        return authorizationParameters
     }
 
     public func signatureForMethod(method: OAuthSwiftHTTPRequest.Method, url: NSURL, parameters: Dictionary<String, AnyObject>) -> String {
