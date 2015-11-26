@@ -105,26 +105,29 @@ See demo for more examples
 ### Handle authorize URL
 The authorize URL allow user to connect to a provider and give access to your application.
 
-By default this URL is opened into the external web browser (ie. safari)
+By default this URL is opened into the external web browser (ie. safari), but apple don't allow it for app-store iOS application.
 
-To change this behavior you must set an `OAuthSwiftURLHandlerType`
+To change this behavior you must set an `OAuthSwiftURLHandlerType`, simple protocol to handle an `NSURL`
 ```swift
 oauthswift.authorize_url_handler = ..
 ```
-For instance you can embed a web view into your application by providing a controller that display a wev view (`UIWebView`, `WKWebView`).
-
-Then this controller must implement `OAuthSwiftURLHandlerType` to load URL web into view.
+For instance you can embed a web view into your application by providing a controller that display a web view (`UIWebView`, `WKWebView`).
+Then this controller must implement `OAuthSwiftURLHandlerType` to load the URL into the web view
 ```swift
-oauthswift.authorize_url_handler = WebViewController()
+func handle(url: NSURL) {
+  let req = NSURLRequest(URL: targetURL)
+  self.webView.loadRequest(req)
+  ...
 ```
+and present the view (`presentViewController`, `performSegueWithIdentifier`, ...)
+*You can extends `OAuthWebViewController` for a default implementation of view presentation and dismiss*
 
 #### Use the SFSafariViewController (iOS9)
-You can create your own `OAuthSwiftURLHandlerType` to create a `SFSafariViewController` when handling the URL.
-
-A default implementation is provided with automatic view dismiss
+A default implementation of `OAuthSwiftURLHandlerType` is provided using the `SFSafariViewController`, with automatic view dismiss.
 ```swift
 oauthswift.authorize_url_handler = SafariURLHandler(viewController: self)
 ```
+Of course you can create your own class or customize the controller by setting the variable `SafariURLHandler#factory`.
 
 ## OAuth provider pages
 

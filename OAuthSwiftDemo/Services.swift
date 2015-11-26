@@ -8,15 +8,16 @@
 import Foundation
 
 // Class which contains services parameters like consumer key and secret
+typealias ServicesValue = String
 
 class Services {
-    var parameters : [String: [String: String]]
+    var parameters : [String: [String: ServicesValue]]
     
     init() {
        self.parameters = [:]
     }
     
-    subscript(service: String) -> [String:String]? {
+    subscript(service: String) -> [String:ServicesValue]? {
         get {
             return parameters[service]
         }
@@ -28,7 +29,7 @@ class Services {
     }
     
     func loadFromFile(path: String) {
-        if let newParameters = NSDictionary(contentsOfFile: path) as? [String: [String: String]] {
+        if let newParameters = NSDictionary(contentsOfFile: path) as? [String: [String: ServicesValue]] {
          
             for (service, dico) in newParameters {
                 if parameters[service] != nil && Services.parametersEmpty(dico) { // no value to set
@@ -39,7 +40,7 @@ class Services {
         }
     }
 
-    func updateService(service: String, dico: [String: String]) {
+    func updateService(service: String, dico: [String: ServicesValue]) {
         var resultdico = dico
         if let oldDico = self.parameters[service] {
             resultdico = oldDico
@@ -48,7 +49,7 @@ class Services {
         self.parameters[service] = resultdico
     }
     
-    static func parametersEmpty(dico: [String: String]) -> Bool {
+    static func parametersEmpty(dico: [String: ServicesValue]) -> Bool {
        return  Array(dico.values).filter({ (p) -> Bool in !p.isEmpty }).isEmpty
     }
 

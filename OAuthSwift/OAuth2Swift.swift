@@ -45,6 +45,20 @@ public class OAuth2Swift: NSObject {
         self.client.credential.version = .OAuth2
     }
     
+    public convenience init?(parameters: [String:String]){
+        guard let consumerKey = parameters["consumerKey"], consumerSecret = parameters["consumerSecret"],
+            responseType = parameters["responseType"], authorizeUrl = parameters["authorizeUrl"] else {
+                return nil
+        }
+        if let accessTokenUrl = parameters["accessTokenUrl"] {
+            self.init(consumerKey:consumerKey, consumerSecret: consumerSecret,
+                authorizeUrl: authorizeUrl, accessTokenUrl: accessTokenUrl, responseType: responseType)
+        } else {
+            self.init(consumerKey:consumerKey, consumerSecret: consumerSecret,
+                authorizeUrl: authorizeUrl, responseType: responseType)
+        }
+    }
+    
     struct CallbackNotification {
         static let notificationName = "OAuthSwiftCallbackNotificationName"
         static let optionsURLKey = "OAuthSwiftCallbackNotificationOptionsURLKey"

@@ -37,6 +37,17 @@ public class OAuth1Swift: NSObject {
         self.client = OAuthSwiftClient(consumerKey: consumerKey, consumerSecret: consumerSecret)
         self.client.credential.version = .OAuth1
     }
+    
+    public convenience init?(parameters: [String:String]){
+        guard let consumerKey = parameters["consumerKey"], consumerSecret = parameters["consumerSecret"],
+            requestTokenUrl = parameters["requestTokenUrl"], authorizeUrl = parameters["authorizeUrl"], accessTokenUrl = parameters["accessTokenUrl"] else {
+            return nil
+        }
+        self.init(consumerKey:consumerKey, consumerSecret: consumerSecret,
+          requestTokenUrl: requestTokenUrl,
+          authorizeUrl: authorizeUrl,
+          accessTokenUrl: accessTokenUrl)
+    }
 
     struct CallbackNotification {
         static let notificationName = "OAuthSwiftCallbackNotificationName"
