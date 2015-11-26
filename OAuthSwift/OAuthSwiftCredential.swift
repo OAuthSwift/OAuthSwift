@@ -98,7 +98,7 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
         case .OAuth1:
             return ["Authorization": self.authorizationHeaderForMethod(method, url: url, parameters: parameters, body: body)]
         case .OAuth2:
-            return ["Authorization": "Bearer \(self.oauth_token)"]
+            return self.oauth_token.isEmpty ? [:] : ["Authorization": "Bearer \(self.oauth_token)"]
         }
     }
 
