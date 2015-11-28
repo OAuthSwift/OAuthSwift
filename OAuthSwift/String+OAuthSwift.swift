@@ -66,6 +66,11 @@ extension String {
         
         return parameters
     }
+    
+    var safeStringByRemovingPercentEncoding: String {
+        return self.stringByRemovingPercentEncoding ?? self
+    }
+    
     //分割字符
     func split(s:String)->[String]{
         if s.isEmpty{

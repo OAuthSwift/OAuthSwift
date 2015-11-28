@@ -9,9 +9,40 @@ import Foundation
 
 public class OAuthSwiftCredential: NSObject, NSCoding {
 
-    struct OAuth {
-        static let version = "1.0"
-        static let signatureMethod = "HMAC-SHA1"
+    public enum Version {
+        case OAuth1, OAuth2
+        
+        public var shortVersion : String {
+            switch self {
+            case .OAuth1:
+                return "1.0"
+            case .OAuth2:
+                return "2.0"
+            }
+        }
+        
+        public var signatureMethod: SignatureMethod {
+            return SignatureMethod.HMAC_SHA1
+        }
+    }
+    
+    public enum SignatureMethod: String {
+        case HMAC_SHA1 = "HMAC-SHA1"//, RSA_SHA1 = "RSA-SHA1", PLAINTEXT = "PLAINTEXT"
+  
+        func sign(key: NSData, message: NSData) -> NSData? {
+            switch (self) {
+            case .HMAC_SHA1:
+                return HMAC.sha1(key: key, message: message)
+            }
+        }
+        
+        func sign(data: NSData) -> NSData? {
+            switch (self) {
+            case .HMAC_SHA1:
+                let mac = SHA1(data).calculate().bytes()
+                return NSData(bytes: mac, length: mac.count)
+            }
+        }
     }
     
     var consumer_key: String = String()
@@ -19,7 +50,7 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
     public var oauth_token: String = String()
     public var oauth_token_secret: String = String()
     var oauth_verifier: String = String()
-    public var oauth_header_type = String()
+    public var version: Version = .OAuth1
     
     override init(){
         
@@ -62,27 +93,28 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
     }
     // } // End NSCoding extension
 
-    public func makeHeaders(url:NSURL, method: String, parameters: Dictionary<String, AnyObject>) -> Dictionary<String, String> {
-        if self.oauth_header_type == "oauth1" {
-            return ["Authorization": self.authorizationHeaderForMethod(method, url: url, parameters: parameters)]
+    public func makeHeaders(url:NSURL, method: OAuthSwiftHTTPRequest.Method, parameters: Dictionary<String, AnyObject>, body: NSData? = nil) -> Dictionary<String, String> {
+        switch self.version {
+        case .OAuth1:
+            return ["Authorization": self.authorizationHeaderForMethod(method, url: url, parameters: parameters, body: body)]
+        case .OAuth2:
+            return self.oauth_token.isEmpty ? [:] : ["Authorization": "Bearer \(self.oauth_token)"]
         }
-        if self.oauth_header_type == "oauth2" {
-            return ["Authorization": "Bearer \(self.oauth_token)"]
-        }
-        return [:]
     }
 
-    public func authorizationHeaderForMethod(method: String, url: NSURL, parameters: Dictionary<String, AnyObject>) -> String {
-        var authorizationParameters = Dictionary<String, AnyObject>()
-        authorizationParameters["oauth_version"] = OAuth.version
-        authorizationParameters["oauth_signature_method"] =  OAuth.signatureMethod
-        authorizationParameters["oauth_consumer_key"] = self.consumer_key
-        authorizationParameters["oauth_timestamp"] = String(Int64(NSDate().timeIntervalSince1970))
-        authorizationParameters["oauth_nonce"] = (NSUUID().UUIDString as NSString).substringToIndex(8)
-        
-        if (self.oauth_token != ""){
-            authorizationParameters["oauth_token"] = self.oauth_token
-        }
+    public func authorizationHeaderForMethod(method: OAuthSwiftHTTPRequest.Method, url: NSURL, parameters: Dictionary<String, AnyObject>, body: NSData? = nil) -> String {
+        let timestamp = String(Int64(NSDate().timeIntervalSince1970))
+        let nonce = OAuthSwiftCredential.generateNonce()
+        return self.authorizationHeaderForMethod(method, url: url, parameters: parameters, body: body, timestamp: timestamp, nonce: nonce)
+    }
+    
+    public class func generateNonce() -> String {
+        return  (NSUUID().UUIDString as NSString).substringToIndex(8)
+    }
+  
+    public func authorizationHeaderForMethod(method: OAuthSwiftHTTPRequest.Method, url: NSURL, parameters: Dictionary<String, AnyObject>, body: NSData? = nil, timestamp: String, nonce: String) -> String {
+        assert(self.version == .OAuth1)
+        var authorizationParameters = self.authorizationParameters(body, timestamp: timestamp, nonce: nonce)
         
         for (key, value) in parameters {
             if key.hasPrefix("oauth_") {
@@ -109,8 +141,25 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
         
         return "OAuth " + headerComponents.joinWithSeparator(", ")
     }
+    
+    public func authorizationParameters(body: NSData?, timestamp: String, nonce: String) -> Dictionary<String, AnyObject> {
+        var authorizationParameters = Dictionary<String, AnyObject>()
+        authorizationParameters["oauth_version"] = self.version.shortVersion
+        authorizationParameters["oauth_signature_method"] =  self.version.signatureMethod.rawValue
+        authorizationParameters["oauth_consumer_key"] = self.consumer_key
+        authorizationParameters["oauth_timestamp"] = timestamp
+        authorizationParameters["oauth_nonce"] = nonce
+        if let b = body, hash = self.version.signatureMethod.sign(b) {
+            authorizationParameters["oauth_body_hash"] = hash.base64EncodedStringWithOptions([])
+        }
+        
+        if (self.oauth_token != ""){
+            authorizationParameters["oauth_token"] = self.oauth_token
+        }
+        return authorizationParameters
+    }
 
-    public func signatureForMethod(method: String, url: NSURL, parameters: Dictionary<String, AnyObject>) -> String {
+    public func signatureForMethod(method: OAuthSwiftHTTPRequest.Method, url: NSURL, parameters: Dictionary<String, AnyObject>) -> String {
         var tokenSecret: NSString = ""
         tokenSecret = self.oauth_token_secret.urlEncodedStringWithEncoding(dataEncoding)
         
@@ -130,7 +179,8 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
         
         let key = signingKey.dataUsingEncoding(NSUTF8StringEncoding)!
         let msg = signatureBaseString.dataUsingEncoding(NSUTF8StringEncoding)!
-        let sha1 = HMAC.sha1(key: key, message: msg)!
+
+        let sha1 = self.version.signatureMethod.sign(key, message: msg)!
         return sha1.base64EncodedStringWithOptions([])
     }
 }

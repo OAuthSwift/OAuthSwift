@@ -8,7 +8,7 @@
 
 import Foundation
 
-#if os(iOS)
+#if os(iOS) || os(watchOS) || os(tvOS)
     import UIKit
     public typealias OAuthViewController = UIViewController
 #elseif os(OSX)
@@ -18,10 +18,24 @@ import Foundation
 
 public class OAuthWebViewController: OAuthViewController, OAuthSwiftURLHandlerType {
 
-    public func handle(url: NSURL){
-        #if os(iOS)
-            UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(
-                self, animated: true, completion: nil)
+    public func handle(url: NSURL) {
+        // do UI in main thread
+        if NSThread.isMainThread() {
+             doHandle(url)
+        }
+        else {
+            dispatch_async(dispatch_get_main_queue()) {
+                self.doHandle(url)
+            }
+        }
+    }
+
+    public func doHandle(url: NSURL){
+        #if os(iOS) || os(watchOS) || os(tvOS)
+            #if !OAUTH_APP_EXTENSIONS
+                UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(
+                    self, animated: true, completion: nil)
+            #endif
         #elseif os(OSX)
             if let p = self.parentViewController { // default behaviour if this controller affected as child controller
                 p.presentViewControllerAsModalWindow(self)
