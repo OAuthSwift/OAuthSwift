@@ -70,9 +70,10 @@ let oauthswift = OAuth1Swift(
 )
 oauthswift.authorizeWithCallbackURL(
     NSURL(string: "oauth-swift://oauth-callback/twitter"),
-    success: { credential, response in
+    success: { credential, response, parameters in
       println(credential.oauth_token)
       println(credential.oauth_token_secret)
+      println(parameters["user_id"])
     },
     failure: { error in
       print(error.localizedDescription)
