@@ -44,7 +44,7 @@ class OAuthSwiftTests: XCTestCase {
         let expectation = expectationWithDescription("request should succeed")
         
         oauth.authorizeWithCallbackURL(NSURL(string:callbackURL)!,
-            success: { (credential, response) -> Void in
+            success: { (credential, response, parameters) -> Void in
                 expectation.fulfill()
             },
             failure:  { (error) -> Void in
@@ -76,7 +76,7 @@ class OAuthSwiftTests: XCTestCase {
         let expectation = expectationWithDescription("request should succeed")
         
         oauth.authorizeWithCallbackURL(NSURL(string:callbackURL)!,
-            success: { (credential, response) -> Void in
+            success: { (credential, response, parameters) -> Void in
                 expectation.fulfill()
             },
             failure:  { (error) -> Void in
@@ -110,7 +110,7 @@ class OAuthSwiftTests: XCTestCase {
         let expectation = expectationWithDescription("request should failed")
         
         oauth.authorizeWithCallbackURL(NSURL(string:callbackURL)!,
-            success: { (credential, response) -> Void in
+            success: { (credential, response, parameters) -> Void in
                 XCTFail("The success handler should not be called.")
             },
             failure:  { (error) -> Void in
@@ -139,7 +139,7 @@ class OAuthSwiftTests: XCTestCase {
         let expectation = expectationWithDescription("request should failed")
         
         oauth.authorizeWithCallbackURL(NSURL(string:callbackURL)!,
-            success: { (credential, response) -> Void in
+            success: { (credential, response, parameters) -> Void in
                 XCTFail("The success handler should not be called.")
             },
             failure:  { (error) -> Void in

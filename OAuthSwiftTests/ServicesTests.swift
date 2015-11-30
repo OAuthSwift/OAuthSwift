@@ -123,7 +123,7 @@ class ServicesTests: XCTestCase {
         let expectation = self.expectationWithDescription(service)
         
         oauthswift.authorizeWithCallbackURL(NSURL(string: callbackURL)!, success: {
-            credential, response in
+            credential, response, parameters in
                expectation.fulfill()
             
                print("\(service) token ok")
