@@ -37,7 +37,7 @@ public class OAuth1Swift: NSObject {
         self.client = OAuthSwiftClient(consumerKey: consumerKey, consumerSecret: consumerSecret)
         self.client.credential.version = .OAuth1
     }
-    
+
     public convenience init?(parameters: [String:String]){
         guard let consumerKey = parameters["consumerKey"], consumerSecret = parameters["consumerSecret"],
             requestTokenUrl = parameters["requestTokenUrl"], authorizeUrl = parameters["authorizeUrl"], accessTokenUrl = parameters["accessTokenUrl"] else {
@@ -59,13 +59,13 @@ public class OAuth1Swift: NSObject {
         static let appOnlyAuthenticationErrorCode = 1
     }
 
-    public typealias TokenSuccessHandler = (credential: OAuthSwiftCredential, response: NSURLResponse) -> Void
+    public typealias TokenSuccessHandler = (credential: OAuthSwiftCredential, response: NSURLResponse, parameters: Dictionary<String, String>) -> Void
     public typealias FailureHandler = (error: NSError) -> Void
 
     // 0. Start
     public func authorizeWithCallbackURL(callbackURL: NSURL, success: TokenSuccessHandler, failure: ((error: NSError) -> Void)) {
         self.postOAuthRequestTokenWithCallbackURL(callbackURL, success: {
-            credential, response in
+            credential, response, _ in
 
             self.observer = NSNotificationCenter.defaultCenter().addObserverForName(CallbackNotification.notificationName, object: nil, queue: NSOperationQueue.mainQueue(), usingBlock:{
                 notification in
@@ -118,7 +118,7 @@ public class OAuth1Swift: NSObject {
             if let oauthTokenSecret=parameters["oauth_token_secret"] {
                 self.client.credential.oauth_token_secret = oauthTokenSecret.safeStringByRemovingPercentEncoding
             }
-            success(credential: self.client.credential, response: response)
+            success(credential: self.client.credential, response: response, parameters: parameters)
         }, failure: failure)
     }
 
@@ -137,7 +137,7 @@ public class OAuth1Swift: NSObject {
             if let oauthTokenSecret=parameters["oauth_token_secret"] {
                 self.client.credential.oauth_token_secret = oauthTokenSecret.safeStringByRemovingPercentEncoding
             }
-            success(credential: self.client.credential, response: response)
+            success(credential: self.client.credential, response: response, parameters: parameters)
         }, failure: failure)
     }
 
