@@ -53,15 +53,15 @@ import SafariServices
         var observers = [String: AnyObject]()
 
         // configure
-        var animated: Bool = true
+        public var animated: Bool = true
         var factory: (URL: NSURL) -> SFSafariViewController = {URL in
             return SFSafariViewController(URL: URL)
         }
         
         // delegates
-        var delegate: SFSafariViewControllerDelegate?
-        var presentCompletion: (() -> Void)?
-        var dismissCompletion: (() -> Void)?
+        public var delegate: SFSafariViewControllerDelegate?
+        public var presentCompletion: (() -> Void)?
+        public var dismissCompletion: (() -> Void)?
         
         // init
         public init(viewController: UIViewController) {
