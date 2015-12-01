@@ -49,12 +49,12 @@ import SafariServices
     @available(iOS 9.0, *)
     public class SafariURLHandler: NSObject, OAuthSwiftURLHandlerType, SFSafariViewControllerDelegate {
 
-        var viewController: UIViewController
+        public let viewController: UIViewController
         var observers = [String: AnyObject]()
 
         // configure
         public var animated: Bool = true
-        var factory: (URL: NSURL) -> SFSafariViewController = {URL in
+        public var factory: (URL: NSURL) -> SFSafariViewController = {URL in
             return SFSafariViewController(URL: URL)
         }
         
