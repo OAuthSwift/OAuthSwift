@@ -117,6 +117,46 @@ class OAuth2SwiftTests: XCTestCase {
         waitForExpectationsWithTimeout(DefaultTimeout, handler: nil)
     }
     
+    func testExpire() {
+        let expectation = expectationWithDescription("request should failed")
+        
+        
+        let oauth = OAuth2Swift(
+            consumerKey: server.valid_key,
+            consumerSecret: server.valid_secret,
+            authorizeUrl: server.authorizeURLV2,
+            accessTokenUrl: server.accessTokenURLV2,
+            responseType: "code"
+        )
+        oauth.client.get(server.expireURLV2, parameters: [:],
+            success: {
+                data, response in
+                XCTFail("\(data).")
+            }, failure: { error in
+                print(error.code)
+                if error.code == 401 {
+                    if let reponseHeaders = error.userInfo["Response-Headers"] as? [String:String],
+                        authenticateHeader = reponseHeaders["WWW-Authenticate"] ?? reponseHeaders["Www-Authenticate"] {
+                            print(authenticateHeader)
+                            
+                            expectation.fulfill()
+                            
+                            let headerDictionary = authenticateHeader.headerDictionary
+                            print(headerDictionary["error"])
+                            print(headerDictionary["error_description"])
+                    }
+                    else {
+                          XCTFail("\(error).")
+                    }
+                    
+                }
+                
+        })
+        
+        
+        
+        waitForExpectationsWithTimeout(DefaultTimeout, handler: nil)
+    }
     
 
 }
