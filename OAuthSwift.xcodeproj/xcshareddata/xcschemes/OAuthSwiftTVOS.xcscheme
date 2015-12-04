@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "C4B6EE1D1BF74CE300443596"
-               BuildableName = "OAuthSwiftTVOS.framework"
+               BuildableName = "OAuthSwift.framework"
                BlueprintName = "OAuthSwiftTVOS"
                ReferencedContainer = "container:OAuthSwift.xcodeproj">
             </BuildableReference>
@@ -46,7 +46,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "C4B6EE1D1BF74CE300443596"
-            BuildableName = "OAuthSwiftTVOS.framework"
+            BuildableName = "OAuthSwift.framework"
             BlueprintName = "OAuthSwiftTVOS"
             ReferencedContainer = "container:OAuthSwift.xcodeproj">
          </BuildableReference>
@@ -64,7 +64,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "C4B6EE1D1BF74CE300443596"
-            BuildableName = "OAuthSwiftTVOS.framework"
+            BuildableName = "OAuthSwift.framework"
             BlueprintName = "OAuthSwiftTVOS"
             ReferencedContainer = "container:OAuthSwift.xcodeproj">
          </BuildableReference>

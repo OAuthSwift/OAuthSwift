@@ -8,8 +8,10 @@
 
 import Foundation
 
-#if os(iOS)
+#if os(iOS) || os(tvOS)
     import UIKit
+#elseif os(watchOS)
+    import WatchKit
 #elseif os(OSX)
     import AppKit
 #endif
@@ -32,10 +34,12 @@ public class OAuthSwiftOpenURLExternally: OAuthSwiftURLHandlerType {
     }
     
     @objc public func handle(url: NSURL) {
-        #if os(iOS)
+        #if os(iOS) || os(tvOS)
             #if !OAUTH_APP_EXTENSIONS
                 UIApplication.sharedApplication().openURL(url)
             #endif
+        #elseif os(watchOS)
+        // WATCHOS: not implemented
         #elseif os(OSX)
             NSWorkspace.sharedWorkspace().openURL(url)
         #endif
