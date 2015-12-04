@@ -79,13 +79,14 @@ import SafariServices
             let key = NSUUID().UUIDString
             
             observers[key] = NSNotificationCenter.defaultCenter().addObserverForName(
-                OAuth1Swift.CallbackNotification.notificationName,
+                OAuthSwift.CallbackNotification.notificationName,
                 object: nil,
                 queue: NSOperationQueue.mainQueue(),
                 usingBlock:{ [unowned self]
                     notification in
                     if let observer = self.observers[key] {
                         NSNotificationCenter.defaultCenter().removeObserver(observer)
+                        self.observers.removeValueForKey(key)
                     }
                     
                     controller.dismissViewControllerAnimated(self.animated, completion: self.dismissCompletion)

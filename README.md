@@ -49,12 +49,7 @@ Replace oauth-swift by your application name
 ```swift
 func application(application: UIApplication!, openURL url: NSURL!, sourceApplication: String!, annotation: AnyObject!) -> Bool {
   if (url.host == "oauth-callback") {
-    if (url.path!.hasPrefix("/twitter")){
-      OAuth1Swift.handleOpenURL(url)
-    }
-    if ( url.path!.hasPrefix("/github" )){
-      OAuth2Swift.handleOpenURL(url)
-    }
+    OAuthSwift.handleOpenURL(url)
   }
   return true
 }

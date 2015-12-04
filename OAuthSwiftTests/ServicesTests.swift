@@ -109,8 +109,7 @@ class ServicesTests: XCTestCase {
         guard let handler = ServicesURLHandlerType(
             service: service,
             serviceParameters: serviceParameters,
-            callbackURL: callbackURL,
-            handle: OAuth1Swift.handleOpenURL
+            callbackURL: callbackURL
             ) else {
                 return
         }
@@ -153,8 +152,7 @@ class ServicesTests: XCTestCase {
         guard let handler = ServicesURLHandlerType(
             service: service,
             serviceParameters: serviceParameters,
-            callbackURL: callbackURL,
-            handle: OAuth2Swift.handleOpenURL
+            callbackURL: callbackURL
             ) else {
                 return
         }
@@ -189,14 +187,12 @@ class ServicesURLHandlerType:NSObject, OAuthSwiftURLHandlerType {
     var service: String
     var serviceParameters: [String: String]
     var callbackURL: String
-    var handle: (NSURL) -> Void
     var handled: Bool = false
     
-    init?(service: String, serviceParameters: [String: String], callbackURL: String, handle: (NSURL) -> Void) {
+    init?(service: String, serviceParameters: [String: String], callbackURL: String) {
         self.service = service
         self.serviceParameters = serviceParameters
         self.callbackURL = callbackURL
-        self.handle = handle
         
         super.init()
         
@@ -339,7 +335,7 @@ extension ServicesURLHandlerType: WKNavigationDelegate {
             let urlString = "\(url)"
             if urlString.hasPrefix(self.callbackURL) {
                 self.handled = true
-                self.handle(url)
+                OAuthSwift.handleOpenURL(url)
                 decisionHandler(.Cancel)
             }
             else {
