@@ -114,7 +114,7 @@ extension ViewController {
         )
         //oauthswift.authorize_url_handler = get_url_handler()
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/twitter")!, success: {
-            credential, response in
+            credential, response, parameters in
             self.showTokenAlert(serviceParameters["name"], credential: credential)
             self.testTwitter(oauthswift)
             }, failure: { error in
@@ -142,7 +142,7 @@ extension ViewController {
             accessTokenUrl:  "https://www.flickr.com/services/oauth/access_token"
         )
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/flickr")!, success: {
-            credential, response in
+            credential, response, parameters in
             self.showTokenAlert(serviceParameters["name"], credential: credential)
             self.testFlickr(oauthswift, consumerKey: serviceParameters["consumerKey"]!)
             }, failure: { error in
@@ -258,7 +258,7 @@ extension ViewController {
             accessTokenUrl:  "https://api.fitbit.com/oauth/access_token"
         )
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/fitbit")!, success: {
-            credential, response in
+            credential, response, parameters in
             self.showTokenAlert(serviceParameters["name"], credential: credential)
             }, failure: { error in
                 print(error.localizedDescription)
@@ -303,7 +303,7 @@ extension ViewController {
             accessTokenUrl:  "https://oauth.withings.com/account/access_token"
         )
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/withings")!, success: {
-            credential, response in
+            credential, response, parameters in
             self.showTokenAlert(serviceParameters["name"], credential: credential)
             }, failure: { error in
                 print(error.localizedDescription)
@@ -319,7 +319,7 @@ extension ViewController {
             accessTokenUrl:  "https://api.linkedin.com/uas/oauth/accessToken"
         )
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/linkedin")!, success: {
-            credential, response in
+            credential, response, parameters in
             self.showTokenAlert(serviceParameters["name"], credential: credential)
             self.testLinkedin(oauthswift)
         }, failure: { error in
@@ -377,7 +377,7 @@ extension ViewController {
         oauthswift.allowMissingOauthVerifier = true
         // NOTE: Smugmug's callback URL is configured on their site and the one passed in is ignored.
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/smugmug")!, success: {
-            credential, response in
+            credential, response, parameters in
             self.showTokenAlert(serviceParameters["name"], credential: credential)
         }, failure: { error in
             print(error.localizedDescription)
@@ -446,7 +446,7 @@ extension ViewController {
 			accessTokenUrl:  "https://bitbucket.org/api/1.0/oauth/access_token"
 		)
 		oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/bitbucket")!, success: {
-            credential, response in
+            credential, response, parameters in
             self.showTokenAlert(serviceParameters["name"], credential: credential)
             self.testBitBucket(oauthswift)
 			}, failure: { error in
@@ -501,7 +501,7 @@ extension ViewController {
             accessTokenUrl:  "https://oauth.intuit.com/oauth/v1/get_access_token"
         )
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/intuit")!, success: {
-            credential, response in
+            credential, response, parameters in
             self.showTokenAlert(serviceParameters["name"], credential: credential)
             self.testIntuit(oauthswift, serviceParameters: serviceParameters)
             }, failure: { error in
@@ -567,7 +567,7 @@ extension ViewController {
             accessTokenUrl:  "https://api.zaim.net/v2/auth/access"
         )
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/zaim")!, success: {
-            credential, response in
+            credential, response, parameters in
             self.showTokenAlert(serviceParameters["name"], credential: credential)
             }, failure: { error in
                 print(error.localizedDescription)
@@ -582,7 +582,7 @@ extension ViewController {
             accessTokenUrl:  "http://www.tumblr.com/oauth/access_token"
         )
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/tumblr")!, success: {
-            credential, response in
+            credential, response, parameters in
             self.showTokenAlert(serviceParameters["name"], credential: credential)
             }, failure: { error in
                 print(error.localizedDescription)

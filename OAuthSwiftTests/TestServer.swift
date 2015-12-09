@@ -26,6 +26,7 @@ class TestServer {
     var v2: String { return "\(baseurl)2/" }
     var authorizeURLV2: String { return "\(v2)authorize" }
     var accessTokenURLV2: String { return "\(v2)accessToken" }
+    var expireURLV2: String { return "\(v2)expire" }
     
     enum AccessReturnType {
         case JSON, Data
@@ -51,7 +52,7 @@ class TestServer {
             let oauth_token = "requestkey"
             let oauth_token_secret = "requestsecret"
             
-            return HttpResponse.OK( HttpResponseBody.STRING("oauth_token=\(oauth_token)&oauth_token_secret=\(oauth_token_secret)" as String) )
+            return .OK(.STRING("oauth_token=\(oauth_token)&oauth_token_secret=\(oauth_token_secret)" as String) )
         }
         server["1/accessToken"] = { request in
             guard request.method == "POST" else {
@@ -59,7 +60,7 @@ class TestServer {
             }
             // TODO check request.headers["authorization"] for consumer key, etc...
             
-            return HttpResponse.OK(HttpResponseBody.STRING("oauth_token=\(self.oauth_token)&oauth_token_secret=\(self.oauth_token_secret)" as String) )
+            return .OK(.STRING("oauth_token=\(self.oauth_token)&oauth_token_secret=\(self.oauth_token_secret)" as String) )
         }
         
         /*
@@ -73,7 +74,7 @@ class TestServer {
         
         server["2/accessToken"] = { request in
             guard request.method == "POST" else {
-                return HttpResponse.BadRequest
+                return .BadRequest
             }
             /*guard let autho = request.headers["authorization"] where autho == "Beared" else {
                 return HttpResponse.BadRequest
@@ -82,14 +83,17 @@ class TestServer {
             
             switch self.accessReturnType {
             case .JSON:
-                return HttpResponse.OK(HttpResponseBody.JSON(["access_token":self.oauth_token]))
+                return .OK(.JSON(["access_token":self.oauth_token]))
             case .Data:
-                return HttpResponse.OK(HttpResponseBody.STRING("access_token=\(self.oauth_token)" as String))
+                return .OK(.STRING("access_token=\(self.oauth_token)" as String))
             }
             
         }
         server["2/authorize"] = {
             .OK(.HTML("You asked for " + $0.url))
+        }
+        server["2/expire"] = { request in
+            return HttpResponse.RAW(401, "Unauthorized",["WWW-Authenticate": "Bearer realm=\"example\",error=\"invalid_token\",error_description=\"The access token expired\""], NSData())
         }
     }
     

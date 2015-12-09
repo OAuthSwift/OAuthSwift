@@ -8,8 +8,10 @@
 
 import Foundation
 
-#if os(iOS)
+#if os(iOS) || os(tvOS)
     import UIKit
+#elseif os(watchOS)
+    import WatchKit
 #elseif os(OSX)
     import AppKit
 #endif
@@ -32,10 +34,12 @@ public class OAuthSwiftOpenURLExternally: OAuthSwiftURLHandlerType {
     }
     
     @objc public func handle(url: NSURL) {
-        #if os(iOS)
+        #if os(iOS) || os(tvOS)
             #if !OAUTH_APP_EXTENSIONS
                 UIApplication.sharedApplication().openURL(url)
             #endif
+        #elseif os(watchOS)
+        // WATCHOS: not implemented
         #elseif os(OSX)
             NSWorkspace.sharedWorkspace().openURL(url)
         #endif
@@ -49,19 +53,19 @@ import SafariServices
     @available(iOS 9.0, *)
     public class SafariURLHandler: NSObject, OAuthSwiftURLHandlerType, SFSafariViewControllerDelegate {
 
-        var viewController: UIViewController
+        public let viewController: UIViewController
         var observers = [String: AnyObject]()
 
         // configure
-        var animated: Bool = true
-        var factory: (URL: NSURL) -> SFSafariViewController = {URL in
+        public var animated: Bool = true
+        public var factory: (URL: NSURL) -> SFSafariViewController = {URL in
             return SFSafariViewController(URL: URL)
         }
         
         // delegates
-        var delegate: SFSafariViewControllerDelegate?
-        var presentCompletion: (() -> Void)?
-        var dismissCompletion: (() -> Void)?
+        public var delegate: SFSafariViewControllerDelegate?
+        public var presentCompletion: (() -> Void)?
+        public var dismissCompletion: (() -> Void)?
         
         // init
         public init(viewController: UIViewController) {
@@ -75,13 +79,14 @@ import SafariServices
             let key = NSUUID().UUIDString
             
             observers[key] = NSNotificationCenter.defaultCenter().addObserverForName(
-                OAuth1Swift.CallbackNotification.notificationName,
+                OAuthSwift.CallbackNotification.notificationName,
                 object: nil,
                 queue: NSOperationQueue.mainQueue(),
                 usingBlock:{ [unowned self]
                     notification in
                     if let observer = self.observers[key] {
                         NSNotificationCenter.defaultCenter().removeObserver(observer)
+                        self.observers.removeValueForKey(key)
                     }
                     
                     controller.dismissViewControllerAnimated(self.animated, completion: self.dismissCompletion)

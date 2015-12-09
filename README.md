@@ -49,12 +49,7 @@ Replace oauth-swift by your application name
 ```swift
 func application(application: UIApplication!, openURL url: NSURL!, sourceApplication: String!, annotation: AnyObject!) -> Bool {
   if (url.host == "oauth-callback") {
-    if (url.path!.hasPrefix("/twitter")){
-      OAuth1Swift.handleOpenURL(url)
-    }
-    if ( url.path!.hasPrefix("/github" )){
-      OAuth2Swift.handleOpenURL(url)
-    }
+    OAuthSwift.handleOpenURL(url)
   }
   return true
 }
@@ -70,9 +65,10 @@ let oauthswift = OAuth1Swift(
 )
 oauthswift.authorizeWithCallbackURL(
     NSURL(string: "oauth-swift://oauth-callback/twitter"),
-    success: { credential, response in
+    success: { credential, response, parameters in
       println(credential.oauth_token)
       println(credential.oauth_token_secret)
+      println(parameters["user_id"])
     },
     failure: { error in
       print(error.localizedDescription)
@@ -129,6 +125,27 @@ oauthswift.authorize_url_handler = SafariURLHandler(viewController: self)
 ```
 Of course you can create your own class or customize the controller by setting the variable `SafariURLHandler#factory`.
 
+## Make signed request
+
+```swift
+oauthswift.client.get("https://api.linkedin.com/v1/people/~",
+      success: {
+        data, response in
+        let dataString = NSString(data: data, encoding: NSUTF8StringEncoding)
+        print(dataString)
+      }
+      , failure: { error in
+        print(error)
+      }
+)
+// same with request method
+oauthswift.client.request("https://api.linkedin.com/v1/people/~", .GET,
+      parameters: [:], headers: [:],
+      success: { ...
+```
+
+More examples into demo application: [ViewController.swift](/OAuthSwiftDemo/ViewController.swift)
+
 ## OAuth provider pages
 
 * [Twitter](https://dev.twitter.com/docs/auth/oauth)  
@@ -160,7 +177,9 @@ Of course you can create your own class or customize the controller by setting t
 ![Image](Assets/TwitterOAuthTokens.png "Image")
 
 ## Contributing
-See [CONTRIBUTING.md](CONTRIBUTING.md)
+ See [CONTRIBUTING.md](CONTRIBUTING.md)
+ 
+[Add a new service in demo app](https://github.com/dongri/OAuthSwift/wiki/Demo-application#add-a-new-service-in-demo-app)
 
 ## License
 
@@ -171,3 +190,4 @@ OAuthSwift is available under the MIT license. See the LICENSE file for more inf
             )](http://mit-license.org) [![Platform](http://img.shields.io/badge/platform-iOS_OSX_TVOS-lightgrey.svg?style=flat
              )](https://developer.apple.com/resources/) [![Language](http://img.shields.io/badge/language-swift-orange.svg?style=flat
              )](https://developer.apple.com/swift) [![Cocoapod](http://img.shields.io/cocoapods/v/OAuthSwift.svg?style=flat)](http://cocoadocs.org/docsets/OAuthSwift/)
+[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)

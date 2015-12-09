@@ -39,6 +39,10 @@ extension String {
     }
 
     func parametersFromQueryString() -> Dictionary<String, String> {
+        return dictionaryBySplitting("&", keyValueSeparator: "=")
+    }
+    
+    func dictionaryBySplitting(elementSeparator: String, keyValueSeparator: String) -> Dictionary<String, String> {
         var parameters = Dictionary<String, String>()
 
         let scanner = NSScanner(string: self)
@@ -48,12 +52,12 @@ extension String {
 
         while !scanner.atEnd {
             key = nil
-            scanner.scanUpToString("=", intoString: &key)
-            scanner.scanString("=", intoString: nil)
+            scanner.scanUpToString(keyValueSeparator, intoString: &key)
+            scanner.scanString(keyValueSeparator, intoString: nil)
 
             value = nil
-            scanner.scanUpToString("&", intoString: &value)
-            scanner.scanString("&", intoString: nil)
+            scanner.scanUpToString(elementSeparator, intoString: &value)
+            scanner.scanString(elementSeparator, intoString: nil)
 
             if (key != nil && value != nil) {
                 parameters.updateValue(value! as String, forKey: key! as String)
@@ -61,6 +65,10 @@ extension String {
         }
         
         return parameters
+    }
+        
+    public var headerDictionary: Dictionary<String, String> {
+        return dictionaryBySplitting(",", keyValueSeparator: "=")
     }
     
     var safeStringByRemovingPercentEncoding: String {
