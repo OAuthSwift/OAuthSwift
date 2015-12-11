@@ -36,14 +36,16 @@ public class OAuthWebViewController: OAuthViewController, OAuthSwiftURLHandlerTy
     #if os(watchOS)
     public static var userActivityType: String = "org.github.dongri.oauthswift.connect"
     #endif
-    
-    
+
     public func doHandle(url: NSURL){
         #if os(iOS) || os(tvOS)
-            #if !OAUTH_APP_EXTENSIONS
-                UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(
-                    self, animated: true, completion: nil)
-            #endif
+            if let p = self.parentViewController {
+                p.presentViewController(self, animated: true, completion: nil)
+            } else {
+                #if !OAUTH_APP_EXTENSIONS
+                    UIApplication.topViewController?.presentViewController(self, animated: true, completion: nil)
+                #endif
+            }
         #elseif os(watchOS)
             if (url.scheme == "http" || url.scheme == "https") {
                 self.updateUserActivity(OAuthWebViewController.userActivityType, userInfo: nil, webpageURL: url)

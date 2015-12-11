@@ -45,10 +45,9 @@ public class OAuthSwift: NSObject {
     var observer: AnyObject?
 
     func observeCallback(block: (url: NSURL) -> Void) {
-        self.observer = NSNotificationCenter.defaultCenter().addObserverForName(CallbackNotification.notificationName, object: nil, queue: NSOperationQueue.mainQueue()){ [unowned self]
+        self.observer = NSNotificationCenter.defaultCenter().addObserverForName(CallbackNotification.notificationName, object: nil, queue: NSOperationQueue.mainQueue()){
             notification in
             NSNotificationCenter.defaultCenter().removeObserver(self.observer!)
-            self.observer = nil
 
             let urlFromUserInfo = notification.userInfo![CallbackNotification.optionsURLKey] as! NSURL
             block(url: urlFromUserInfo)
