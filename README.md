@@ -64,7 +64,7 @@ let oauthswift = OAuth1Swift(
     accessTokenUrl:  "https://api.twitter.com/oauth/access_token"
 )
 oauthswift.authorizeWithCallbackURL(
-    NSURL(string: "oauth-swift://oauth-callback/twitter"),
+    NSURL(string: "oauth-swift://oauth-callback/twitter")!,
     success: { credential, response, parameters in
       print(credential.oauth_token)
       print(credential.oauth_token_secret)
@@ -84,7 +84,7 @@ let oauthswift = OAuth2Swift(
     responseType:   "token"
 )
 oauthswift.authorizeWithCallbackURL(
-    NSURL(string: "oauth-swift://oauth-callback/instagram"),
+    NSURL(string: "oauth-swift://oauth-callback/instagram")!,
     scope: "likes+comments", state:"INSTAGRAM",
     success: { credential, response, parameters in
       print(credential.oauth_token)
