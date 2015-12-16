@@ -169,6 +169,7 @@ More examples into demo application: [ViewController.swift](/OAuthSwiftDemo/View
 * [Uber](https://developer.uber.com/v1/auth/)
 * [Gitter](https://developer.gitter.im/docs/authentication)
 * [Facebook](https://developers.facebook.com/docs/facebook-login)
+* [Spotify](https://accounts.spotify.com/authorize)
 
 ## Images
 
