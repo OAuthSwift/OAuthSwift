@@ -271,7 +271,7 @@ extension ViewController {
             consumerSecret: serviceParameters["consumerSecret"]!,
             authorizeUrl:   "https://www.fitbit.com/oauth2/authorize",
             accessTokenUrl: "https://api.fitbit.com/oauth2/token",
-            responseType:   "code"
+            responseType:   "token"
         )
         oauthswift.accessTokenBasicAuthentification = true
         let state: String = generateStateWithLength(20) as String
