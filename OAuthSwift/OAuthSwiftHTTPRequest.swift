@@ -46,6 +46,10 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate {
     var successHandler: SuccessHandler?
     var failureHandler: FailureHandler?
 
+    public static var executionContext: (() -> Void) -> Void = { block in
+        return dispatch_async(dispatch_get_main_queue(), block)
+    }
+
     convenience init(URL: NSURL) {
         self.init(URL: URL, method: .GET, parameters: [:])
     }
@@ -89,7 +93,7 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate {
             }
         }
 
-        dispatch_async(dispatch_get_main_queue(), {
+        OAuthSwiftHTTPRequest.executionContext {
             self.session = NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration(),
                 delegate: self,
                 delegateQueue: NSOperationQueue.mainQueue())
@@ -136,7 +140,7 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate {
                     UIApplication.sharedApplication().networkActivityIndicatorVisible = true
                 #endif
             #endif
-        })
+        }
     }
 
     public func makeRequest() throws -> NSMutableURLRequest {
