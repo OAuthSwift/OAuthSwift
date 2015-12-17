@@ -23,13 +23,12 @@
     }
 
     extension UIViewController {
-        var visibleViewController: UIViewController? {
-            return  UIViewController.topViewController(self)
-        }
+
         static func topViewController(viewController: UIViewController) -> UIViewController {
             guard let presentedViewController = viewController.presentedViewController else {
                 return viewController
             }
+            #if !topVCCastDisabled
             if let navigationController = presentedViewController as? UINavigationController {
                 if let visibleViewController = navigationController.visibleViewController {
                     return topViewController(visibleViewController)
@@ -39,6 +38,7 @@
                     return topViewController(selectedViewController)
                 }
             }
+            #endif
             return topViewController(presentedViewController)
         }
     }
