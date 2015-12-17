@@ -120,8 +120,8 @@ public class OAuth2Swift: OAuthSwift {
             
             let responseParameters: [String:String]
             
-            if let jsonDico = responseJSON as? [String:String] {
-                responseParameters = jsonDico
+            if let jsonDico = responseJSON as? [String:AnyObject] {
+                responseParameters = jsonDico.map { (key, value) in (key, String(value)) }
             } else {
                 let responseString = NSString(data: data, encoding: NSUTF8StringEncoding) as String!
                 responseParameters = responseString.parametersFromQueryString()
