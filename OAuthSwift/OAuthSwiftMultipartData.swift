@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class OAuthSwiftMultipartData {
+public struct OAuthSwiftMultipartData {
 
     var name: String?
     var data: NSData?
