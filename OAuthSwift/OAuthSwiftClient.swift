@@ -183,12 +183,16 @@ public class OAuthSwiftClient {
     }
 
     public func postMultiPartRequest(url: String, method: OAuthSwiftHTTPRequest.Method, parameters: Dictionary<String, AnyObject>, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
+        return self.postMultiPartRequest(url, method: method, parameters: parameters, multiparts: [], success: success, failure: failure)
+    }
+
+    public func postMultiPartRequest(url: String, method: OAuthSwiftHTTPRequest.Method, parameters: Dictionary<String, AnyObject>, multiparts: Array<OAuthSwiftMultipartData>, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
         
         if let request = makeRequest(url, method: method, parameters: parameters) {
 
             let boundary = "POST-boundary-\(arc4random())-\(arc4random())"
             let type = "multipart/form-data; boundary=\(boundary)"
-            let body = self.multiDataFromObject(parameters, boundary: boundary)
+            let body = self.multiDataFromObject(parameters, multiparts: multiparts, boundary: boundary)
 
             request.HTTPBody = body
             request.headers += ["Content-Type": type] // "Content-Length": body.length.description
@@ -199,7 +203,7 @@ public class OAuthSwiftClient {
         }
     }
 
-    func multiDataFromObject(object: [String:AnyObject], boundary: String) -> NSData? {
+    func multiDataFromObject(object: [String:AnyObject], multiparts: Array<OAuthSwiftMultipartData>, boundary: String) -> NSData? {
         let data = NSMutableData()
 
         let prefixString = "--\(boundary)\r\n"
@@ -232,6 +236,26 @@ public class OAuthSwiftClient {
             data.appendData(seperatorData)
             data.appendData(valueData!)
             data.appendData(seperatorData)
+        }
+
+        for multipart in multiparts {
+            if
+                let valueName = multipart.name where valueName != "",
+                let valueData = multipart.data,
+                let valueFileName = multipart.fileName,
+                let valueType = multipart.mimeType {
+                    data.appendData(prefixData)
+                    let contentDispositionString = "Content-Disposition: form-data; name=\"\(valueName)\";filename=\"\(valueFileName)\"r\n"
+                    let contentDispositionData = contentDispositionString.dataUsingEncoding(NSUTF8StringEncoding)
+                    data.appendData(contentDispositionData!)
+                    let contentTypeString = "Content-Type: \(valueType)\r\n"
+                    let contentTypeData = contentTypeString.dataUsingEncoding(NSUTF8StringEncoding)
+                    data.appendData(contentTypeData!)
+
+                    data.appendData(seperatorData)
+                    data.appendData(valueData)
+                    data.appendData(seperatorData)
+            }
         }
 
         let endingString = "--\(boundary)--\r\n"
