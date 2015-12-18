@@ -128,7 +128,7 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
         
         authorizationParameters["oauth_signature"] = self.signatureForMethod(method, url: url, parameters: finalParameters)
         
-        var parameterComponents = authorizationParameters.urlEncodedQueryStringWithEncoding(dataEncoding).componentsSeparatedByString("&") as [String]
+        var parameterComponents = authorizationParameters.urlEncodedQueryStringWithEncoding(OAuthSwiftDataEncoding).componentsSeparatedByString("&") as [String]
         parameterComponents.sortInPlace { $0 < $1 }
         
         var headerComponents = [String]()
@@ -161,19 +161,19 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
 
     public func signatureForMethod(method: OAuthSwiftHTTPRequest.Method, url: NSURL, parameters: Dictionary<String, AnyObject>) -> String {
         var tokenSecret: NSString = ""
-        tokenSecret = self.oauth_token_secret.urlEncodedStringWithEncoding(dataEncoding)
+        tokenSecret = self.oauth_token_secret.urlEncodedStringWithEncoding(OAuthSwiftDataEncoding)
         
-        let encodedConsumerSecret = self.consumer_secret.urlEncodedStringWithEncoding(dataEncoding)
+        let encodedConsumerSecret = self.consumer_secret.urlEncodedStringWithEncoding(OAuthSwiftDataEncoding)
         
         let signingKey = "\(encodedConsumerSecret)&\(tokenSecret)"
         
-        var parameterComponents = parameters.urlEncodedQueryStringWithEncoding(dataEncoding).componentsSeparatedByString("&") as [String]
+        var parameterComponents = parameters.urlEncodedQueryStringWithEncoding(OAuthSwiftDataEncoding).componentsSeparatedByString("&") as [String]
         parameterComponents.sortInPlace { $0 < $1 }
         
         let parameterString = parameterComponents.joinWithSeparator("&")
-        let encodedParameterString = parameterString.urlEncodedStringWithEncoding(dataEncoding)
+        let encodedParameterString = parameterString.urlEncodedStringWithEncoding(OAuthSwiftDataEncoding)
         
-        let encodedURL = url.absoluteString.urlEncodedStringWithEncoding(dataEncoding)
+        let encodedURL = url.absoluteString.urlEncodedStringWithEncoding(OAuthSwiftDataEncoding)
         
         let signatureBaseString = "\(method)&\(encodedURL)&\(encodedParameterString)"
         

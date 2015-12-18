@@ -403,13 +403,13 @@
 				F435026C1A6790EC00038A29 /* OAuthSwiftHTTPRequest.swift */,
 				C49624711B00F54A0010BD09 /* OAuthSwiftURLHandlerType.swift */,
 				C496246E1B00D6C30010BD09 /* OAuthWebViewController.swift */,
+				D20BBB741C2454A900F2B012 /* OAuthSwiftMultipartData.swift */,
 				F47599AE1A78FFAF004A96C1 /* Utils.swift */,
 				F47599AC1A78FF23004A96C1 /* SHA1.swift */,
 				F47599B21A7901DF004A96C1 /* HMAC.swift */,
 				C49624741B00F8240010BD09 /* Extensions */,
 				F435027E1A6791B200038A29 /* OAuthSwift.h */,
 				F435027C1A6791B200038A29 /* Supporting Files */,
-				D20BBB741C2454A900F2B012 /* OAuthSwiftMultipartData.swift */,
 			);
 			path = OAuthSwift;
 			sourceTree = "<group>";

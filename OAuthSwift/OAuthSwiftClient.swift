@@ -8,12 +8,18 @@
 
 import Foundation
 
-var dataEncoding: NSStringEncoding = NSUTF8StringEncoding
+var OAuthSwiftDataEncoding: NSStringEncoding = NSUTF8StringEncoding
 
 public class OAuthSwiftClient {
 
     private(set) public var credential: OAuthSwiftCredential
-    
+
+    static let separator: String = "\r\n"
+    static var separatorData: NSData = {
+        return OAuthSwiftClient.separator.dataUsingEncoding(OAuthSwiftDataEncoding)!
+    }()
+
+    // MARK: init
     public init(consumerKey: String, consumerSecret: String) {
         self.credential = OAuthSwiftCredential(consumer_key: consumerKey, consumer_secret: consumerSecret)
     }
@@ -23,7 +29,8 @@ public class OAuthSwiftClient {
         self.credential.consumer_key = consumerKey
         self.credential.consumer_secret = consumerSecret
     }
-    
+
+    // MARK: client methods
     public func get(urlString: String, parameters: [String: AnyObject] = [:], headers: [String:String]? = nil, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
         self.request(urlString, method: .GET, parameters: parameters, headers: headers, success: success, failure: failure)
     }
@@ -113,7 +120,7 @@ public class OAuthSwiftClient {
             }
             request.headers = requestHeaders
 
-            request.dataEncoding = dataEncoding
+            request.dataEncoding = OAuthSwiftDataEncoding
             return request
         }
         return nil
@@ -127,11 +134,11 @@ public class OAuthSwiftClient {
 
         if let request = makeRequest(url, method: method, parameters: parameters) {
             
-            var parmaImage = [String: AnyObject]()
-            parmaImage["media"] = image
+            var paramImage = [String: AnyObject]()
+            paramImage["media"] = image
             let boundary = "AS-boundary-\(arc4random())-\(arc4random())"
             let type = "multipart/form-data; boundary=\(boundary)"
-            let body = self.multiPartBodyFromParams(parmaImage, boundary: boundary)
+            let body = self.multiPartBodyFromParams(paramImage, boundary: boundary)
             
             request.HTTPBody = body
             request.headers += ["Content-Type": type] // "Content-Length": body.length.description
@@ -144,41 +151,31 @@ public class OAuthSwiftClient {
 
     public func multiPartBodyFromParams(parameters: [String: AnyObject], boundary: String) -> NSData {
         let data = NSMutableData()
-        
-        let prefixData = "--\(boundary)\r\n".dataUsingEncoding(NSUTF8StringEncoding)
-        let seperData = "\r\n".dataUsingEncoding(NSUTF8StringEncoding)
+
+        let prefixString = "--\(boundary)\r\n"
+        let prefixData = prefixString.dataUsingEncoding(OAuthSwiftDataEncoding)!
+
         
         for (key, value) in parameters {
-            var sectionData: NSData?
+            var sectionData: NSData
             var sectionType: String?
-            var sectionFilename = ""
-            
-            if key == "media" {
-                let multiData = value as! NSData
+            var sectionFilename: String?
+            if  let multiData = value as? NSData where key == "media" {
                 sectionData = multiData
                 sectionType = "image/jpeg"
-                sectionFilename = " filename=\"file\""
+                sectionFilename = "file"
             } else {
-                sectionData = "\(value)".dataUsingEncoding(NSUTF8StringEncoding)
+                sectionData = "\(value)".dataUsingEncoding(OAuthSwiftDataEncoding)!
             }
-            
-            data.appendData(prefixData!)
-            
-            let sectionDisposition = "Content-Disposition: form-data; name=\"media\";\(sectionFilename)\r\n".dataUsingEncoding(NSUTF8StringEncoding)
-            data.appendData(sectionDisposition!)
-            
-            if let type = sectionType {
-                let contentType = "Content-Type: \(type)\r\n".dataUsingEncoding(NSUTF8StringEncoding)
-                data.appendData(contentType!)
-            }
-            
-            // append data
-            data.appendData(seperData!)
-            data.appendData(sectionData!)
-            data.appendData(seperData!)
+
+            data.appendData(prefixData)
+            let multipartData = OAuthSwiftMultipartData(name: key, data: sectionData, fileName: sectionFilename, mimeType: sectionType)
+            data.appendMultipartData(multipartData, encoding: OAuthSwiftDataEncoding, separatorData: OAuthSwiftClient.separatorData)
         }
-        
-        data.appendData("--\(boundary)--\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+
+        let endingString = "--\(boundary)--\r\n"
+        let endingData = endingString.dataUsingEncoding(OAuthSwiftDataEncoding)!
+        data.appendData(endingData)
         return data
     }
 
@@ -203,71 +200,27 @@ public class OAuthSwiftClient {
         let data = NSMutableData()
 
         let prefixString = "--\(boundary)\r\n"
-        let prefixData = prefixString.dataUsingEncoding(NSUTF8StringEncoding)!
-
-        let seperatorString = "\r\n"
-        let seperatorData = seperatorString.dataUsingEncoding(NSUTF8StringEncoding)!
+        let prefixData = prefixString.dataUsingEncoding(OAuthSwiftDataEncoding)!
 
         for (key, value) in object {
-
-            var valueData: NSData?
-            let valueType: String = ""
-            let filenameClause = ""
-
-            let stringValue = "\(value)"
-            valueData = stringValue.dataUsingEncoding(NSUTF8StringEncoding)!
-
-            if valueData == nil {
+            guard let valueData = "\(value)".dataUsingEncoding(OAuthSwiftDataEncoding) else {
                 continue
             }
             data.appendData(prefixData)
-            let contentDispositionString = "Content-Disposition: form-data; name=\"\(key)\";\(filenameClause)\r\n"
-            let contentDispositionData = contentDispositionString.dataUsingEncoding(NSUTF8StringEncoding)
-            data.appendData(contentDispositionData!)
-            if let type: String = valueType {
-                let contentTypeString = "Content-Type: \(type)\r\n"
-                let contentTypeData = contentTypeString.dataUsingEncoding(NSUTF8StringEncoding)
-                data.appendData(contentTypeData!)
-            }
-            data.appendData(seperatorData)
-            data.appendData(valueData!)
-            data.appendData(seperatorData)
+            let multipartData = OAuthSwiftMultipartData(name: key, data: valueData, fileName: nil, mimeType: nil)
+            data.appendMultipartData(multipartData, encoding: OAuthSwiftDataEncoding, separatorData: OAuthSwiftClient.separatorData)
         }
 
         for multipart in multiparts {
-            if
-                let valueName = multipart.name where valueName != "",
-                let valueData = multipart.data,
-                let valueFileName = multipart.fileName,
-                let valueType = multipart.mimeType {
-                    data.appendData(prefixData)
-                    let contentDispositionString = "Content-Disposition: form-data; name=\"\(valueName)\";filename=\"\(valueFileName)\"r\n"
-                    let contentDispositionData = contentDispositionString.dataUsingEncoding(NSUTF8StringEncoding)
-                    data.appendData(contentDispositionData!)
-                    let contentTypeString = "Content-Type: \(valueType)\r\n"
-                    let contentTypeData = contentTypeString.dataUsingEncoding(NSUTF8StringEncoding)
-                    data.appendData(contentTypeData!)
-
-                    data.appendData(seperatorData)
-                    data.appendData(valueData)
-                    data.appendData(seperatorData)
-            }
+            data.appendData(prefixData)
+            data.appendMultipartData(multipart, encoding: OAuthSwiftDataEncoding, separatorData: OAuthSwiftClient.separatorData)
         }
 
         let endingString = "--\(boundary)--\r\n"
-        let endingData = endingString.dataUsingEncoding(NSUTF8StringEncoding)!
+        let endingData = endingString.dataUsingEncoding(OAuthSwiftDataEncoding)!
         data.appendData(endingData)
 
         return data
     }
 
-    @available(*, deprecated=0.4.6, message="Because method moved to OAuthSwiftCredential!")
-    public class func authorizationHeaderForMethod(method: String, url: NSURL, parameters: Dictionary<String, AnyObject>, credential: OAuthSwiftCredential) -> String {
-        return credential.authorizationHeaderForMethod(OAuthSwiftHTTPRequest.Method(rawValue: method)!, url: url, parameters: parameters)
-    }
-    
-    @available(*, deprecated=0.4.6, message="Because method moved to OAuthSwiftCredential!")
-    public class func signatureForMethod(method: String, url: NSURL, parameters: Dictionary<String, AnyObject>, credential: OAuthSwiftCredential) -> String {
-        return credential.signatureForMethod(OAuthSwiftHTTPRequest.Method(rawValue: method)!, url: url, parameters: parameters)
-    }
 }
