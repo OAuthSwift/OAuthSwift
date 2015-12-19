@@ -53,6 +53,8 @@ extension ViewController {
         parameters["name"] = service
 
         switch service {
+        case "Spotify" :
+            doOAuthSpotify(parameters)
         case "Twitter":
             doOAuthTwitter(parameters)
         case "Flickr":
@@ -103,7 +105,27 @@ extension ViewController {
             print("\(service) not implemented")
         }
     }
-
+    
+    func doOAuthSpotify(serviceParameters: [String:String]){
+        let oauthswift = OAuth2Swift(
+            consumerKey:    serviceParameters["consumerKey"]!,
+            consumerSecret: serviceParameters["consumerSecret"]!,
+            authorizeUrl:   "https://accounts.spotify.com/en/authorize",
+            accessTokenUrl: "https://accounts.spotify.com/api/token",
+            responseType:   "code"
+        )
+        let state: String = generateStateWithLength(20) as String
+        
+        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/spotify")!,
+            scope: "user-library-modify",
+            state: state, success: {
+            credential, response, parameters in
+            self.showTokenAlert(serviceParameters["name"], credential: credential)
+            }, failure: { error in
+                print(error.localizedDescription)
+        })
+    }
+    
     func doOAuthTwitter(serviceParameters: [String:String]){
         let oauthswift = OAuth1Swift(
             consumerKey:    serviceParameters["consumerKey"]!,
