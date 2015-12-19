@@ -8,7 +8,7 @@ Swift based OAuth library for iOS and OSX.
 
 ## Support OAuth1.0, OAuth2.0
 
-Twitter, Flickr, Github, Instagram, Foursquare. Fitbit, Withings, Linkedin, Dropbox, Dribbble, Salesforce, BitBucket, GoogleDrive, Smugmug, Intuit, Zaim, Tumblr, Slack, Uber, Gitter, Facebook etc
+Twitter, Flickr, Github, Instagram, Foursquare. Fitbit, Withings, Linkedin, Dropbox, Dribbble, Salesforce, BitBucket, GoogleDrive, Smugmug, Intuit, Zaim, Tumblr, Slack, Uber, Gitter, Facebook, Spotify etc
 
 ## Installation
 
@@ -169,7 +169,7 @@ More examples into demo application: [ViewController.swift](/OAuthSwiftDemo/View
 * [Uber](https://developer.uber.com/v1/auth/)
 * [Gitter](https://developer.gitter.im/docs/authentication)
 * [Facebook](https://developers.facebook.com/docs/facebook-login)
-* [Spotify](https://accounts.spotify.com/authorize)
+* [Spotify](https://developer.spotify.com/web-api/authorization-guide/)
 
 ## Images
 
