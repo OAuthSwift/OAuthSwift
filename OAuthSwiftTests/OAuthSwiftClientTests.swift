@@ -56,7 +56,7 @@ class OAuthSwiftClientTests: XCTestCase {
             let urlFromRequest = try request.makeRequest()
             
             var url = NSURL(string: url)
-            let queryString = parameters.urlEncodedQueryStringWithEncoding(dataEncoding)
+            let queryString = parameters.urlEncodedQueryStringWithEncoding(OAuthSwiftDataEncoding)
             url = url?.URLByAppendingQueryString(queryString)
 
             XCTAssertEqualURL(urlFromRequest.URL!, url!)

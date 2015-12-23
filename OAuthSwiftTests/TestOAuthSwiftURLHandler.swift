@@ -60,7 +60,7 @@ class TestOAuthSwiftURLHandler: NSObject, OAuthSwiftURLHandlerType {
             for queryItem in queryItems {
                 if let value = queryItem.value where queryItem.name == "oauth_token" {
                     let url = "\(self.callbackURL)?oauth_token=\(value)"
-                    OAuth1Swift.handleOpenURL(NSURL(string: url)!)
+                    OAuthSwift.handleOpenURL(NSURL(string: url)!)
                 }
             }
         }
@@ -91,6 +91,6 @@ class TestOAuthSwiftURLHandler: NSObject, OAuthSwiftURLHandlerType {
                 // nothing
             }
         }
-        OAuth2Swift.handleOpenURL(NSURL(string: url)!)
+        OAuthSwift.handleOpenURL(NSURL(string: url)!)
     }
 }
