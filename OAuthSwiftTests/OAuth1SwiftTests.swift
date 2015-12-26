@@ -18,7 +18,11 @@ class OAuthSwiftTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
-        server.start()
+        do {
+            try server.start()
+        }catch {
+            XCTFail("Failed to start server")
+        }
     }
     
     override func tearDown() {

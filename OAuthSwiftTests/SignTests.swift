@@ -51,27 +51,73 @@ class SignTests: XCTestCase {
     }
     
     func testSignature() {
-        let url = "http://photos.example.net/photos"
-        
-        let consumer = "dpf43f3p2l4k3l03"
-        let secret = "kd94hf93k423kf44"
-        let token = "nnch734d00sl2jdk"
-        let token_secret = "pfkkdhi9sl3r4s00"
-        var parameters = ["file":"vacation.jpg", "size":"original"]
-        let nonce = "kllo9940pd9333jh"
-        let timestamp = "1191242096"
-        
-        let credential = OAuthSwiftCredential(consumer_key: consumer, consumer_secret: secret)
-        credential.oauth_token = token
-        credential.oauth_token_secret = token_secret
-        
-        parameters.merge(credential.authorizationParameters(nil, timestamp: timestamp, nonce: nonce))
-        
-        let signature = credential.signatureForMethod(.GET, url: NSURL(string: url)!, parameters: parameters)
-        
-        XCTAssertEqual(signature, "tR3+Ty81lMeYAr/Fid0kMTYa/WM=",  "HMAC-SHA1 request signature does not match OAuth Spec, Appendix A.5.3")
+        testSignature("http://photos.example.net/photos",
+            consumer: "dpf43f3p2l4k3l03",
+            secret: "kd94hf93k423kf44",
+            token: "nnch734d00sl2jdk",
+            token_secret: "pfkkdhi9sl3r4s00",
+            parameters: ["file":"vacation.jpg", "size":"original"],
+            nonce: "kllo9940pd9333jh",
+            timestamp: "1191242096",
+            method: .GET,
+            expected: "tR3+Ty81lMeYAr/Fid0kMTYa/WM=")
+
+        testSignature("http://photos.example.net/photos",
+            consumer: "abcd",
+            secret: "efgh",
+            token: "ijkl",
+            token_secret: "mnop",
+            parameters: ["name":"value"],
+            nonce: "rkNG5bfzqFw",
+            timestamp: "1451152366",
+            method: .POST,
+            expected: "6qB7WBgezEpKhfr2Bpl+HfcS4SA=")
     }
-    
+
+    func testSignatureWithSpaceInURL() {
+
+        testSignature("http://photos.example.net/ph%20otos",
+            consumer: "abcd",
+            secret: "efgh",
+            token: "ijkl",
+            token_secret: "mnop",
+            parameters: ["name":"value"],
+            nonce: "rkNG5bfzqFw",
+            timestamp: "1451152366",
+            method: .GET,
+            expected: "bY1K6fPxYDwb34nUm8CIZjKtWWY=") // ?? g2HpPCyQIVxLC3NNVn2x9oeUtyg= 
+
+    }
+
+    func testSignature(  url : String
+        , consumer : String
+        , secret: String
+        , token: String
+        , token_secret : String
+        , var parameters : [String:String]
+        , nonce : String
+        , timestamp : String
+        , method:  OAuthSwiftHTTPRequest.Method = .GET
+        , expected : String
+        ) {
+            let credential = OAuthSwiftCredential(consumer_key: consumer, consumer_secret: secret)
+            credential.oauth_token = token
+            credential.oauth_token_secret = token_secret
+
+            parameters.merge(credential.authorizationParameters(nil, timestamp: timestamp, nonce: nonce))
+
+            guard let nsurl = NSURL(string: url) else {
+                XCTFail("Not able to create NSURL \(url)")
+                return
+            }
+            print(nsurl.absoluteString)
+            XCTAssertEqual(nsurl.absoluteString, url)
+
+            let signature = credential.signatureForMethod(method, url: nsurl, parameters: parameters)
+
+            XCTAssertEqual(signature, expected,  "HMAC-SHA1 request signature does not match OAuth Spec, Appendix A.5.3")
+    }
+
     /*func testAuthorizationHeader() {
         let url = "http://photos.example.net/photos"
         let consumer = "dpf43f3p2l4k3l03"

@@ -39,10 +39,10 @@ class OAuthSwiftRequestTests: XCTestCase {
     func testSuccess() {
         let server  = HttpServer()
         server["/"] = { request in
-            return HttpResponse.OK( HttpResponseBody.STRING("Success!" as String) )
+            return HttpResponse.OK(HttpResponseBody.Text("Success!" as String) )
         }
         
-        server.start(self.port)
+        try! server.start(self.port)
         defer {
             server.stop()
         }

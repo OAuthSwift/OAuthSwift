@@ -52,7 +52,7 @@ class TestServer {
             let oauth_token = "requestkey"
             let oauth_token_secret = "requestsecret"
             
-            return .OK(.STRING("oauth_token=\(oauth_token)&oauth_token_secret=\(oauth_token_secret)" as String) )
+            return .OK(.Text("oauth_token=\(oauth_token)&oauth_token_secret=\(oauth_token_secret)" as String) )
         }
         server["1/accessToken"] = { request in
             guard request.method == "POST" else {
@@ -60,7 +60,7 @@ class TestServer {
             }
             // TODO check request.headers["authorization"] for consumer key, etc...
             
-            return .OK(.STRING("oauth_token=\(self.oauth_token)&oauth_token_secret=\(self.oauth_token_secret)" as String) )
+            return .OK(.Text("oauth_token=\(self.oauth_token)&oauth_token_secret=\(self.oauth_token_secret)" as String) )
         }
         
         /*
@@ -83,22 +83,22 @@ class TestServer {
             
             switch self.accessReturnType {
             case .JSON:
-                return .OK(.JSON(["access_token":self.oauth_token]))
+                return .OK(.Json(["access_token":self.oauth_token]))
             case .Data:
-                return .OK(.STRING("access_token=\(self.oauth_token)" as String))
+                return .OK(.Text("access_token=\(self.oauth_token)" as String))
             }
             
         }
         server["2/authorize"] = {
-            .OK(.HTML("You asked for " + $0.url))
+            return HttpResponse.OK(HttpResponseBody.Html("You asked for " + $0.url))
         }
         server["2/expire"] = { request in
-            return HttpResponse.RAW(401, "Unauthorized",["WWW-Authenticate": "Bearer realm=\"example\",error=\"invalid_token\",error_description=\"The access token expired\""], NSData())
+            return HttpResponse.RAW(401, "Unauthorized",["WWW-Authenticate": "Bearer realm=\"example\",error=\"invalid_token\",error_description=\"The access token expired\""], nil)
         }
     }
     
-    func start() {
-        server.start(self.port, error: nil)
+    func start() throws {
+        try server.start(self.port)
     }
     
     func stop() {
