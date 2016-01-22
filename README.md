@@ -47,7 +47,7 @@ Replace oauth-swift by your application name
 
 #### Handle URL in AppDelegate
 ```swift
-func application(application: UIApplication!, openURL url: NSURL!, sourceApplication: String!, annotation: AnyObject!) -> Bool {
+func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
   if (url.host == "oauth-callback") {
     OAuthSwift.handleOpenURL(url)
   }
