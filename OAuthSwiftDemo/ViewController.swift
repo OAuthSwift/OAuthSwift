@@ -53,6 +53,8 @@ extension ViewController {
         parameters["name"] = service
 
         switch service {
+        case "500px" :
+            doOAuth500px(parameters)
         case "Spotify" :
             doOAuthSpotify(parameters)
         case "Twitter":
@@ -104,6 +106,24 @@ extension ViewController {
         default:
             print("\(service) not implemented")
         }
+    }
+    
+    func doOAuth500px(serviceParameters: [String:String]){
+        let oauthswift = OAuth1Swift(
+            consumerKey:    serviceParameters["consumerKey"]!,
+            consumerSecret: serviceParameters["consumerSecret"]!,
+            requestTokenUrl: "https://api.500px.com/v1/oauth/request_token",
+            authorizeUrl:"https://api.500px.com/v1/oauth/authorize",
+            accessTokenUrl:"https://api.500px.com/v1/oauth/access_token"
+        )
+        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/500px")!,
+            scope: "user-library-modify",
+            state: state, success: {
+                credential, response, parameters in
+                self.showTokenAlert(serviceParameters["name"], credential: credential)
+            }, failure: { error in
+                print(error.localizedDescription)
+        })
     }
     
     func doOAuthSpotify(serviceParameters: [String:String]){

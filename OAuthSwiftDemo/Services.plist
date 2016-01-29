@@ -2,6 +2,13 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>500px</key>
+	<dict>
+		<key>consumerKey</key>
+		<string></string>
+		<key>consumerSecret</key>
+		<string></string>
+	</dict>
 	<key>Spotify</key>
 	<dict>
 		<key>consumerKey</key>
