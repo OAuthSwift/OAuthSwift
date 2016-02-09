@@ -84,28 +84,29 @@ public class OAuth2Swift: OAuthSwift {
                 failure(error: NSError(domain: OAuthSwiftErrorDomain, code: -1, userInfo: errorInfo))
             }
         }
-        //let authorizeURL = NSURL(string: )
-        var urlString = String()
-        urlString += self.authorize_url
-        urlString += (self.authorize_url.has("?") ? "&" : "?") + "client_id=\(self.consumer_key)"
-        urlString += "&redirect_uri=\(callbackURL.absoluteString)"
-        urlString += "&response_type=\(self.response_type)"
-        if (scope != "") {
-          urlString += "&scope=\(scope)"
-        }
-        if (state != "") {
-            urlString += "&state=\(state)"
-        }
 
+        
+        var queryString = "client_id=\(self.consumer_key)"
+        queryString += "&redirect_uri=\(callbackURL.absoluteString)"
+        queryString += "&response_type=\(self.response_type)"
+        if !scope.isEmpty {
+            queryString += "&scope=\(scope)"
+        }
+        if !state.isEmpty {
+            queryString += "&state=\(state)"
+        }
         for param in params {
-            urlString += "&\(param.0)=\(param.1)"
+            queryString += "&\(param.0)=\(param.1)"
         }
-
-        if let queryURL = NSURL(string: urlString) {
-           self.authorize_url_handler.handle(queryURL)
+        
+        var urlString = self.authorize_url
+        urlString += (self.authorize_url.has("?") ? "&" : "?")
+        
+        if let encodedQuery = queryString.urlQueryEncoded, queryURL = NSURL(string: urlString + encodedQuery) {
+            self.authorize_url_handler.handle(queryURL)
         }
         else {
-            let errorInfo = [NSLocalizedFailureReasonErrorKey: NSLocalizedString("Failed to create URL", comment: "\(urlString) not convertible to URL, please encode.")]
+            let errorInfo = [NSLocalizedFailureReasonErrorKey: NSLocalizedString("Failed to create URL", comment: "\(urlString) or \(queryString) not convertible to URL, please check encoding")]
             failure(error: NSError(domain: OAuthSwiftErrorDomain, code: -1, userInfo: errorInfo))
         }
     }

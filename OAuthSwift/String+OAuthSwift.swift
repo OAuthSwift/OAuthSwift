@@ -42,6 +42,10 @@ extension String {
         return dictionaryBySplitting("&", keyValueSeparator: "=")
     }
     
+    var urlQueryEncoded: String? {
+        return self.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())
+    }
+
     func dictionaryBySplitting(elementSeparator: String, keyValueSeparator: String) -> Dictionary<String, String> {
         var parameters = Dictionary<String, String>()
 

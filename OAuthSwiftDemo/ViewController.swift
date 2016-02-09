@@ -320,7 +320,7 @@ extension ViewController {
         )
         oauthswift.accessTokenBasicAuthentification = true
         let state: String = generateStateWithLength(20) as String
-        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/fitbit2")!, scope: "profile", state: state, success: {
+        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/fitbit2")!, scope: "profile weight", state: state, success: {
             credential, response, parameters in
             self.showTokenAlert(serviceParameters["name"], credential: credential)
             self.testFitbit2(oauthswift)
