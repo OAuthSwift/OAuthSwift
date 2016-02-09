@@ -116,9 +116,9 @@ extension ViewController {
             authorizeUrl:"https://api.500px.com/v1/oauth/authorize",
             accessTokenUrl:"https://api.500px.com/v1/oauth/access_token"
         )
+        
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/500px")!,
-            scope: "user-library-modify",
-            state: state, success: {
+            success: {
                 credential, response, parameters in
                 self.showTokenAlert(serviceParameters["name"], credential: credential)
             }, failure: { error in
@@ -250,6 +250,9 @@ extension ViewController {
             consumerSecret: serviceParameters["consumerSecret"]!,
             authorizeUrl:   "https://api.instagram.com/oauth/authorize",
             responseType:   "token"
+            // or 
+            // accessTokenUrl: "https://api.instagram.com/oauth/access_token",
+            // responseType:   "code"
         )
 
         let state: String = generateStateWithLength(20) as String
