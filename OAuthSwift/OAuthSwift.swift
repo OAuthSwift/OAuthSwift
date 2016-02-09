@@ -56,6 +56,14 @@ public class OAuthSwift: NSObject {
             block(url: urlFromUserInfo)
         }
     }
+	
+	// Clean up state from any existing requests
+	public func invalidate() {
+		if let observer = self.observer {
+			NSNotificationCenter.defaultCenter().removeObserver(observer)
+		}
+		authorize_url_handler = OAuthSwiftOpenURLExternally.sharedInstance
+	}
 
     public func removeCallbackNotificationObserver() {
       	if let observer = self.observer {
