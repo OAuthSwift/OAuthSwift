@@ -150,7 +150,13 @@ public class OAuth2Swift: OAuthSwift {
                     headers = ["Authorization": "Basic \(base64Encoded)"]
                 }
             }
-            self.client.request(self.access_token_url!, method: .POST, parameters: parameters, headers: headers, success: successHandler, failure: failure)
+            if let access_token_url = access_token_url {
+                self.client.request(access_token_url, method: .POST, parameters: parameters, headers: headers, success: successHandler, failure: failure)
+            }
+            else {
+                let errorInfo = [NSLocalizedFailureReasonErrorKey: NSLocalizedString("access token url not defined", comment: "access token url not defined with code type auth")]
+                failure?(error: NSError(domain: OAuthSwiftErrorDomain, code: -1, userInfo: errorInfo))
+            }
         }
     }
     
