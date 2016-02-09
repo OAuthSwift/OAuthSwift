@@ -104,6 +104,10 @@ public class OAuth2Swift: OAuthSwift {
         if let queryURL = NSURL(string: urlString) {
            self.authorize_url_handler.handle(queryURL)
         }
+        else {
+            let errorInfo = [NSLocalizedFailureReasonErrorKey: NSLocalizedString("Failed to create URL", comment: "\(urlString) not convertible to URL, please encode.")]
+            failure(error: NSError(domain: OAuthSwiftErrorDomain, code: -1, userInfo: errorInfo))
+        }
     }
     
     func postOAuthAccessTokenWithRequestTokenByCode(code: String, callbackURL: NSURL, success: TokenSuccessHandler, failure: FailureHandler?) {
