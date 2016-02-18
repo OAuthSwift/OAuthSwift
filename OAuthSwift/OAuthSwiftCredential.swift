@@ -49,7 +49,7 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
     var consumer_secret: String = String()
     public var oauth_token: String = String()
     public var oauth_token_secret: String = String()
-    public var oauth_verifier: String = String()
+    public internal(set) var oauth_verifier: String = String()
     public var version: Version = .OAuth1
     
     override init(){
