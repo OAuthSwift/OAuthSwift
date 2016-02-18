@@ -51,6 +51,12 @@ extension AppDelegate: UIApplicationDelegate {
         applicationHandleOpenURL(url)
         return true
     }
+
+    @available(iOS 9.0, *)
+    func application(app: UIApplication, openURL url: NSURL, options: [String : AnyObject]) -> Bool {
+        applicationHandleOpenURL(url)
+        return true
+    }
 }
     
 #elseif os(OSX)

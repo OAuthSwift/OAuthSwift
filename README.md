@@ -46,14 +46,21 @@ Replace oauth-swift by your application name
 ### Examples
 
 #### Handle URL in AppDelegate
+On iOS9 implement `UIApplicationDelegate` method
 ```swift
-func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
+func application(app: UIApplication, openURL url: NSURL, options: [String : AnyObject]) -> Bool {
   if (url.host == "oauth-callback") {
     OAuthSwift.handleOpenURL(url)
   }
   return true
 }
 ```
+On previous iOS version
+```swift
+func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
+```
+On OSX you must register an handler on `NSAppleEventManager` for event type `kAEGetURL` (see demo code)
+
 #### OAuth1.0
 ```swift
 let oauthswift = OAuth1Swift(
@@ -179,7 +186,7 @@ More examples into demo application: [ViewController.swift](/OAuthSwiftDemo/View
 
 ## Contributing
  See [CONTRIBUTING.md](CONTRIBUTING.md)
- 
+
 [Add a new service in demo app](https://github.com/dongri/OAuthSwift/wiki/Demo-application#add-a-new-service-in-demo-app)
 
 ## License
