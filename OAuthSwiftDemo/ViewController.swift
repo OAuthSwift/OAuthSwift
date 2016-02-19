@@ -345,11 +345,23 @@ extension ViewController {
             consumerSecret: serviceParameters["consumerSecret"]!,
             requestTokenUrl: "https://oauth.withings.com/account/request_token",
             authorizeUrl:    "https://oauth.withings.com/account/authorize",
-            accessTokenUrl:  "https://oauth.withings.com/account/access_token"
+            accessTokenUrl:  "https://oauth.withings.com/account/access_token",
+            paramsLocation : .RequestURIQuery
         )
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/withings")!, success: {
             credential, response, parameters in
             self.showTokenAlert(serviceParameters["name"], credential: credential)
+            self.testWithings(oauthswift, userId: parameters["userid"]!)
+            }, failure: { error in
+                print(error.localizedDescription)
+        })
+    }
+    func testWithings(oauthswift: OAuth1Swift, userId : NSString) {
+        oauthswift.client.get("https://wbsapi.withings.net/v2/measure", parameters: ["action":"getactivity", "userid":userId, "date":"2016-02-15"],
+            success: {
+                data, response in
+                let jsonDict: AnyObject! = try? NSJSONSerialization.JSONObjectWithData(data, options: [])
+                print(jsonDict)
             }, failure: { error in
                 print(error.localizedDescription)
         })

@@ -10,9 +10,10 @@ import Foundation
 
 var OAuthSwiftDataEncoding: NSStringEncoding = NSUTF8StringEncoding
 
-public class OAuthSwiftClient {
+public class OAuthSwiftClient: NSObject {
 
     private(set) public var credential: OAuthSwiftCredential
+    public var paramsLocation: OAuthSwiftHTTPRequest.ParamsLocation = .AuthorizationHeader
 
     static let separator: String = "\r\n"
     static var separatorData: NSData = {
@@ -63,7 +64,7 @@ public class OAuthSwiftClient {
     public func makeRequest(urlString: String, method: OAuthSwiftHTTPRequest.Method, parameters: [String: AnyObject] = [:], headers: [String:String]? = nil) -> OAuthSwiftHTTPRequest? {
         if let url = NSURL(string: urlString) {
 
-            let request = OAuthSwiftHTTPRequest(URL: url, method: method, parameters: parameters)
+            let request = OAuthSwiftHTTPRequest(URL: url, method: method, parameters: parameters, paramsLocation: self.paramsLocation)
             
             var requestHeaders = [String:String]()
             var signatureUrl = url
@@ -114,7 +115,15 @@ public class OAuthSwiftClient {
             }
             signatureParameters = signatureParameters.join(queryStringParameters)
             
-            requestHeaders += self.credential.makeHeaders(signatureUrl, method: method, parameters: signatureParameters, body: body)
+            switch self.paramsLocation {
+            case .AuthorizationHeader:
+                //Add oauth parameters in the Authorization header
+                requestHeaders += self.credential.makeHeaders(signatureUrl, method: method, parameters: signatureParameters, body: body)
+            case .RequestURIQuery:
+                //Add oauth parameters as request parameters
+                request.parameters += self.credential.authorizationParametersWithSignatureForMethod(method, url: signatureUrl, parameters: signatureParameters, body: body)
+            }
+            
             if let addHeaders = headers {
                 requestHeaders += addHeaders
             }
