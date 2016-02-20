@@ -22,7 +22,7 @@ public class OAuth1Swift: OAuthSwift {
     var access_token_url: String
     
     // MARK: init
-    public init(consumerKey: String, consumerSecret: String, requestTokenUrl: String, authorizeUrl: String, accessTokenUrl: String, paramsLocation : OAuthSwiftHTTPRequest.ParamsLocation){
+    public init(consumerKey: String, consumerSecret: String, requestTokenUrl: String, authorizeUrl: String, accessTokenUrl: String){
         self.consumer_key = consumerKey
         self.consumer_secret = consumerSecret
         self.request_token_url = requestTokenUrl
@@ -30,15 +30,6 @@ public class OAuth1Swift: OAuthSwift {
         self.access_token_url = accessTokenUrl
         super.init(consumerKey: consumerKey, consumerSecret: consumerSecret)
         self.client.credential.version = .OAuth1
-        self.client.paramsLocation = paramsLocation;
-    }
-    
-    public convenience init(consumerKey: String, consumerSecret: String, requestTokenUrl: String, authorizeUrl: String, accessTokenUrl: String) {
-        self.init(consumerKey:consumerKey, consumerSecret: consumerSecret,
-            requestTokenUrl: requestTokenUrl,
-            authorizeUrl: authorizeUrl,
-            accessTokenUrl: accessTokenUrl,
-            paramsLocation: OAuthSwiftHTTPRequest.ParamsLocation.AuthorizationHeader)
     }
 
     public convenience init?(parameters: [String:String]){

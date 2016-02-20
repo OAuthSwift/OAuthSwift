@@ -345,8 +345,7 @@ extension ViewController {
             consumerSecret: serviceParameters["consumerSecret"]!,
             requestTokenUrl: "https://oauth.withings.com/account/request_token",
             authorizeUrl:    "https://oauth.withings.com/account/authorize",
-            accessTokenUrl:  "https://oauth.withings.com/account/access_token",
-            paramsLocation : .RequestURIQuery
+            accessTokenUrl:  "https://oauth.withings.com/account/access_token"
         )
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/withings")!, success: {
             credential, response, parameters in
@@ -357,6 +356,7 @@ extension ViewController {
         })
     }
     func testWithings(oauthswift: OAuth1Swift, userId : NSString) {
+        oauthswift.client.paramsLocation = .RequestURIQuery
         oauthswift.client.get("https://wbsapi.withings.net/v2/measure", parameters: ["action":"getactivity", "userid":userId, "date":"2016-02-15"],
             success: {
                 data, response in
