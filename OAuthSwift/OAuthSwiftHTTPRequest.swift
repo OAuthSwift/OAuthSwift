@@ -60,7 +60,7 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate {
         self.init(URL: URL, method: .GET, parameters: [:])
     }
 
-    init(URL: NSURL, method: Method, parameters: Dictionary<String, AnyObject>, paramsLocation : ParamsLocation? = .AuthorizationHeader) {
+    init(URL: NSURL, method: Method, parameters: Dictionary<String, AnyObject>, paramsLocation : ParamsLocation = .AuthorizationHeader) {
         self.URL = URL
         self.HTTPMethod = method
         self.headers = [:]
@@ -69,10 +69,10 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate {
         self.timeoutInterval = 60
         self.HTTPShouldHandleCookies = false
         self.responseData = NSMutableData()
-        self.paramsLocation = paramsLocation!
+        self.paramsLocation = paramsLocation
     }
 
-    init(request: NSURLRequest, paramsLocation : ParamsLocation? = .AuthorizationHeader) {
+    init(request: NSURLRequest, paramsLocation : ParamsLocation = .AuthorizationHeader) {
         self.request = request as? NSMutableURLRequest
         self.URL = request.URL!
         self.HTTPMethod = Method(rawValue: request.HTTPMethod ?? "") ?? .GET
@@ -82,7 +82,7 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate {
         self.timeoutInterval = 60
         self.HTTPShouldHandleCookies = false
         self.responseData = NSMutableData()
-        self.paramsLocation = paramsLocation!
+        self.paramsLocation = paramsLocation
     }
 
     func start() {
@@ -166,7 +166,7 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate {
         parameters: Dictionary<String, AnyObject>,
         dataEncoding: NSStringEncoding,
         body: NSData? = nil,
-        paramsLocation: ParamsLocation? = .AuthorizationHeader) throws -> NSMutableURLRequest {
+        paramsLocation: ParamsLocation = .AuthorizationHeader) throws -> NSMutableURLRequest {
             let request = NSMutableURLRequest(URL: URL)
             request.HTTPMethod = method.rawValue
             return try setupRequestForOAuth(request,
@@ -184,7 +184,7 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate {
         parameters: Dictionary<String, AnyObject>,
         dataEncoding: NSStringEncoding,
         body: NSData? = nil,
-        paramsLocation : ParamsLocation? = .AuthorizationHeader) throws -> NSMutableURLRequest {
+        paramsLocation : ParamsLocation = .AuthorizationHeader) throws -> NSMutableURLRequest {
             for (key, value) in headers {
                 request.setValue(value, forHTTPHeaderField: key)
             }
@@ -192,7 +192,7 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate {
             let charset = CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(dataEncoding))
 
             let finalParameters : Dictionary<String, AnyObject>
-            switch (paramsLocation!) {
+            switch (paramsLocation) {
             case .AuthorizationHeader:
                 finalParameters = parameters.filter { key, _ in !key.hasPrefix("oauth_") }
             case .RequestURIQuery:
