@@ -14,6 +14,9 @@ public class OAuth2Swift: OAuthSwift {
     // set value to true (default: false)
     public var accessTokenBasicAuthentification = false
 
+    // Set to true to deactivate state check. Be careful of CSRF
+    public var allowMissingStateCheck: Bool = false
+
     var consumer_key: String
     var consumer_secret: String
     var authorize_url: String
@@ -72,6 +75,18 @@ public class OAuth2Swift: OAuthSwift {
                 success(credential: self.client.credential, response: nil, parameters: responseParameters)
             }
             else if let code = responseParameters["code"] {
+                if !self.allowMissingStateCheck {
+                    guard let responseState = responseParameters["state"] else {
+                        let errorInfo = [NSLocalizedDescriptionKey: "Missing state"]
+                        failure(error: NSError(domain: OAuthSwiftErrorDomain, code: -1, userInfo: errorInfo))
+                        return
+                    }
+                    if responseState != state {
+                        let errorInfo = [NSLocalizedDescriptionKey: "state not equals"]
+                        failure(error: NSError(domain: OAuthSwiftErrorDomain, code: -1, userInfo: errorInfo))
+                        return
+                    }
+                }
                 self.postOAuthAccessTokenWithRequestTokenByCode(code.safeStringByRemovingPercentEncoding,
                     callbackURL:callbackURL, success: success, failure: failure)
             }
