@@ -45,7 +45,7 @@ class TestServer {
         server = HttpServer()
         server["1/requestToken"] = { request in
             guard request.method == "POST" else {
-                return HttpResponse.BadRequest
+                return .BadRequest(.Text("Method must be POST"))
             }
             // TODO check request.headers["authorization"] for consumer key, etc...
             
@@ -56,7 +56,7 @@ class TestServer {
         }
         server["1/accessToken"] = { request in
             guard request.method == "POST" else {
-                return HttpResponse.BadRequest
+                return HttpResponse.BadRequest(.Text("Method must be POST"))
             }
             // TODO check request.headers["authorization"] for consumer key, etc...
             
@@ -74,7 +74,7 @@ class TestServer {
         
         server["2/accessToken"] = { request in
             guard request.method == "POST" else {
-                return .BadRequest
+                return .BadRequest(.Text("Method must be POST"))
             }
             /*guard let autho = request.headers["authorization"] where autho == "Beared" else {
                 return HttpResponse.BadRequest
@@ -89,8 +89,8 @@ class TestServer {
             }
             
         }
-        server["2/authorize"] = {
-            return HttpResponse.OK(HttpResponseBody.Html("You asked for " + $0.url))
+        server["2/authorize"] = { request in
+            return .OK(HttpResponseBody.Html("You asked for \(request.path)"))
         }
         server["2/expire"] = { request in
             return HttpResponse.RAW(401, "Unauthorized",["WWW-Authenticate": "Bearer realm=\"example\",error=\"invalid_token\",error_description=\"The access token expired\""], nil)
