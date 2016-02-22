@@ -71,7 +71,7 @@ public class OAuth2Swift: OAuthSwift {
                 responseParameters += fragment.parametersFromQueryString()
             }
             if let accessToken = responseParameters["access_token"] {
-                self.client.credential.oauth_token = accessToken
+                self.client.credential.oauth_token = accessToken.safeStringByRemovingPercentEncoding
                 success(credential: self.client.credential, response: nil, parameters: responseParameters)
             }
             else if let code = responseParameters["code"] {
@@ -154,7 +154,7 @@ public class OAuth2Swift: OAuthSwift {
                 }
                 return
             }
-            self.client.credential.oauth_token = accessToken
+            self.client.credential.oauth_token = accessToken.safeStringByRemovingPercentEncoding
             success(credential: self.client.credential, response: response, parameters: responseParameters)
         }
 

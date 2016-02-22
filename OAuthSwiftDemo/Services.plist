@@ -177,5 +177,12 @@
 		<key>consumerSecret</key>
 		<string></string>
 	</dict>
+	<key>Hatena</key>
+	<dict>
+		<key>consumerKey</key>
+		<string></string>
+		<key>consumerSecret</key>
+		<string></string>
+	</dict>
 </dict>
 </plist>

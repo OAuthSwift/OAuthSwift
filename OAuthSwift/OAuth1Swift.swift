@@ -62,9 +62,9 @@ public class OAuth1Swift: OAuthSwift {
                 }
                 if (responseParameters["oauth_token"] != nil && (self.allowMissingOauthVerifier || responseParameters["oauth_verifier"] != nil)) {
                     //var credential: OAuthSwiftCredential = self.client.credential
-                    self.client.credential.oauth_token = responseParameters["oauth_token"]!
+                    self.client.credential.oauth_token = responseParameters["oauth_token"]!.safeStringByRemovingPercentEncoding
                     if (responseParameters["oauth_verifier"] != nil) {
-                        self.client.credential.oauth_verifier = responseParameters["oauth_verifier"]!
+                        self.client.credential.oauth_verifier = responseParameters["oauth_verifier"]!.safeStringByRemovingPercentEncoding
                     }
                     self.postOAuthAccessTokenWithRequestToken(success, failure: failure)
                 } else {

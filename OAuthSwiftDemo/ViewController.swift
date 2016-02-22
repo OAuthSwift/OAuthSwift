@@ -103,6 +103,8 @@ extension ViewController {
             doOAuthGitter(parameters)
         case "Facebook":
             doOAuthFacebook(parameters)
+        case "Hatena":
+            doOAuthHatena(parameters)
         default:
             print("\(service) not implemented")
         }
@@ -729,6 +731,23 @@ extension ViewController {
             }, failure: { error in
                 print(error)
         })
+    }
+
+    func doOAuthHatena(serviceParameters: [String:String]){
+        let oauthswift = OAuth1Swift(
+            consumerKey:    serviceParameters["consumerKey"]!,
+            consumerSecret: serviceParameters["consumerSecret"]!,
+            requestTokenUrl: "https://www.hatena.com/oauth/initiate",
+            authorizeUrl:    "https://www.hatena.ne.jp/oauth/authorize",
+            accessTokenUrl:  "https://www.hatena.com/oauth/token"
+        )
+        oauthswift.authorizeWithCallbackURL( NSURL(string: "https://oauthswift.herokuapp.com/callback/hatena")!, success: {
+            credential, response, parameters in
+            self.showTokenAlert(serviceParameters["name"], credential: credential)
+            }, failure: { error in
+                print(error.localizedDescription)
+            }
+        )
     }
    
 }
