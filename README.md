@@ -155,17 +155,17 @@ More examples into demo application: [ViewController.swift](/OAuthSwiftDemo/View
 
 ## OAuth provider pages
 
-* [Twitter](https://dev.twitter.com/docs/auth/oauth)  
+* [Twitter](https://dev.twitter.com/oauth)  
 * [Flickr](https://www.flickr.com/services/api/auth.oauth.html)  
-* [Github](https://developer.github.com/v3/oauth)  
+* [Github](https://developer.github.com/v3/oauth/)  
 * [Instagram](http://instagram.com/developer/authentication)  
 * [Foursquare](https://developer.foursquare.com/overview/auth)  
 * [Fitbit](https://wiki.fitbit.com/display/API/OAuth+Authentication+in+the+Fitbit+API)  
 * [Withings](http://oauth.withings.com/api)  
-* [Linkedin](https://developer.linkedin.com/documents/authentication)  
+* [Linkedin](https://developer.linkedin.com/docs/oauth2)  
 * [Dropbox](https://www.dropbox.com/developers/core/docs)  
 * [Dribbble](http://developer.dribbble.com/v1/oauth/)
-* [Salesforce](https://www.salesforce.com/us/developer/docs/api_rest/)
+* [Salesforce](https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/)
 * [BitBucket](https://confluence.atlassian.com/display/BITBUCKET/OAuth+on+Bitbucket)
 * [GoogleDrive](https://developers.google.com/drive/v2/reference/)
 * [Smugmug](https://smugmug.atlassian.net/wiki/display/API/OAuth)
@@ -187,15 +187,15 @@ More examples into demo application: [ViewController.swift](/OAuthSwiftDemo/View
 ## Contributing
  See [CONTRIBUTING.md](CONTRIBUTING.md)
 
-[Add a new service in demo app](https://github.com/dongri/OAuthSwift/wiki/Demo-application#add-a-new-service-in-demo-app)
+[Add a new service in demo app](https://github.com/OAuthSwift/OAuthSwift/wiki/Demo-application#add-a-new-service-in-demo-app)
 
 ## License
 
 OAuthSwift is available under the MIT license. See the LICENSE file for more info.
 
-[![Join the chat at https://gitter.im/dongri/OAuthSwift](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/dongri/OAuthSwift?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Join the chat at https://gitter.im/OAuthSwift/OAuthSwift](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/OAuthSwift/OAuthSwift?utm_campaign=pr-badge&utm_content=badge&utm_medium=badge&utm_source=badge)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat
-            )](http://mit-license.org) [![Platform](http://img.shields.io/badge/platform-iOS_OSX_TVOS-lightgrey.svg?style=flat
-             )](https://developer.apple.com/resources/) [![Language](http://img.shields.io/badge/language-swift-orange.svg?style=flat
-             )](https://developer.apple.com/swift) [![Cocoapod](http://img.shields.io/cocoapods/v/OAuthSwift.svg?style=flat)](http://cocoadocs.org/docsets/OAuthSwift/)
+            )](http://mit-license.org) [![Platform](https://img.shields.io/badge/platform-iOS_OSX_TVOS-lightgrey.svg?style=flat
+             )](https://developer.apple.com/resources/) [![Language](https://img.shields.io/badge/language-swift-orange.svg?style=flat
+             )](https://developer.apple.com/swift) [![Cocoapod](https://img.shields.io/cocoapods/v/OAuthSwift.svg?style=flat)](http://cocoadocs.org/docsets/OAuthSwift/)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
