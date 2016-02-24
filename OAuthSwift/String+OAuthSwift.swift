@@ -58,7 +58,8 @@ extension String {
             key = nil
             scanner.scanUpToString(keyValueSeparator, intoString: &key)
             scanner.scanString(keyValueSeparator, intoString: nil)
-
+			key = key?.stringByReplacingOccurrencesOfString("&", withString: "")
+			
             value = nil
             scanner.scanUpToString(elementSeparator, intoString: &value)
             scanner.scanString(elementSeparator, intoString: nil)
