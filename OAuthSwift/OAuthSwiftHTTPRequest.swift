@@ -22,7 +22,7 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate {
     }
     
     @objc public enum ParamsLocation : Int {
-        case AuthorizationHeader, /*FormEncodedBody,*/ RequestURIQuery, CustomParameters
+        case AuthorizationHeader, /*FormEncodedBody,*/ RequestURIQuery
     }
 
     var URL: NSURL
@@ -195,7 +195,7 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate {
             switch (paramsLocation) {
             case .AuthorizationHeader:
                 finalParameters = parameters.filter { key, _ in !key.hasPrefix("oauth_") }
-            default:
+            case .RequestURIQuery:
                 finalParameters = parameters
             }
 
