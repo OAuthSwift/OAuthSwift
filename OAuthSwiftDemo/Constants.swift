@@ -10,92 +10,101 @@ import Foundation
 
 let Twitter =
 [
-    "consumerKey": "***",
-    "consumerSecret": "***"
+    "consumerKey": "",
+    "consumerSecret": ""
 ]
 let Salesforce =
 [
-    "consumerKey": "***",
-    "consumerSecret": "***"
+    "consumerKey": "",
+    "consumerSecret": ""
 ]
 let Flickr =
 [
-    "consumerKey": "***",
-    "consumerSecret": "***"
+    "consumerKey": "",
+    "consumerSecret": ""
 ]
 let Github =
 [
-    "consumerKey": "***",
-    "consumerSecret": "***"
+    "consumerKey": "",
+    "consumerSecret": ""
 ]
 let Instagram =
 [
-    "consumerKey": "***",
-    "consumerSecret": "***"
+    "consumerKey": "",
+    "consumerSecret": ""
 ]
 let Foursquare =
 [
-    "consumerKey": "***",
-    "consumerSecret": "***"
+    "consumerKey": "",
+    "consumerSecret": ""
 ]
 let Fitbit =
 [
-    "consumerKey": "***",
-    "consumerSecret": "***"
+    "consumerKey": "",
+    "consumerSecret": ""
 ]
 let Withings =
 [
-    "consumerKey": "***",
-    "consumerSecret": "***"
+    "consumerKey": "",
+    "consumerSecret": ""
 ]
 let Linkedin =
 [
-    "consumerKey": "***",
-    "consumerSecret": "***"
+    "consumerKey": "",
+    "consumerSecret": ""
 ]
 let Linkedin2 =
 [
-    "consumerKey": "***",
-    "consumerSecret": "***"
+    "consumerKey": "",
+    "consumerSecret": ""
 ]
 let Dropbox =
 [
-    "consumerKey": "***",
-    "consumerSecret": "***"
+    "consumerKey": "",
+    "consumerSecret": ""
 ]
 let Dribbble =
 [
-    "consumerKey": "***",
-    "consumerSecret": "***"
+    "consumerKey": "",
+    "consumerSecret": ""
 ]
 let BitBucket =
 [
-    "consumerKey": "***",
-    "consumerSecret": "***"
+    "consumerKey": "",
+    "consumerSecret": ""
 ]
 let GoogleDrive =
 [
-    "consumerKey": "***",
-    "consumerSecret": "***"
+    "consumerKey": "",
+    "consumerSecret": ""
 ]
 let Smugmug =
 [
-    "consumerKey": "***",
-    "consumerSecret": "***"
+    "consumerKey": "",
+    "consumerSecret": ""
 ]
 let Intuit =
 [
-    "consumerKey": "***",
-    "consumerSecret": "***"
+    "consumerKey": "",
+    "consumerSecret": ""
 ]
 let Zaim =
 [
-    "consumerKey": "***",
-    "consumerSecret": "***"
+    "consumerKey": "",
+    "consumerSecret": ""
 ]
 let Tumblr =
 [
-    "consumerKey": "***",
-    "consumerSecret": "***"
+    "consumerKey": "",
+    "consumerSecret": ""
 ]
-
+let Slack =
+[
+    "consumerKey": "",
+    "consumerSecret": ""
+]
+let Uber =
+[
+    "consumerKey": "",
+    "consumerSecret": ""
+]

@@ -46,7 +46,28 @@ extension Dictionary {
             parts.append(query)
         }
 
-        return "&".join(parts) as String
+        return parts.joinWithSeparator("&") as String
     }
-    
+
+    mutating func merge<K, V>(dictionaries: Dictionary<K, V>...) {
+        for dict in dictionaries {
+            for (key, value) in dict {
+                self.updateValue(value as! Value, forKey: key as! Key)
+            }
+        }
+    }
+
+    func map<K: Hashable, V> (transform: (Key, Value) -> (K, V)) -> Dictionary<K, V> {
+        var results: Dictionary<K, V> = [:]
+        for k in self.keys {
+            if let value = self[ k ] {
+                let (u, w) = transform(k, value)
+                results.updateValue(w, forKey: u)
+            }
+        }
+        return results
+    }
 }
+
+public func +=<K, V> (inout left: [K : V], right: [K : V]) { left.merge(right) }
+public func +<K, V> (left: [K : V], right: [K : V]) -> [K : V] { return left.join(right) }

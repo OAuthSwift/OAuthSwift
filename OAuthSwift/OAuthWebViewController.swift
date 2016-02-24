@@ -8,9 +8,12 @@
 
 import Foundation
 
-#if os(iOS)
+#if os(iOS)  || os(tvOS)
     import UIKit
     public typealias OAuthViewController = UIViewController
+#elseif os(watchOS)
+    import WatchKit
+    public typealias OAuthViewController = WKInterfaceController
 #elseif os(OSX)
     import AppKit
     public typealias OAuthViewController = NSViewController
@@ -18,10 +21,35 @@ import Foundation
 
 public class OAuthWebViewController: OAuthViewController, OAuthSwiftURLHandlerType {
 
-    public func handle(url: NSURL){
-        #if os(iOS)
-            UIApplication.sharedApplication().keyWindow?.rootViewController?.presentViewController(
-                self, animated: true, completion: nil)
+    public func handle(url: NSURL) {
+        // do UI in main thread
+        if NSThread.isMainThread() {
+             doHandle(url)
+        }
+        else {
+            dispatch_async(dispatch_get_main_queue()) {
+                self.doHandle(url)
+            }
+        }
+    }
+
+    #if os(watchOS)
+    public static var userActivityType: String = "org.github.dongri.oauthswift.connect"
+    #endif
+
+    public func doHandle(url: NSURL){
+        #if os(iOS) || os(tvOS)
+            if let p = self.parentViewController {
+                p.presentViewController(self, animated: true, completion: nil)
+            } else {
+                #if !OAUTH_APP_EXTENSIONS
+                    UIApplication.topViewController?.presentViewController(self, animated: true, completion: nil)
+                #endif
+            }
+        #elseif os(watchOS)
+            if (url.scheme == "http" || url.scheme == "https") {
+                self.updateUserActivity(OAuthWebViewController.userActivityType, userInfo: nil, webpageURL: url)
+            }
         #elseif os(OSX)
             if let p = self.parentViewController { // default behaviour if this controller affected as child controller
                 p.presentViewControllerAsModalWindow(self)
@@ -33,12 +61,14 @@ public class OAuthWebViewController: OAuthViewController, OAuthSwiftURLHandlerTy
     }
 
     public func dismissWebViewController() {
-        #if os(iOS)
+        #if os(iOS) || os(tvOS)
             self.dismissViewControllerAnimated(true, completion: nil)
+        #elseif os(watchOS)
+            self.dismissController()
         #elseif os(OSX)
-            if let p = self.presentingViewController { // if presentViewControllerAsModalWindow
+            if self.presentingViewController != nil { // if presentViewControllerAsModalWindow
                 self.dismissController(nil)
-                if let p = self.parentViewController {
+                if self.parentViewController != nil {
                     self.removeFromParentViewController()
                 }
             }
