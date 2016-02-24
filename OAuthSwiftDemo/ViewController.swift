@@ -408,14 +408,15 @@ extension ViewController {
         oauthswift.authorizeWithCallbackURL( NSURL(string: "http://oauthswift.herokuapp.com/callback/linkedin2")!, scope: "r_fullprofile", state: state, success: {
             credential, response, parameters in
             self.showTokenAlert(serviceParameters["name"], credential: credential)
-            self.testLinkedin2(oauthswift)
+            self.testLinkedin2(credential.oauth_token, oauthswift: oauthswift)
 
             }, failure: { error in
                 print(error.localizedDescription)
         })
     }
-    func testLinkedin2(oauthswift: OAuth2Swift) {
-        oauthswift.client.get("https://api.linkedin.com/v1/people/~?format=json", parameters: [:],
+    func testLinkedin2(token: String, oauthswift: OAuth2Swift) {
+        oauthswift.client.paramsLocation = .CustomParameters
+        oauthswift.client.get("https://api.linkedin.com/v1/people/~?format=json", parameters: ["oauth2_access_token": token],
             success: {
                 data, response in
                 let dataString = NSString(data: data, encoding: NSUTF8StringEncoding)
