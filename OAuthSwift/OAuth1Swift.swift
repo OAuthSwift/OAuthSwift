@@ -42,7 +42,17 @@ public class OAuth1Swift: OAuthSwift {
           authorizeUrl: authorizeUrl,
           accessTokenUrl: accessTokenUrl)
     }
-    
+
+    public var parameters: [String: String] {
+        return [
+            "consumerKey": consumer_key,
+            "consumerSecret": consumer_secret,
+            "requestTokenUrl": request_token_url,
+            "authorizeUrl": authorize_url,
+            "accessTokenUrl": access_token_url
+        ]
+    }
+
     // MARK: functions
     // 0. Start
     public func authorizeWithCallbackURL(callbackURL: NSURL, success: TokenSuccessHandler, failure: FailureHandler?) {

@@ -59,6 +59,16 @@ public class OAuth2Swift: OAuthSwift {
         }
     }
 
+    public var parameters: [String: String] {
+        return [
+            "consumerKey": consumer_key,
+            "consumerSecret": consumer_secret,
+            "authorizeUrl": authorize_url,
+            "accessTokenUrl": access_token_url ?? "",
+            "responseType": response_type
+        ]
+    }
+
     // MARK: functions
     public func authorizeWithCallbackURL(callbackURL: NSURL, scope: String, state: String, params: [String: String] = [String: String](), success: TokenSuccessHandler, failure: ((error: NSError) -> Void)) {
         
