@@ -122,13 +122,15 @@ public class OAuthSwiftClient: NSObject {
             case .RequestURIQuery:
                 //Add oauth parameters as request parameters
                 request.parameters += self.credential.authorizationParametersWithSignatureForMethod(method, url: signatureUrl, parameters: signatureParameters, body: body)
+            case .OAuthTokenParameter(let param):
+                //Add oauth token as custom parameter
+                request.parameters[param] = self.credential.oauth_token
             }
             
             if let addHeaders = headers {
                 requestHeaders += addHeaders
             }
             request.headers = requestHeaders
-
             request.dataEncoding = OAuthSwiftDataEncoding
             return request
         }

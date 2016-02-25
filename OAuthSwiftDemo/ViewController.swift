@@ -415,6 +415,7 @@ extension ViewController {
         })
     }
     func testLinkedin2(oauthswift: OAuth2Swift) {
+        oauthswift.client.paramsLocation = .OAuthTokenParameter("oauth2_access_token")
         oauthswift.client.get("https://api.linkedin.com/v1/people/~?format=json", parameters: [:],
             success: {
                 data, response in
