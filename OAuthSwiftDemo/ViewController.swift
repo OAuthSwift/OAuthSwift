@@ -105,6 +105,8 @@ extension ViewController {
             doOAuthFacebook(parameters)
         case "Hatena":
             doOAuthHatena(parameters)
+        case "Trello":
+            doOAuthTrello(parameters)
         default:
             print("\(service) not implemented")
         }
@@ -750,6 +752,34 @@ extension ViewController {
         )
     }
    
+    func doOAuthTrello(serviceParameters: [String:String]) {
+        let oauthswift = OAuth1Swift(
+            consumerKey:    serviceParameters["consumerKey"]!,
+            consumerSecret: serviceParameters["consumerSecret"]!,
+            requestTokenUrl:    "https://trello.com/1/OAuthGetRequestToken",
+            authorizeUrl:       "https://trello.com/1/OAuthAuthorizeToken",
+            accessTokenUrl:     "https://trello.com/1/OAuthGetAccessToken"
+        )
+        oauthswift.authorizeWithCallbackURL( NSURL(string: "https://oauthswift.herokuapp.com/callback/trello")!, success: {
+            credential, response, parameters in
+            self.showTokenAlert(serviceParameters["name"], credential: credential)
+            self.testTrello(oauthswift)
+            }, failure: { error in
+                print(error.localizedDescription, terminator: "")
+        })
+    }
+    
+    func testTrello(oauthswift: OAuth1Swift) {
+        oauthswift.client.get("https://trello.com/1/members/me/boards",
+            success: {
+                data, response in
+                let dataString = NSString(data: data, encoding: NSUTF8StringEncoding)
+                print(dataString)
+            }, failure: { error in
+                print(error)
+        })
+    }
+    
 }
 
 let services = Services()

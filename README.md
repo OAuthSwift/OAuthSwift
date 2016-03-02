@@ -177,6 +177,7 @@ More examples into demo application: [ViewController.swift](/OAuthSwiftDemo/View
 * [Gitter](https://developer.gitter.im/docs/authentication)
 * [Facebook](https://developers.facebook.com/docs/facebook-login)
 * [Spotify](https://developer.spotify.com/web-api/authorization-guide/)
+* [Trello](https://developers.trello.com/authorize)
 
 ## Images
 
