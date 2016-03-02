@@ -107,6 +107,8 @@ extension ViewController {
             doOAuthHatena(parameters)
         case "Trello":
             doOAuthTrello(parameters)
+        case "Buffer":
+            doOAuthBuffer(parameters)
         default:
             print("\(service) not implemented")
         }
@@ -771,6 +773,35 @@ extension ViewController {
     
     func testTrello(oauthswift: OAuth1Swift) {
         oauthswift.client.get("https://trello.com/1/members/me/boards",
+            success: {
+                data, response in
+                let dataString = NSString(data: data, encoding: NSUTF8StringEncoding)
+                print(dataString)
+            }, failure: { error in
+                print(error)
+        })
+    }
+    
+    func doOAuthBuffer(serviceParameters: [String:String]) {
+        let oauthswift = OAuth2Swift(
+            consumerKey:    serviceParameters["consumerKey"]!,
+            consumerSecret: serviceParameters["consumerSecret"]!,
+            authorizeUrl:   "https://bufferapp.com/oauth2/authorize",
+            accessTokenUrl: "https://api.bufferapp.com/1/oauth2/token.json",
+            responseType:   "code"
+        )
+        let state: String = generateStateWithLength(20) as String
+        oauthswift.authorizeWithCallbackURL( NSURL(string: "https://oauthswift.herokuapp.com/callback/buffer")!, scope: "", state: state, success: {
+            credential, response, parameters in
+            self.showTokenAlert(serviceParameters["name"], credential: credential)
+            self.testBuffer(oauthswift)
+            }, failure: { error in
+                print(error.localizedDescription, terminator: "")
+        })
+    }
+    
+    func testBuffer(oauthswift: OAuth2Swift) {
+        oauthswift.client.get("https://api.bufferapp.com/1/user.json",
             success: {
                 data, response in
                 let dataString = NSString(data: data, encoding: NSUTF8StringEncoding)
