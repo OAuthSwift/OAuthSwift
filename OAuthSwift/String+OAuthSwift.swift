@@ -33,7 +33,7 @@ extension String {
 
     func urlEncodedStringWithEncoding(encoding: NSStringEncoding) -> String {
         let originalString: NSString = self
-        let customAllowedSet =  NSCharacterSet(charactersInString:" :/?&=;+!@#$()',*=\"#%/<>?@\\^`{|}").invertedSet
+        let customAllowedSet =  NSCharacterSet(charactersInString:"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~")
         let escapedString = originalString.stringByAddingPercentEncodingWithAllowedCharacters(customAllowedSet)
         return escapedString! as String
     }
