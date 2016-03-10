@@ -109,6 +109,8 @@ extension ViewController {
             doOAuthTrello(parameters)
         case "Buffer":
             doOAuthBuffer(parameters)
+        case "Goodreads":
+            doOAuthGoodreads(parameters)
         default:
             print("\(service) not implemented")
         }
@@ -781,7 +783,7 @@ extension ViewController {
                 print(error)
         })
     }
-    
+
     func doOAuthBuffer(serviceParameters: [String:String]) {
         let oauthswift = OAuth2Swift(
             consumerKey:    serviceParameters["consumerKey"]!,
@@ -799,11 +801,45 @@ extension ViewController {
                 print(error.localizedDescription, terminator: "")
         })
     }
-    
+
     func testBuffer(oauthswift: OAuth2Swift) {
         oauthswift.client.get("https://api.bufferapp.com/1/user.json",
             success: {
                 data, response in
+                let dataString = NSString(data: data, encoding: NSUTF8StringEncoding)
+                print(dataString)
+            }, failure: { error in
+                print(error)
+        })
+    }
+
+    func doOAuthGoodreads(serviceParameters: [String:String]) {
+        let oauthswift = OAuth1Swift(
+            consumerKey:        serviceParameters["consumerKey"]!,
+            consumerSecret:     serviceParameters["consumerSecret"]!,
+            requestTokenUrl:    "https://www.goodreads.com/oauth/request_token",
+            authorizeUrl:       "https://www.goodreads.com/oauth/authorize?mobile=1",
+            accessTokenUrl:     "https://www.goodreads.com/oauth/access_token"
+        )
+        oauthswift.allowMissingOauthVerifier = true
+        oauthswift.authorizeWithCallbackURL(
+            NSURL(string: "oauth-swift://oauth-callback/goodreads")!, success: {
+                // The callback url you set here doesn't seem to make a differnce,
+                // you have to set it up at the site when you get your developer key.
+                credential, response, parameters in
+                self.showTokenAlert(serviceParameters["name"], credential: credential)
+                self.testGoodreads(oauthswift)
+            }, failure: { error in
+                print(error.localizedDescription, terminator: "")
+        })
+
+    }
+
+    func testGoodreads(oauthswift: OAuth1Swift) {
+        oauthswift.client.get("https://www.goodreads.com/api/auth_user",
+            success: {
+                data, response in
+                // Most Goodreads methods return XML, you'll need a way to parse it.
                 let dataString = NSString(data: data, encoding: NSUTF8StringEncoding)
                 print(dataString)
             }, failure: { error in
