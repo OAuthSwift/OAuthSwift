@@ -651,7 +651,6 @@
 				TargetAttributes = {
 					C40890BF1C11B37000E3146A = {
 						CreatedOnToolsVersion = 7.1;
-						DevelopmentTeam = GGU39CDBL2;
 					};
 					C48B28011AFA598D00C7DEF6 = {
 						CreatedOnToolsVersion = 6.3.1;
@@ -661,7 +660,6 @@
 					};
 					C4B6EE1D1BF74CE300443596 = {
 						CreatedOnToolsVersion = 7.1;
-						DevelopmentTeam = GGU39CDBL2;
 					};
 					C4D50DF61BFB693F0053B624 = {
 						CreatedOnToolsVersion = 7.1;
