@@ -179,6 +179,7 @@ More examples into demo application: [ViewController.swift](/OAuthSwiftDemo/View
 * [Spotify](https://developer.spotify.com/web-api/authorization-guide/)
 * [Trello](https://developers.trello.com/authorize)
 * [Buffer](https://buffer.com/developers/api/oauth)
+* [Goodreads](https://www.goodreads.com/api/documentation#oauth)
 
 ## Images
 
