@@ -164,6 +164,9 @@ public class OAuth2Swift: OAuthSwift {
                 }
                 return
             }
+            if let refreshToken:String = responseParameters["refresh_token"] {
+                self.client.credential.oauth_refresh_token = refreshToken.safeStringByRemovingPercentEncoding
+            }
             self.client.credential.oauth_token = accessToken.safeStringByRemovingPercentEncoding
             success(credential: self.client.credential, response: response, parameters: responseParameters)
         }
