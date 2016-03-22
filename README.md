@@ -46,7 +46,7 @@ Replace oauth-swift by your application name
 ### Examples
 
 #### Handle URL in AppDelegate
-On iOS9 implement `UIApplicationDelegate` method
+- On iOS9 implement `UIApplicationDelegate` method
 ```swift
 func application(app: UIApplication, openURL url: NSURL, options: [String : AnyObject]) -> Bool {
   if (url.host == "oauth-callback") {
@@ -55,11 +55,16 @@ func application(app: UIApplication, openURL url: NSURL, options: [String : AnyO
   return true
 }
 ```
-On previous iOS version
+:warning: Any other application may try to open a URL with your url scheme. So you can check the source application, for instance for safari controller :
+```
+if (options["UIApplicationOpenURLOptionsSourceApplicationKey"] as? String == "com.apple.SafariViewService") {
+```
+
+- On previous iOS version
 ```swift
 func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
 ```
-On OSX you must register an handler on `NSAppleEventManager` for event type `kAEGetURL` (see demo code)
+- On OSX you must register an handler on `NSAppleEventManager` for event type `kAEGetURL` (see demo code)
 
 #### OAuth1.0
 ```swift
