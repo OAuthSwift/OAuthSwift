@@ -50,6 +50,7 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
     public var oauth_token: String = String()
     public var oauth_refresh_token: String = String()
     public var oauth_token_secret: String = String()
+    public var oauth_token_expires_date: NSDate = NSDate()
     public internal(set) var oauth_verifier: String = String()
     public var version: Version = .OAuth1
     
@@ -71,6 +72,7 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
         static let consumerSecret = base + "consumer_secret"
         static let oauthToken = base + "oauth_token"
         static let oauthRefreshToken = base + "oauth_refresh_token"
+        static let oauthTokenExpiresDate = base + "oauth_token_expires_date"
         static let oauthTokenSecret = base + "oauth_token_secret"
         static let oauthVerifier = base + "oauth_verifier"
     }
@@ -85,6 +87,7 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
         self.oauth_refresh_token = (decoder.decodeObjectForKey(CodingKeys.oauthRefreshToken) as? String) ?? String()
         self.oauth_token_secret = (decoder.decodeObjectForKey(CodingKeys.oauthTokenSecret) as? String) ?? String()
         self.oauth_verifier = (decoder.decodeObjectForKey(CodingKeys.oauthVerifier) as? String) ?? String()
+        self.oauth_token_expires_date = (decoder.decodeObjectForKey(CodingKeys.oauthTokenExpiresDate) as? NSDate) ?? NSDate()
     }
     
     public func encodeWithCoder(coder: NSCoder) {
@@ -94,6 +97,7 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
         coder.encodeObject(self.oauth_refresh_token, forKey: CodingKeys.oauthRefreshToken)
         coder.encodeObject(self.oauth_token_secret, forKey: CodingKeys.oauthTokenSecret)
         coder.encodeObject(self.oauth_verifier, forKey: CodingKeys.oauthVerifier)
+        coder.encodeObject(self.oauth_token_expires_date, forKey: CodingKeys.oauthTokenExpiresDate)
     }
     // } // End NSCoding extension
 
