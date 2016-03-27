@@ -50,7 +50,7 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
     public var oauth_token: String = String()
     public var oauth_refresh_token: String = String()
     public var oauth_token_secret: String = String()
-    public var oauth_token_expires_date: NSDate = NSDate()
+    public var oauth_token_expires_date: NSDate? = nil
     public internal(set) var oauth_verifier: String = String()
     public var version: Version = .OAuth1
     
@@ -87,7 +87,7 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
         self.oauth_refresh_token = (decoder.decodeObjectForKey(CodingKeys.oauthRefreshToken) as? String) ?? String()
         self.oauth_token_secret = (decoder.decodeObjectForKey(CodingKeys.oauthTokenSecret) as? String) ?? String()
         self.oauth_verifier = (decoder.decodeObjectForKey(CodingKeys.oauthVerifier) as? String) ?? String()
-        self.oauth_token_expires_date = (decoder.decodeObjectForKey(CodingKeys.oauthTokenExpiresDate) as? NSDate) ?? NSDate()
+        self.oauth_token_expires_date = (decoder.decodeObjectForKey(CodingKeys.oauthTokenExpiresDate) as? NSDate)
     }
     
     public func encodeWithCoder(coder: NSCoder) {
@@ -200,5 +200,14 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
 
         let sha1 = self.version.signatureMethod.sign(key, message: msg)!
         return sha1.base64EncodedStringWithOptions([])
+    }
+    
+    public func isTokenExpired() -> Bool {
+        if let expiresDate = oauth_token_expires_date {
+            return expiresDate >= NSDate()
+        }
+        
+        // If no expires date is available we assume the token is still valid since it doesn't have an expiration date to check with.
+        return false;
     }
 }

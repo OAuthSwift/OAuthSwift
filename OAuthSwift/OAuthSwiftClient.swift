@@ -53,6 +53,17 @@ public class OAuthSwiftClient: NSObject {
     }
 
     public func request(url: String, method: OAuthSwiftHTTPRequest.Method, parameters: [String: AnyObject] = [:], headers: [String:String]? = nil, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
+        
+        if self.credential.isTokenExpired() {
+            let errorInfo = [NSLocalizedDescriptionKey: NSLocalizedString("The provided token is expired.", comment:"Token expired, retrieve new token by using the refresh token")]
+            
+            if let failureHandler = failure {
+                failureHandler(error: NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.TokenExpiredError.rawValue, userInfo: errorInfo))
+            }
+            
+            return
+        }
+        
         if let request = makeRequest(url, method: method, parameters: parameters, headers: headers) {
             
             request.successHandler = success
