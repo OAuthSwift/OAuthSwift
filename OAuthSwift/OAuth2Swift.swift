@@ -144,6 +144,20 @@ public class OAuth2Swift: OAuthSwift {
         parameters["grant_type"] = "authorization_code"
         parameters["redirect_uri"] = callbackURL.absoluteString.safeStringByRemovingPercentEncoding
 
+        requestOAuthAccessTokenWithParameters(parameters, success: success, failure: failure)
+    }
+    
+    func renewAccesstokenWithRefreshToken(refreshToken: String, success: TokenSuccessHandler, failure: FailureHandler?) {
+        var parameters = Dictionary<String, AnyObject>()
+        parameters["client_id"] = self.consumer_key
+        parameters["client_secret"] = self.consumer_secret
+        parameters["refresh_token"] = refreshToken
+        parameters["grant_type"] = "refresh_token"
+        
+        requestOAuthAccessTokenWithParameters(parameters, success: success, failure: failure)
+    }
+    
+    private func requestOAuthAccessTokenWithParameters(parameters: [String : AnyObject], success: TokenSuccessHandler, failure: FailureHandler?) {
         let successHandler: OAuthSwiftHTTPRequest.SuccessHandler = { [unowned self]
             data, response in
             let responseJSON: AnyObject? = try? NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers)
@@ -194,6 +208,40 @@ public class OAuth2Swift: OAuthSwift {
             else {
                 let errorInfo = [NSLocalizedFailureReasonErrorKey: NSLocalizedString("access token url not defined", comment: "access token url not defined with code type auth")]
                 failure?(error: NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.GeneralError.rawValue, userInfo: errorInfo))
+            }
+        }
+    }
+
+    /**
+     Convenience method to start a request that must be authorized with the previosuly retrieved access token.
+     Since OAuth 2 requires support for the access token refresh mechanism, this method will take care to automatically refresh the token if needed suche that the developer only has to be concerned about the outcome of the request.
+     
+     - parameter url:            The url for the request.
+     - parameter method:         The HTTP method to use.
+     - parameter parameters:     The request's parameters.
+     - parameter headers:        The request's headers.
+     - parameter onTokenRenewal: Optional callback triggered in case the access token renewal was required in order to properly authorize the request.
+     - parameter success:        The success block. Takes the successfull response and data as parameter.
+     - parameter failure:        The failure block. Takes the error as parameter.
+     */
+    func startAuthorizedRequest(url: String, method: OAuthSwiftHTTPRequest.Method, parameters: Dictionary<String, AnyObject>, headers: [String:String]? = nil, onTokenRenewal: TokenRenewedHandler?=nil, success: OAuthSwiftHTTPRequest.SuccessHandler, failure: OAuthSwiftHTTPRequest.FailureHandler) {
+        // build request
+        self.client.request(url, method: method, parameters: parameters, headers: headers, success: success) { (error) in
+            switch error.code {
+            case OAuthSwiftErrorCode.TokenExpiredError.rawValue:
+                self.renewAccesstokenWithRefreshToken(self.client.credential.oauth_refresh_token, success: { (credential, response, parameters) in
+                    // We have successfully renewed the access token.
+                    
+                    // If provided, fire the onRenewal closure
+                    if let renewalCallBack = onTokenRenewal {
+                        renewalCallBack(credential: credential)
+                    }
+                    
+                    // Reauthorize the request again, this time with a brand new access token ready to be used.
+                    self.startAuthorizedRequest(url, method: method, parameters: parameters, success: success, failure: failure)
+                    }, failure: failure)
+            default:
+                failure(error: error)
             }
         }
     }
