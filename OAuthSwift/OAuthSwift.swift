@@ -23,7 +23,8 @@ public class OAuthSwift: NSObject {
     // MARK: callback alias
     public typealias TokenSuccessHandler = (credential: OAuthSwiftCredential, response: NSURLResponse?, parameters: Dictionary<String, String>) -> Void
     public typealias FailureHandler = (error: NSError) -> Void
-
+    public typealias TokenRenewedHandler = (credential: OAuthSwiftCredential) -> Void
+    
     // MARK: init
     init(consumerKey: String, consumerSecret: String) {
         self.client = OAuthSwiftClient(consumerKey: consumerKey, consumerSecret: consumerSecret)
@@ -67,3 +68,12 @@ public class OAuthSwift: NSObject {
 
 // MARK: OAuthSwift errors
 public let OAuthSwiftErrorDomain = "oauthswift.error"
+
+public enum OAuthSwiftErrorCode: Int {
+    case GeneralError = -1
+    case TokenExpiredError = -2
+    case MissingStateError = -3
+    case StateNotEqualError = -4
+    case ServerError = -5
+    case EncodingError = -6
+}

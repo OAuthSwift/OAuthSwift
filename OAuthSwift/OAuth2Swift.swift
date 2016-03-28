@@ -88,12 +88,12 @@ public class OAuth2Swift: OAuthSwift {
                 if !self.allowMissingStateCheck {
                     guard let responseState = responseParameters["state"] else {
                         let errorInfo = [NSLocalizedDescriptionKey: "Missing state"]
-                        failure(error: NSError(domain: OAuthSwiftErrorDomain, code: -1, userInfo: errorInfo))
+                        failure(error: NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.MissingStateError.rawValue, userInfo: errorInfo))
                         return
                     }
                     if responseState != state {
                         let errorInfo = [NSLocalizedDescriptionKey: "state not equals"]
-                        failure(error: NSError(domain: OAuthSwiftErrorDomain, code: -1, userInfo: errorInfo))
+                        failure(error: NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.StateNotEqualError.rawValue, userInfo: errorInfo))
                         return
                     }
                 }
@@ -102,11 +102,11 @@ public class OAuth2Swift: OAuthSwift {
             }
             else if let error = responseParameters["error"], error_description = responseParameters["error_description"] {
                 let errorInfo = [NSLocalizedFailureReasonErrorKey: NSLocalizedString(error, comment: error_description)]
-                failure(error: NSError(domain: OAuthSwiftErrorDomain, code: -1, userInfo: errorInfo))
+                failure(error: NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.GeneralError.rawValue, userInfo: errorInfo))
             }
             else {
                 let errorInfo = [NSLocalizedDescriptionKey: "No access_token, no code and no error provided by server"]
-                failure(error: NSError(domain: OAuthSwiftErrorDomain, code: -1, userInfo: errorInfo))
+                failure(error: NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.ServerError.rawValue, userInfo: errorInfo))
             }
         }
 
@@ -132,7 +132,7 @@ public class OAuth2Swift: OAuthSwift {
         }
         else {
             let errorInfo = [NSLocalizedFailureReasonErrorKey: NSLocalizedString("Failed to create URL", comment: "\(urlString) or \(queryString) not convertible to URL, please check encoding")]
-            failure(error: NSError(domain: OAuthSwiftErrorDomain, code: -1, userInfo: errorInfo))
+            failure(error: NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.EncodingError.rawValue, userInfo: errorInfo))
         }
     }
     
@@ -144,6 +144,20 @@ public class OAuth2Swift: OAuthSwift {
         parameters["grant_type"] = "authorization_code"
         parameters["redirect_uri"] = callbackURL.absoluteString.safeStringByRemovingPercentEncoding
 
+        requestOAuthAccessTokenWithParameters(parameters, success: success, failure: failure)
+    }
+    
+    func renewAccesstokenWithRefreshToken(refreshToken: String, success: TokenSuccessHandler, failure: FailureHandler?) {
+        var parameters = Dictionary<String, AnyObject>()
+        parameters["client_id"] = self.consumer_key
+        parameters["client_secret"] = self.consumer_secret
+        parameters["refresh_token"] = refreshToken
+        parameters["grant_type"] = "refresh_token"
+        
+        requestOAuthAccessTokenWithParameters(parameters, success: success, failure: failure)
+    }
+    
+    private func requestOAuthAccessTokenWithParameters(parameters: [String : AnyObject], success: TokenSuccessHandler, failure: FailureHandler?) {
         let successHandler: OAuthSwiftHTTPRequest.SuccessHandler = { [unowned self]
             data, response in
             let responseJSON: AnyObject? = try? NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers)
@@ -160,19 +174,25 @@ public class OAuth2Swift: OAuthSwift {
             guard let accessToken = responseParameters["access_token"] else {
                 if let failure = failure {
                     let errorInfo = [NSLocalizedFailureReasonErrorKey: NSLocalizedString("Could not get Access Token", comment: "Due to an error in the OAuth2 process, we couldn't get a valid token.")]
-                    failure(error: NSError(domain: OAuthSwiftErrorDomain, code: -1, userInfo: errorInfo))
+                    failure(error: NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.ServerError.rawValue, userInfo: errorInfo))
                 }
                 return
             }
             if let refreshToken:String = responseParameters["refresh_token"] {
                 self.client.credential.oauth_refresh_token = refreshToken.safeStringByRemovingPercentEncoding
             }
+            
+            if let expiresIn:String = responseParameters["expires_in"], offset = Double(expiresIn)  {
+                self.client.credential.oauth_token_expires_at = NSDate(timeInterval: offset, sinceDate: NSDate())
+            }
+            
             self.client.credential.oauth_token = accessToken.safeStringByRemovingPercentEncoding
             success(credential: self.client.credential, response: response, parameters: responseParameters)
         }
 
         if self.content_type == "multipart/form-data" {
-            self.client.postMultiPartRequest(self.access_token_url!, method: .POST, parameters: parameters, success: successHandler, failure: failure)
+            // Request new access token by disabling check on current token expiration. This is safe because the implementation wants the user to retrieve a new token.
+            self.client.postMultiPartRequest(self.access_token_url!, method: .POST, parameters: parameters, checkTokenExpiration: false, success: successHandler, failure: failure)
         } else {
             // special headers
             var headers: [String:String]? = nil
@@ -184,11 +204,46 @@ public class OAuth2Swift: OAuthSwift {
                 }
             }
             if let access_token_url = access_token_url {
-                self.client.request(access_token_url, method: .POST, parameters: parameters, headers: headers, success: successHandler, failure: failure)
+                // Request new access token by disabling check on current token expiration. This is safe because the implementation wants the user to retrieve a new token.
+                self.client.request(access_token_url, method: .POST, parameters: parameters, headers: headers, checkTokenExpiration: false, success: successHandler, failure: failure)
             }
             else {
                 let errorInfo = [NSLocalizedFailureReasonErrorKey: NSLocalizedString("access token url not defined", comment: "access token url not defined with code type auth")]
-                failure?(error: NSError(domain: OAuthSwiftErrorDomain, code: -1, userInfo: errorInfo))
+                failure?(error: NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.GeneralError.rawValue, userInfo: errorInfo))
+            }
+        }
+    }
+
+    /**
+     Convenience method to start a request that must be authorized with the previosuly retrieved access token.
+     Since OAuth 2 requires support for the access token refresh mechanism, this method will take care to automatically refresh the token if needed suche that the developer only has to be concerned about the outcome of the request.
+     
+     - parameter url:            The url for the request.
+     - parameter method:         The HTTP method to use.
+     - parameter parameters:     The request's parameters.
+     - parameter headers:        The request's headers.
+     - parameter onTokenRenewal: Optional callback triggered in case the access token renewal was required in order to properly authorize the request.
+     - parameter success:        The success block. Takes the successfull response and data as parameter.
+     - parameter failure:        The failure block. Takes the error as parameter.
+     */
+    public func startAuthorizedRequest(url: String, method: OAuthSwiftHTTPRequest.Method, parameters: Dictionary<String, AnyObject>, headers: [String:String]? = nil, onTokenRenewal: TokenRenewedHandler? = nil, success: OAuthSwiftHTTPRequest.SuccessHandler, failure: OAuthSwiftHTTPRequest.FailureHandler) {
+        // build request
+        self.client.request(url, method: method, parameters: parameters, headers: headers, success: success) { (error) in
+            switch error.code {
+            case OAuthSwiftErrorCode.TokenExpiredError.rawValue:
+                self.renewAccesstokenWithRefreshToken(self.client.credential.oauth_refresh_token, success: { (credential, response, parameters) in
+                    // We have successfully renewed the access token.
+                    
+                    // If provided, fire the onRenewal closure
+                    if let renewalCallBack = onTokenRenewal {
+                        renewalCallBack(credential: credential)
+                    }
+                    
+                    // Reauthorize the request again, this time with a brand new access token ready to be used.
+                    self.startAuthorizedRequest(url, method: method, parameters: parameters, headers: headers, onTokenRenewal: onTokenRenewal, success: success, failure: failure)
+                    }, failure: failure)
+            default:
+                failure(error: error)
             }
         }
     }
