@@ -191,7 +191,8 @@ public class OAuth2Swift: OAuthSwift {
         }
 
         if self.content_type == "multipart/form-data" {
-            self.client.postMultiPartRequest(self.access_token_url!, method: .POST, parameters: parameters, success: successHandler, failure: failure)
+            // Request new access token by disabling check on current token expiration. This is safe because the implementation wants the user to retrieve a new token.
+            self.client.postMultiPartRequest(self.access_token_url!, method: .POST, parameters: parameters, checkTokenExpiration: false, success: successHandler, failure: failure)
         } else {
             // special headers
             var headers: [String:String]? = nil
@@ -203,7 +204,8 @@ public class OAuth2Swift: OAuthSwift {
                 }
             }
             if let access_token_url = access_token_url {
-                self.client.request(access_token_url, method: .POST, parameters: parameters, headers: headers, success: successHandler, failure: failure)
+                // Request new access token by disabling check on current token expiration. This is safe because the implementation wants the user to retrieve a new token.
+                self.client.request(access_token_url, method: .POST, parameters: parameters, headers: headers, checkTokenExpiration: false, success: successHandler, failure: failure)
             }
             else {
                 let errorInfo = [NSLocalizedFailureReasonErrorKey: NSLocalizedString("access token url not defined", comment: "access token url not defined with code type auth")]
@@ -224,7 +226,7 @@ public class OAuth2Swift: OAuthSwift {
      - parameter success:        The success block. Takes the successfull response and data as parameter.
      - parameter failure:        The failure block. Takes the error as parameter.
      */
-    func startAuthorizedRequest(url: String, method: OAuthSwiftHTTPRequest.Method, parameters: Dictionary<String, AnyObject>, headers: [String:String]? = nil, onTokenRenewal: TokenRenewedHandler?=nil, success: OAuthSwiftHTTPRequest.SuccessHandler, failure: OAuthSwiftHTTPRequest.FailureHandler) {
+    public func startAuthorizedRequest(url: String, method: OAuthSwiftHTTPRequest.Method, parameters: Dictionary<String, AnyObject>, headers: [String:String]? = nil, onTokenRenewal: TokenRenewedHandler? = nil, success: OAuthSwiftHTTPRequest.SuccessHandler, failure: OAuthSwiftHTTPRequest.FailureHandler) {
         // build request
         self.client.request(url, method: method, parameters: parameters, headers: headers, success: success) { (error) in
             switch error.code {
@@ -238,7 +240,7 @@ public class OAuth2Swift: OAuthSwift {
                     }
                     
                     // Reauthorize the request again, this time with a brand new access token ready to be used.
-                    self.startAuthorizedRequest(url, method: method, parameters: parameters, success: success, failure: failure)
+                    self.startAuthorizedRequest(url, method: method, parameters: parameters, headers: headers, onTokenRenewal: onTokenRenewal, success: success, failure: failure)
                     }, failure: failure)
             default:
                 failure(error: error)
