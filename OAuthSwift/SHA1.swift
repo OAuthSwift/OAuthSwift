@@ -56,7 +56,8 @@ class SHA1 {
         // Process the message in successive 512-bit chunks:
         let chunkSizeBytes = 512 / 8 // 64
         var leftMessageBytes = tmpMessage.length
-        for var i in 0..<tmpMessage.length {
+        var i = 0;
+        while i < tmpMessage.length {
             i = i + chunkSizeBytes
             leftMessageBytes -= chunkSizeBytes
             let chunk = tmpMessage.subdataWithRange(NSRange(location: i, length: min(chunkSizeBytes,leftMessageBytes)))
