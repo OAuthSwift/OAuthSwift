@@ -94,4 +94,33 @@ class OAuthSwiftRequestTests: XCTestCase {
 		oAuthSwiftHTTPRequest.cancel()
 		waitForExpectationsWithTimeout(DefaultTimeout, handler: nil)
 	}
+
+	func testCreationFromNSURLRequest() {
+		let urlWithoutQueryString = NSURL(string: "www.example.com")!
+		let queryParams = ["a":"123", "b": "", "complex param":"ha öäü ?$"]
+		let headers = ["SomeHeader":"With a value"]
+		let method = OAuthSwiftHTTPRequest.Method.PUT
+		let bodyText = "Test Body"
+		let timeout: NSTimeInterval = 78
+
+		let urlComps = NSURLComponents(URL: urlWithoutQueryString, resolvingAgainstBaseURL: false)
+		urlComps?.queryItems = queryParams.keys.map { NSURLQueryItem(name: $0, value: queryParams[$0]) }
+		let urlWithQueryString = urlComps!.URL!
+		let request = NSMutableURLRequest(URL: urlWithQueryString)
+		request.allHTTPHeaderFields = headers
+		request.HTTPMethod = method.rawValue
+		request.HTTPBody = bodyText.dataUsingEncoding(OAuthSwiftDataEncoding)
+		request.timeoutInterval = timeout
+		request.HTTPShouldHandleCookies = true
+
+		let oauthRequest = OAuthSwiftHTTPRequest(request: request)
+
+		XCTAssertEqualURL(oauthRequest.URL, urlWithQueryString)
+		XCTAssertEqualDictionaries(oauthRequest.parameters as! [String:String], [:])
+		XCTAssertEqualDictionaries(oauthRequest.headers, headers)
+		XCTAssertEqual(oauthRequest.HTTPMethod, method)
+		XCTAssertEqual(String(data: oauthRequest.HTTPBody!, encoding:OAuthSwiftDataEncoding)!, bodyText)
+		XCTAssertEqual(oauthRequest.timeoutInterval, timeout)
+		XCTAssertTrue(oauthRequest.HTTPShouldHandleCookies)
+	}
 }

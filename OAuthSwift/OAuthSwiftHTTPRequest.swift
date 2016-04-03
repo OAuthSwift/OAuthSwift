@@ -74,14 +74,16 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate {
     }
 
     init(request: NSURLRequest, paramsLocation : ParamsLocation = .AuthorizationHeader) {
-        self.request = request as? NSMutableURLRequest
+        self.request = request.mutableCopy() as? NSMutableURLRequest
+
         self.URL = request.URL!
         self.HTTPMethod = Method(rawValue: request.HTTPMethod ?? "") ?? .GET
-        self.headers = [:]
+        self.headers = request.allHTTPHeaderFields ?? [:]
         self.parameters = [:]
+        self.HTTPBody = request.HTTPBody
         self.dataEncoding = NSUTF8StringEncoding
-        self.timeoutInterval = 60
-        self.HTTPShouldHandleCookies = false
+        self.timeoutInterval = request.timeoutInterval
+        self.HTTPShouldHandleCookies = request.HTTPShouldHandleCookies
         self.responseData = NSMutableData()
         self.paramsLocation = paramsLocation
     }
