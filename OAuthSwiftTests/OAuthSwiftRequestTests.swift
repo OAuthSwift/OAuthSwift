@@ -61,5 +61,37 @@ class OAuthSwiftRequestTests: XCTestCase {
         oAuthSwiftHTTPRequest.start()
         waitForExpectationsWithTimeout(DefaultTimeout, handler: nil)
     }
-    
+
+	func testCancel() {
+		let origExecContext = OAuthSwiftHTTPRequest.executionContext
+		OAuthSwiftHTTPRequest.executionContext = { $0() }
+		defer  {
+			OAuthSwiftHTTPRequest.executionContext = origExecContext
+		}
+
+		let server  = HttpServer()
+		server["/"] = { request in
+			sleep(2)
+			return HttpResponse.OK(HttpResponseBody.Text("Success!" as String) )
+		}
+		try! server.start(self.port)
+		defer {
+			server.stop()
+		}
+
+		let oAuthSwiftHTTPRequest = OAuthSwiftHTTPRequest(URL: NSURL(string: "http://127.0.0.1:\(port)")!)
+
+		let failureExpectation = expectationWithDescription("Expected `failure` to be called because of canceling the request")
+		oAuthSwiftHTTPRequest.failureHandler = { error in
+			XCTAssertEqual(error.code, NSURLErrorCancelled)
+			failureExpectation.fulfill()
+		}
+		oAuthSwiftHTTPRequest.successHandler = { _ in
+			XCTFail("The success handler should not be called. This can happen if you have a\nlocal server running on :\(self.port)")
+		}
+
+		oAuthSwiftHTTPRequest.start()
+		oAuthSwiftHTTPRequest.cancel()
+		waitForExpectationsWithTimeout(DefaultTimeout, handler: nil)
+	}
 }
