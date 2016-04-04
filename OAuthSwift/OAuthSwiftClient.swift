@@ -14,7 +14,8 @@ public class OAuthSwiftClient: NSObject {
 
     private(set) public var credential: OAuthSwiftCredential
     public var paramsLocation: OAuthSwiftHTTPRequest.ParamsLocation = .AuthorizationHeader
-    public var tokenExpirationHandler: (client: OAuthSwiftClient, completion: (error: NSError?) -> Void) -> Void = { _, completion in
+    public var tokenRenewedHandler: OAuthSwift.TokenRenewedHandler?
+    public var tokenExpirationHandler: OAuthSwift.TokenExpirationHandler = { _, completion in
         completion(error: NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.TokenExpiredError.rawValue, userInfo: nil))
     }
 
@@ -62,7 +63,7 @@ public class OAuthSwiftClient: NSObject {
         }
 
         guard let request = makeRequest(url, method: method, parameters: parameters, headers: headers) else {
-			failure?(error: NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.RequestCreationError.rawValue, userInfo: nil))
+            failure?(error: NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.RequestCreationError.rawValue, userInfo: nil))
             return
         }
         request.successHandler = success
@@ -98,9 +99,11 @@ public class OAuthSwiftClient: NSObject {
             if let error = error {
                 failure?(error: error)
             } else {
+                self.tokenRenewedHandler?(credential: self.credential)
+
                 // recreate the OAuthSwiftHTTPRequest to use the most up to date tokens, etc.
                 guard let request = self.makeRequest(url, method: method, parameters: parameters, headers: headers) else {
-					failure?(error: NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.RequestCreationError.rawValue, userInfo: nil))
+                    failure?(error: NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.RequestCreationError.rawValue, userInfo: nil))
                     return
                 }
                 request.successHandler = success
@@ -115,6 +118,8 @@ public class OAuthSwiftClient: NSObject {
             if let error = error {
                 failure?(error: error)
             } else {
+                self.tokenRenewedHandler?(credential: self.credential)
+
                 // recreate the OAuthSwiftHTTPRequest to use the most up to date tokens, etc.
                 let request = self.makeRequest(urlRequest)
                 request.successHandler = success
