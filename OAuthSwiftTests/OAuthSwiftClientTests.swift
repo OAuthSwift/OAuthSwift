@@ -29,6 +29,13 @@ class OAuthSwiftClientTests: XCTestCase {
         testMakeRequest(url, ["a":"a", "b":"b"], url,   ["a":"a", "b":"b"])
     }
     
+    func testMakeRequestViaNSURLRequest() {
+        testMakeNSURLRequest(.GET, url)
+        testMakeNSURLRequest(.POST, url)
+        testMakeNSURLRequest(.GET, url + "?a=a")
+        testMakeNSURLRequest(.GET, url + "?a=a&b=b")
+    }
+
     /*func testMakeRequestURLWithQuery() { // deprecated test if no url change
         testMakeRequest("\(url)?a=a", emptyParameters, url, ["a":"a"])
         testMakeRequest("\(url)?a=a&b=b", emptyParameters, url,   ["a":"a", "b":"b"])
@@ -61,6 +68,26 @@ class OAuthSwiftClientTests: XCTestCase {
 
             XCTAssertEqualURL(urlFromRequest.URL!, url!)
             
+        } catch let e {
+            XCTFail("\(e)")
+        }
+    }
+
+    func testMakeNSURLRequest(method: OAuthSwiftHTTPRequest.Method,_ urlString: String) {
+
+        let url = NSURL(string: urlString)!
+        let nsURLRequest = NSMutableURLRequest(URL: url)
+        nsURLRequest.HTTPMethod = method.rawValue
+
+        let request = client.makeRequest(nsURLRequest)
+
+        XCTAssertEqual(request.URL, url)
+        XCTAssertEqual(request.HTTPMethod, method)
+        XCTAssertEqualDictionaries(request.parameters as! [String:String], [:])
+
+        do {
+            let urlFromRequest = try request.makeRequest()
+            XCTAssertEqualURL(urlFromRequest.URL!, url)
         } catch let e {
             XCTFail("\(e)")
         }
