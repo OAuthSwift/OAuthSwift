@@ -14,6 +14,9 @@ public class OAuthSwiftClient: NSObject {
 
     private(set) public var credential: OAuthSwiftCredential
     public var paramsLocation: OAuthSwiftHTTPRequest.ParamsLocation = .AuthorizationHeader
+    public var tokenExpirationHandler: (client: OAuthSwiftClient, completion: (error: NSError?) -> Void) -> Void = { _, completion in
+        completion(error: NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.TokenExpiredError.rawValue, userInfo: nil))
+    }
 
     static let separator: String = "\r\n"
     static var separatorData: NSData = {
@@ -55,20 +58,69 @@ public class OAuthSwiftClient: NSObject {
     public func request(url: String, method: OAuthSwiftHTTPRequest.Method, parameters: [String: AnyObject] = [:], headers: [String:String]? = nil, checkTokenExpiration: Bool = true, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
         
         if checkTokenExpiration && self.credential.isTokenExpired()  {
-            let errorInfo = [NSLocalizedDescriptionKey: NSLocalizedString("The provided token is expired.", comment:"Token expired, retrieve new token by using the refresh token")]
-            
-            if let failureHandler = failure {
-                failureHandler(error: NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.TokenExpiredError.rawValue, userInfo: errorInfo))
-            }
-            
+            handleExpiredToken(url, method: method, parameters: parameters, headers: headers, success: success, failure: failure)
+        }
+
+        guard let request = makeRequest(url, method: method, parameters: parameters, headers: headers) else {
+			failure?(error: NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.RequestCreationError.rawValue, userInfo: nil))
             return
         }
-        
-        if let request = makeRequest(url, method: method, parameters: parameters, headers: headers) {
-            
-            request.successHandler = success
-            request.failureHandler = failure
-            request.start()
+        request.successHandler = success
+        request.failureHandler = { (error) in
+            if error.isExpiredTokenError {
+                self.handleExpiredToken(url, method: method, parameters: parameters, headers: headers, success: success, failure: failure)
+            } else {
+                failure?(error: error)
+            }
+        }
+        request.start()
+    }
+
+    public func request(urlRequest: NSURLRequest, checkTokenExpiration: Bool = true, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
+        if checkTokenExpiration && self.credential.isTokenExpired()  {
+            handleExpiredToken(urlRequest, success: success, failure: failure)
+        }
+
+        let request = self.makeRequest(urlRequest)
+        request.successHandler = success
+        request.failureHandler = { (error) in
+            if error.isExpiredTokenError {
+                self.handleExpiredToken(urlRequest, success: success, failure: failure)
+            } else {
+                failure?(error: error)
+            }
+        }
+        request.start()
+    }
+
+    private func handleExpiredToken(url: String, method: OAuthSwiftHTTPRequest.Method, parameters: [String: AnyObject] = [:], headers: [String:String]? = nil, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
+        tokenExpirationHandler(client: self) { error in
+            if let error = error {
+                failure?(error: error)
+            } else {
+                // recreate the OAuthSwiftHTTPRequest to use the most up to date tokens, etc.
+                guard let request = self.makeRequest(url, method: method, parameters: parameters, headers: headers) else {
+					failure?(error: NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.RequestCreationError.rawValue, userInfo: nil))
+                    return
+                }
+                request.successHandler = success
+                request.failureHandler = failure
+                request.start()
+            }
+        }
+    }
+
+    private func handleExpiredToken(urlRequest: NSURLRequest, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
+        tokenExpirationHandler(client: self) { error in
+            if let error = error {
+                failure?(error: error)
+            } else {
+                // recreate the OAuthSwiftHTTPRequest to use the most up to date tokens, etc.
+                let request = self.makeRequest(urlRequest)
+                request.successHandler = success
+                request.failureHandler = failure
+                request.start()
+            }
         }
     }
 

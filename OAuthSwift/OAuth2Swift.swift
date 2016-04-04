@@ -43,6 +43,13 @@ public class OAuth2Swift: OAuthSwift {
         self.response_type = responseType
         super.init(consumerKey: consumerKey, consumerSecret: consumerSecret)
         self.client.credential.version = .OAuth2
+		self.client.tokenExpirationHandler = { client, completion in
+			self.renewAccesstokenWithRefreshToken(client.credential.oauth_refresh_token, success: { (credential, response, parameters) in
+					completion(error: nil)
+				}, failure: { (error) in
+					completion(error: error)
+				})
+		}
     }
     
     public convenience init?(parameters: [String:String]){
@@ -226,26 +233,11 @@ public class OAuth2Swift: OAuthSwift {
      - parameter success:        The success block. Takes the successfull response and data as parameter.
      - parameter failure:        The failure block. Takes the error as parameter.
      */
+	@available(*, deprecated=0.6.0, message="Every request done via an OAuthSwiftClient configured with OAuth2 automatically refreshs the access token if needed.")
     public func startAuthorizedRequest(url: String, method: OAuthSwiftHTTPRequest.Method, parameters: Dictionary<String, AnyObject>, headers: [String:String]? = nil, onTokenRenewal: TokenRenewedHandler? = nil, success: OAuthSwiftHTTPRequest.SuccessHandler, failure: OAuthSwiftHTTPRequest.FailureHandler) {
         // build request
-        self.client.request(url, method: method, parameters: parameters, headers: headers, success: success) { (error) in
-            switch error.code {
-            case OAuthSwiftErrorCode.TokenExpiredError.rawValue:
-                self.renewAccesstokenWithRefreshToken(self.client.credential.oauth_refresh_token, success: { (credential, response, parameters) in
-                    // We have successfully renewed the access token.
-                    
-                    // If provided, fire the onRenewal closure
-                    if let renewalCallBack = onTokenRenewal {
-                        renewalCallBack(credential: credential)
-                    }
-                    
-                    // Reauthorize the request again, this time with a brand new access token ready to be used.
-                    self.startAuthorizedRequest(url, method: method, parameters: parameters, headers: headers, onTokenRenewal: onTokenRenewal, success: success, failure: failure)
-                    }, failure: failure)
-            default:
-                failure(error: error)
-            }
-        }
+		// TODO: implement something for the onTokenRenewal again
+		self.client.request(url, method: method, parameters: parameters, headers: headers, success: success, failure: failure)
     }
     
     @available(*, deprecated=0.5.0, message="Use OAuthSwift.handleOpenURL()")
