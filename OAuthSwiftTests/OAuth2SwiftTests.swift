@@ -9,25 +9,9 @@
 import XCTest
 @testable import OAuthSwift
 
-class OAuth2SwiftTests: XCTestCase {
+class OAuth2SwiftTests: OAuthSwiftServerBaseTest {
 
-    let server = TestServer()
     let callbackURL = "test://callback"
-    
-    override func setUp() {
-        super.setUp()
-        do {
-            try server.start()
-        }catch {
-            XCTFail("Failed to start server")
-        }
-    }
-
-    override func tearDown() {
-        server.stop()
-        super.tearDown()
-    }
-    
 
     func testDataSuccess() {
         objc_sync_enter(server)
