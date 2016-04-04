@@ -15,12 +15,14 @@ class OAuth2SwiftTests: OAuthSwiftServerBaseTest {
 
     func testDataSuccess() {
         objc_sync_enter(server)
-        testSuccess(.Data, response: .Code("code"))
+        let state: String = generateStateWithLength(20) as String
+        testSuccess(.Data, response: .Code("code", state:state))
         objc_sync_exit(server)
     }
     func testJSON_Code_Success() {
         objc_sync_enter(server)
-        testSuccess(.JSON, response: .Code("code"))
+        let state: String = generateStateWithLength(20) as String
+        testSuccess(.JSON, response: .Code("code", state:state))
         objc_sync_exit(server)
     }
     func testJSON_AccessToken_Success() {
@@ -48,8 +50,11 @@ class OAuth2SwiftTests: OAuthSwiftServerBaseTest {
         oauth.authorize_url_handler = handler
         
         let expectation = expectationWithDescription("request should succeed")
-        
-        let state: String = generateStateWithLength(20) as String
+
+		var state = ""
+		if case .Code(_, let extractedState) = response {
+			state = extractedState ?? ""
+		}
         oauth.authorizeWithCallbackURL(NSURL(string:callbackURL)!, scope: "all", state: state, params: [:],
             success: { (credential, response, parameters) -> Void in
                 expectation.fulfill()
