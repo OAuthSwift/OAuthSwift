@@ -137,16 +137,18 @@ class SignTests: XCTestCase {
         XCTAssertEqual(header, "")// TODO add checked header
     }*/
     
-    
+
+    // This test just verifies that the nonce is pretty random, although uniqueness is not guaranteed.
+    // Therefore XCTAssertEqualWithAccuracy is used.
     func testGenerateNonce()  {
         let tolerance = 100000
         var dico = [String: String]()
-        for _ in 0...tolerance {
+        for _ in 0..<tolerance {
             let nonce = OAuthSwiftCredential.generateNonce()
             dico[nonce] = ""
         }
-        
-        XCTAssertEqual(tolerance, dico.count)
+
+        XCTAssertEqualWithAccuracy(Double(tolerance), Double(dico.count), accuracy: 3)
     }
 
 }
