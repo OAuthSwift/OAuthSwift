@@ -205,5 +205,12 @@
         <key>consumerSecret</key>
         <string></string>
     </dict>
+    <key>Typetalk</key>
+    <dict>
+        <key>consumerKey</key>
+        <string></string>
+        <key>consumerSecret</key>
+        <string></string>
+    </dict>
 </dict>
 </plist>
