@@ -51,6 +51,7 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
     public var oauth_refresh_token: String = String()
     public var oauth_token_secret: String = String()
     public var oauth_token_expires_at: NSDate? = nil
+    public var oauth2_headers:[String: String]?
     public internal(set) var oauth_verifier: String = String()
     public var version: Version = .OAuth1
     
@@ -106,6 +107,9 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
         case .OAuth1:
             return ["Authorization": self.authorizationHeaderForMethod(method, url: url, parameters: parameters, body: body)]
         case .OAuth2:
+            if let headers = oauth2_headers {
+              return headers
+            }
             return self.oauth_token.isEmpty ? [:] : ["Authorization": "Bearer \(self.oauth_token)"]
         }
     }

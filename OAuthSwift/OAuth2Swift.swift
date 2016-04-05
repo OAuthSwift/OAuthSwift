@@ -25,6 +25,19 @@ public class OAuth2Swift: OAuthSwift {
     var content_type: String?
     
     // MARK: init
+    public convenience init(consumerKey: String, consumerSecret: String, authorizeUrl: String, accessTokenUrl: String, responseType: String,  headers: [String: String]?){
+      self.init(consumerKey: consumerKey, consumerSecret: consumerSecret, authorizeUrl: authorizeUrl, responseType: responseType)
+      self.access_token_url = accessTokenUrl
+      self.client.credential.oauth2_headers = headers
+    }
+    
+    public convenience init(consumerKey: String, consumerSecret: String, authorizeUrl: String, accessTokenUrl: String, responseType: String, contentType: String,  headers: [String: String]?){
+      self.init(consumerKey: consumerKey, consumerSecret: consumerSecret, authorizeUrl: authorizeUrl, responseType: responseType)
+      self.access_token_url = accessTokenUrl
+      self.content_type = contentType
+      self.client.credential.oauth2_headers = headers
+    }
+  
     public convenience init(consumerKey: String, consumerSecret: String, authorizeUrl: String, accessTokenUrl: String, responseType: String){
         self.init(consumerKey: consumerKey, consumerSecret: consumerSecret, authorizeUrl: authorizeUrl, responseType: responseType)
         self.access_token_url = accessTokenUrl
