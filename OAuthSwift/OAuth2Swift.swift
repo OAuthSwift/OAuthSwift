@@ -222,6 +222,8 @@ public class OAuth2Swift: OAuthSwift {
     }
 
     /**
+     DEPRECATED: Every request done via an OAuthSwiftClient configured with OAuth2 automatically refreshs the access token if needed.
+
      Convenience method to start a request that must be authorized with the previosuly retrieved access token.
      Since OAuth 2 requires support for the access token refresh mechanism, this method will take care to automatically refresh the token if needed suche that the developer only has to be concerned about the outcome of the request.
      

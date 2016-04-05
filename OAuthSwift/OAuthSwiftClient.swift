@@ -12,12 +12,22 @@ var OAuthSwiftDataEncoding: NSStringEncoding = NSUTF8StringEncoding
 
 public class OAuthSwiftClient: NSObject {
 
-    private(set) public var credential: OAuthSwiftCredential
-    public var paramsLocation: OAuthSwiftHTTPRequest.ParamsLocation = .AuthorizationHeader
-    public var tokenRenewedHandler: OAuthSwift.TokenRenewedHandler?
-    public var tokenExpirationHandler: OAuthSwift.TokenExpirationHandler = { _, completion in
+    public static let noopTokenExpirationHandler: OAuthSwift.TokenExpirationHandler = { _, completion in
         completion(error: NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.TokenExpiredError.rawValue, userInfo: nil))
     }
+
+    private(set) public var credential: OAuthSwiftCredential
+    public var paramsLocation: OAuthSwiftHTTPRequest.ParamsLocation = .AuthorizationHeader
+
+    /// This handler gets called when the access token is successfully renewed via the tokenExpirationHandler.
+    public var tokenRenewedHandler: OAuthSwift.TokenRenewedHandler?
+
+    /// This handler gets called when the OAuth2 access token has expired and gives a chance to 
+    /// refresh it. The request will be tried again if the completion is called without an error.
+    /// Using OAuth2Swift will configure its client with a tokenExpirationHandler by default.
+    ///
+    /// If you don't want a working tokenExpirationHandler use the OAuthSwiftClient.noopTokenExpirationHandler.
+    public var tokenExpirationHandler: OAuthSwift.TokenExpirationHandler = noopTokenExpirationHandler
 
     static let separator: String = "\r\n"
     static var separatorData: NSData = {

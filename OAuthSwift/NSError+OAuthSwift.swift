@@ -10,6 +10,14 @@ import Foundation
 
 extension NSError {
 
+    /// Checks the headers contained in the userInfo whether this error was caused by an 
+    /// expired/invalid access token.
+    ///
+    /// Criteria for invalid token error: WWW-Authenticate header contains a field "error" with
+    /// value "invalid_token".
+    ///
+    /// Also implements a special handling for the Facebook API, which indicates invalid tokens in a 
+    /// different manner. See https://developers.facebook.com/docs/graph-api/using-graph-api#errors
 	var isExpiredTokenError: Bool {
 		if self.domain == NSURLErrorDomain && self.code == 401 {
 			if let reponseHeaders = self.userInfo["Response-Headers"] as? [String:String],
