@@ -138,6 +138,7 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate {
                     let localizedDescription = OAuthSwiftHTTPRequest.descriptionForHTTPStatus(self.response.statusCode, responseString: responseString! as String)
                     let userInfo : [NSObject : AnyObject] = [
                         NSLocalizedDescriptionKey: localizedDescription,
+                        NSURLErrorFailingURLErrorKey: self.response.URL?.absoluteString ?? NSNull(),
                         "Response-Headers": self.response.allHeaderFields,
                         "Response-Body": responseString ?? NSNull()
                     ]

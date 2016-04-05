@@ -11,7 +11,7 @@ import Foundation
 extension NSError {
 
 	var isExpiredTokenError: Bool {
-		if self.code == 401 {
+		if self.domain == NSURLErrorDomain && self.code == 401 {
 			if let reponseHeaders = self.userInfo["Response-Headers"] as? [String:String],
 				authenticateHeader = reponseHeaders["WWW-Authenticate"] ?? reponseHeaders["Www-Authenticate"] {
 				let headerDictionary = authenticateHeader.headerDictionary
@@ -21,7 +21,26 @@ extension NSError {
 			}
 		}
 
-		// TODO: add handling for facebook errors - see wiki
+        // Detect access token expiration errors from facebook
+        // Docu: https://developers.facebook.com/docs/graph-api/using-graph-api#errors
+        if self.domain == NSURLErrorDomain && self.code == 400 {
+            if let urlString = self.userInfo[NSURLErrorFailingURLErrorKey] as? String
+                where urlString.containsString("graph.facebook.com")
+            {
+                if let body = self.userInfo["Response-Body"] as? String,
+                    let bodyData = body.dataUsingEncoding(OAuthSwiftDataEncoding),
+                    let json = try? NSJSONSerialization.JSONObjectWithData(bodyData, options: NSJSONReadingOptions()),
+                    let jsonDic = json as? [String: AnyObject]
+                {
+                    let errorCode = jsonDic["error"]?["code"] as? Int
+                    let errorSubCode = jsonDic["error"]?["error_subcode"] as? Int
+
+                    if (errorCode == 102 && errorSubCode == nil) || errorSubCode == 463 || errorSubCode == 467 {
+                        return true
+                    }
+                }
+            }
+        }
 
 		return false
 	}
