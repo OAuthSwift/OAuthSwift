@@ -12,7 +12,7 @@ var OAuthSwiftDataEncoding: NSStringEncoding = NSUTF8StringEncoding
 
 public class OAuthSwiftClient: NSObject {
 
-    public static let noopTokenExpirationHandler: OAuthSwift.TokenExpirationHandler = { _, completion in
+    private static let noopTokenExpirationHandler: OAuthSwift.TokenExpirationHandler = { _, completion in
         completion(error: NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.TokenExpiredError.rawValue, userInfo: nil))
     }
 
@@ -25,9 +25,14 @@ public class OAuthSwiftClient: NSObject {
     /// This handler gets called when the OAuth2 access token has expired and gives a chance to 
     /// refresh it. The request will be tried again if the completion is called without an error.
     /// Using OAuth2Swift will configure its client with a tokenExpirationHandler by default.
-    ///
-    /// If you don't want a working tokenExpirationHandler use the OAuthSwiftClient.noopTokenExpirationHandler.
-    public var tokenExpirationHandler: OAuthSwift.TokenExpirationHandler = noopTokenExpirationHandler
+    public var tokenExpirationHandler: OAuthSwift.TokenExpirationHandler? {
+        didSet {
+            assert(
+                (credential.version == .OAuth1 && tokenExpirationHandler == nil) || credential.version == .OAuth2,
+                "OAuth1 does NOT have a token expiration process. Therefore you should NOT provide a tokenExpirationHandler for OAuth1."
+            )
+        }
+    }
 
     static let separator: String = "\r\n"
     static var separatorData: NSData = {
@@ -105,6 +110,7 @@ public class OAuthSwiftClient: NSObject {
     }
 
     private func handleExpiredToken(url: String, method: OAuthSwiftHTTPRequest.Method, parameters: [String: AnyObject] = [:], headers: [String:String]? = nil, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
+        let tokenExpirationHandler = self.tokenExpirationHandler != nil ? self.tokenExpirationHandler! : OAuthSwiftClient.noopTokenExpirationHandler
         tokenExpirationHandler(client: self) { error in
             if let error = error {
                 failure?(error: error)
@@ -124,6 +130,7 @@ public class OAuthSwiftClient: NSObject {
     }
 
     private func handleExpiredToken(urlRequest: NSURLRequest, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
+        let tokenExpirationHandler = self.tokenExpirationHandler != nil ? self.tokenExpirationHandler! : OAuthSwiftClient.noopTokenExpirationHandler
         tokenExpirationHandler(client: self) { error in
             if let error = error {
                 failure?(error: error)
