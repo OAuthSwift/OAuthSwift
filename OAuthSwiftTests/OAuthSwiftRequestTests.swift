@@ -10,7 +10,7 @@ import XCTest
 @testable import OAuthSwift
 import Swifter
 
-class OAuthSwiftRequestTests: XCTestCase {
+class OAuth1SwiftRequestTests: XCTestCase {
     
     var port: in_port_t = 8765
     override func setUp() {

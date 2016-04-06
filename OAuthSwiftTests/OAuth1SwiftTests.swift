@@ -11,24 +11,9 @@ import XCTest
 
 
 let DefaultTimeout: NSTimeInterval = 10
-class OAuthSwiftTests: XCTestCase {
+class OAuth1SwiftTests: OAuthSwiftServerBaseTest {
     
-    let server = TestServer()
     let callbackURL = "test://callback"
-    
-    override func setUp() {
-        super.setUp()
-        do {
-            try server.start()
-        }catch {
-            XCTFail("Failed to start server")
-        }
-    }
-    
-    override func tearDown() {
-        server.stop()
-        super.tearDown()
-    }
     
     func testSuccess() {
         let oauth = OAuth1Swift(
