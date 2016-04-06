@@ -33,6 +33,8 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate {
     var task: NSURLSessionTask?
     var session: NSURLSession!
 
+    private var cancelRequested = false
+
     var headers: Dictionary<String, String>
     var parameters: Dictionary<String, AnyObject>
 
@@ -105,6 +107,14 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate {
         }
 
         OAuthSwiftHTTPRequest.executionContext {
+            // perform lock here to prevent cancel calls on another thread while creating the request
+            objc_sync_enter(self)
+            defer { objc_sync_exit(self) }
+
+            if self.cancelRequested {
+                return
+            }
+
             self.session = NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration(),
                 delegate: self,
                 delegateQueue: NSOperationQueue.mainQueue())
@@ -160,7 +170,16 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate {
     }
 
 	public func cancel() {
-		task?.cancel()
+        // perform lock here to prevent cancel calls on another thread while creating the request
+        objc_sync_enter(self)
+        defer { objc_sync_exit(self) }
+
+        // either cancel the request if it's already running or set the flag to prohibit creation of the request
+        if let task = task {
+            task.cancel()
+        } else {
+            cancelRequested = true
+        }
 	}
 
     public func makeRequest() throws -> NSMutableURLRequest {
