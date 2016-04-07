@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate {
+public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate, OAuthSwiftRequestHandle {
 
     public typealias SuccessHandler = (data: NSData, response: NSHTTPURLResponse) -> Void
     public typealias FailureHandler = (error: NSError) -> Void

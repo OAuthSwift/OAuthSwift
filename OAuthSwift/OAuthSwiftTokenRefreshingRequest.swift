@@ -8,7 +8,7 @@
 
 import Foundation
 
-class OAuthSwiftTokenRefreshingRequest {
+class OAuthSwiftTokenRefreshingRequest: OAuthSwiftRequestHandle {
 
     private static let noopTokenExpirationHandler: OAuthSwift.TokenExpirationHandler = { completion in
         completion(error: NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.TokenExpiredError.rawValue, userInfo: nil))
