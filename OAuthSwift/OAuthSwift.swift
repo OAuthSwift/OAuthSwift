@@ -24,7 +24,7 @@ public class OAuthSwift: NSObject {
     public typealias TokenSuccessHandler = (credential: OAuthSwiftCredential, response: NSURLResponse?, parameters: Dictionary<String, String>) -> Void
     public typealias FailureHandler = (error: NSError) -> Void
     public typealias TokenRenewedHandler = (credential: OAuthSwiftCredential) -> Void
-    public typealias TokenExpirationHandler = (client: OAuthSwiftClient, completion: (error: NSError?) -> Void) -> Void
+    public typealias TokenExpirationHandler = (completion: (error: NSError?) -> Void) -> Void
     
     // MARK: init
     init(consumerKey: String, consumerSecret: String) {

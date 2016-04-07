@@ -43,8 +43,8 @@ public class OAuth2Swift: OAuthSwift {
         self.response_type = responseType
         super.init(consumerKey: consumerKey, consumerSecret: consumerSecret)
         self.client.credential.version = .OAuth2
-        self.client.tokenExpirationHandler = { client, completion in
-            self.renewAccesstokenWithRefreshToken(client.credential.oauth_refresh_token, success: { (credential, response, parameters) in
+        self.client.tokenExpirationHandler = { completion in
+            self.renewAccesstokenWithRefreshToken(self.client.credential.oauth_refresh_token, success: { (credential, response, parameters) in
                     completion(error: nil)
                 }, failure: { (error) in
                     completion(error: error)
