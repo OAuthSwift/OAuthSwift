@@ -82,14 +82,14 @@ public class OAuthSwiftClient: NSObject {
         return request(reqConfig, checkTokenExpiration: checkTokenExpiration, success: success, failure: failure)
     }
 
-    // This is the "base method" which all other request, get, post, put, delete and patch method should call finally.
+    // This is the "base method" which all other request, get, post, put, delete and patch methods should call finally.
     public func request(reqConfig: OAuthSwiftHTTPRequestConfig, checkTokenExpiration: Bool = true, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) -> OAuthSwiftRequestHandle? {
         let req = OAuthSwiftTokenRefreshingRequest(credentials: credential, tokenExpirationHandler: tokenExpirationHandler, tokenRenewedHandler: tokenRenewedHandler,requestConfig: reqConfig)
         req.startRequest(checkTokenExpiration, success: success, failure: failure)
         return req
     }
 
-    // MARK: Multipart Requests
+    // MARK: multipart requests
 
     public func postImage(urlString: String, parameters: Dictionary<String, AnyObject>, image: NSData, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) -> OAuthSwiftRequestHandle? {
 
@@ -115,7 +115,7 @@ public class OAuthSwiftClient: NSObject {
 
 }
 
-// MARK: Deprecated
+// MARK: deprecated
 
 extension OAuthSwiftClient {
 

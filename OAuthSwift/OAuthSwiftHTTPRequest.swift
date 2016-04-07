@@ -142,7 +142,7 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate, OAuthSwiftRe
 
 }
 
-// MARK: Request Preparation
+// MARK: request preparation
 
 extension OAuthSwiftHTTPRequest {
 
@@ -161,6 +161,8 @@ extension OAuthSwiftHTTPRequest {
         dataEncoding: NSStringEncoding,
         paramsLocation : ParamsLocation = .AuthorizationHeader,
         credentials: OAuthSwiftCredential) throws -> NSMutableURLRequest {
+
+            // TODO: I think there might be a bug in the handling of the additionalParameters!
 
             var signatureUrl = request.URL!
             var signatureParameters = additionalParameters
@@ -265,7 +267,7 @@ extension OAuthSwiftHTTPRequest {
     }
 }
 
-// MARK: Status Code Mapping
+// MARK: status code mapping
 
 extension OAuthSwiftHTTPRequest {
 
