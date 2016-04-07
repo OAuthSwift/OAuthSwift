@@ -19,6 +19,9 @@ class OAuthSwiftTokenRefreshingRequest {
     private let tokenRenewedHandler: OAuthSwift.TokenRenewedHandler?
     private let requestConfig: OAuthSwiftHTTPRequestConfig
 
+    private var cancelRequested: Bool = false
+    private var latestRequest: OAuthSwiftHTTPRequest?
+
     init(credentials: OAuthSwiftCredential, tokenExpirationHandler: OAuthSwift.TokenExpirationHandler?, tokenRenewedHandler: OAuthSwift.TokenRenewedHandler?, requestConfig: OAuthSwiftHTTPRequestConfig) {
         self.credentials = credentials
         self.tokenExpirationHandler = tokenExpirationHandler != nil ? tokenExpirationHandler! : OAuthSwiftTokenRefreshingRequest.noopTokenExpirationHandler
@@ -32,16 +35,29 @@ class OAuthSwiftTokenRefreshingRequest {
         }
 
         let request = OAuthSwiftHTTPRequest(requestConfig: requestConfig)
-        request.successHandler = success
+        request.successHandler = { data, response in
+            self.latestRequest = nil
+            success?(data: data, response: response)
+        }
         request.failureHandler = { (error) in
+            self.latestRequest = nil
             if error.isExpiredTokenError {
                 self.handleExpiredToken(success, failure: failure)
             } else {
                 failure?(error: error)
             }
         }
-        //        latestRequest = request
-        request.start(credentials)
+
+        startRequestIfNotCanceled(request)
+    }
+
+    func cancel() {
+        // perform lock here to prevent cancel calls on another thread while creating the request
+        objc_sync_enter(self)
+        defer { objc_sync_exit(self) }
+
+        cancelRequested = true
+        latestRequest?.cancel()
     }
 
     private func handleExpiredToken(success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
@@ -55,8 +71,22 @@ class OAuthSwiftTokenRefreshingRequest {
                 let request = OAuthSwiftHTTPRequest(requestConfig: self.requestConfig)
                 request.successHandler = success
                 request.failureHandler = failure
-                request.start(self.credentials)
+
+                self.startRequestIfNotCanceled(request)
             }
         }
+    }
+
+    private func startRequestIfNotCanceled(request: OAuthSwiftHTTPRequest) {
+        // perform lock here to prevent cancel calls on another thread while creating the request
+        objc_sync_enter(self)
+        defer { objc_sync_exit(self) }
+
+        if self.cancelRequested {
+            return
+        }
+
+        self.latestRequest = request
+        request.start(self.credentials)
     }
 }
