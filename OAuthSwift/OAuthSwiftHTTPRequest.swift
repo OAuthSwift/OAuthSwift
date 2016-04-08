@@ -27,14 +27,11 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate, OAuthSwiftRe
 
     public let requestConfig: OAuthSwiftHTTPRequestConfig
 
-    var request: NSURLRequest?
-    var task: NSURLSessionTask?
-    var session: NSURLSession!
+    private var request: NSURLRequest?
+    private var task: NSURLSessionTask?
+    private var session: NSURLSession!
 
     private var cancelRequested = false
-
-    var response: NSHTTPURLResponse?
-    var responseData = NSMutableData()
 
     var successHandler: SuccessHandler?
     var failureHandler: FailureHandler?
@@ -88,22 +85,17 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate, OAuthSwiftRe
                     return
                 }
 
-                guard let response = response as? NSHTTPURLResponse where data != nil else {
-                    let responseString = NSString(data: self.responseData, encoding: self.requestConfig.dataEncoding)
-                    let localizedDescription = OAuthSwiftHTTPRequest.descriptionForHTTPStatus(400, responseString: responseString! as String)
+                guard let response = response as? NSHTTPURLResponse, responseData = data else {
+                    let localizedDescription = OAuthSwiftHTTPRequest.descriptionForHTTPStatus(400, responseString: "")
                     let userInfo : [NSObject : AnyObject] = [NSLocalizedDescriptionKey: localizedDescription]
                     let error = NSError(domain: NSURLErrorDomain, code: 400, userInfo: userInfo)
                     self.failureHandler?(error: error)
                     return
                 }
 
-                self.response = response
-                self.responseData.length = 0
-                self.responseData.appendData(data!)
-
-                if response.statusCode >= 400 {
-                    let responseString = NSString(data: self.responseData, encoding: self.requestConfig.dataEncoding)
-                    let localizedDescription = OAuthSwiftHTTPRequest.descriptionForHTTPStatus(response.statusCode, responseString: responseString! as String)
+                guard response.statusCode < 400 else {
+                    let responseString = String(data: responseData, encoding: self.requestConfig.dataEncoding)
+                    let localizedDescription = OAuthSwiftHTTPRequest.descriptionForHTTPStatus(response.statusCode, responseString: responseString ?? "")
                     let userInfo : [NSObject : AnyObject] = [
                         NSLocalizedDescriptionKey: localizedDescription,
                         NSURLErrorFailingURLErrorKey: response.URL?.absoluteString ?? NSNull(),
@@ -115,7 +107,7 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate, OAuthSwiftRe
                     return
                 }
                 
-                self.successHandler?(data: self.responseData, response: response)
+                self.successHandler?(data: responseData, response: response)
             }
             self.task?.resume()
 
