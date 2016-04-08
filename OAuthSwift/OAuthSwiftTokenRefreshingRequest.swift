@@ -69,8 +69,14 @@ class OAuthSwiftTokenRefreshingRequest: OAuthSwiftRequestHandle {
 
                 // recreate the OAuthSwiftHTTPRequest to use the most up to date tokens, etc.
                 let request = OAuthSwiftHTTPRequest(requestConfig: self.requestConfig)
-                request.successHandler = success
-                request.failureHandler = failure
+                request.successHandler = { data, response in
+                    self.latestRequest = nil
+                    success?(data: data, response: response)
+                }
+                request.failureHandler = { (error) in
+                    self.latestRequest = nil
+                    failure?(error: error)
+                }
 
                 self.startRequestIfNotCanceled(request)
             }
