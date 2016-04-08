@@ -11,6 +11,7 @@ import Foundation
 var OAuthSwiftDataEncoding: NSStringEncoding = NSUTF8StringEncoding
 
 public protocol OAuthSwiftRequestHandle {
+    var requestConfig: OAuthSwiftHTTPRequestConfig {get}
     func cancel()
 }
 

@@ -17,7 +17,7 @@ class OAuthSwiftTokenRefreshingRequest: OAuthSwiftRequestHandle {
     private let credentials: OAuthSwiftCredential
     private let tokenExpirationHandler: OAuthSwift.TokenExpirationHandler
     private let tokenRenewedHandler: OAuthSwift.TokenRenewedHandler?
-    private let requestConfig: OAuthSwiftHTTPRequestConfig
+    let requestConfig: OAuthSwiftHTTPRequestConfig
 
     private var cancelRequested: Bool = false
     private var latestRequest: OAuthSwiftHTTPRequest?
