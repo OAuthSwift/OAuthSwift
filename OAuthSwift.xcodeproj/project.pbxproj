@@ -16,6 +16,7 @@
 		098EB6171CB66CD4002FFE99 /* OAuthSwiftHTTPRequestConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098EB6151CB66CD4002FFE99 /* OAuthSwiftHTTPRequestConfig.swift */; };
 		098EB6181CB66CD4002FFE99 /* OAuthSwiftHTTPRequestConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098EB6151CB66CD4002FFE99 /* OAuthSwiftHTTPRequestConfig.swift */; };
 		098EB6191CB66CD4002FFE99 /* OAuthSwiftHTTPRequestConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098EB6151CB66CD4002FFE99 /* OAuthSwiftHTTPRequestConfig.swift */; };
+		098EB61B1CB7C336002FFE99 /* OAuthSwiftHTTPRequestConfigTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098EB61A1CB7C336002FFE99 /* OAuthSwiftHTTPRequestConfigTest.swift */; };
 		09A497FE1CB2553D00D91EBE /* NSErrorOAuthSwiftTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09A497FD1CB2553D00D91EBE /* NSErrorOAuthSwiftTest.swift */; };
 		09A9D2811CB3999C00B29567 /* NSError+OAuthSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09A497F81CB251CE00D91EBE /* NSError+OAuthSwift.swift */; };
 		09A9D2821CB3999D00B29567 /* NSError+OAuthSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09A497F81CB251CE00D91EBE /* NSError+OAuthSwift.swift */; };
@@ -188,6 +189,7 @@
 		0943D9531CB2877200A1AAC6 /* OAuthSwiftServerBaseTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OAuthSwiftServerBaseTest.swift; sourceTree = "<group>"; };
 		098EB6101CB66C01002FFE99 /* OAuthSwiftTokenRefreshingRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OAuthSwiftTokenRefreshingRequest.swift; sourceTree = "<group>"; };
 		098EB6151CB66CD4002FFE99 /* OAuthSwiftHTTPRequestConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OAuthSwiftHTTPRequestConfig.swift; sourceTree = "<group>"; };
+		098EB61A1CB7C336002FFE99 /* OAuthSwiftHTTPRequestConfigTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OAuthSwiftHTTPRequestConfigTest.swift; sourceTree = "<group>"; };
 		09A497F81CB251CE00D91EBE /* NSError+OAuthSwift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSError+OAuthSwift.swift"; sourceTree = "<group>"; };
 		09A497FD1CB2553D00D91EBE /* NSErrorOAuthSwiftTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSErrorOAuthSwiftTest.swift; sourceTree = "<group>"; };
 		5F382BA52ECA469B1FFEF052 /* Pods-OAuthSwiftTVOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OAuthSwiftTVOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-OAuthSwiftTVOS/Pods-OAuthSwiftTVOS.release.xcconfig"; sourceTree = "<group>"; };
@@ -393,6 +395,7 @@
 		C4D50DF81BFB693F0053B624 /* OAuthSwiftTests */ = {
 			isa = PBXGroup;
 			children = (
+				098EB61A1CB7C336002FFE99 /* OAuthSwiftHTTPRequestConfigTest.swift */,
 				C4D50E0A1BFB74240053B624 /* OAuthSwiftRequestTests.swift */,
 				C4698E331BFDE25500FADE29 /* OAuthSwiftClientTests.swift */,
 				C4D50DF91BFB693F0053B624 /* OAuth1SwiftTests.swift */,
@@ -949,6 +952,7 @@
 				C4D50E0D1BFB79D00053B624 /* OAuth2SwiftTests.swift in Sources */,
 				C4FAE4361C061660000CE669 /* SignTests.swift in Sources */,
 				0943D9541CB2877200A1AAC6 /* OAuthSwiftServerBaseTest.swift in Sources */,
+				098EB61B1CB7C336002FFE99 /* OAuthSwiftHTTPRequestConfigTest.swift in Sources */,
 				C44244DC1C06316E00880DAB /* Services.swift in Sources */,
 				C4D50DFA1BFB693F0053B624 /* OAuth1SwiftTests.swift in Sources */,
 			);
