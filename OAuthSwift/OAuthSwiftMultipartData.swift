@@ -31,7 +31,7 @@ extension NSMutableData {
         if let filename = multipartData.fileName {
             filenameClause = " filename=\"\(filename)\""
         }
-        let contentDispositionString = "Content-Disposition: form-data; name=\"\(multipartData.name)\";\(filenameClause)r\n"
+        let contentDispositionString = "Content-Disposition: form-data; name=\"\(multipartData.name)\";\(filenameClause)\r\n"
         let contentDispositionData = contentDispositionString.dataUsingEncoding(encoding)!
         self.appendData(contentDispositionData)
 
