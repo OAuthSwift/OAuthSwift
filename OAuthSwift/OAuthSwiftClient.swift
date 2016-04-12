@@ -17,7 +17,7 @@ public protocol OAuthSwiftRequestHandle {
 
 public class OAuthSwiftClient: NSObject {
 
-    private(set) public var credential: OAuthSwiftCredential
+    public var credential: OAuthSwiftCredential
     public var paramsLocation: OAuthSwiftHTTPRequest.ParamsLocation = .AuthorizationHeader
 
     /// This handler gets called when the access token is successfully renewed via the tokenExpirationHandler.
