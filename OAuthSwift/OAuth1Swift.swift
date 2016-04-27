@@ -102,7 +102,7 @@ public class OAuth1Swift: OAuthSwift {
             parameters["oauth_callback"] = callbackURLString
         }
         self.client.post(self.request_token_url, parameters: parameters, success: {
-            data, response in
+            [unowned self] data, response in
             let responseString = NSString(data: data, encoding: NSUTF8StringEncoding) as String!
             let parameters = responseString.parametersFromQueryString()
             if let oauthToken=parameters["oauth_token"] {
@@ -121,7 +121,7 @@ public class OAuth1Swift: OAuthSwift {
         parameters["oauth_token"] = self.client.credential.oauth_token
         parameters["oauth_verifier"] = self.client.credential.oauth_verifier
         self.client.post(self.access_token_url, parameters: parameters, success: {
-            data, response in
+            [unowned self] data, response in
             let responseString = NSString(data: data, encoding: NSUTF8StringEncoding) as String!
             let parameters = responseString.parametersFromQueryString()
             if let oauthToken=parameters["oauth_token"] {
