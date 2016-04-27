@@ -35,14 +35,14 @@ class OAuthSwiftTokenRefreshingRequest: OAuthSwiftRequestHandle {
         }
 
         let request = OAuthSwiftHTTPRequest(requestConfig: requestConfig)
-        request.successHandler = { data, response in
-            self.latestRequest = nil
+        request.successHandler = { [weak self] data, response in
+            self?.latestRequest = nil
             success?(data: data, response: response)
         }
-        request.failureHandler = { (error) in
-            self.latestRequest = nil
+        request.failureHandler = { [weak self] (error) in
+            self?.latestRequest = nil
             if error.isExpiredTokenError {
-                self.handleExpiredToken(success, failure: failure)
+                self?.handleExpiredToken(success, failure: failure)
             } else {
                 failure?(error: error)
             }
@@ -69,12 +69,12 @@ class OAuthSwiftTokenRefreshingRequest: OAuthSwiftRequestHandle {
 
                 // recreate the OAuthSwiftHTTPRequest to use the most up to date tokens, etc.
                 let request = OAuthSwiftHTTPRequest(requestConfig: self.requestConfig)
-                request.successHandler = { data, response in
-                    self.latestRequest = nil
+                request.successHandler = { [weak self] data, response in
+                    self?.latestRequest = nil
                     success?(data: data, response: response)
                 }
-                request.failureHandler = { (error) in
-                    self.latestRequest = nil
+                request.failureHandler = { [weak self] (error) in
+                    self?.latestRequest = nil
                     failure?(error: error)
                 }
 

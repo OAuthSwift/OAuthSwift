@@ -110,6 +110,7 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate, OAuthSwiftRe
                 self.successHandler?(data: responseData, response: response)
             }
             self.task?.resume()
+            self.session.finishTasksAndInvalidate()
 
             #if os(iOS)
                 #if !OAUTH_APP_EXTENSIONS
