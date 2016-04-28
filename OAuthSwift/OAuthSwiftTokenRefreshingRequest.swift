@@ -31,7 +31,8 @@ class OAuthSwiftTokenRefreshingRequest: OAuthSwiftRequestHandle {
 
     func startRequest(checkTokenExpiration: Bool = true, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
         if checkTokenExpiration && credentials.isTokenExpired()  {
-            handleExpiredToken(success, failure: failure)
+            handleExpiredTokenAndTryAgain(success, failure: failure)
+            return
         }
 
         let request = OAuthSwiftHTTPRequest(requestConfig: requestConfig)
@@ -42,7 +43,7 @@ class OAuthSwiftTokenRefreshingRequest: OAuthSwiftRequestHandle {
         request.failureHandler = { [weak self] (error) in
             self?.latestRequest = nil
             if error.isExpiredTokenError {
-                self?.handleExpiredToken(success, failure: failure)
+                self?.handleExpiredTokenAndTryAgain(success, failure: failure)
             } else {
                 failure?(error: error)
             }
@@ -60,7 +61,7 @@ class OAuthSwiftTokenRefreshingRequest: OAuthSwiftRequestHandle {
         latestRequest?.cancel()
     }
 
-    private func handleExpiredToken(success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
+    private func handleExpiredTokenAndTryAgain(success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
         tokenExpirationHandler() { error in
             if let error = error {
                 failure?(error: error)
