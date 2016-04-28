@@ -79,7 +79,9 @@ public class OAuth2Swift: OAuthSwift {
     // MARK: functions
     public func authorizeWithCallbackURL(callbackURL: NSURL, scope: String, state: String, params: [String: String] = [String: String](), success: TokenSuccessHandler, failure: ((error: NSError) -> Void)) {
         
-         self.observeCallback { [unowned self] url in
+        self.observeCallback { [weak self] url in
+            guard let this = self else {return }
+            
             var responseParameters = [String: String]()
             if let query = url.query {
                 responseParameters += query.parametersFromQueryString()
@@ -88,11 +90,11 @@ public class OAuth2Swift: OAuthSwift {
                 responseParameters += fragment.parametersFromQueryString()
             }
             if let accessToken = responseParameters["access_token"] {
-                self.client.credential.oauth_token = accessToken.safeStringByRemovingPercentEncoding
-                success(credential: self.client.credential, response: nil, parameters: responseParameters)
+                this.client.credential.oauth_token = accessToken.safeStringByRemovingPercentEncoding
+                success(credential: this.client.credential, response: nil, parameters: responseParameters)
             }
             else if let code = responseParameters["code"] {
-                if !self.allowMissingStateCheck {
+                if !this.allowMissingStateCheck {
                     guard let responseState = responseParameters["state"] else {
                         let errorInfo = [NSLocalizedDescriptionKey: "Missing state"]
                         failure(error: NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.MissingStateError.rawValue, userInfo: errorInfo))
@@ -104,7 +106,7 @@ public class OAuth2Swift: OAuthSwift {
                         return
                     }
                 }
-                self.postOAuthAccessTokenWithRequestTokenByCode(code.safeStringByRemovingPercentEncoding,
+                this.postOAuthAccessTokenWithRequestTokenByCode(code.safeStringByRemovingPercentEncoding,
                     callbackURL:callbackURL, success: success, failure: failure)
             }
             else if let error = responseParameters["error"], error_description = responseParameters["error_description"] {
