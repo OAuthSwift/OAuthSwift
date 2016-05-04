@@ -100,7 +100,9 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate, OAuthSwiftRe
                         NSLocalizedDescriptionKey: localizedDescription,
                         NSURLErrorFailingURLErrorKey: response.URL?.absoluteString ?? NSNull(),
                         "Response-Headers": response.allHeaderFields,
-                        "Response-Body": responseString ?? NSNull()
+                        "Response-Body": responseString ?? NSNull(),
+                        OAuthSwiftErrorResponseKey: response,
+                        OAuthSwiftErrorResponseDataKey: responseData
                     ]
                     let error = NSError(domain: NSURLErrorDomain, code: response.statusCode, userInfo: userInfo)
                     self.failureHandler?(error: error)
