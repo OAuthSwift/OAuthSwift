@@ -37,7 +37,7 @@ github "OAuthSwift/OAuthSwift" ~> 0.5.0
 platform :ios, '8.0'
 use_frameworks!
 
-pod "OAuthSwift", "~> 0.5.0"
+pod 'OAuthSwift', '~> 0.5.0'
 ```
 ## How to
 ### Setting URL Schemes
