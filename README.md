@@ -8,7 +8,7 @@ Swift based OAuth library for iOS and OSX.
 
 ## Support OAuth1.0, OAuth2.0
 
-Twitter, Flickr, Github, Instagram, Foursquare. Fitbit, Withings, Linkedin, Dropbox, Dribbble, Salesforce, BitBucket, GoogleDrive, Smugmug, Intuit, Zaim, Tumblr, Slack, Uber, Gitter, Facebook, Spotify, Typetalk etc
+Twitter, Flickr, Github, Instagram, Foursquare. Fitbit, Withings, Linkedin, Dropbox, Dribbble, Salesforce, BitBucket, GoogleDrive, Smugmug, Intuit, Zaim, Tumblr, Slack, Uber, Gitter, Facebook, Spotify, Typetalk, SoundCloud etc
 
 ## Installation
 
@@ -186,6 +186,7 @@ More examples into demo application: [ViewController.swift](/OAuthSwiftDemo/View
 * [Buffer](https://buffer.com/developers/api/oauth)
 * [Goodreads](https://www.goodreads.com/api/documentation#oauth)
 * [Typetalk](http://developer.nulab-inc.com/docs/typetalk/auth)
+* [SoundCloud](https://developers.soundcloud.com/docs/api/guide#authentication)
 
 ## Images
 

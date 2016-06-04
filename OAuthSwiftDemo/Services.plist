@@ -212,5 +212,12 @@
         <key>consumerSecret</key>
         <string></string>
     </dict>
+    <key>SoundCloud</key>
+    <dict>
+        <key>consumerKey</key>
+        <string></string>
+        <key>consumerSecret</key>
+        <string></string>
+    </dict>
 </dict>
 </plist>
