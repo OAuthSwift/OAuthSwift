@@ -43,6 +43,13 @@ public class OAuth2Swift: OAuthSwift {
         self.response_type = responseType
         super.init(consumerKey: consumerKey, consumerSecret: consumerSecret)
         self.client.credential.version = .OAuth2
+        self.client.tokenExpirationHandler = { completion in
+            self.renewAccesstokenWithRefreshToken(self.client.credential.oauth_refresh_token, success: { (credential, response, parameters) in
+                    completion(error: nil)
+                }, failure: { (error) in
+                    completion(error: error)
+                })
+        }
     }
     
     public convenience init?(parameters: [String:String]){
@@ -72,7 +79,9 @@ public class OAuth2Swift: OAuthSwift {
     // MARK: functions
     public func authorizeWithCallbackURL(callbackURL: NSURL, scope: String, state: String, params: [String: String] = [String: String](), success: TokenSuccessHandler, failure: ((error: NSError) -> Void)) {
         
-         self.observeCallback { [unowned self] url in
+        self.observeCallback { [weak self] url in
+            guard let this = self else {return }
+            
             var responseParameters = [String: String]()
             if let query = url.query {
                 responseParameters += query.parametersFromQueryString()
@@ -81,11 +90,11 @@ public class OAuth2Swift: OAuthSwift {
                 responseParameters += fragment.parametersFromQueryString()
             }
             if let accessToken = responseParameters["access_token"] {
-                self.client.credential.oauth_token = accessToken.safeStringByRemovingPercentEncoding
-                success(credential: self.client.credential, response: nil, parameters: responseParameters)
+                this.client.credential.oauth_token = accessToken.safeStringByRemovingPercentEncoding
+                success(credential: this.client.credential, response: nil, parameters: responseParameters)
             }
             else if let code = responseParameters["code"] {
-                if !self.allowMissingStateCheck {
+                if !this.allowMissingStateCheck {
                     guard let responseState = responseParameters["state"] else {
                         let errorInfo = [NSLocalizedDescriptionKey: "Missing state"]
                         failure(error: NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.MissingStateError.rawValue, userInfo: errorInfo))
@@ -97,7 +106,7 @@ public class OAuth2Swift: OAuthSwift {
                         return
                     }
                 }
-                self.postOAuthAccessTokenWithRequestTokenByCode(code.safeStringByRemovingPercentEncoding,
+                this.postOAuthAccessTokenWithRequestTokenByCode(code.safeStringByRemovingPercentEncoding,
                     callbackURL:callbackURL, success: success, failure: failure)
             }
             else if let error = responseParameters["error"], error_description = responseParameters["error_description"] {
@@ -215,6 +224,8 @@ public class OAuth2Swift: OAuthSwift {
     }
 
     /**
+     DEPRECATED: Every request done via an OAuthSwiftClient configured with OAuth2 automatically refreshs the access token if needed.
+
      Convenience method to start a request that must be authorized with the previosuly retrieved access token.
      Since OAuth 2 requires support for the access token refresh mechanism, this method will take care to automatically refresh the token if needed suche that the developer only has to be concerned about the outcome of the request.
      
@@ -226,26 +237,11 @@ public class OAuth2Swift: OAuthSwift {
      - parameter success:        The success block. Takes the successfull response and data as parameter.
      - parameter failure:        The failure block. Takes the error as parameter.
      */
+    @available(*, deprecated=0.6.0, message="Every request done via an OAuthSwiftClient configured with OAuth2 automatically refreshs the access token if needed.")
     public func startAuthorizedRequest(url: String, method: OAuthSwiftHTTPRequest.Method, parameters: Dictionary<String, AnyObject>, headers: [String:String]? = nil, onTokenRenewal: TokenRenewedHandler? = nil, success: OAuthSwiftHTTPRequest.SuccessHandler, failure: OAuthSwiftHTTPRequest.FailureHandler) {
         // build request
-        self.client.request(url, method: method, parameters: parameters, headers: headers, success: success) { (error) in
-            switch error.code {
-            case OAuthSwiftErrorCode.TokenExpiredError.rawValue:
-                self.renewAccesstokenWithRefreshToken(self.client.credential.oauth_refresh_token, success: { (credential, response, parameters) in
-                    // We have successfully renewed the access token.
-                    
-                    // If provided, fire the onRenewal closure
-                    if let renewalCallBack = onTokenRenewal {
-                        renewalCallBack(credential: credential)
-                    }
-                    
-                    // Reauthorize the request again, this time with a brand new access token ready to be used.
-                    self.startAuthorizedRequest(url, method: method, parameters: parameters, headers: headers, onTokenRenewal: onTokenRenewal, success: success, failure: failure)
-                    }, failure: failure)
-            default:
-                failure(error: error)
-            }
-        }
+        self.client.tokenRenewedHandler = onTokenRenewal
+        self.client.request(url, method: method, parameters: parameters, headers: headers, success: success, failure: failure)
     }
     
     @available(*, deprecated=0.5.0, message="Use OAuthSwift.handleOpenURL()")

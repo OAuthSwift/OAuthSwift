@@ -24,6 +24,7 @@ public class OAuthSwift: NSObject {
     public typealias TokenSuccessHandler = (credential: OAuthSwiftCredential, response: NSURLResponse?, parameters: Dictionary<String, String>) -> Void
     public typealias FailureHandler = (error: NSError) -> Void
     public typealias TokenRenewedHandler = (credential: OAuthSwiftCredential) -> Void
+    public typealias TokenExpirationHandler = (completion: (error: NSError?) -> Void) -> Void
     
     // MARK: init
     init(consumerKey: String, consumerSecret: String) {
@@ -50,8 +51,8 @@ public class OAuthSwift: NSObject {
 
     func observeCallback(block: (url: NSURL) -> Void) {
         self.observer = OAuthSwift.notificationCenter.addObserverForName(CallbackNotification.notificationName, object: nil, queue: NSOperationQueue.mainQueue()){
-            notification in
-            self.removeCallbackNotificationObserver()
+            [weak self] notification in
+            self?.removeCallbackNotificationObserver()
 
             let urlFromUserInfo = notification.userInfo![CallbackNotification.optionsURLKey] as! NSURL
             block(url: urlFromUserInfo)
@@ -69,6 +70,9 @@ public class OAuthSwift: NSObject {
 // MARK: OAuthSwift errors
 public let OAuthSwiftErrorDomain = "oauthswift.error"
 
+public let OAuthSwiftErrorResponseDataKey = "oauthswift.error.response.data"
+public let OAuthSwiftErrorResponseKey = "oauthswift.error.response"
+
 public enum OAuthSwiftErrorCode: Int {
     case GeneralError = -1
     case TokenExpiredError = -2
@@ -76,4 +80,5 @@ public enum OAuthSwiftErrorCode: Int {
     case StateNotEqualError = -4
     case ServerError = -5
     case EncodingError = -6
+	case RequestCreationError = -7
 }

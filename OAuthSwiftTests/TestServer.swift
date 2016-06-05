@@ -33,7 +33,7 @@ class TestServer {
     }
     var accessReturnType: AccessReturnType  = .Data
     
-    
+    let expiredAccessToken = "expiredToken"
 
     let oauth_token = "accesskey"
     let oauth_token_secret = "accesssecret"
@@ -93,10 +93,15 @@ class TestServer {
             return .OK(HttpResponseBody.Html("You asked for \(request.path)"))
         }
         server["2/expire"] = { request in
-            return HttpResponse.RAW(401, "Unauthorized",["WWW-Authenticate": "Bearer realm=\"example\",error=\"invalid_token\",error_description=\"The access token expired\""], nil)
+            let authHeader = request.headers["authorization"]!
+            if authHeader.containsString(self.expiredAccessToken) {
+                return HttpResponse.RAW(401, "Unauthorized",["WWW-Authenticate": "Bearer realm=\"example\",error=\"invalid_token\",error_description=\"The access token expired\""], nil)
+            } else {
+                return .OK(.Text("all fine here" as String))
+            }
         }
     }
-    
+
     func start() throws {
         try server.start(self.port)
     }
