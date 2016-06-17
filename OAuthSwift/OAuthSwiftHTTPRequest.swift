@@ -141,7 +141,7 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate {
                     let responseJSON: AnyObject? = try? NSJSONSerialization.JSONObjectWithData(self.responseData, options: NSJSONReadingOptions.MutableContainers)
                     
                     if let responseJSON = responseJSON {
-                        if let code = responseJSON["error_code"] as? String, description = responseJSON["error_description"] as? String {
+                        if let code = responseJSON["error"] as? String, description = responseJSON["error_description"] as? String {
                             localizedDescription = NSLocalizedString("\(code) \(description)", comment: "")
                             
                             if code == "authorization_pending" {
