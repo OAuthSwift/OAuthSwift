@@ -76,4 +76,5 @@ public enum OAuthSwiftErrorCode: Int {
     case StateNotEqualError = -4
     case ServerError = -5
     case EncodingError = -6
+    case AuthorizationPending = -7
 }
