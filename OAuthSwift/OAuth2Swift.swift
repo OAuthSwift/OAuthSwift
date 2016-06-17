@@ -248,6 +248,20 @@ public class OAuth2Swift: OAuthSwift {
         }
     }
     
+    public func authorizeDeviceToken(deviceCode: String, success: TokenRenewedHandler, failure: OAuthSwiftHTTPRequest.FailureHandler) {
+        var parameters = Dictionary<String, AnyObject>()
+        parameters["client_id"] = self.consumer_key
+        parameters["client_secret"] = self.consumer_secret
+        parameters["code"] = deviceCode
+        parameters["grant_type"] = "http://oauth.net/grant_type/device/1.0"
+        
+        requestOAuthAccessTokenWithParameters(parameters, success: { (credential, response, parameters) in
+            success(credential: credential)
+            }) { (error) in
+                failure(error: error)
+        }
+    }
+    
     @available(*, deprecated=0.5.0, message="Use OAuthSwift.handleOpenURL()")
     public override class func handleOpenURL(url: NSURL) {
         super.handleOpenURL(url)
