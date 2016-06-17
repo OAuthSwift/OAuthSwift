@@ -192,7 +192,7 @@ public class OAuth2Swift: OAuthSwift {
 
         if self.content_type == "multipart/form-data" {
             // Request new access token by disabling check on current token expiration. This is safe because the implementation wants the user to retrieve a new token.
-            self.client.postMultiPartRequest(self.access_token_url!, method: .POST, parameters: parameters, checkTokenExpiration: false, success: successHandler, failure: failure)
+            self.client.postMultiPartRequest(self.access_token_url!, method: .POST, parameters: parameters, headers: [:], checkTokenExpiration: false, success: successHandler, failure: failure)
         } else {
             // special headers
             var headers: [String:String]? = nil
