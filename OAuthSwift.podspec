@@ -1,9 +1,9 @@
 Pod::Spec.new do |s|
-  s.name = 'OAuthSwift'
+  s.name = 'SGOAuthSwift'
   s.version = '0.5.2'
   s.license = 'MIT'
   s.summary = 'Swift based OAuth library for iOS and OSX.'
-  s.homepage = 'https://github.com/OAuthSwift/OAuthSwift'
+  s.homepage = 'https://github.com/skedgo/OAuthSwift'
   s.social_media_url = 'http://twitter.com/dongrify'
   s.authors = { 'Dongri Jin' => 'dongrify@gmail.com' }
   s.source = { :git => 'https://github.com/OAuthSwift/OAuthSwift.git', :tag => s.version }
