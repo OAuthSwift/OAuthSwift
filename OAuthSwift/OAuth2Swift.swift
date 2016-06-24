@@ -147,7 +147,7 @@ public class OAuth2Swift: OAuthSwift {
         requestOAuthAccessTokenWithParameters(parameters, success: success, failure: failure)
     }
     
-    func renewAccesstokenWithRefreshToken(refreshToken: String, success: TokenSuccessHandler, failure: FailureHandler?) {
+    public func renewAccessTokenWithRefreshToken(refreshToken: String, success: TokenSuccessHandler, failure: FailureHandler?) {
         var parameters = Dictionary<String, AnyObject>()
         parameters["client_id"] = self.consumer_key
         parameters["client_secret"] = self.consumer_secret
@@ -231,7 +231,7 @@ public class OAuth2Swift: OAuthSwift {
         self.client.request(url, method: method, parameters: parameters, headers: headers, success: success) { (error) in
             switch error.code {
             case OAuthSwiftErrorCode.TokenExpiredError.rawValue:
-                self.renewAccesstokenWithRefreshToken(self.client.credential.oauth_refresh_token, success: { (credential, response, parameters) in
+                self.renewAccessTokenWithRefreshToken(self.client.credential.oauth_refresh_token, success: { (credential, response, parameters) in
                     // We have successfully renewed the access token.
                     
                     // If provided, fire the onRenewal closure
