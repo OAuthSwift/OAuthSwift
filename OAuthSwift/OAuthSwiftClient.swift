@@ -30,6 +30,10 @@ public class OAuthSwiftClient: NSObject {
         self.credential.consumer_key = consumerKey
         self.credential.consumer_secret = consumerSecret
     }
+    
+    public init(credential: OAuthSwiftCredential) {
+        self.credential = credential
+    }
 
     // MARK: client methods
     public func get(urlString: String, parameters: [String: AnyObject] = [:], headers: [String:String]? = nil, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
