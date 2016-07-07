@@ -134,14 +134,33 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate {
                 self.responseData.appendData(data!)
 
                 if (response as? NSHTTPURLResponse)?.statusCode >= 400 {
-                    let responseString = NSString(data: self.responseData, encoding: self.dataEncoding)
-                    let localizedDescription = OAuthSwiftHTTPRequest.descriptionForHTTPStatus(self.response.statusCode, responseString: responseString! as String)
-                    let userInfo : [NSObject : AnyObject] = [
+                    var errorCode =  OAuthSwiftErrorCode.GeneralError.rawValue
+                    var localizedDescription = String()
+                    let responseString: String
+                    
+                    let responseJSON: AnyObject? = try? NSJSONSerialization.JSONObjectWithData(self.responseData, options: NSJSONReadingOptions.MutableContainers)
+                    
+                    if let responseJSON = responseJSON {
+                        if let code = responseJSON["error"] as? String, description = responseJSON["error_description"] as? String {
+                            localizedDescription = NSLocalizedString("\(code) \(description)", comment: "")
+                            
+                            if code == "authorization_pending" {
+                                errorCode = OAuthSwiftErrorCode.AuthorizationPending.rawValue
+                            }
+                        }
+                    } else {
+                        localizedDescription = OAuthSwiftHTTPRequest.descriptionForHTTPStatus(self.response.statusCode, responseString: String(data: self.responseData, encoding: self.dataEncoding)!)
+                    }
+                    
+                    responseString = String(data: self.responseData, encoding: self.dataEncoding)!
+                    
+                    let userInfo = [
                         NSLocalizedDescriptionKey: localizedDescription,
                         "Response-Headers": self.response.allHeaderFields,
                         "Response-Body": responseString ?? NSNull()
                     ]
-                    let error = NSError(domain: NSURLErrorDomain, code: self.response.statusCode, userInfo: userInfo)
+                    
+                    let error = NSError(domain: NSURLErrorDomain, code: errorCode, userInfo: userInfo)
                     self.failureHandler?(error: error)
                     return
                 }
