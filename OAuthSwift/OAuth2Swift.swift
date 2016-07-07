@@ -82,6 +82,9 @@ public class OAuth2Swift: OAuthSwift {
             }
             if let accessToken = responseParameters["access_token"] {
                 self.client.credential.oauth_token = accessToken.safeStringByRemovingPercentEncoding
+                if let expiresIn:String = responseParameters["expires_in"], offset = Double(expiresIn)  {
+                    self.client.credential.oauth_token_expires_at = NSDate(timeInterval: offset, sinceDate: NSDate())
+                }
                 success(credential: self.client.credential, response: nil, parameters: responseParameters)
             }
             else if let code = responseParameters["code"] {
