@@ -44,8 +44,8 @@ public class OAuthSwiftClient: NSObject {
         self.request(urlString, method: .POST, parameters: parameters, headers: headers, success: success, failure: failure)
     }
 
-    public func put(urlString: String, parameters: [String: AnyObject] = [:], headers: [String:String]? = nil, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
-        self.request(urlString, method: .PUT, parameters: parameters, headers: headers,success: success, failure: failure)
+    public func put(urlString: String, parameters: [String: AnyObject] = [:], headers: [String:String]? = nil, body: NSData? = nil, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
+        self.request(urlString, method: .PUT, parameters: parameters, headers: headers, body: body, success: success, failure: failure)
     }
 
     public func delete(urlString: String, parameters: [String: AnyObject] = [:], headers: [String:String]? = nil, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
@@ -56,7 +56,7 @@ public class OAuthSwiftClient: NSObject {
         self.request(urlString, method: .PATCH, parameters: parameters, headers: headers,success: success, failure: failure)
     }
     
-    public func request(url: String, method: OAuthSwiftHTTPRequest.Method, parameters: [String: AnyObject] = [:], headers: [String:String]? = nil, checkTokenExpiration: Bool = true, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
+    public func request(url: String, method: OAuthSwiftHTTPRequest.Method, parameters: [String: AnyObject] = [:], headers: [String:String]? = nil, body: NSData? = nil, checkTokenExpiration: Bool = true, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
         
         if checkTokenExpiration && self.credential.isTokenExpired()  {
             let errorInfo = [NSLocalizedDescriptionKey: NSLocalizedString("The provided token is expired.", comment:"Token expired, retrieve new token by using the refresh token")]
@@ -68,8 +68,7 @@ public class OAuthSwiftClient: NSObject {
             return
         }
         
-        if let request = makeRequest(url, method: method, parameters: parameters, headers: headers) {
-            
+        if let request = makeRequest(url, method: method, parameters: parameters, headers: headers, body: body) {
             request.successHandler = success
             request.failureHandler = failure
             request.start()
@@ -81,7 +80,7 @@ public class OAuthSwiftClient: NSObject {
         return makeOAuthSwiftHTTPRequest(request)
     }
 
-    public func makeRequest(urlString: String, method: OAuthSwiftHTTPRequest.Method, parameters: [String: AnyObject] = [:], headers: [String:String]? = nil) -> OAuthSwiftHTTPRequest? {
+    public func makeRequest(urlString: String, method: OAuthSwiftHTTPRequest.Method, parameters: [String: AnyObject] = [:], headers: [String:String]? = nil, body: NSData? = nil) -> OAuthSwiftHTTPRequest? {
         guard let url = NSURL(string: urlString) else {
             return nil
         }
@@ -89,6 +88,9 @@ public class OAuthSwiftClient: NSObject {
         let request = OAuthSwiftHTTPRequest(URL: url, method: method, parameters: parameters, paramsLocation: self.paramsLocation)
         if let addHeaders = headers {
             request.headers = addHeaders
+        }
+        if let addBody = body {
+            request.HTTPBody = addBody
         }
         return makeOAuthSwiftHTTPRequest(request)
     }
