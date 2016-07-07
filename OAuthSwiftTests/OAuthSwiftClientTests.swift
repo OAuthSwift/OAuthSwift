@@ -53,7 +53,10 @@ class OAuthSwiftClientTests: XCTestCase {
         testMakeRequest(.GET, url:"\(url)?a=a&b=b", ["c":"c"], "\(url)?a=a&b=b&c=c")
     }
     
-    
+    func testMakePUTRequestWithBody() {
+        testMakeRequestWithBody(.PUT, url:url, emptyParameters, url, "BodyContent".dataUsingEncoding(NSUTF8StringEncoding)!)
+    }
+
     func testMakeRequest(method: OAuthSwiftHTTPRequest.Method, url: String,_ parameters: [String:String],_ expectedURL: String, _ expectedBodyJSONDictionary: [String:String]? = nil) {
 
         let request = client.makeRequest(url, method: method, parameters: parameters, headers: ["Content-Type": "application/json"])!
@@ -73,6 +76,15 @@ class OAuthSwiftClientTests: XCTestCase {
         } catch let e {
             XCTFail("\(e)")
         }
+    }
+
+    func testMakeRequestWithBody(method: OAuthSwiftHTTPRequest.Method, url: String, _ parameters: [String:String], _ expectedURL: String, _ expectedBody: NSData) {
+        let request = client.makeRequest(url, method: method, parameters: parameters, headers: ["Content-Type": "foobar"], body: expectedBody)!
+
+        XCTAssertEqual(request.URL, NSURL(string: url)!)
+        XCTAssertEqual(request.HTTPMethod, method)
+        XCTAssertEqualDictionaries(request.parameters as! [String:String], parameters)
+        XCTAssertEqual(request.HTTPBody, expectedBody)
     }
 
     func testMakeNSURLRequest(method: OAuthSwiftHTTPRequest.Method,_ urlString: String) {

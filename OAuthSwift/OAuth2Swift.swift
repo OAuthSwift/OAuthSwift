@@ -82,6 +82,9 @@ public class OAuth2Swift: OAuthSwift {
             }
             if let accessToken = responseParameters["access_token"] {
                 self.client.credential.oauth_token = accessToken.safeStringByRemovingPercentEncoding
+                if let expiresIn:String = responseParameters["expires_in"], offset = Double(expiresIn)  {
+                    self.client.credential.oauth_token_expires_at = NSDate(timeInterval: offset, sinceDate: NSDate())
+                }
                 success(credential: self.client.credential, response: nil, parameters: responseParameters)
             }
             else if let code = responseParameters["code"] {
@@ -147,7 +150,7 @@ public class OAuth2Swift: OAuthSwift {
         requestOAuthAccessTokenWithParameters(parameters, headers: headers, success: success, failure: failure)
     }
     
-    func renewAccesstokenWithRefreshToken(refreshToken: String, headers: [String:String]? = nil, success: TokenSuccessHandler, failure: FailureHandler?) {
+    public func renewAccessTokenWithRefreshToken(refreshToken: String, headers: [String:String]? = nil, success: TokenSuccessHandler, failure: FailureHandler?) {
         var parameters = Dictionary<String, AnyObject>()
         parameters["client_id"] = self.consumer_key
         parameters["client_secret"] = self.consumer_secret
@@ -162,28 +165,30 @@ public class OAuth2Swift: OAuthSwift {
             data, response in
             let responseJSON: AnyObject? = try? NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers)
             
-            let responseParameters: [String:String]
+            let responseParameters: [String: AnyObject]
             
             if let jsonDico = responseJSON as? [String:AnyObject] {
-                responseParameters = jsonDico.map { (key, value) in (key, String(value)) }
+                responseParameters = jsonDico
             } else {
                 let responseString = NSString(data: data, encoding: NSUTF8StringEncoding) as String!
                 responseParameters = responseString.parametersFromQueryString()
             }
             
-            guard let accessToken = responseParameters["access_token"] else {
+            guard let accessToken = responseParameters["access_token"] as? String else {
                 if let failure = failure {
                     let errorInfo = [NSLocalizedFailureReasonErrorKey: NSLocalizedString("Could not get Access Token", comment: "Due to an error in the OAuth2 process, we couldn't get a valid token.")]
                     failure(error: NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.ServerError.rawValue, userInfo: errorInfo))
                 }
                 return
             }
-            if let refreshToken:String = responseParameters["refresh_token"] {
+            if let refreshToken = responseParameters["refresh_token"] as? String {
                 self.client.credential.oauth_refresh_token = refreshToken.safeStringByRemovingPercentEncoding
             }
-            
-            if let expiresIn:String = responseParameters["expires_in"], offset = Double(expiresIn)  {
+
+            if let expiresIn = responseParameters["expires_in"] as? String, offset = Double(expiresIn)  {
                 self.client.credential.oauth_token_expires_at = NSDate(timeInterval: offset, sinceDate: NSDate())
+            } else if let expiresIn = responseParameters["expires_in"] as? Double {
+                self.client.credential.oauth_token_expires_at = NSDate(timeInterval: expiresIn, sinceDate: NSDate())
             }
             
             self.client.credential.oauth_token = accessToken.safeStringByRemovingPercentEncoding
@@ -231,7 +236,7 @@ public class OAuth2Swift: OAuthSwift {
         self.client.request(url, method: method, parameters: parameters, headers: headers, success: success) { (error) in
             switch error.code {
             case OAuthSwiftErrorCode.TokenExpiredError.rawValue:
-                self.renewAccesstokenWithRefreshToken(self.client.credential.oauth_refresh_token, headers: headers, success: { (credential, response, parameters) in
+                self.renewAccessTokenWithRefreshToken(self.client.credential.oauth_refresh_token, headers: headers, success: { (credential, response, parameters) in
                     // We have successfully renewed the access token.
                     
                     // If provided, fire the onRenewal closure
@@ -245,6 +250,20 @@ public class OAuth2Swift: OAuthSwift {
             default:
                 failure(error: error)
             }
+        }
+    }
+    
+    public func authorizeDeviceToken(deviceCode: String, success: TokenRenewedHandler, failure: OAuthSwiftHTTPRequest.FailureHandler) {
+        var parameters = Dictionary<String, AnyObject>()
+        parameters["client_id"] = self.consumer_key
+        parameters["client_secret"] = self.consumer_secret
+        parameters["code"] = deviceCode
+        parameters["grant_type"] = "http://oauth.net/grant_type/device/1.0"
+        
+        requestOAuthAccessTokenWithParameters(parameters, success: { (credential, response, parameters) in
+            success(credential: credential)
+            }) { (error) in
+                failure(error: error)
         }
     }
     

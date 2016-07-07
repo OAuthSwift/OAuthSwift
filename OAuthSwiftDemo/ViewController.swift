@@ -362,7 +362,7 @@ extension ViewController {
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/withings")!, success: {
             credential, response, parameters in
             self.showTokenAlert(serviceParameters["name"], credential: credential)
-            self.testWithings(oauthswift, userId: parameters["userid"]!)
+            self.testWithings(oauthswift, userId: parameters["userid"] as! String)
             }, failure: { error in
                 print(error.localizedDescription)
         })

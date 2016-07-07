@@ -7,6 +7,10 @@
 //
 import Foundation
 
+public protocol OAuthSwiftCredentialHeadersFactory {
+    func make(url:NSURL, method: OAuthSwiftHTTPRequest.Method, parameters: Dictionary<String, AnyObject>, body: NSData?) -> Dictionary<String, String>
+}
+
 public class OAuthSwiftCredential: NSObject, NSCoding {
 
     public enum Version {
@@ -45,6 +49,7 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
         }
     }
     
+    // MARK: attributes
     var consumer_key: String = String()
     var consumer_secret: String = String()
     public var oauth_token: String = String()
@@ -54,6 +59,10 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
     public internal(set) var oauth_verifier: String = String()
     public var version: Version = .OAuth1
     
+    // hook to replace headers creation
+    public var headersFactory: OAuthSwiftCredentialHeadersFactory? = nil
+
+    // MARK: init
     override init(){
         
     }
@@ -66,6 +75,8 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
         self.oauth_token_secret = oauth_token_secret
     }
     
+    
+    // MARK: NSCoding protocol
     private struct CodingKeys {
         static let base = NSBundle.mainBundle().bundleIdentifier! + "."
         static let consumerKey = base + "comsumer_key"
@@ -101,7 +112,12 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
     }
     // } // End NSCoding extension
 
+    
+    // MARK: functions
     public func makeHeaders(url:NSURL, method: OAuthSwiftHTTPRequest.Method, parameters: Dictionary<String, AnyObject>, body: NSData? = nil) -> Dictionary<String, String> {
+        if let factory = headersFactory {
+            return factory.make(url, method: method, parameters: parameters, body: body)
+        }
         switch self.version {
         case .OAuth1:
             return ["Authorization": self.authorizationHeaderForMethod(method, url: url, parameters: parameters, body: body)]
