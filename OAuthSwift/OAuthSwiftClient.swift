@@ -221,9 +221,9 @@ public class OAuthSwiftClient: NSObject {
         return data
     }
     
-    public func postMultiPartRequest(url: String, method: OAuthSwiftHTTPRequest.Method, parameters: Dictionary<String, AnyObject>, multiparts: Array<OAuthSwiftMultipartData> = [], checkTokenExpiration: Bool = true, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
+    public func postMultiPartRequest(url: String, method: OAuthSwiftHTTPRequest.Method, parameters: Dictionary<String, AnyObject>, headers: Dictionary<String, String>? = nil, multiparts: Array<OAuthSwiftMultipartData> = [], checkTokenExpiration: Bool = true, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) {
         
-        if let request = makeRequest(url, method: method, parameters: parameters) {
+        if let request = makeRequest(url, method: method, parameters: parameters, headers: headers) {
 
             let boundary = "POST-boundary-\(arc4random())-\(arc4random())"
             let type = "multipart/form-data; boundary=\(boundary)"
