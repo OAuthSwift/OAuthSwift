@@ -21,7 +21,7 @@ public class OAuthSwift: NSObject {
     public var authorize_url_handler: OAuthSwiftURLHandlerType = OAuthSwiftOpenURLExternally.sharedInstance
 
     // MARK: callback alias
-    public typealias TokenSuccessHandler = (credential: OAuthSwiftCredential, response: NSURLResponse?, parameters: Dictionary<String, String>) -> Void
+    public typealias TokenSuccessHandler = (credential: OAuthSwiftCredential, response: NSURLResponse?, parameters: Dictionary<String, AnyObject>) -> Void
     public typealias FailureHandler = (error: NSError) -> Void
     public typealias TokenRenewedHandler = (credential: OAuthSwiftCredential) -> Void
     

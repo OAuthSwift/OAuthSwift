@@ -165,28 +165,30 @@ public class OAuth2Swift: OAuthSwift {
             data, response in
             let responseJSON: AnyObject? = try? NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers)
             
-            let responseParameters: [String:String]
+            let responseParameters: [String: AnyObject]
             
             if let jsonDico = responseJSON as? [String:AnyObject] {
-                responseParameters = jsonDico.map { (key, value) in (key, String(value)) }
+                responseParameters = jsonDico
             } else {
                 let responseString = NSString(data: data, encoding: NSUTF8StringEncoding) as String!
                 responseParameters = responseString.parametersFromQueryString()
             }
             
-            guard let accessToken = responseParameters["access_token"] else {
+            guard let accessToken = responseParameters["access_token"] as? String else {
                 if let failure = failure {
                     let errorInfo = [NSLocalizedFailureReasonErrorKey: NSLocalizedString("Could not get Access Token", comment: "Due to an error in the OAuth2 process, we couldn't get a valid token.")]
                     failure(error: NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.ServerError.rawValue, userInfo: errorInfo))
                 }
                 return
             }
-            if let refreshToken:String = responseParameters["refresh_token"] {
+            if let refreshToken = responseParameters["refresh_token"] as? String {
                 self.client.credential.oauth_refresh_token = refreshToken.safeStringByRemovingPercentEncoding
             }
-            
-            if let expiresIn:String = responseParameters["expires_in"], offset = Double(expiresIn)  {
+
+            if let expiresIn = responseParameters["expires_in"] as? String, offset = Double(expiresIn)  {
                 self.client.credential.oauth_token_expires_at = NSDate(timeInterval: offset, sinceDate: NSDate())
+            } else if let expiresIn = responseParameters["expires_in"] as? Double {
+                self.client.credential.oauth_token_expires_at = NSDate(timeInterval: expiresIn, sinceDate: NSDate())
             }
             
             self.client.credential.oauth_token = accessToken.safeStringByRemovingPercentEncoding
