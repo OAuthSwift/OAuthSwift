@@ -166,7 +166,9 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate {
                     let userInfo = [
                         NSLocalizedDescriptionKey: localizedDescription,
                         "Response-Headers": self.response.allHeaderFields,
-                        "Response-Body": responseString ?? NSNull()
+                        "Response-Body": responseString ?? NSNull(),
+                        OAuthSwiftErrorResponseKey: response ?? NSNull(),
+                        OAuthSwiftErrorResponseDataKey: self.responseData
                     ]
                     
                     let error = NSError(domain: NSURLErrorDomain, code: errorCode, userInfo: userInfo)

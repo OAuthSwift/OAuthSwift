@@ -66,8 +66,12 @@ public class OAuthSwift: NSObject {
 
 }
 
+
 // MARK: OAuthSwift errors
 public let OAuthSwiftErrorDomain = "oauthswift.error"
+
+public let OAuthSwiftErrorResponseDataKey = "oauthswift.error.response.data"
+public let OAuthSwiftErrorResponseKey = "oauthswift.error.response"
 
 public enum OAuthSwiftErrorCode: Int {
     case GeneralError = -1
