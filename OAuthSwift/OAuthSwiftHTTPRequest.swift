@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate {
+public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate, OAuthSwiftRequestHandle {
 
     public typealias SuccessHandler = (data: NSData, response: NSHTTPURLResponse) -> Void
     public typealias FailureHandler = (error: NSError) -> Void
@@ -29,8 +29,11 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate {
     var HTTPMethod: Method
     var HTTPBody: NSData?
 
-    var request: NSMutableURLRequest?
-    var session: NSURLSession!
+    private var request: NSMutableURLRequest?
+    private var task: NSURLSessionTask?
+    private var session: NSURLSession!
+    
+    private var cancelRequested = false
 
     var headers: Dictionary<String, String>
     var parameters: Dictionary<String, AnyObject>
@@ -73,14 +76,16 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate {
     }
 
     init(request: NSURLRequest, paramsLocation : ParamsLocation = .AuthorizationHeader) {
-        self.request = request as? NSMutableURLRequest
+        self.request = request.mutableCopy() as? NSMutableURLRequest
+
         self.URL = request.URL!
         self.HTTPMethod = Method(rawValue: request.HTTPMethod ?? "") ?? .GET
-        self.headers = [:]
+        self.headers = request.allHTTPHeaderFields ?? [:]
         self.parameters = [:]
+        self.HTTPBody = request.HTTPBody
         self.dataEncoding = NSUTF8StringEncoding
-        self.timeoutInterval = 60
-        self.HTTPShouldHandleCookies = false
+        self.timeoutInterval = request.timeoutInterval
+        self.HTTPShouldHandleCookies = request.HTTPShouldHandleCookies
         self.responseData = NSMutableData()
         self.paramsLocation = paramsLocation
     }
@@ -102,10 +107,17 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate {
         }
 
         OAuthSwiftHTTPRequest.executionContext {
+            // perform lock here to prevent cancel calls on another thread while creating the request
+            objc_sync_enter(self)
+            defer { objc_sync_exit(self) }
+            
+            if self.cancelRequested {
+                return
+            }
             self.session = NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration(),
                 delegate: self,
                 delegateQueue: NSOperationQueue.mainQueue())
-            let task: NSURLSessionDataTask = self.session.dataTaskWithRequest(self.request!) { [unowned self] data, response, error -> Void in
+            self.task = self.session.dataTaskWithRequest(self.request!) { [unowned self] data, response, error -> Void in
                 #if os(iOS)
                     #if !OAUTH_APP_EXTENSIONS
                         UIApplication.sharedApplication().networkActivityIndicatorVisible = false
@@ -131,27 +143,60 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate {
                 self.responseData.appendData(data!)
 
                 if (response as? NSHTTPURLResponse)?.statusCode >= 400 {
-                    let responseString = NSString(data: self.responseData, encoding: self.dataEncoding)
-                    let localizedDescription = OAuthSwiftHTTPRequest.descriptionForHTTPStatus(self.response.statusCode, responseString: responseString! as String)
-                    let userInfo : [NSObject : AnyObject] = [
+                    var errorCode =  OAuthSwiftErrorCode.GeneralError.rawValue
+                    var localizedDescription = String()
+                    let responseString: String
+                    
+                    let responseJSON: AnyObject? = try? NSJSONSerialization.JSONObjectWithData(self.responseData, options: NSJSONReadingOptions.MutableContainers)
+                    
+                    if let responseJSON = responseJSON {
+                        if let code = responseJSON["error"] as? String, description = responseJSON["error_description"] as? String {
+                            localizedDescription = NSLocalizedString("\(code) \(description)", comment: "")
+                            
+                            if code == "authorization_pending" {
+                                errorCode = OAuthSwiftErrorCode.AuthorizationPending.rawValue
+                            }
+                        }
+                    } else {
+                        localizedDescription = OAuthSwiftHTTPRequest.descriptionForHTTPStatus(self.response.statusCode, responseString: String(data: self.responseData, encoding: self.dataEncoding)!)
+                    }
+                    
+                    responseString = String(data: self.responseData, encoding: self.dataEncoding)!
+                    
+                    let userInfo = [
                         NSLocalizedDescriptionKey: localizedDescription,
                         "Response-Headers": self.response.allHeaderFields,
-                        "Response-Body": responseString ?? NSNull()
+                        "Response-Body": responseString ?? NSNull(),
+                        OAuthSwiftErrorResponseKey: response ?? NSNull(),
+                        OAuthSwiftErrorResponseDataKey: self.responseData
                     ]
-                    let error = NSError(domain: NSURLErrorDomain, code: self.response.statusCode, userInfo: userInfo)
+                    
+                    let error = NSError(domain: NSURLErrorDomain, code: errorCode, userInfo: userInfo)
                     self.failureHandler?(error: error)
                     return
                 }
                 
                 self.successHandler?(data: self.responseData, response: self.response)
             }
-            task.resume()
+            self.task?.resume()
 
             #if os(iOS)
                 #if !OAUTH_APP_EXTENSIONS
                     UIApplication.sharedApplication().networkActivityIndicatorVisible = true
                 #endif
             #endif
+        }
+    }
+
+    public func cancel() {
+        // perform lock here to prevent cancel calls on another thread while creating the request
+        objc_sync_enter(self)
+        defer { objc_sync_exit(self) }
+        // either cancel the request if it's already running or set the flag to prohibit creation of the request
+        if let task = task {
+            task.cancel()
+        } else {
+            cancelRequested = true
         }
     }
 

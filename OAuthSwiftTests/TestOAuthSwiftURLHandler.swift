@@ -10,7 +10,7 @@ import Foundation
 import OAuthSwift
 
 enum AccessTokenResponse {
-    case AccessToken(String), Code(String), Error(String,String), None
+    case AccessToken(String), Code(String, state:String?), Error(String,String), None
 
     var responseType: String {
         switch self {
@@ -81,8 +81,11 @@ class TestOAuthSwiftURLHandler: NSObject, OAuthSwiftURLHandlerType {
             switch response {
             case .AccessToken(let token):
                 url += "?access_token=\(token)"
-            case .Code(let code):
+            case .Code(let code, let state):
                 url += "?code='\(code)'"
+                if let state = state {
+                    url += "&state=\(state)"
+                }
             case .Error(let error,let errorDescription):
                 let e = error.stringByAddingPercentEncodingWithAllowedCharacters(.URLHostAllowedCharacterSet())!
                 let ed = errorDescription.stringByAddingPercentEncodingWithAllowedCharacters(.URLHostAllowedCharacterSet())!

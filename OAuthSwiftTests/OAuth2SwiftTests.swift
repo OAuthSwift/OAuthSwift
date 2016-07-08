@@ -9,34 +9,20 @@
 import XCTest
 @testable import OAuthSwift
 
-class OAuth2SwiftTests: XCTestCase {
+class OAuth2SwiftTests: OAuthSwiftServerBaseTest {
 
-    let server = TestServer()
     let callbackURL = "test://callback"
-    
-    override func setUp() {
-        super.setUp()
-        do {
-            try server.start()
-        }catch {
-            XCTFail("Failed to start server")
-        }
-    }
-
-    override func tearDown() {
-        server.stop()
-        super.tearDown()
-    }
-    
 
     func testDataSuccess() {
         objc_sync_enter(server)
-        testSuccess(.Data, response: .Code("code"))
+        let state: String = generateStateWithLength(20) as String
+        testSuccess(.Data, response: .Code("code", state:state))
         objc_sync_exit(server)
     }
     func testJSON_Code_Success() {
         objc_sync_enter(server)
-        testSuccess(.JSON, response: .Code("code"))
+        let state: String = generateStateWithLength(20) as String
+        testSuccess(.JSON, response: .Code("code", state:state))
         objc_sync_exit(server)
     }
     func testJSON_AccessToken_Success() {
@@ -64,8 +50,11 @@ class OAuth2SwiftTests: XCTestCase {
         oauth.authorize_url_handler = handler
         
         let expectation = expectationWithDescription("request should succeed")
-        
-        let state: String = generateStateWithLength(20) as String
+
+		var state = ""
+		if case .Code(_, let extractedState) = response {
+			state = extractedState ?? ""
+		}
         oauth.authorizeWithCallbackURL(NSURL(string:callbackURL)!, scope: "all", state: state, params: [:],
             success: { (credential, response, parameters) -> Void in
                 expectation.fulfill()

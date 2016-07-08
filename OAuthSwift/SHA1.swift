@@ -56,7 +56,8 @@ class SHA1 {
         // Process the message in successive 512-bit chunks:
         let chunkSizeBytes = 512 / 8 // 64
         var leftMessageBytes = tmpMessage.length
-        for var i = 0; i < tmpMessage.length; i = i + chunkSizeBytes, leftMessageBytes -= chunkSizeBytes {
+        var i = 0;
+        while i < tmpMessage.length {
             let chunk = tmpMessage.subdataWithRange(NSRange(location: i, length: min(chunkSizeBytes,leftMessageBytes)))
             // break chunk into sixteen 32-bit words M[j], 0 ≤ j ≤ 15, big-endian
             // Extend the sixteen 32-bit words into eighty 32-bit words:
@@ -120,6 +121,9 @@ class SHA1 {
             hh[2] = (hh[2] &+ C) & 0xffffffff
             hh[3] = (hh[3] &+ D) & 0xffffffff
             hh[4] = (hh[4] &+ E) & 0xffffffff
+			
+            i = i + chunkSizeBytes
+            leftMessageBytes -= chunkSizeBytes
         }
         
         // Produce the final hash value (big-endian) as a 160 bit number:

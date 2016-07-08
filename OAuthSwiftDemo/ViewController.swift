@@ -111,6 +111,10 @@ extension ViewController {
             doOAuthBuffer(parameters)
         case "Goodreads":
             doOAuthGoodreads(parameters)
+        case "Typetalk":
+            doOAuthTypetalk(parameters)
+        case "SoundCloud":
+            doOAuthSoundCloud(parameters)
         default:
             print("\(service) not implemented")
         }
@@ -358,7 +362,7 @@ extension ViewController {
         oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/withings")!, success: {
             credential, response, parameters in
             self.showTokenAlert(serviceParameters["name"], credential: credential)
-            self.testWithings(oauthswift, userId: parameters["userid"]!)
+            self.testWithings(oauthswift, userId: parameters["userid"] as! String)
             }, failure: { error in
                 print(error.localizedDescription)
         })
@@ -846,7 +850,64 @@ extension ViewController {
                 print(error)
         })
     }
+
+    func doOAuthTypetalk(serviceParameters: [String:String]) {
+        let oauthswift = OAuth2Swift(
+            consumerKey:    serviceParameters["consumerKey"]!,
+            consumerSecret: serviceParameters["consumerSecret"]!,
+            authorizeUrl:   "https://typetalk.in/oauth2/authorize",
+            accessTokenUrl: "https://typetalk.in/oauth2/access_token",
+            responseType:   "code"
+        )
+        let state: String = generateStateWithLength(20) as String
+        oauthswift.authorizeWithCallbackURL( NSURL(string: "https://oauthswift.herokuapp.com/callback/typetalk")!, scope: "", state: state, success: {
+            credential, response, parameters in
+            self.showTokenAlert(serviceParameters["name"], credential: credential)
+            self.testTypetalk(oauthswift)
+            }, failure: { error in
+                print(error.localizedDescription, terminator: "")
+        })
+    }
+
+    func testTypetalk(oauthswift: OAuth2Swift) {
+        oauthswift.client.get("https://typetalk.in/api/v1/profile",
+            success: {
+                data, response in
+                let dataString = NSString(data: data, encoding: NSUTF8StringEncoding)
+                print(dataString)
+            }, failure: { error in
+                print(error)
+        })
+    }
     
+    func doOAuthSoundCloud(serviceParameters: [String:String]) {
+        let oauthswift = OAuth2Swift(
+            consumerKey:    serviceParameters["consumerKey"]!,
+            consumerSecret: serviceParameters["consumerSecret"]!,
+            authorizeUrl:   "https://soundcloud.com/connect",
+            accessTokenUrl: "https://api.soundcloud.com/oauth2/token",
+            responseType:   "code"
+        )
+        let state: String = generateStateWithLength(20) as String
+        oauthswift.authorizeWithCallbackURL( NSURL(string: "https://oauthswift.herokuapp.com/callback/soundcloud")!, scope: "", state: state, success: {
+            credential, response, parameters in
+            self.showTokenAlert(serviceParameters["name"], credential: credential)
+            self.testSoundCloud(oauthswift,credential.oauth_token)
+            }, failure: { error in
+                print(error.localizedDescription)
+        })
+    }
+    
+    func testSoundCloud(oauthswift: OAuth2Swift, _ oauthToken: String) {
+        oauthswift.client.get("https://api.soundcloud.com/me?oauth_token=\(oauthToken)",
+                              success: {
+                                data, response in
+                                let dataString = NSString(data: data, encoding: NSUTF8StringEncoding)
+                                print(dataString)
+            }, failure: { error in
+                print(error)
+        })
+    }
 }
 
 let services = Services()
