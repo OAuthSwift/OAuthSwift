@@ -9,22 +9,22 @@
 import Foundation
 
 extension NSMutableData {
-    internal func appendBytes(arrayOfBytes: [UInt8]) {
-        self.appendBytes(arrayOfBytes, length: arrayOfBytes.count)
+    internal func appendBytes(_ arrayOfBytes: [UInt8]) {
+        self.append(arrayOfBytes, length: arrayOfBytes.count)
     }
     
 }
 
-extension NSData {
+extension Data {
     func bytes() -> [UInt8] {
-        let count = self.length / sizeof(UInt8)
-        var bytesArray = [UInt8](count: count, repeatedValue: 0)
-        self.getBytes(&bytesArray, length:count * sizeof(UInt8))
+        let count = self.count / sizeof(UInt8)
+        var bytesArray = [UInt8](repeating: 0, count: count)
+        (self as NSData).getBytes(&bytesArray, length:count * sizeof(UInt8))
         return bytesArray
     }
     
-    class public func withBytes(bytes: [UInt8]) -> NSData {
-        return NSData(bytes: bytes, length: bytes.count)
+    static public func withBytes(_ bytes: [UInt8]) -> Data {
+        return Data(bytes: UnsafePointer<UInt8>(bytes), count: bytes.count)
     }
 }
 

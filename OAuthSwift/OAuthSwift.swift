@@ -21,7 +21,7 @@ public class OAuthSwift: NSObject {
     public var authorize_url_handler: OAuthSwiftURLHandlerType = OAuthSwiftOpenURLExternally.sharedInstance
 
     // MARK: callback alias
-    public typealias TokenSuccessHandler = (credential: OAuthSwiftCredential, response: NSURLResponse?, parameters: Dictionary<String, AnyObject>) -> Void
+    public typealias TokenSuccessHandler = (credential: OAuthSwiftCredential, response: URLResponse?, parameters: Dictionary<String, AnyObject>) -> Void
     public typealias FailureHandler = (error: NSError) -> Void
     public typealias TokenRenewedHandler = (credential: OAuthSwiftCredential) -> Void
     
@@ -37,23 +37,23 @@ public class OAuthSwift: NSObject {
     }
 
     // Handle callback url which contains now token information
-    public class func handleOpenURL(url: NSURL) {
-        let notification = NSNotification(name: CallbackNotification.notificationName, object: nil,
+    public class func handleOpenURL(_ url: URL) {
+        let notification = Notification(name: NSNotification.Name(rawValue: CallbackNotification.notificationName), object: nil,
             userInfo: [CallbackNotification.optionsURLKey: url])
-        notificationCenter.postNotification(notification)
+        notificationCenter.post(notification)
     }
 
     var observer: AnyObject?
-    class var notificationCenter: NSNotificationCenter {
-        return NSNotificationCenter.defaultCenter()
+    class var notificationCenter: NotificationCenter {
+        return NotificationCenter.default()
     }
 
-    func observeCallback(block: (url: NSURL) -> Void) {
-        self.observer = OAuthSwift.notificationCenter.addObserverForName(CallbackNotification.notificationName, object: nil, queue: NSOperationQueue.mainQueue()){
+    func observeCallback(_ block: (url: URL) -> Void) {
+        self.observer = OAuthSwift.notificationCenter.addObserver(forName: NSNotification.Name(rawValue: CallbackNotification.notificationName), object: nil, queue: OperationQueue.main()){
             notification in
             self.removeCallbackNotificationObserver()
 
-            let urlFromUserInfo = notification.userInfo![CallbackNotification.optionsURLKey] as! NSURL
+            let urlFromUserInfo = (notification as NSNotification).userInfo![CallbackNotification.optionsURLKey] as! URL
             block(url: urlFromUserInfo)
         }
     }
@@ -74,11 +74,11 @@ public let OAuthSwiftErrorResponseDataKey = "oauthswift.error.response.data"
 public let OAuthSwiftErrorResponseKey = "oauthswift.error.response"
 
 public enum OAuthSwiftErrorCode: Int {
-    case GeneralError = -1
-    case TokenExpiredError = -2
-    case MissingStateError = -3
-    case StateNotEqualError = -4
-    case ServerError = -5
-    case EncodingError = -6
-    case AuthorizationPending = -7
+    case generalError = -1
+    case tokenExpiredError = -2
+    case missingStateError = -3
+    case stateNotEqualError = -4
+    case serverError = -5
+    case encodingError = -6
+    case authorizationPending = -7
 }

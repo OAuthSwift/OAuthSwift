@@ -11,11 +11,11 @@ import Foundation
 public struct OAuthSwiftMultipartData {
 
     public var name: String
-    public var data: NSData
+    public var data: Data
     public var fileName: String?
     public var mimeType: String?
 
-    public init(name: String, data: NSData, fileName: String?, mimeType: String?) {
+    public init(name: String, data: Data, fileName: String?, mimeType: String?) {
         self.name = name
         self.data = data
         self.fileName = fileName
@@ -26,23 +26,23 @@ public struct OAuthSwiftMultipartData {
 
 extension NSMutableData {
 
-    public func appendMultipartData(multipartData: OAuthSwiftMultipartData, encoding: NSStringEncoding, separatorData: NSData) {
+    public func appendMultipartData(_ multipartData: OAuthSwiftMultipartData, encoding: String.Encoding, separatorData: Data) {
         var filenameClause = ""
         if let filename = multipartData.fileName {
             filenameClause = " filename=\"\(filename)\""
         }
         let contentDispositionString = "Content-Disposition: form-data; name=\"\(multipartData.name)\";\(filenameClause)\r\n"
-        let contentDispositionData = contentDispositionString.dataUsingEncoding(encoding)!
-        self.appendData(contentDispositionData)
+        let contentDispositionData = contentDispositionString.data(using: encoding)!
+        self.append(contentDispositionData)
 
         if let mimeType = multipartData.mimeType {
             let contentTypeString = "Content-Type: \(mimeType)\r\n"
-            let contentTypeData = contentTypeString.dataUsingEncoding(encoding)!
-            self.appendData(contentTypeData)
+            let contentTypeData = contentTypeString.data(using: encoding)!
+            self.append(contentTypeData)
         }
 
-        self.appendData(separatorData)
-        self.appendData(multipartData.data)
-        self.appendData(separatorData)
+        self.append(separatorData)
+        self.append(multipartData.data)
+        self.append(separatorData)
     }
 }
