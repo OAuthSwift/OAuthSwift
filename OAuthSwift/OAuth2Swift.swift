@@ -115,7 +115,7 @@ public class OAuth2Swift: OAuthSwift {
 
         
         var queryString = "client_id=\(self.consumer_key)"
-        queryString += "&redirect_uri=\(callbackURL.absoluteString)"
+        queryString += "&redirect_uri=\(callbackURL.unsafeAbsoluteString)"
         queryString += "&response_type=\(self.response_type)"
         if !scope.isEmpty {
             queryString += "&scope=\(scope)"
@@ -145,7 +145,7 @@ public class OAuth2Swift: OAuthSwift {
         parameters["client_secret"] = self.consumer_secret
         parameters["code"] = code
         parameters["grant_type"] = "authorization_code"
-        parameters["redirect_uri"] = callbackURL.absoluteString.safeStringByRemovingPercentEncoding
+        parameters["redirect_uri"] = callbackURL.unsafeAbsoluteString.safeStringByRemovingPercentEncoding
 
         requestOAuthAccessTokenWithParameters(parameters, headers: headers, success: success, failure: failure)
     }
