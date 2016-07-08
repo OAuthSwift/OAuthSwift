@@ -59,7 +59,8 @@ public class OAuth1Swift: OAuthSwift {
         self.postOAuthRequestTokenWithCallbackURL(callbackURL, success: { [unowned self]
             credential, response, _ in
 
-            self.observeCallback { [unowned self] url in
+            self.observeCallback { [weak self] url in
+                guard let this = self else {return }
                 var responseParameters = [String: String]()
                 if let query = url.query {
                     responseParameters += query.parametersFromQueryString()
@@ -70,13 +71,12 @@ public class OAuth1Swift: OAuthSwift {
                 if let token = responseParameters["token"] {
                     responseParameters["oauth_token"] = token
                 }
-                if (responseParameters["oauth_token"] != nil && (self.allowMissingOauthVerifier || responseParameters["oauth_verifier"] != nil)) {
-                    //var credential: OAuthSwiftCredential = self.client.credential
-                    self.client.credential.oauth_token = responseParameters["oauth_token"]!.safeStringByRemovingPercentEncoding
-                    if (responseParameters["oauth_verifier"] != nil) {
-                        self.client.credential.oauth_verifier = responseParameters["oauth_verifier"]!.safeStringByRemovingPercentEncoding
+                if let token = responseParameters["oauth_token"] where (this.allowMissingOauthVerifier || responseParameters["oauth_verifier"] != nil) {
+                    this.client.credential.oauth_token = token.safeStringByRemovingPercentEncoding
+                    if let oauth_verifier = responseParameters["oauth_verifier"] {
+                        this.client.credential.oauth_verifier = oauth_verifier.safeStringByRemovingPercentEncoding
                     }
-                    self.postOAuthAccessTokenWithRequestToken(success, failure: failure)
+                    this.postOAuthAccessTokenWithRequestToken(success, failure: failure)
                 } else {
                     let userInfo = [NSLocalizedDescriptionKey: "Oauth problem. oauth_token or oauth_verifier not returned"]
                     failure?(error: NSError(domain: OAuthSwiftErrorDomain, code: -1, userInfo: userInfo))
@@ -102,7 +102,7 @@ public class OAuth1Swift: OAuthSwift {
             parameters["oauth_callback"] = callbackURLString
         }
         self.client.post(self.request_token_url, parameters: parameters, success: {
-            data, response in
+           [unowned self] data, response in
             let responseString = NSString(data: data, encoding: NSUTF8StringEncoding) as String!
             let parameters = responseString.parametersFromQueryString()
             if let oauthToken=parameters["oauth_token"] {
@@ -121,7 +121,7 @@ public class OAuth1Swift: OAuthSwift {
         parameters["oauth_token"] = self.client.credential.oauth_token
         parameters["oauth_verifier"] = self.client.credential.oauth_verifier
         self.client.post(self.access_token_url, parameters: parameters, success: {
-            data, response in
+            [unowned self] data, response in
             let responseString = NSString(data: data, encoding: NSUTF8StringEncoding) as String!
             let parameters = responseString.parametersFromQueryString()
             if let oauthToken=parameters["oauth_token"] {

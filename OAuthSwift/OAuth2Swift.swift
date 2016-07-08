@@ -72,7 +72,8 @@ public class OAuth2Swift: OAuthSwift {
     // MARK: functions
     public func authorizeWithCallbackURL(callbackURL: NSURL, scope: String, state: String, params: [String: String] = [String: String](), headers: [String:String]? = nil, success: TokenSuccessHandler, failure: ((error: NSError) -> Void)) {
         
-         self.observeCallback { [unowned self] url in
+         self.observeCallback { [weak self] url in
+            guard let this = self else {return }
             var responseParameters = [String: String]()
             if let query = url.query {
                 responseParameters += query.parametersFromQueryString()
@@ -81,14 +82,14 @@ public class OAuth2Swift: OAuthSwift {
                 responseParameters += fragment.parametersFromQueryString()
             }
             if let accessToken = responseParameters["access_token"] {
-                self.client.credential.oauth_token = accessToken.safeStringByRemovingPercentEncoding
+                this.client.credential.oauth_token = accessToken.safeStringByRemovingPercentEncoding
                 if let expiresIn:String = responseParameters["expires_in"], offset = Double(expiresIn)  {
-                    self.client.credential.oauth_token_expires_at = NSDate(timeInterval: offset, sinceDate: NSDate())
+                    this.client.credential.oauth_token_expires_at = NSDate(timeInterval: offset, sinceDate: NSDate())
                 }
-                success(credential: self.client.credential, response: nil, parameters: responseParameters)
+                success(credential: this.client.credential, response: nil, parameters: responseParameters)
             }
             else if let code = responseParameters["code"] {
-                if !self.allowMissingStateCheck {
+                if !this.allowMissingStateCheck {
                     guard let responseState = responseParameters["state"] else {
                         let errorInfo = [NSLocalizedDescriptionKey: "Missing state"]
                         failure(error: NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.MissingStateError.rawValue, userInfo: errorInfo))
@@ -100,7 +101,7 @@ public class OAuth2Swift: OAuthSwift {
                         return
                     }
                 }
-                self.postOAuthAccessTokenWithRequestTokenByCode(code.safeStringByRemovingPercentEncoding,
+                this.postOAuthAccessTokenWithRequestTokenByCode(code.safeStringByRemovingPercentEncoding,
                     callbackURL:callbackURL, headers: headers , success: success, failure: failure)
             }
             else if let error = responseParameters["error"], error_description = responseParameters["error_description"] {
