@@ -237,7 +237,7 @@ public class OAuth2Swift: OAuthSwift {
         self.client.request(url, method: method, parameters: parameters, headers: headers, success: success) { (error) in
             switch error.code {
             case OAuthSwiftErrorCode.TokenExpiredError.rawValue:
-                self.renewAccessTokenWithRefreshToken(self.client.credential.oauth_refresh_token, headers: headers, success: { (credential, response, parameters) in
+                self.renewAccessTokenWithRefreshToken(self.client.credential.oauth_refresh_token, headers: headers, success: { (credential, response, refreshParameters) in
                     // We have successfully renewed the access token.
                     
                     // If provided, fire the onRenewal closure
