@@ -36,13 +36,8 @@ public class OAuthWebViewController: OAuthViewController, OAuthSwiftURLHandlerTy
     
     public func handle(url: NSURL) {
         // do UI in main thread
-        if NSThread.isMainThread() {
-             doHandle(url)
-        }
-        else {
-            dispatch_async(dispatch_get_main_queue()) {
-                self.doHandle(url)
-            }
+        OAuthSwift.main { [unowned self] in
+             self.doHandle(url)
         }
     }
 

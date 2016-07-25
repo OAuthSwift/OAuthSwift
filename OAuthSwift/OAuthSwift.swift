@@ -47,20 +47,44 @@ public class OAuthSwift: NSObject {
     class var notificationCenter: NSNotificationCenter {
         return NSNotificationCenter.defaultCenter()
     }
+    class var notificationQueue: NSOperationQueue {
+        return NSOperationQueue.mainQueue()
+    }
 
     func observeCallback(block: (url: NSURL) -> Void) {
-        self.observer = OAuthSwift.notificationCenter.addObserverForName(CallbackNotification.notificationName, object: nil, queue: NSOperationQueue.mainQueue()){
+        self.observer = OAuthSwift.notificationCenter.addObserverForName(CallbackNotification.notificationName, object: nil, queue: OAuthSwift.notificationQueue){
             [weak self] notification in
             self?.removeCallbackNotificationObserver()
 
-            let urlFromUserInfo = notification.userInfo![CallbackNotification.optionsURLKey] as! NSURL
-            block(url: urlFromUserInfo)
+            if let urlFromUserInfo = notification.userInfo?[CallbackNotification.optionsURLKey] as? NSURL {
+                block(url: urlFromUserInfo)
+            } else {
+                // Internal error
+                assertionFailure()
+            }
         }
     }
 
+    // Remove internal observer on authentification
     public func removeCallbackNotificationObserver() {
       	if let observer = self.observer {
             OAuthSwift.notificationCenter.removeObserver(observer)
+        }
+    }
+    
+    // Function to call when web view is dismissed without authentification
+    public func cancel() {
+        self.removeCallbackNotificationObserver()
+    }
+    
+    static func main(block: () -> Void) {
+        if NSThread.isMainThread() {
+            block()
+        }
+        else {
+            dispatch_async(dispatch_get_main_queue()) {
+                block()
+            }
         }
     }
 
