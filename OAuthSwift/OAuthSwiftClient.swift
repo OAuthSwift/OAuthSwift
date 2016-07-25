@@ -60,7 +60,7 @@ public class OAuthSwiftClient: NSObject {
         return self.request(urlString, method: .PATCH, parameters: parameters, headers: headers,success: success, failure: failure)
     }
     
-    public func request(url: String, method: OAuthSwiftHTTPRequest.Method, parameters: [String: AnyObject] = [:], headers: [String:String]? = nil, body: NSData? = nil, checkTokenExpiration: Bool = true, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) -> OAuthSwiftRequestHandle? {
+    public func request(urlString: String, method: OAuthSwiftHTTPRequest.Method, parameters: [String: AnyObject] = [:], headers: [String:String]? = nil, body: NSData? = nil, checkTokenExpiration: Bool = true, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) -> OAuthSwiftRequestHandle? {
         
         if checkTokenExpiration && self.credential.isTokenExpired()  {
             let errorInfo = [NSLocalizedDescriptionKey: NSLocalizedString("The provided token is expired.", comment:"Token expired, retrieve new token by using the refresh token")]
@@ -71,8 +71,13 @@ public class OAuthSwiftClient: NSObject {
             
             return nil
         }
-        
-        if let request = makeRequest(url, method: method, parameters: parameters, headers: headers, body: body) {
+
+        guard let _ = NSURL(string: urlString) else {
+            failure?(error: NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.RequestCreationError.rawValue, userInfo: nil))
+            return nil
+        }
+
+        if let request = makeRequest(urlString, method: method, parameters: parameters, headers: headers, body: body) {
             request.successHandler = success
             request.failureHandler = failure
             request.start()
@@ -93,23 +98,23 @@ public class OAuthSwiftClient: NSObject {
 
         let request = OAuthSwiftHTTPRequest(URL: url, method: method, parameters: parameters, paramsLocation: self.paramsLocation)
         if let addHeaders = headers {
-            request.headers = addHeaders
+            request.config.headers = addHeaders
         }
         if let addBody = body {
-            request.HTTPBody = addBody
+            request.config.HTTPBody = addBody
         }
         return makeOAuthSwiftHTTPRequest(request)
     }
 
     public func makeOAuthSwiftHTTPRequest(request: OAuthSwiftHTTPRequest) -> OAuthSwiftHTTPRequest {
         var requestHeaders = [String:String]()
-        var signatureUrl = request.URL
+        var signatureUrl = request.config.URL
         var signatureParameters = request.parameters
 
         // Check if body must be hashed (oauth1)
         let body: NSData? = nil
-        if request.HTTPMethod.isBody {
-            if let contentType = request.headers["Content-Type"]?.lowercaseString {
+        if request.config.HTTPMethod.isBody {
+            if let contentType = request.config.headers["Content-Type"]?.lowercaseString {
 
                 if contentType.rangeOfString("application/json") != nil {
                     // TODO: oauth_body_hash create body before signing if implementing body hashing
@@ -134,7 +139,7 @@ public class OAuthSwiftClient: NSObject {
         // normalize the URL and add to the parametes collection.
 
         var queryStringParameters = Dictionary<String, AnyObject>()
-        let urlComponents = NSURLComponents(URL: request.URL, resolvingAgainstBaseURL: false )
+        let urlComponents = NSURLComponents(URL: request.config.URL, resolvingAgainstBaseURL: false )
         if let queryItems = urlComponents?.queryItems {
             for queryItem in queryItems {
                 let value = queryItem.value?.safeStringByRemovingPercentEncoding ?? ""
@@ -147,20 +152,20 @@ public class OAuthSwiftClient: NSObject {
         {
             urlComponents?.query = nil
             // This is safe to unwrap because these just came from an NSURL
-            signatureUrl = urlComponents?.URL ?? request.URL
+            signatureUrl = urlComponents?.URL ?? request.config.URL
         }
         signatureParameters = signatureParameters.join(queryStringParameters)
 
         switch self.paramsLocation {
         case .AuthorizationHeader:
             //Add oauth parameters in the Authorization header
-            requestHeaders += self.credential.makeHeaders(signatureUrl, method: request.HTTPMethod, parameters: signatureParameters, body: body)
+            requestHeaders += self.credential.makeHeaders(signatureUrl, method: request.config.HTTPMethod, parameters: signatureParameters, body: body)
         case .RequestURIQuery:
             //Add oauth parameters as request parameters
-            request.parameters += self.credential.authorizationParametersWithSignatureForMethod(request.HTTPMethod, url: signatureUrl, parameters: signatureParameters, body: body)
+            request.parameters += self.credential.authorizationParametersWithSignatureForMethod(request.config.HTTPMethod, url: signatureUrl, parameters: signatureParameters, body: body)
         }
 
-        request.headers = requestHeaders + request.headers
+        request.config.headers = requestHeaders + request.config.headers
         request.dataEncoding = OAuthSwiftDataEncoding
         
         return request
@@ -180,8 +185,8 @@ public class OAuthSwiftClient: NSObject {
             let type = "multipart/form-data; boundary=\(boundary)"
             let body = self.multiPartBodyFromParams(paramImage, boundary: boundary)
             
-            request.HTTPBody = body
-            request.headers += ["Content-Type": type] // "Content-Length": body.length.description
+            request.config.HTTPBody = body
+            request.config.headers += ["Content-Type": type] // "Content-Length": body.length.description
             
             request.successHandler = success
             request.failureHandler = failure
@@ -229,8 +234,8 @@ public class OAuthSwiftClient: NSObject {
             let type = "multipart/form-data; boundary=\(boundary)"
             let body = self.multiDataFromObject(parameters, multiparts: multiparts, boundary: boundary)
 
-            request.HTTPBody = body
-            request.headers += ["Content-Type": type] // "Content-Length": body.length.description
+            request.config.HTTPBody = body
+            request.config.headers += ["Content-Type": type] // "Content-Length": body.length.description
             
             request.successHandler = success
             request.failureHandler = failure

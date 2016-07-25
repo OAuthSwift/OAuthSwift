@@ -105,4 +105,5 @@ public enum OAuthSwiftErrorCode: Int {
     case ServerError = -5
     case EncodingError = -6
     case AuthorizationPending = -7
+    case RequestCreationError = -8
 }

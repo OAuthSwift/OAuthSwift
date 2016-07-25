@@ -87,6 +87,11 @@
 		C4E038A91BF4C9D9007CECEA /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4E038A81BF4C9D9007CECEA /* Constants.swift */; };
 		C4E038AA1BF4CACB007CECEA /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4E038A81BF4C9D9007CECEA /* Constants.swift */; };
 		C4E46C4A1D46160300BFCEF4 /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4E46C491D46160300BFCEF4 /* NavigationController.swift */; };
+		C4E46C4C1D462D4B00BFCEF4 /* NSError+OAuthSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4E46C4B1D462D4B00BFCEF4 /* NSError+OAuthSwift.swift */; };
+		C4E46C4D1D462D4B00BFCEF4 /* NSError+OAuthSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4E46C4B1D462D4B00BFCEF4 /* NSError+OAuthSwift.swift */; };
+		C4E46C4E1D462D4B00BFCEF4 /* NSError+OAuthSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4E46C4B1D462D4B00BFCEF4 /* NSError+OAuthSwift.swift */; };
+		C4E46C4F1D462D4B00BFCEF4 /* NSError+OAuthSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4E46C4B1D462D4B00BFCEF4 /* NSError+OAuthSwift.swift */; };
+		C4E46C511D462ED300BFCEF4 /* NSErrorOAuthSwiftTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4E46C501D462ED300BFCEF4 /* NSErrorOAuthSwiftTest.swift */; };
 		C4EBBE4B1D439EBC005515F2 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C4EBBE4A1D439EBC005515F2 /* Main.storyboard */; };
 		C4EBBE4D1D439F1C005515F2 /* Storyboards.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4EBBE4C1D439F1C005515F2 /* Storyboards.swift */; };
 		C4EBBE4F1D439F87005515F2 /* FormViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4EBBE4E1D439F87005515F2 /* FormViewController.swift */; };
@@ -214,6 +219,8 @@
 		C4E038A51BF4B92A007CECEA /* Services.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Services.plist; sourceTree = "<group>"; };
 		C4E038A81BF4C9D9007CECEA /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		C4E46C491D46160300BFCEF4 /* NavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationController.swift; sourceTree = "<group>"; };
+		C4E46C4B1D462D4B00BFCEF4 /* NSError+OAuthSwift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSError+OAuthSwift.swift"; sourceTree = "<group>"; };
+		C4E46C501D462ED300BFCEF4 /* NSErrorOAuthSwiftTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSErrorOAuthSwiftTest.swift; sourceTree = "<group>"; };
 		C4EBBE4A1D439EBC005515F2 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		C4EBBE4C1D439F1C005515F2 /* Storyboards.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Storyboards.swift; sourceTree = "<group>"; };
 		C4EBBE4E1D439F87005515F2 /* FormViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormViewController.swift; sourceTree = "<group>"; };
@@ -345,6 +352,7 @@
 		C49624741B00F8240010BD09 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				C4E46C4B1D462D4B00BFCEF4 /* NSError+OAuthSwift.swift */,
 				E5E90A9E1CA84E1C005F51BD /* NSDate+OAuthSwift.swift */,
 				F4805E1E1A6BB5DD00F7677E /* Dictionary+OAuthSwift.swift */,
 				F4805E1F1A6BB5DD00F7677E /* NSURL+OAuthSwift.swift */,
@@ -385,6 +393,7 @@
 		C4D50DF81BFB693F0053B624 /* OAuthSwiftTests */ = {
 			isa = PBXGroup;
 			children = (
+				C4E46C501D462ED300BFCEF4 /* NSErrorOAuthSwiftTest.swift */,
 				C4D50E0A1BFB74240053B624 /* OAuthSwiftRequestTests.swift */,
 				C4698E331BFDE25500FADE29 /* OAuthSwiftClientTests.swift */,
 				C4D50DF91BFB693F0053B624 /* OAuth1SwiftTests.swift */,
@@ -853,6 +862,7 @@
 				C40890CA1C11B38000E3146A /* OAuthSwiftClient.swift in Sources */,
 				C40890CE1C11B38000E3146A /* OAuthWebViewController.swift in Sources */,
 				C40890D61C11B38700E3146A /* Int+OAuthSwift.swift in Sources */,
+				C4E46C4F1D462D4B00BFCEF4 /* NSError+OAuthSwift.swift in Sources */,
 				C40890D51C11B38700E3146A /* NSData+OAuthSwift.swift in Sources */,
 				C40890CF1C11B38000E3146A /* Utils.swift in Sources */,
 			);
@@ -878,6 +888,7 @@
 				C48B28281AFA599A00C7DEF6 /* HMAC.swift in Sources */,
 				C48B282D1AFA599C00C7DEF6 /* Int+OAuthSwift.swift in Sources */,
 				C48B28261AFA599A00C7DEF6 /* Utils.swift in Sources */,
+				C4E46C4D1D462D4B00BFCEF4 /* NSError+OAuthSwift.swift in Sources */,
 				C48B28291AFA599A00C7DEF6 /* Dictionary+OAuthSwift.swift in Sources */,
 				C49624701B00D6C30010BD09 /* OAuthWebViewController.swift in Sources */,
 			);
@@ -908,6 +919,7 @@
 				C4B6EE291BF74CF400443596 /* OAuthSwiftCredential.swift in Sources */,
 				C4B6EE2A1BF74CF400443596 /* OAuthSwiftHTTPRequest.swift in Sources */,
 				C4B6EE2B1BF74CF400443596 /* OAuthSwiftURLHandlerType.swift in Sources */,
+				C4E46C4E1D462D4B00BFCEF4 /* NSError+OAuthSwift.swift in Sources */,
 				C4B6EE2C1BF74CF400443596 /* OAuthWebViewController.swift in Sources */,
 				C4B6EE2D1BF74CF400443596 /* Utils.swift in Sources */,
 				C4B6EE2E1BF74CF400443596 /* SHA1.swift in Sources */,
@@ -930,6 +942,7 @@
 				C4D50E071BFB6BB50053B624 /* TestOAuthSwiftURLHandler.swift in Sources */,
 				C4D50E0B1BFB74240053B624 /* OAuthSwiftRequestTests.swift in Sources */,
 				C4698E341BFDE25500FADE29 /* OAuthSwiftClientTests.swift in Sources */,
+				C4E46C511D462ED300BFCEF4 /* NSErrorOAuthSwiftTest.swift in Sources */,
 				C4D50E031BFB6A340053B624 /* TestServer.swift in Sources */,
 				C44244DB1C06316100880DAB /* ServicesTests.swift in Sources */,
 				C4D50E0D1BFB79D00053B624 /* OAuth2SwiftTests.swift in Sources */,
@@ -951,6 +964,7 @@
 				C49624721B00F54A0010BD09 /* OAuthSwiftURLHandlerType.swift in Sources */,
 				F4E9A4DE1A67944C00B4F3C8 /* OAuthSwiftClient.swift in Sources */,
 				F4E9A4DF1A67944C00B4F3C8 /* OAuthSwiftCredential.swift in Sources */,
+				C4E46C4C1D462D4B00BFCEF4 /* NSError+OAuthSwift.swift in Sources */,
 				F47599AF1A78FFAF004A96C1 /* Utils.swift in Sources */,
 				D20BBB751C2454A900F2B012 /* OAuthSwiftMultipartData.swift in Sources */,
 				F47599AD1A78FF23004A96C1 /* SHA1.swift in Sources */,
