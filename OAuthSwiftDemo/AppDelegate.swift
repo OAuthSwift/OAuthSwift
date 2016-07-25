@@ -38,12 +38,6 @@ extension AppDelegate {
 extension AppDelegate: UIApplicationDelegate {
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
-        // Override point for customization after application launch.
-        let viewController: ViewController = ViewController()
-        let naviController: UINavigationController = UINavigationController(rootViewController: viewController)
-        self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
-        self.window!.rootViewController = naviController
-        self.window!.makeKeyAndVisible()
         return true
     }
 

@@ -32,6 +32,15 @@ public class OAuthWebViewController: OAuthViewController, OAuthSwiftURLHandlerTy
     
     #if os(iOS) || os(tvOS)
     public var delegate: OAuthWebViewControllerDelegate?
+    // If controller have an navigation controller, application top view controller could be used if true
+    public var useTopViewControlerInsteadOfNavigation = false
+    
+    public var topViewController: UIViewController? {
+        #if !OAUTH_APP_EXTENSIONS
+            return UIApplication.topViewController
+        #endif
+        return nil
+    }
     #endif
     
     public func handle(url: NSURL) {
@@ -51,16 +60,17 @@ public class OAuthWebViewController: OAuthViewController, OAuthSwiftURLHandlerTy
         }
         #if os(iOS) || os(tvOS)
             let animated = true
-            if let navigationController = self.navigationController {
+            if let navigationController = self.navigationController where (!useTopViewControlerInsteadOfNavigation || self.topViewController == nil) {
                 navigationController.pushViewController(self, animated: animated)
             }
             else if let p = self.parentViewController {
                 p.presentViewController(self, animated: animated, completion: completion)
             }
+            else if let topViewController = topViewController {
+                topViewController.presentViewController(self, animated: animated, completion: completion)
+            }
             else {
-                #if !OAUTH_APP_EXTENSIONS
-                    UIApplication.topViewController?.presentViewController(self, animated: animated, completion: completion)
-                #endif
+                // assert no presentation
             }
         #elseif os(watchOS)
             if (url.scheme == "http" || url.scheme == "https") {
@@ -82,27 +92,19 @@ public class OAuthWebViewController: OAuthViewController, OAuthSwiftURLHandlerTy
         }
         #if os(iOS) || os(tvOS)
             let animated = true
-            if let navigationController = self.navigationController {
+            if let navigationController = self.navigationController where (!useTopViewControlerInsteadOfNavigation || self.topViewController == nil){
                 navigationController.popViewControllerAnimated(animated)
             }
             else if let parentViewController = self.parentViewController {
                 // The presenting view controller is responsible for dismissing the view controller it presented
                 parentViewController.dismissViewControllerAnimated(animated, completion: completion)
             }
+            else if let topViewController = topViewController {
+                topViewController.dismissViewControllerAnimated(animated, completion: completion)
+            }
             else {
-                #if !OAUTH_APP_EXTENSIONS
-                    if let topViewController = UIApplication.topViewController {
-                        topViewController.dismissViewControllerAnimated(animated, completion: completion)
-                    }
-                    else {
-                        // keep old code...
-                        self.dismissViewControllerAnimated(animated, completion: completion)
-                    }
-                #else
-                    // keep old code...
-                    self.dismissViewControllerAnimated(animated, completion: completion)
-                #endif
-                
+                // keep old code...
+                self.dismissViewControllerAnimated(animated, completion: completion)
             }
         #elseif os(watchOS)
             self.dismissController()
