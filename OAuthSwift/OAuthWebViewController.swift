@@ -55,10 +55,10 @@ public class OAuthWebViewController: OAuthViewController, OAuthSwiftURLHandlerTy
     #endif
 
     public func doHandle(url: NSURL) {
-        let completion: () -> Void = { [unowned self] in
-            self.delegate?.didPresent()
-        }
         #if os(iOS) || os(tvOS)
+            let completion: () -> Void = { [unowned self] in
+                self.delegate?.didPresent()
+            }
             let animated = true
             if let navigationController = self.navigationController where (!useTopViewControlerInsteadOfNavigation || self.topViewController == nil) {
                 navigationController.pushViewController(self, animated: animated)
@@ -87,10 +87,10 @@ public class OAuthWebViewController: OAuthViewController, OAuthSwiftURLHandlerTy
     }
 
     public func dismissWebViewController() {
-        let completion: () -> Void = { [unowned self] in
-            self.delegate?.didDismiss()
-        }
         #if os(iOS) || os(tvOS)
+            let completion: () -> Void = { [unowned self] in
+                self.delegate?.didDismiss()
+            }
             let animated = true
             if let navigationController = self.navigationController where (!useTopViewControlerInsteadOfNavigation || self.topViewController == nil){
                 navigationController.popViewControllerAnimated(animated)
