@@ -41,6 +41,17 @@ public class OAuthWebViewController: OAuthViewController, OAuthSwiftURLHandlerTy
         #endif
         return nil
     }
+    #elseif os(OSX)
+    // How to present this view controller if parent view controller set
+    public enum Present {
+        case AsModalWindow
+        case AsSheet
+        case AsPopover(relativeToRect: NSRect, ofView : NSView, preferredEdge: NSRectEdge, behavior: NSPopoverBehavior)
+        case TransitionFrom(fromViewController: NSViewController, options: NSViewControllerTransitionOptions)
+        case Animator(animator: NSViewControllerPresentationAnimator)
+        case Segue(segueIdentifier: String)
+    }
+    public var present: Present = .AsModalWindow
     #endif
     
     public func handle(url: NSURL) {
@@ -78,8 +89,28 @@ public class OAuthWebViewController: OAuthViewController, OAuthSwiftURLHandlerTy
             }
         #elseif os(OSX)
             if let p = self.parentViewController { // default behaviour if this controller affected as child controller
-                p.presentViewControllerAsModalWindow(self)
-            } else if let window = self.view.window {
+                switch self.present {
+                case .AsSheet:
+                    p.presentViewControllerAsSheet(self)
+                    break
+                case .AsModalWindow:
+                    p.presentViewControllerAsModalWindow(self)
+                    // FIXME: if we present as window, window close must detected and oauthswift.cancel() must be called...
+                    break
+                case .AsPopover(let positioningRect, let positioningView, let preferredEdge, let behavior):
+                    p.presentViewController(self, asPopoverRelativeToRect: positioningRect, ofView : positioningView, preferredEdge: preferredEdge, behavior: behavior)
+                    break
+                case .TransitionFrom(let fromViewController, let options):
+                    p.transitionFromViewController(fromViewController, toViewController: self, options: options, completionHandler: nil)
+                    break
+                case .Animator(let animator):
+                    p.presentViewController(self, animator: animator)
+                case .Segue(let segueIdentifier):
+                    p.performSegueWithIdentifier(segueIdentifier, sender: self) // The segue must display self.view
+                    break
+                }
+            }
+            else if let window = self.view.window {
                 window.makeKeyAndOrderFront(nil)
             }
             // or create an NSWindow or NSWindowController (/!\ keep a strong reference on it)
