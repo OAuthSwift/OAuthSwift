@@ -17,6 +17,8 @@ class OAuthSwiftClientTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
+        
+        //client.credential.version = .OAuth2
     }
     
     override func tearDown() {
@@ -36,10 +38,19 @@ class OAuthSwiftClientTests: XCTestCase {
         testMakeNSURLRequest(.GET, url + "?a=a&b=b")
     }
 
-    func testMakePOSTRequest() {
+    func testMakePOSTRequest_EmptyParameter() {
         testMakeRequest(.POST, url:url, emptyParameters, url, nil)
+    }
+    
+    func testMakePOSTRequestOneParameter() {
         testMakeRequest(.POST, url:url, ["a":"a"], url, ["a":"a"])
+    }
+
+    func testMakePOSTRequestTwoParameters() {
         testMakeRequest(.POST, url:url, ["a":"a", "b":"b"], url, ["a":"a", "b":"b"])
+    }
+
+    func testMakePOSTRequestParameterInURL() {
         testMakeRequest(.POST, url:"\(url)?c=c", ["a":"a", "b":"b"], "\(url)?c=c", ["a":"a", "b":"b"])
     }
 
@@ -61,15 +72,26 @@ class OAuthSwiftClientTests: XCTestCase {
 
         let request = client.makeRequest(url, method: method, parameters: parameters, headers: ["Content-Type": "application/json"])!
 
-        XCTAssertEqual(request.URL, NSURL(string: url)!)
-        XCTAssertEqual(request.HTTPMethod, method)
-        XCTAssertEqualDictionaries(request.parameters as! [String:String], parameters)
+        XCTAssertEqual(request.config.URL, NSURL(string: url))
+        XCTAssertEqual(request.config.HTTPMethod, method)
+        XCTAssertEqualDictionaries(request.config.parameters as! [String:String], parameters)
         
         do {
             let urlRequest = try request.makeRequest()
             if let expectedJSON = expectedBodyJSONDictionary {
-                let json = try! NSJSONSerialization.JSONObjectWithData(urlRequest.HTTPBody!, options: NSJSONReadingOptions()) as! [String:String]
-                XCTAssertEqualDictionaries(json, expectedJSON)
+                if let body = urlRequest.HTTPBody {
+                    if let json = try? NSJSONSerialization.JSONObjectWithData(body, options: NSJSONReadingOptions()) as? [String:String] {
+                        XCTAssertEqualDictionaries(json!, expectedJSON)
+                    } else {
+                        if let string = String(data: body, encoding: request.config.dataEncoding) {
+                            XCTFail("Not json but string \(string)")
+                        } else {
+                            XCTFail("Not decodable")
+                        }
+                    }
+                } else {
+                    XCTFail("No body")
+                }
             }
             XCTAssertEqualURL(urlRequest.URL!, NSURL(string: expectedURL)!)
             
@@ -81,10 +103,10 @@ class OAuthSwiftClientTests: XCTestCase {
     func testMakeRequestWithBody(method: OAuthSwiftHTTPRequest.Method, url: String, _ parameters: [String:String], _ expectedURL: String, _ expectedBody: NSData) {
         let request = client.makeRequest(url, method: method, parameters: parameters, headers: ["Content-Type": "foobar"], body: expectedBody)!
 
-        XCTAssertEqual(request.URL, NSURL(string: url)!)
-        XCTAssertEqual(request.HTTPMethod, method)
-        XCTAssertEqualDictionaries(request.parameters as! [String:String], parameters)
-        XCTAssertEqual(request.HTTPBody, expectedBody)
+        XCTAssertEqual(request.config.URL, NSURL(string: url))
+        XCTAssertEqual(request.config.HTTPMethod, method)
+        XCTAssertEqualDictionaries(request.config.parameters as! [String:String], parameters)
+        XCTAssertEqual(request.config.urlRequest.HTTPBody, expectedBody)
     }
 
     func testMakeNSURLRequest(method: OAuthSwiftHTTPRequest.Method,_ urlString: String) {
@@ -95,9 +117,9 @@ class OAuthSwiftClientTests: XCTestCase {
 
         let request = client.makeRequest(nsURLRequest)
 
-        XCTAssertEqual(request.URL, url)
-        XCTAssertEqual(request.HTTPMethod, method)
-        XCTAssertEqualDictionaries(request.parameters as! [String:String], [:])
+        XCTAssertEqual(request.config.URL!, url)
+        XCTAssertEqual(request.config.HTTPMethod, method)
+        XCTAssertEqualDictionaries(request.config.parameters as! [String:String], [:])
 
         do {
             let urlFromRequest = try request.makeRequest()

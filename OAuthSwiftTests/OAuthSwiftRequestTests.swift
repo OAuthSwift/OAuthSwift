@@ -115,12 +115,12 @@ class OAuth1SwiftRequestTests: XCTestCase {
 
 		let oauthRequest = OAuthSwiftHTTPRequest(request: request)
 
-		XCTAssertEqualURL(oauthRequest.URL, urlWithQueryString)
-		XCTAssertEqualDictionaries(oauthRequest.parameters as! [String:String], [:])
-		XCTAssertEqualDictionaries(oauthRequest.headers, headers)
-		XCTAssertEqual(oauthRequest.HTTPMethod, method)
-		XCTAssertEqual(String(data: oauthRequest.HTTPBody!, encoding:OAuthSwiftDataEncoding)!, bodyText)
-		XCTAssertEqual(oauthRequest.timeoutInterval, timeout)
-		XCTAssertTrue(oauthRequest.HTTPShouldHandleCookies)
+		XCTAssertEqualURL(oauthRequest.config.urlRequest.URL!, urlWithQueryString)
+		XCTAssertEqualDictionaries(oauthRequest.config.parameters as! [String:String], [:])
+		XCTAssertEqualDictionaries(oauthRequest.config.urlRequest.allHTTPHeaderFields!, headers)
+		XCTAssertEqual(oauthRequest.config.HTTPMethod, method)
+		XCTAssertEqual(String(data: oauthRequest.config.urlRequest.HTTPBody!, encoding:OAuthSwiftDataEncoding)!, bodyText)
+		XCTAssertEqual(oauthRequest.config.urlRequest.timeoutInterval, timeout)
+		XCTAssertTrue(oauthRequest.config.urlRequest.HTTPShouldHandleCookies)
 	}
 }

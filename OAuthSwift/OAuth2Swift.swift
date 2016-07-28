@@ -267,10 +267,5 @@ public class OAuth2Swift: OAuthSwift {
                 failure(error: error)
         }
     }
-    
-    @available(*, deprecated=0.5.0, message="Use OAuthSwift.handleOpenURL()")
-    public override class func handleOpenURL(url: NSURL) {
-        super.handleOpenURL(url)
-    }
 
 }

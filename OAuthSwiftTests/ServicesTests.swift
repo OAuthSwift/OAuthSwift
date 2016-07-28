@@ -76,7 +76,7 @@ class ServicesTests: XCTestCase {
         if let param = services[service] {
             self.testService(service, serviceParameters: param)
         } else {
-            XCTFail("No parameters for \(service)")
+            XCTFail("No parameters for \(service). Test ignored")
         }
     }
     
@@ -318,6 +318,7 @@ class ServicesURLHandlerType:NSObject, OAuthSwiftURLHandlerType {
             if let button = doc.querySelector(autorizeButton) {
                 button.click()
             } else {
+                print(doc.toHTML)
                 XCTFail("\(self.service): \(autorizeButton) not found to valid authentification]. \(self.browser.currentURL)")
             }
         } else if !self.handled {
