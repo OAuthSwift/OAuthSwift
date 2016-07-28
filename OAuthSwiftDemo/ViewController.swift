@@ -28,10 +28,37 @@ class ViewController: OAuthViewController {
         #elseif os(iOS)
             controller.view = UIView(frame: UIScreen.mainScreen().bounds) // needed if no nib or not loaded from storyboard
         #endif
+        controller.delegate = self
         controller.viewDidLoad()
         return controller
     }()
     
+}
+
+extension ViewController: OAuthWebViewControllerDelegate {
+    #if os(iOS) || os(tvOS)
+    
+    func oauthWebViewControllerDidPresent() {
+        
+    }
+    func oauthWebViewControllerDidDismiss() {
+        
+    }
+    #endif
+    
+    func oauthWebViewControllerWillAppear() {
+        
+    }
+    func oauthWebViewControllerDidAppear() {
+        
+    }
+    func oauthWebViewControllerWillDisappear() {
+        
+    }
+    func oauthWebViewControllerDidDisappear() {
+        // Ensure all listeners are removed if presented web view close
+        oauthswift?.cancel()
+    }
 }
 
 extension ViewController {
