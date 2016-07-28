@@ -51,8 +51,9 @@ public class OAuthWebViewController: OAuthViewController, OAuthSwiftURLHandlerTy
     public var topViewController: UIViewController? {
         #if !OAUTH_APP_EXTENSIONS
             return UIApplication.topViewController
+        #else
+            return nil
         #endif
-        return nil
     }
     #elseif os(OSX)
     // How to present this view controller if parent view controller set
