@@ -75,6 +75,8 @@ import SafariServices
         public var dismissCompletion: (() -> Void)?
         public var delay: UInt32? = 1
         
+        public var modalPresentationStyle = UIModalPresentationStyle.FullScreen
+
         // init
         public init(viewController: UIViewController, oauthSwift: OAuthSwift) {
             self.oauthSwift = oauthSwift
@@ -95,6 +97,8 @@ import SafariServices
         @objc public func handle(url: NSURL) {
             let controller = factory(URL: url)
             controller.delegate = self
+
+            controller.modalPresentationStyle = self.modalPresentationStyle
             
             // present controller in main thread
             OAuthSwift.main { [unowned self] in
