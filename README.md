@@ -111,15 +111,15 @@ oauthswift.authorizeWithCallbackURL(
 See demo for more examples
 
 ### Handle authorize URL
-The authorize URL allow user to connect to a provider and give access to your application.
+The authorize URL allows the user to connect to a provider and give access to your application.
 
-By default this URL is opened into the external web browser (ie. safari), but apple don't allow it for app-store iOS application.
+By default this URL is opened into the external web browser (ie. safari), but apple does not allow it for app-store iOS applications.
 
 To change this behavior you must set an `OAuthSwiftURLHandlerType`, simple protocol to handle an `NSURL`
 ```swift
 oauthswift.authorize_url_handler = ..
 ```
-For instance you can embed a web view into your application by providing a controller that display a web view (`UIWebView`, `WKWebView`).
+For instance you can embed a web view into your application by providing a controller that displays a web view (`UIWebView`, `WKWebView`).
 Then this controller must implement `OAuthSwiftURLHandlerType` to load the URL into the web view
 ```swift
 func handle(url: NSURL) {
@@ -156,7 +156,7 @@ oauthswift.client.request("https://api.linkedin.com/v1/people/~", .GET,
       success: { ...
 ```
 
-More examples into demo application: [ViewController.swift](/OAuthSwiftDemo/ViewController.swift)
+See more examples in the demo application: [ViewController.swift](/OAuthSwiftDemo/ViewController.swift)
 
 ## OAuth provider pages
 
