@@ -221,8 +221,9 @@ public class OAuth2Swift: OAuthSwift {
     }
 
     /**
-     Convenience method to start a request that must be authorized with the previosuly retrieved access token.
-     Since OAuth 2 requires support for the access token refresh mechanism, this method will take care to automatically refresh the token if needed suche that the developer only has to be concerned about the outcome of the request.
+     Convenience method to start a request that must be authorized with the previously retrieved access token.
+     Since OAuth 2 requires support for the access token refresh mechanism, this method will take care to automatically
+     refresh the token if needed such that the developer only has to be concerned about the outcome of the request.
      
      - parameter url:            The url for the request.
      - parameter method:         The HTTP method to use.
