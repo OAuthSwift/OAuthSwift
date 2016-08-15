@@ -114,14 +114,14 @@ public class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftRequ
             if self.cancelRequested {
                 return
             }
-            self.session = URLSession(configuration: URLSessionConfiguration.default(),
+            self.session = URLSession(configuration: URLSessionConfiguration.default,
                 delegate: self,
-                delegateQueue: OperationQueue.main())
+                delegateQueue: OperationQueue.main)
             self.task = self.session.dataTask(with:  self.request! as URLRequest) { [unowned self] (data, response, error) in
             
                 #if os(iOS)
                     #if !OAUTH_APP_EXTENSIONS
-                        UIApplication.shared().isNetworkActivityIndicatorVisible = false
+                        UIApplication.shared.isNetworkActivityIndicatorVisible = false
                     #endif
                 #endif
                 
@@ -183,7 +183,7 @@ public class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftRequ
 
             #if os(iOS)
                 #if !OAUTH_APP_EXTENSIONS
-                    UIApplication.shared().isNetworkActivityIndicatorVisible = true
+                    UIApplication.shared.isNetworkActivityIndicatorVisible = true
                 #endif
             #endif
         }

@@ -78,7 +78,7 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
     
     // MARK: NSCoding protocol
     private struct CodingKeys {
-        static let base = Bundle.main().bundleIdentifier! + "."
+        static let base = Bundle.main.bundleIdentifier! + "."
         static let consumerKey = base + "comsumer_key"
         static let consumerSecret = base + "consumer_secret"
         static let oauthToken = base + "oauth_token"
@@ -184,7 +184,7 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
         authorizationParameters["oauth_timestamp"] = timestamp
         authorizationParameters["oauth_nonce"] = nonce
         if let b = body, hash = self.version.signatureMethod.sign(b) {
-            authorizationParameters["oauth_body_hash"] = hash.base64EncodedString([])
+            authorizationParameters["oauth_body_hash"] = hash.base64EncodedString(options: [])
         }
         
         if (self.oauth_token != ""){
@@ -215,7 +215,7 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
         let msg = signatureBaseString.data(using: String.Encoding.utf8)!
 
         let sha1 = self.version.signatureMethod.sign(key, message: msg)!
-        return sha1.base64EncodedString([])
+        return sha1.base64EncodedString(options: [])
     }
     
     public func isTokenExpired() -> Bool {

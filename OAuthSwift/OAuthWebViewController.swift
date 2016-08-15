@@ -23,7 +23,7 @@ public class OAuthWebViewController: OAuthViewController, OAuthSwiftURLHandlerTy
 
     public func handle(_ url: URL) {
         // do UI in main thread
-        if Thread.isMainThread() {
+        if Thread.isMainThread {
              doHandle(url)
         }
         else {
