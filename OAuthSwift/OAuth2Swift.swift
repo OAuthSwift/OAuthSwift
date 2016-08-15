@@ -203,7 +203,7 @@ public class OAuth2Swift: OAuthSwift {
             var headers: [String:String]? = nil
             if accessTokenBasicAuthentification {
                 let authentification = "\(self.consumer_key):\(self.consumer_secret)".data(using: String.Encoding.utf8)
-                if let base64Encoded = authentification?.base64EncodedString(NSData.Base64EncodingOptions(rawValue: 0))
+                if let base64Encoded = authentification?.base64EncodedString(options: NSData.Base64EncodingOptions(rawValue: 0))
                 {
                     headers = ["Authorization": "Basic \(base64Encoded)"]
                 }
