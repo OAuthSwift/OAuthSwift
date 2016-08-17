@@ -22,9 +22,9 @@ class OAuth1SwiftRequestTests: XCTestCase {
     }
 
     func testFailure() {
-        let oAuthSwiftHTTPRequest = OAuthSwiftHTTPRequest(URL: NSURL(string: "http://127.0.0.1:\(port)")!)
+        let oAuthSwiftHTTPRequest = OAuthSwiftHTTPRequest(URL: URL(string: "http://127.0.0.1:\(port)")!)
         
-        let failureExpectation = expectationWithDescription("Expected `failure` to be called")
+        let failureExpectation = expectation(description: "Expected `failure` to be called")
         oAuthSwiftHTTPRequest.failureHandler = { _ in
             failureExpectation.fulfill()
         }
@@ -33,7 +33,7 @@ class OAuth1SwiftRequestTests: XCTestCase {
         }
         
         oAuthSwiftHTTPRequest.start()
-        waitForExpectationsWithTimeout(DefaultTimeout, handler: nil)
+        waitForExpectations(withTimeout: DefaultTimeout, handler: nil)
     }
 
     func testSuccess() {
@@ -47,8 +47,8 @@ class OAuth1SwiftRequestTests: XCTestCase {
             server.stop()
         }
         
-        let oAuthSwiftHTTPRequest = OAuthSwiftHTTPRequest(URL: NSURL(string: "http://127.0.0.1:\(port)")!)
-        let successExpectation = expectationWithDescription("Expected `failure` to be called")
+        let oAuthSwiftHTTPRequest = OAuthSwiftHTTPRequest(URL: URL(string: "http://127.0.0.1:\(port)")!)
+        let successExpectation = expectation(description: "Expected `failure` to be called")
         oAuthSwiftHTTPRequest.failureHandler = { error in
             XCTFail("The failure handler should not be called.\(error)")
         }
@@ -59,7 +59,7 @@ class OAuth1SwiftRequestTests: XCTestCase {
         }
         
         oAuthSwiftHTTPRequest.start()
-        waitForExpectationsWithTimeout(DefaultTimeout, handler: nil)
+        waitForExpectations(withTimeout: DefaultTimeout, handler: nil)
     }
 
 	func testCancel() {
@@ -79,9 +79,9 @@ class OAuth1SwiftRequestTests: XCTestCase {
 			server.stop()
 		}
 
-		let oAuthSwiftHTTPRequest = OAuthSwiftHTTPRequest(URL: NSURL(string: "http://127.0.0.1:\(port)")!)
+		let oAuthSwiftHTTPRequest = OAuthSwiftHTTPRequest(URL: URL(string: "http://127.0.0.1:\(port)")!)
 
-		let failureExpectation = expectationWithDescription("Expected `failure` to be called because of canceling the request")
+		let failureExpectation = expectation(description: "Expected `failure` to be called because of canceling the request")
 		oAuthSwiftHTTPRequest.failureHandler = { error in
 			XCTAssertEqual(error.code, NSURLErrorCancelled)
 			failureExpectation.fulfill()
@@ -92,26 +92,26 @@ class OAuth1SwiftRequestTests: XCTestCase {
 
 		oAuthSwiftHTTPRequest.start()
 		oAuthSwiftHTTPRequest.cancel()
-		waitForExpectationsWithTimeout(DefaultTimeout, handler: nil)
+		waitForExpectations(withTimeout: DefaultTimeout, handler: nil)
 	}
 
 	func testCreationFromNSURLRequest() {
-		let urlWithoutQueryString = NSURL(string: "www.example.com")!
+		let urlWithoutQueryString = URL(string: "www.example.com")!
 		let queryParams = ["a":"123", "b": "", "complex param":"ha öäü ?$"]
 		let headers = ["SomeHeader":"With a value"]
 		let method = OAuthSwiftHTTPRequest.Method.PUT
 		let bodyText = "Test Body"
-		let timeout: NSTimeInterval = 78
+		let timeout: TimeInterval = 78
 
-		let urlComps = NSURLComponents(URL: urlWithoutQueryString, resolvingAgainstBaseURL: false)
-		urlComps?.queryItems = queryParams.keys.map { NSURLQueryItem(name: $0, value: queryParams[$0]) }
-		let urlWithQueryString = urlComps!.URL!
-		let request = NSMutableURLRequest(URL: urlWithQueryString)
+		var urlComps = URLComponents(url: urlWithoutQueryString, resolvingAgainstBaseURL: false)
+		urlComps?.queryItems = queryParams.keys.map { URLQueryItem(name: $0, value: queryParams[$0]) }
+		let urlWithQueryString = urlComps!.url!
+		let request = NSMutableURLRequest(url: urlWithQueryString)
 		request.allHTTPHeaderFields = headers
 		request.HTTPMethod = method.rawValue
 		request.HTTPBody = bodyText.dataUsingEncoding(OAuthSwiftDataEncoding)
 		request.timeoutInterval = timeout
-		request.HTTPShouldHandleCookies = true
+		request.httpShouldHandleCookies = true
 
 		let oauthRequest = OAuthSwiftHTTPRequest(request: request)
 

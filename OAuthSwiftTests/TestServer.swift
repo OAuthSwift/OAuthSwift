@@ -29,9 +29,9 @@ class TestServer {
     var expireURLV2: String { return "\(v2)expire" }
     
     enum AccessReturnType {
-        case JSON, Data
+        case json, data
     }
-    var accessReturnType: AccessReturnType  = .Data
+    var accessReturnType: AccessReturnType  = .data
     
     
 

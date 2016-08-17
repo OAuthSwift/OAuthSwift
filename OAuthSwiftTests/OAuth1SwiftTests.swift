@@ -10,7 +10,7 @@ import XCTest
 @testable import OAuthSwift
 
 
-let DefaultTimeout: NSTimeInterval = 10
+let DefaultTimeout: TimeInterval = 10
 class OAuth1SwiftTests: OAuthSwiftServerBaseTest {
     
     let callbackURL = "test://callback"
@@ -30,9 +30,9 @@ class OAuth1SwiftTests: OAuthSwiftServerBaseTest {
             version: .OAuth1
         )
         
-        let expectation = expectationWithDescription("request should succeed")
+        let expectation = self.expectation(description: "request should succeed")
         
-        oauth.authorizeWithCallbackURL(NSURL(string:callbackURL)!,
+        oauth.authorizeWithCallbackURL(URL(string:callbackURL)!,
             success: { (credential, response, parameters) -> Void in
                 expectation.fulfill()
             },
@@ -40,7 +40,7 @@ class OAuth1SwiftTests: OAuthSwiftServerBaseTest {
                 XCTFail("The failure handler should not be called.\(error)")
         })
         
-        waitForExpectationsWithTimeout(DefaultTimeout, handler: nil)
+        waitForExpectations(timeout: DefaultTimeout, handler: nil)
         
         XCTAssertEqual(oauth.client.credential.oauth_token, server.oauth_token)
         XCTAssertEqual(oauth.client.credential.oauth_token_secret, server.oauth_token_secret)
@@ -62,9 +62,9 @@ class OAuth1SwiftTests: OAuthSwiftServerBaseTest {
             version: .OAuth1
         )
         
-        let expectation = expectationWithDescription("request should succeed")
+        let expectation = self.expectation(description: "request should succeed")
         
-        oauth.authorizeWithCallbackURL(NSURL(string:callbackURL)!,
+        oauth.authorizeWithCallbackURL(URL(string:callbackURL)!,
             success: { (credential, response, parameters) -> Void in
                 expectation.fulfill()
             },
@@ -72,7 +72,7 @@ class OAuth1SwiftTests: OAuthSwiftServerBaseTest {
                 XCTFail("The failure handler should not be called.")
         })
         
-        waitForExpectationsWithTimeout(DefaultTimeout, handler: nil)
+        waitForExpectations(timeout: DefaultTimeout, handler: nil)
         
         let oauth_token = "accesskey"
         let oauth_token_secret = "accesssecret"
@@ -96,9 +96,9 @@ class OAuth1SwiftTests: OAuthSwiftServerBaseTest {
             version: .OAuth1
         )
         
-        let expectation = expectationWithDescription("request should failed")
+        let expectation = self.expectation(description: "request should failed")
         
-        oauth.authorizeWithCallbackURL(NSURL(string:callbackURL)!,
+        oauth.authorizeWithCallbackURL(URL(string:callbackURL)!,
             success: { (credential, response, parameters) -> Void in
                 XCTFail("The success handler should not be called.")
             },
@@ -106,7 +106,7 @@ class OAuth1SwiftTests: OAuthSwiftServerBaseTest {
                 expectation.fulfill()
         })
         
-        waitForExpectationsWithTimeout(DefaultTimeout, handler: nil)
+        waitForExpectations(timeout: DefaultTimeout, handler: nil)
     }
     
     func testOAuthbinBadConsumerSecret() {
@@ -125,9 +125,9 @@ class OAuth1SwiftTests: OAuthSwiftServerBaseTest {
             version: .OAuth1
         )
         
-        let expectation = expectationWithDescription("request should failed")
+        let expectation = self.expectation(description: "request should failed")
         
-        oauth.authorizeWithCallbackURL(NSURL(string:callbackURL)!,
+        oauth.authorizeWithCallbackURL(URL(string:callbackURL)!,
             success: { (credential, response, parameters) -> Void in
                 XCTFail("The success handler should not be called.")
             },
@@ -135,7 +135,7 @@ class OAuth1SwiftTests: OAuthSwiftServerBaseTest {
                 expectation.fulfill()
         })
         
-        waitForExpectationsWithTimeout(DefaultTimeout, handler: nil)
+        waitForExpectations(timeout: DefaultTimeout, handler: nil)
     }
 
     
