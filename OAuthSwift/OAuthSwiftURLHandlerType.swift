@@ -46,7 +46,7 @@ import SafariServices
     open class SafariURLHandler: NSObject, OAuthSwiftURLHandlerType, SFSafariViewControllerDelegate {
 
         open let viewController: UIViewController
-        var observers = [String: AnyObject]()
+        var observers = [String: Any]()
 
         // configure
         open var animated: Bool = true

@@ -36,7 +36,7 @@ open class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftReques
     fileprivate var cancelRequested = false
 
     var headers: Dictionary<String, String>
-    var parameters: Dictionary<String, AnyObject>
+    var parameters: [String: Any]
 
     var dataEncoding: String.Encoding
     var charset: CFString {
@@ -55,7 +55,7 @@ open class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftReques
     
     var paramsLocation: ParamsLocation
 
-    open static var executionContext: (() -> Void) -> Void = { block in
+    open static var executionContext: (@escaping () -> Void) -> Void = { block in
         return DispatchQueue.main.async(execute: block)
     }
 
@@ -63,7 +63,7 @@ open class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftReques
         self.init(URL: URL, method: .GET, parameters: [:])
     }
 
-    init(URL: Foundation.URL, method: Method, parameters: Dictionary<String, AnyObject>, paramsLocation : ParamsLocation = .authorizationHeader) {
+    init(URL: Foundation.URL, method: Method, parameters: [String: Any], paramsLocation : ParamsLocation = .authorizationHeader) {
         self.URL = URL
         self.HTTPMethod = method
         self.headers = [:]
@@ -148,9 +148,9 @@ open class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftReques
                     var localizedDescription = String()
                     let responseString: String
                     
-                    let responseJSON: AnyObject? = try? JSONSerialization.jsonObject(with: self.responseData as Data, options: JSONSerialization.ReadingOptions.mutableContainers)
+                    let responseJSON = try? JSONSerialization.jsonObject(with: self.responseData as Data, options: JSONSerialization.ReadingOptions.mutableContainers)
                     
-                    if let responseJSON = responseJSON {
+                  if let responseJSON = responseJSON as? [String: Any] {
                         if let code = responseJSON["error"] as? String, let description = responseJSON["error_description"] as? String {
                             localizedDescription = NSLocalizedString("\(code) \(description)", comment: "")
                             
@@ -164,16 +164,16 @@ open class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftReques
                     
                     responseString = String(data: self.responseData as Data, encoding: self.dataEncoding)!
                     
-                    let userInfo = [
+                    let userInfo: [String: Any] = [
                         NSLocalizedDescriptionKey: localizedDescription,
                         "Response-Headers": self.response.allHeaderFields,
-                        "Response-Body": responseString ?? NSNull(),
+                        "Response-Body": responseString,
                         OAuthSwiftErrorResponseKey: response ?? NSNull(),
                         OAuthSwiftErrorResponseDataKey: self.responseData
                     ]
                     
                     let error = NSError(domain: NSURLErrorDomain, code: errorCode, userInfo: userInfo)
-                    self.failureHandler?(error: error)
+                    self.failureHandler?(error)
                     return
                 }
                 
@@ -209,7 +209,7 @@ open class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftReques
         _ URL: Foundation.URL,
         method: Method,
         headers: [String : String],
-        parameters: Dictionary<String, AnyObject>,
+        parameters: [String: Any],
         dataEncoding: String.Encoding,
         body: Data? = nil,
         paramsLocation: ParamsLocation = .authorizationHeader) throws -> NSMutableURLRequest {
@@ -227,7 +227,7 @@ open class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftReques
 
     open class func setupRequestForOAuth(_ request: NSMutableURLRequest,
         headers: [String : String],
-        parameters: Dictionary<String, AnyObject>,
+        parameters: [String: Any],
         dataEncoding: String.Encoding,
         body: Data? = nil,
         paramsLocation : ParamsLocation = .authorizationHeader) throws -> NSMutableURLRequest {
@@ -237,7 +237,7 @@ open class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftReques
 
             let charset = CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(dataEncoding.rawValue))
 
-            let finalParameters : Dictionary<String, AnyObject>
+            let finalParameters : [String: Any]
             switch (paramsLocation) {
             case .authorizationHeader:
                 finalParameters = parameters.filter { key, _ in !key.hasPrefix("oauth_") }

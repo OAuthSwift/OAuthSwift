@@ -97,11 +97,9 @@ open class OAuth1Swift: OAuthSwift {
 
     // 1. Request token
     func postOAuthRequestTokenWithCallbackURL(_ callbackURL: URL, success: TokenSuccessHandler, failure: FailureHandler?) {
-        var parameters =  Dictionary<String, AnyObject>()
-        if let callbackURLString: String = callbackURL.absoluteString {
-            parameters["oauth_callback"] = callbackURLString
-        }
-        self.client.post(self.request_token_url, parameters: parameters, success: {
+        var parameters =  Dictionary<String, Any>()
+        parameters["oauth_callback"] = callbackURL.absoluteString
+        let _ = self.client.post(self.request_token_url, parameters: parameters, success: {
             data, response in
             let responseString = String(data: data, encoding: String.Encoding.utf8)!
             let parameters = responseString.parametersFromQueryString()
@@ -111,16 +109,16 @@ open class OAuth1Swift: OAuthSwift {
             if let oauthTokenSecret=parameters["oauth_token_secret"] {
                 self.client.credential.oauth_token_secret = oauthTokenSecret.safeStringByRemovingPercentEncoding
             }
-            success(self.client.credential, response, parameters as Dictionary<String, AnyObject>)
+            success(self.client.credential, response, parameters as [String: Any])
         }, failure: failure)
     }
 
     // 3. Get Access token
     func postOAuthAccessTokenWithRequestToken(_ success: TokenSuccessHandler, failure: FailureHandler?) {
-        var parameters = Dictionary<String, AnyObject>()
+        var parameters = Dictionary<String, Any>()
         parameters["oauth_token"] = self.client.credential.oauth_token
         parameters["oauth_verifier"] = self.client.credential.oauth_verifier
-        self.client.post(self.access_token_url, parameters: parameters, success: {
+        let _ = self.client.post(self.access_token_url, parameters: parameters, success: {
             data, response in
             let responseString = String(data: data, encoding: String.Encoding.utf8)!
             let parameters = responseString.parametersFromQueryString()
@@ -130,7 +128,7 @@ open class OAuth1Swift: OAuthSwift {
             if let oauthTokenSecret=parameters["oauth_token_secret"] {
                 self.client.credential.oauth_token_secret = oauthTokenSecret.safeStringByRemovingPercentEncoding
             }
-            success(self.client.credential, response, parameters as Dictionary<String, AnyObject>)
+            success(self.client.credential, response, parameters as [String: Any])
         }, failure: failure)
     }
 

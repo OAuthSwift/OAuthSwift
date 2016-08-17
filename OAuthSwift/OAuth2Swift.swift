@@ -85,7 +85,7 @@ open class OAuth2Swift: OAuthSwift {
                 if let expiresIn:String = responseParameters["expires_in"], let offset = Double(expiresIn)  {
                     self.client.credential.oauth_token_expires_at = Date(timeInterval: offset, since: Date())
                 }
-                success(self.client.credential, nil, responseParameters as Dictionary<String, AnyObject>)
+                success(self.client.credential, nil, responseParameters as [String: Any])
             }
             else if let code = responseParameters["code"] {
                 if !self.allowMissingStateCheck {
@@ -140,7 +140,7 @@ open class OAuth2Swift: OAuthSwift {
     }
     
     func postOAuthAccessTokenWithRequestTokenByCode(_ code: String, callbackURL: URL, headers: [String:String]? = nil, success: TokenSuccessHandler, failure: FailureHandler?) {
-        var parameters = Dictionary<String, AnyObject>()
+        var parameters = [String: Any]()
         parameters["client_id"] = self.consumer_key
         parameters["client_secret"] = self.consumer_secret
         parameters["code"] = code
@@ -151,7 +151,7 @@ open class OAuth2Swift: OAuthSwift {
     }
     
     open func renewAccessTokenWithRefreshToken(_ refreshToken: String, headers: [String:String]? = nil, success: TokenSuccessHandler, failure: FailureHandler?) {
-        var parameters = Dictionary<String, AnyObject>()
+      var parameters = [String: Any]()
         parameters["client_id"] = self.consumer_key
         parameters["client_secret"] = self.consumer_secret
         parameters["refresh_token"] = refreshToken
@@ -160,14 +160,14 @@ open class OAuth2Swift: OAuthSwift {
         requestOAuthAccessTokenWithParameters(parameters, headers: headers, success: success, failure: failure)
     }
     
-    fileprivate func requestOAuthAccessTokenWithParameters(_ parameters: [String : AnyObject], headers: [String: String]? = nil, success: TokenSuccessHandler, failure: FailureHandler?) {
+    fileprivate func requestOAuthAccessTokenWithParameters(_ parameters: [String : Any], headers: [String: String]? = nil, success: TokenSuccessHandler, failure: FailureHandler?) {
         let successHandler: OAuthSwiftHTTPRequest.SuccessHandler = { [unowned self]
             data, response in
-            let responseJSON: AnyObject? = try? JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions.mutableContainers)
+            let responseJSON: Any? = try? JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions.mutableContainers)
             
-            let responseParameters: [String: AnyObject]
+            let responseParameters: [String: Any]
             
-            if let jsonDico = responseJSON as? [String:AnyObject] {
+            if let jsonDico = responseJSON as? [String:Any] {
                 responseParameters = jsonDico
             } else {
                 let responseString = String(data: data, encoding: String.Encoding.utf8)!
@@ -210,7 +210,7 @@ open class OAuth2Swift: OAuthSwift {
             }
             if let access_token_url = access_token_url {
                 // Request new access token by disabling check on current token expiration. This is safe because the implementation wants the user to retrieve a new token.
-                self.client.request(access_token_url, method: .POST, parameters: parameters, headers: headers, checkTokenExpiration: false, success: successHandler, failure: failure)
+                let _ = self.client.request(access_token_url, method: .POST, parameters: parameters, headers: headers, checkTokenExpiration: false, success: successHandler, failure: failure)
             }
             else {
                 let errorInfo = [NSLocalizedFailureReasonErrorKey: NSLocalizedString("access token url not defined", comment: "access token url not defined with code type auth")]
@@ -231,9 +231,9 @@ open class OAuth2Swift: OAuthSwift {
      - parameter success:        The success block. Takes the successfull response and data as parameter.
      - parameter failure:        The failure block. Takes the error as parameter.
      */
-    open func startAuthorizedRequest(_ url: String, method: OAuthSwiftHTTPRequest.Method, parameters: Dictionary<String, AnyObject>, headers: [String:String]? = nil, onTokenRenewal: TokenRenewedHandler? = nil, success: OAuthSwiftHTTPRequest.SuccessHandler, failure: OAuthSwiftHTTPRequest.FailureHandler) {
+    open func startAuthorizedRequest(_ url: String, method: OAuthSwiftHTTPRequest.Method, parameters: [String: Any], headers: [String:String]? = nil, onTokenRenewal: TokenRenewedHandler? = nil, success: OAuthSwiftHTTPRequest.SuccessHandler, failure: OAuthSwiftHTTPRequest.FailureHandler) {
         // build request
-        self.client.request(url, method: method, parameters: parameters, headers: headers, success: success) { (error) in
+        let _ = self.client.request(url, method: method, parameters: parameters, headers: headers, success: success) { (error) in
             switch error.code {
             case OAuthSwiftErrorCode.tokenExpiredError.rawValue:
                 self.renewAccessTokenWithRefreshToken(self.client.credential.oauth_refresh_token, headers: headers, success: { (credential, response, parameters) in
@@ -254,7 +254,7 @@ open class OAuth2Swift: OAuthSwift {
     }
     
     open func authorizeDeviceToken(_ deviceCode: String, success: TokenRenewedHandler, failure: OAuthSwiftHTTPRequest.FailureHandler) {
-        var parameters = Dictionary<String, AnyObject>()
+        var parameters = [String: Any]()
         parameters["client_id"] = self.consumer_key
         parameters["client_secret"] = self.consumer_secret
         parameters["code"] = deviceCode

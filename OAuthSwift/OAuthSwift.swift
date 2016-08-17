@@ -21,7 +21,7 @@ open class OAuthSwift: NSObject {
     open var authorize_url_handler: OAuthSwiftURLHandlerType = OAuthSwiftOpenURLExternally.sharedInstance
 
     // MARK: callback alias
-    public typealias TokenSuccessHandler = (_ credential: OAuthSwiftCredential, _ response: URLResponse?, _ parameters: Dictionary<String, AnyObject>) -> Void
+    public typealias TokenSuccessHandler = (_ credential: OAuthSwiftCredential, _ response: URLResponse?, _ parameters: [String: Any]) -> Void
     public typealias FailureHandler = (_ error: NSError) -> Void
     public typealias TokenRenewedHandler = (_ credential: OAuthSwiftCredential) -> Void
     
@@ -54,7 +54,7 @@ open class OAuthSwift: NSObject {
             self.removeCallbackNotificationObserver()
 
             let urlFromUserInfo = (notification as NSNotification).userInfo![CallbackNotification.optionsURLKey] as! URL
-            block(url FromUserInfo)
+            block(urlFromUserInfo)
         }
     }
 
