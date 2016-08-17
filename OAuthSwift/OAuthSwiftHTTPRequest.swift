@@ -8,10 +8,10 @@
 
 import Foundation
 
-public class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftRequestHandle {
+open class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftRequestHandle {
 
-    public typealias SuccessHandler = (data: Data, response: HTTPURLResponse) -> Void
-    public typealias FailureHandler = (error: NSError) -> Void
+    public typealias SuccessHandler = (_ data: Data, _ response: HTTPURLResponse) -> Void
+    public typealias FailureHandler = (_ error: NSError) -> Void
 
     public enum Method: String {
         case GET, POST, PUT, DELETE, PATCH, HEAD //, OPTIONS, TRACE, CONNECT
@@ -29,11 +29,11 @@ public class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftRequ
     var HTTPMethod: Method
     var HTTPBody: Data?
 
-    private var request: NSMutableURLRequest?
-    private var task: URLSessionTask?
-    private var session: URLSession!
+    fileprivate var request: NSMutableURLRequest?
+    fileprivate var task: URLSessionTask?
+    fileprivate var session: URLSession!
     
-    private var cancelRequested = false
+    fileprivate var cancelRequested = false
 
     var headers: Dictionary<String, String>
     var parameters: Dictionary<String, AnyObject>
@@ -55,7 +55,7 @@ public class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftRequ
     
     var paramsLocation: ParamsLocation
 
-    public static var executionContext: (() -> Void) -> Void = { block in
+    open static var executionContext: (() -> Void) -> Void = { block in
         return DispatchQueue.main.async(execute: block)
     }
 
@@ -126,16 +126,16 @@ public class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftRequ
                 #endif
                 
                 guard error == nil else {
-                    self.failureHandler?(error: error!)
+                    self.failureHandler?(error! as NSError)
                     return
                 }
 
                 guard response != nil && (response as? HTTPURLResponse) != nil && data != nil else {
                     let responseString = String(data: self.responseData as Data, encoding: self.dataEncoding)!
                     let localizedDescription = OAuthSwiftHTTPRequest.descriptionForHTTPStatus(self.response.statusCode, responseString: responseString)
-                    let userInfo : [NSObject : AnyObject] = [NSLocalizedDescriptionKey: localizedDescription, "Response-Headers": self.response.allHeaderFields]
+                    let userInfo : [NSObject : AnyObject] = [NSLocalizedDescriptionKey as NSObject: localizedDescription as AnyObject, "Response-Headers" as NSObject: self.response.allHeaderFields as AnyObject]
                     let error = NSError(domain: NSURLErrorDomain, code: self.response.statusCode, userInfo: userInfo)
-                    self.failureHandler?(error: error)
+                    self.failureHandler?(error)
                     return
                 }
 
@@ -143,7 +143,7 @@ public class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftRequ
                 self.responseData.length = 0
                 self.responseData.append(data!)
 
-                if (response as? HTTPURLResponse)?.statusCode >= 400 {
+                if ((response as? HTTPURLResponse)?.statusCode)! >= 400 {
                     var errorCode =  OAuthSwiftErrorCode.generalError.rawValue
                     var localizedDescription = String()
                     let responseString: String
@@ -151,7 +151,7 @@ public class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftRequ
                     let responseJSON: AnyObject? = try? JSONSerialization.jsonObject(with: self.responseData as Data, options: JSONSerialization.ReadingOptions.mutableContainers)
                     
                     if let responseJSON = responseJSON {
-                        if let code = responseJSON["error"] as? String, description = responseJSON["error_description"] as? String {
+                        if let code = responseJSON["error"] as? String, let description = responseJSON["error_description"] as? String {
                             localizedDescription = NSLocalizedString("\(code) \(description)", comment: "")
                             
                             if code == "authorization_pending" {
@@ -177,7 +177,7 @@ public class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftRequ
                     return
                 }
                 
-                self.successHandler?(data: self.responseData as Data, response: self.response)
+                self.successHandler?(self.responseData as Data, self.response)
             }
             self.task?.resume()
 
@@ -189,7 +189,7 @@ public class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftRequ
         }
     }
 
-    public func cancel() {
+    open func cancel() {
         // perform lock here to prevent cancel calls on another thread while creating the request
         objc_sync_enter(self)
         defer { objc_sync_exit(self) }
@@ -201,11 +201,11 @@ public class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftRequ
         }
     }
 
-    public func makeRequest() throws -> NSMutableURLRequest {
+    open func makeRequest() throws -> NSMutableURLRequest {
         return try OAuthSwiftHTTPRequest.makeRequest(self.URL, method: self.HTTPMethod, headers: self.headers, parameters: self.parameters, dataEncoding: self.dataEncoding, body: self.HTTPBody, paramsLocation: self.paramsLocation)
     }
 
-    public class func makeRequest(
+    open class func makeRequest(
         _ URL: Foundation.URL,
         method: Method,
         headers: [String : String],
@@ -225,7 +225,7 @@ public class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftRequ
             
     }
 
-    public class func setupRequestForOAuth(_ request: NSMutableURLRequest,
+    open class func setupRequestForOAuth(_ request: NSMutableURLRequest,
         headers: [String : String],
         parameters: Dictionary<String, AnyObject>,
         dataEncoding: String.Encoding,
@@ -258,7 +258,7 @@ public class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftRequ
                         }
                     }
                     else {
-                        if let contentType = headers["Content-Type"] where contentType.range(of: "application/json") != nil {
+                        if let contentType = headers["Content-Type"] , contentType.range(of: "application/json") != nil {
                             let jsonData: Data = try JSONSerialization.data(withJSONObject: finalParameters, options: [])
                             request.setValue("application/json; charset=\(charset)", forHTTPHeaderField: "Content-Type")
                             request.httpBody = jsonData

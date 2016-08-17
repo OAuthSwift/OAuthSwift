@@ -19,9 +19,9 @@ import Foundation
     public typealias OAuthViewController = NSViewController
 #endif
 
-public class OAuthWebViewController: OAuthViewController, OAuthSwiftURLHandlerType {
+open class OAuthWebViewController: OAuthViewController, OAuthSwiftURLHandlerType {
 
-    public func handle(_ url: URL) {
+    open func handle(_ url: URL) {
         // do UI in main thread
         if Thread.isMainThread {
              doHandle(url)
@@ -37,7 +37,7 @@ public class OAuthWebViewController: OAuthViewController, OAuthSwiftURLHandlerTy
     public static var userActivityType: String = "org.github.dongri.oauthswift.connect"
     #endif
 
-    public func doHandle(_ url: URL){
+    open func doHandle(_ url: URL){
         #if os(iOS) || os(tvOS)
             if let p = self.parent {
                 p.present(self, animated: true, completion: nil)
@@ -60,7 +60,7 @@ public class OAuthWebViewController: OAuthViewController, OAuthSwiftURLHandlerTy
         #endif
     }
 
-    public func dismissWebViewController() {
+    open func dismissWebViewController() {
         #if os(iOS) || os(tvOS)
             self.dismiss(animated: true, completion: nil)
         #elseif os(watchOS)

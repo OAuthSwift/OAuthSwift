@@ -8,14 +8,14 @@
 
 import Foundation
 
-public class OAuth2Swift: OAuthSwift {
+open class OAuth2Swift: OAuthSwift {
 
     // If your oauth provider need to use basic authentification
     // set value to true (default: false)
-    public var accessTokenBasicAuthentification = false
+    open var accessTokenBasicAuthentification = false
 
     // Set to true to deactivate state check. Be careful of CSRF
-    public var allowMissingStateCheck: Bool = false
+    open var allowMissingStateCheck: Bool = false
 
     var consumer_key: String
     var consumer_secret: String
@@ -46,8 +46,8 @@ public class OAuth2Swift: OAuthSwift {
     }
     
     public convenience init?(parameters: [String:String]){
-        guard let consumerKey = parameters["consumerKey"], consumerSecret = parameters["consumerSecret"],
-            responseType = parameters["responseType"], authorizeUrl = parameters["authorizeUrl"] else {
+        guard let consumerKey = parameters["consumerKey"], let consumerSecret = parameters["consumerSecret"],
+            let responseType = parameters["responseType"], let authorizeUrl = parameters["authorizeUrl"] else {
                 return nil
         }
         if let accessTokenUrl = parameters["accessTokenUrl"] {
@@ -59,7 +59,7 @@ public class OAuth2Swift: OAuthSwift {
         }
     }
 
-    public var parameters: [String: String] {
+    open var parameters: [String: String] {
         return [
             "consumerKey": consumer_key,
             "consumerSecret": consumer_secret,
@@ -70,46 +70,46 @@ public class OAuth2Swift: OAuthSwift {
     }
 
     // MARK: functions
-    public func authorizeWithCallbackURL(_ callbackURL: URL, scope: String, state: String, params: [String: String] = [String: String](), headers: [String:String]? = nil, success: TokenSuccessHandler, failure: ((error: NSError) -> Void)) {
+    open func authorizeWithCallbackURL(_ callbackURL: URL, scope: String, state: String, params: [String: String] = [String: String](), headers: [String:String]? = nil, success: TokenSuccessHandler, failure: ((_ error: NSError) -> Void)) {
         
          self.observeCallback { [unowned self] url in
             var responseParameters = [String: String]()
             if let query = url.query {
                 responseParameters += query.parametersFromQueryString()
             }
-            if let fragment = url.fragment where !fragment.isEmpty {
+            if let fragment = url.fragment , !fragment.isEmpty {
                 responseParameters += fragment.parametersFromQueryString()
             }
             if let accessToken = responseParameters["access_token"] {
                 self.client.credential.oauth_token = accessToken.safeStringByRemovingPercentEncoding
-                if let expiresIn:String = responseParameters["expires_in"], offset = Double(expiresIn)  {
+                if let expiresIn:String = responseParameters["expires_in"], let offset = Double(expiresIn)  {
                     self.client.credential.oauth_token_expires_at = Date(timeInterval: offset, since: Date())
                 }
-                success(credential: self.client.credential, response: nil, parameters: responseParameters)
+                success(self.client.credential, nil, responseParameters as Dictionary<String, AnyObject>)
             }
             else if let code = responseParameters["code"] {
                 if !self.allowMissingStateCheck {
                     guard let responseState = responseParameters["state"] else {
                         let errorInfo = [NSLocalizedDescriptionKey: "Missing state"]
-                        failure(error: NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.missingStateError.rawValue, userInfo: errorInfo))
+                        failure(NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.missingStateError.rawValue, userInfo: errorInfo))
                         return
                     }
                     if responseState != state {
                         let errorInfo = [NSLocalizedDescriptionKey: "state not equals"]
-                        failure(error: NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.stateNotEqualError.rawValue, userInfo: errorInfo))
+                        failure(NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.stateNotEqualError.rawValue, userInfo: errorInfo))
                         return
                     }
                 }
                 self.postOAuthAccessTokenWithRequestTokenByCode(code.safeStringByRemovingPercentEncoding,
                     callbackURL:callbackURL, headers: headers , success: success, failure: failure)
             }
-            else if let error = responseParameters["error"], error_description = responseParameters["error_description"] {
+            else if let error = responseParameters["error"], let error_description = responseParameters["error_description"] {
                 let errorInfo = [NSLocalizedFailureReasonErrorKey: NSLocalizedString(error, comment: error_description)]
-                failure(error: NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.generalError.rawValue, userInfo: errorInfo))
+                failure(NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.generalError.rawValue, userInfo: errorInfo))
             }
             else {
                 let errorInfo = [NSLocalizedDescriptionKey: "No access_token, no code and no error provided by server"]
-                failure(error: NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.serverError.rawValue, userInfo: errorInfo))
+                failure(NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.serverError.rawValue, userInfo: errorInfo))
             }
         }
 
@@ -130,12 +130,12 @@ public class OAuth2Swift: OAuthSwift {
         var urlString = self.authorize_url
         urlString += (self.authorize_url.has("?") ? "&" : "?")
         
-        if let encodedQuery = queryString.urlQueryEncoded, queryURL = URL(string: urlString + encodedQuery) {
+        if let encodedQuery = queryString.urlQueryEncoded, let queryURL = URL(string: urlString + encodedQuery) {
             self.authorize_url_handler.handle(queryURL)
         }
         else {
             let errorInfo = [NSLocalizedFailureReasonErrorKey: NSLocalizedString("Failed to create URL", comment: "\(urlString) or \(queryString) not convertible to URL, please check encoding")]
-            failure(error: NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.encodingError.rawValue, userInfo: errorInfo))
+            failure(NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.encodingError.rawValue, userInfo: errorInfo))
         }
     }
     
@@ -150,7 +150,7 @@ public class OAuth2Swift: OAuthSwift {
         requestOAuthAccessTokenWithParameters(parameters, headers: headers, success: success, failure: failure)
     }
     
-    public func renewAccessTokenWithRefreshToken(_ refreshToken: String, headers: [String:String]? = nil, success: TokenSuccessHandler, failure: FailureHandler?) {
+    open func renewAccessTokenWithRefreshToken(_ refreshToken: String, headers: [String:String]? = nil, success: TokenSuccessHandler, failure: FailureHandler?) {
         var parameters = Dictionary<String, AnyObject>()
         parameters["client_id"] = self.consumer_key
         parameters["client_secret"] = self.consumer_secret
@@ -160,7 +160,7 @@ public class OAuth2Swift: OAuthSwift {
         requestOAuthAccessTokenWithParameters(parameters, headers: headers, success: success, failure: failure)
     }
     
-    private func requestOAuthAccessTokenWithParameters(_ parameters: [String : AnyObject], headers: [String: String]? = nil, success: TokenSuccessHandler, failure: FailureHandler?) {
+    fileprivate func requestOAuthAccessTokenWithParameters(_ parameters: [String : AnyObject], headers: [String: String]? = nil, success: TokenSuccessHandler, failure: FailureHandler?) {
         let successHandler: OAuthSwiftHTTPRequest.SuccessHandler = { [unowned self]
             data, response in
             let responseJSON: AnyObject? = try? JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions.mutableContainers)
@@ -177,7 +177,7 @@ public class OAuth2Swift: OAuthSwift {
             guard let accessToken = responseParameters["access_token"] as? String else {
                 if let failure = failure {
                     let errorInfo = [NSLocalizedFailureReasonErrorKey: NSLocalizedString("Could not get Access Token", comment: "Due to an error in the OAuth2 process, we couldn't get a valid token.")]
-                    failure(error: NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.serverError.rawValue, userInfo: errorInfo))
+                    failure(NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.serverError.rawValue, userInfo: errorInfo))
                 }
                 return
             }
@@ -185,14 +185,14 @@ public class OAuth2Swift: OAuthSwift {
                 self.client.credential.oauth_refresh_token = refreshToken.safeStringByRemovingPercentEncoding
             }
 
-            if let expiresIn = responseParameters["expires_in"] as? String, offset = Double(expiresIn)  {
+            if let expiresIn = responseParameters["expires_in"] as? String, let offset = Double(expiresIn)  {
                 self.client.credential.oauth_token_expires_at = Date(timeInterval: offset, since: Date())
             } else if let expiresIn = responseParameters["expires_in"] as? Double {
                 self.client.credential.oauth_token_expires_at = Date(timeInterval: expiresIn, since: Date())
             }
             
             self.client.credential.oauth_token = accessToken.safeStringByRemovingPercentEncoding
-            success(credential: self.client.credential, response: response, parameters: responseParameters)
+            success(self.client.credential, response, responseParameters)
         }
 
         if self.content_type == "multipart/form-data" {
@@ -203,7 +203,7 @@ public class OAuth2Swift: OAuthSwift {
             var headers: [String:String]? = nil
             if accessTokenBasicAuthentification {
                 let authentification = "\(self.consumer_key):\(self.consumer_secret)".data(using: String.Encoding.utf8)
-                if let base64Encoded = authentification?.base64EncodedString(options: NSData.Base64EncodingOptions(rawValue: 0))
+                if let base64Encoded = authentification?.base64EncodedString(options: Data.Base64EncodingOptions(rawValue: 0))
                 {
                     headers = ["Authorization": "Basic \(base64Encoded)"]
                 }
@@ -214,7 +214,7 @@ public class OAuth2Swift: OAuthSwift {
             }
             else {
                 let errorInfo = [NSLocalizedFailureReasonErrorKey: NSLocalizedString("access token url not defined", comment: "access token url not defined with code type auth")]
-                failure?(error: NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.generalError.rawValue, userInfo: errorInfo))
+                failure?(NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.generalError.rawValue, userInfo: errorInfo))
             }
         }
     }
@@ -231,7 +231,7 @@ public class OAuth2Swift: OAuthSwift {
      - parameter success:        The success block. Takes the successfull response and data as parameter.
      - parameter failure:        The failure block. Takes the error as parameter.
      */
-    public func startAuthorizedRequest(_ url: String, method: OAuthSwiftHTTPRequest.Method, parameters: Dictionary<String, AnyObject>, headers: [String:String]? = nil, onTokenRenewal: TokenRenewedHandler? = nil, success: OAuthSwiftHTTPRequest.SuccessHandler, failure: OAuthSwiftHTTPRequest.FailureHandler) {
+    open func startAuthorizedRequest(_ url: String, method: OAuthSwiftHTTPRequest.Method, parameters: Dictionary<String, AnyObject>, headers: [String:String]? = nil, onTokenRenewal: TokenRenewedHandler? = nil, success: OAuthSwiftHTTPRequest.SuccessHandler, failure: OAuthSwiftHTTPRequest.FailureHandler) {
         // build request
         self.client.request(url, method: method, parameters: parameters, headers: headers, success: success) { (error) in
             switch error.code {
@@ -241,19 +241,19 @@ public class OAuth2Swift: OAuthSwift {
                     
                     // If provided, fire the onRenewal closure
                     if let renewalCallBack = onTokenRenewal {
-                        renewalCallBack(credential: credential)
+                        renewalCallBack(credential)
                     }
                     
                     // Reauthorize the request again, this time with a brand new access token ready to be used.
                     self.startAuthorizedRequest(url, method: method, parameters: parameters, headers: headers, onTokenRenewal: onTokenRenewal, success: success, failure: failure)
                     }, failure: failure)
             default:
-                failure(error: error)
+                failure(error)
             }
         }
     }
     
-    public func authorizeDeviceToken(_ deviceCode: String, success: TokenRenewedHandler, failure: OAuthSwiftHTTPRequest.FailureHandler) {
+    open func authorizeDeviceToken(_ deviceCode: String, success: TokenRenewedHandler, failure: OAuthSwiftHTTPRequest.FailureHandler) {
         var parameters = Dictionary<String, AnyObject>()
         parameters["client_id"] = self.consumer_key
         parameters["client_secret"] = self.consumer_secret
@@ -261,14 +261,14 @@ public class OAuth2Swift: OAuthSwift {
         parameters["grant_type"] = "http://oauth.net/grant_type/device/1.0"
         
         requestOAuthAccessTokenWithParameters(parameters, success: { (credential, response, parameters) in
-            success(credential: credential)
+            success(credential)
             }) { (error) in
-                failure(error: error)
+                failure(error)
         }
     }
     
     @available(*, deprecated:0.5.0, message:"Use OAuthSwift.handleOpenURL()")
-    public override class func handleOpenURL(_ url: URL) {
+    open override class func handleOpenURL(_ url: URL) {
         super.handleOpenURL(url)
     }
 
