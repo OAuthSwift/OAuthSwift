@@ -60,7 +60,7 @@ public class OAuth1Swift: OAuthSwift {
             credential, response, _ in
 
             self.observeCallback { [weak self] url in
-                guard let this = self else {return }
+                guard let this = self else { OAuthSwift.retainError(failure); return }
                 var responseParameters = [String: String]()
                 if let query = url.query {
                     responseParameters += query.parametersFromQueryString()
@@ -78,8 +78,8 @@ public class OAuth1Swift: OAuthSwift {
                     }
                     this.postOAuthAccessTokenWithRequestToken(success, failure: failure)
                 } else {
-                    let userInfo = [NSLocalizedDescriptionKey: "Oauth problem. oauth_token or oauth_verifier not returned"]
-                    failure?(error: NSError(domain: OAuthSwiftErrorDomain, code: -1, userInfo: userInfo))
+                    let message = this.allowMissingOauthVerifier ? "Oauth problem. oauth_token not returned" : "Oauth problem. oauth_token or oauth_verifier not returned"
+                    failure?(error: NSError(code: .MissingTokenOrVerifier, message: message))
                     return
                 }
             }
@@ -89,8 +89,8 @@ public class OAuth1Swift: OAuthSwift {
                 self.authorize_url_handler.handle(queryURL)
             }
             else {
-                let errorInfo = [NSLocalizedFailureReasonErrorKey: NSLocalizedString("Failed to create URL", comment: "\(urlString) not convertible to URL, please encode.")]
-                failure?(error: NSError(domain: OAuthSwiftErrorDomain, code: -1, userInfo: errorInfo))
+                let message = NSLocalizedString("Failed to create URL", comment: "\(urlString) not convertible to URL, please encode.")
+                failure?(error: NSError(code: .EncodingError, message: message))
             }
         }, failure: failure)
     }
@@ -102,16 +102,17 @@ public class OAuth1Swift: OAuthSwift {
             parameters["oauth_callback"] = callbackURLString
         }
         self.client.post(self.request_token_url, parameters: parameters, success: {
-           [unowned self] data, response in
+            [weak self] data, response in
+            guard let this = self else { OAuthSwift.retainError(failure); return }
             let responseString = NSString(data: data, encoding: NSUTF8StringEncoding) as String!
             let parameters = responseString.parametersFromQueryString()
             if let oauthToken=parameters["oauth_token"] {
-                self.client.credential.oauth_token = oauthToken.safeStringByRemovingPercentEncoding
+                this.client.credential.oauth_token = oauthToken.safeStringByRemovingPercentEncoding
             }
             if let oauthTokenSecret=parameters["oauth_token_secret"] {
-                self.client.credential.oauth_token_secret = oauthTokenSecret.safeStringByRemovingPercentEncoding
+                this.client.credential.oauth_token_secret = oauthTokenSecret.safeStringByRemovingPercentEncoding
             }
-            success(credential: self.client.credential, response: response, parameters: parameters)
+            success(credential: this.client.credential, response: response, parameters: parameters)
         }, failure: failure)
     }
 
@@ -121,16 +122,17 @@ public class OAuth1Swift: OAuthSwift {
         parameters["oauth_token"] = self.client.credential.oauth_token
         parameters["oauth_verifier"] = self.client.credential.oauth_verifier
         self.client.post(self.access_token_url, parameters: parameters, success: {
-            [unowned self] data, response in
+            [weak self] data, response in
+            guard let this = self else { OAuthSwift.retainError(failure); return }
             let responseString = NSString(data: data, encoding: NSUTF8StringEncoding) as String!
             let parameters = responseString.parametersFromQueryString()
             if let oauthToken=parameters["oauth_token"] {
-                self.client.credential.oauth_token = oauthToken.safeStringByRemovingPercentEncoding
+                this.client.credential.oauth_token = oauthToken.safeStringByRemovingPercentEncoding
             }
             if let oauthTokenSecret=parameters["oauth_token_secret"] {
-                self.client.credential.oauth_token_secret = oauthTokenSecret.safeStringByRemovingPercentEncoding
+                this.client.credential.oauth_token_secret = oauthTokenSecret.safeStringByRemovingPercentEncoding
             }
-            success(credential: self.client.credential, response: response, parameters: parameters)
+            success(credential: this.client.credential, response: response, parameters: parameters)
         }, failure: failure)
     }
 

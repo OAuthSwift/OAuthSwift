@@ -63,17 +63,13 @@ public class OAuthSwiftClient: NSObject {
     public func request(urlString: String, method: OAuthSwiftHTTPRequest.Method, parameters: [String: AnyObject] = [:], headers: [String:String]? = nil, body: NSData? = nil, checkTokenExpiration: Bool = true, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) -> OAuthSwiftRequestHandle? {
         
         if checkTokenExpiration && self.credential.isTokenExpired()  {
-            let errorInfo = [NSLocalizedDescriptionKey: NSLocalizedString("The provided token is expired.", comment:"Token expired, retrieve new token by using the refresh token")]
-            
-            if let failureHandler = failure {
-                failureHandler(error: NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.TokenExpiredError.rawValue, userInfo: errorInfo))
-            }
-            
+            let message = NSLocalizedString("The provided token is expired.", comment:"Token expired, retrieve new token by using the refresh token")
+            failure?(error: NSError(code: .TokenExpiredError, message: message, errorKey: NSLocalizedDescriptionKey))
             return nil
         }
 
         guard let _ = NSURL(string: urlString) else {
-            failure?(error: NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.RequestCreationError.rawValue, userInfo: nil))
+            failure?(error: NSError(code: .RequestCreationError, message: "Failed to create request with url \(urlString)"))
             return nil
         }
 
