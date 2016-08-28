@@ -29,7 +29,7 @@ class SignTests: XCTestCase {
             XCTFail("Failed to hash")
             return
         }
-        let hashString = hash.base64EncodedStringWithOptions([])
+        let hashString = hash.base64EncodedString()
         XCTAssertEqual(hashString, "Lve95gjOVATpfV8EL5X4nxwjKHE=")
     }
     
@@ -46,7 +46,7 @@ class SignTests: XCTestCase {
             XCTFail("Failed to hash")
             return
         }
-        let hashString = hash.base64EncodedStringWithOptions([])
+        let hashString = hash.base64EncodedString()
         XCTAssertEqual(hashString, expected)
     }
     

@@ -54,7 +54,7 @@ class OAuthSwiftClientTests: XCTestCase {
     }
     
     func testMakePUTRequestWithBody() {
-        testMakeRequestWithBody(.PUT, url:url, emptyParameters, url, "BodyContent".dataUsingEncoding(String.Encoding.utf8)!)
+        testMakeRequestWithBody(.PUT, url:url, emptyParameters, url, "BodyContent".data(using: String.Encoding.utf8)!)
     }
 
     func testMakeRequest(_ method: OAuthSwiftHTTPRequest.Method, url: String,_ parameters: [String:String],_ expectedURL: String, _ expectedBodyJSONDictionary: [String:String]? = nil) {
@@ -68,10 +68,10 @@ class OAuthSwiftClientTests: XCTestCase {
         do {
             let urlRequest = try request.makeRequest()
             if let expectedJSON = expectedBodyJSONDictionary {
-                let json = try! JSONSerialization.JSONObjectWithData(urlRequest.HTTPBody!, options: JSONSerialization.ReadingOptions()) as! [String:String]
+                let json = try! JSONSerialization.jsonObject(with: urlRequest.httpBody!, options: JSONSerialization.ReadingOptions()) as! [String:String]
                 XCTAssertEqualDictionaries(json, expectedJSON)
             }
-            XCTAssertEqualURL(urlRequest.URL!, URL(string: expectedURL)!)
+            XCTAssertEqualURL(urlRequest.url!, URL(string: expectedURL)!)
             
         } catch let e {
             XCTFail("\(e)")
@@ -91,9 +91,9 @@ class OAuthSwiftClientTests: XCTestCase {
 
         let url = URL(string: urlString)!
         let nsURLRequest = NSMutableURLRequest(url: url)
-        nsURLRequest.HTTPMethod = method.rawValue
+        nsURLRequest.httpMethod = method.rawValue
 
-        let request = client.makeRequest(nsURLRequest)
+        let request = client.makeRequest(nsURLRequest as URLRequest)
 
         XCTAssertEqual(request.URL, url)
         XCTAssertEqual(request.HTTPMethod, method)
@@ -101,7 +101,7 @@ class OAuthSwiftClientTests: XCTestCase {
 
         do {
             let urlFromRequest = try request.makeRequest()
-            XCTAssertEqualURL(urlFromRequest.URL!, url)
+            XCTAssertEqualURL(urlFromRequest.url!, url)
         } catch let e {
             XCTFail("\(e)")
         }

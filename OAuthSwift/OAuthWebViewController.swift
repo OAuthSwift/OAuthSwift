@@ -51,7 +51,7 @@ open class OAuthWebViewController: OAuthViewController, OAuthSwiftURLHandlerType
                 self.updateUserActivity(OAuthWebViewController.userActivityType, userInfo: nil, webpageURL: url)
             }
         #elseif os(OSX)
-            if let p = self.parentViewController { // default behaviour if this controller affected as child controller
+            if let p = self.parent { // default behaviour if this controller affected as child controller
                 p.presentViewControllerAsModalWindow(self)
             } else if let window = self.view.window {
                 window.makeKeyAndOrderFront(nil)
@@ -66,9 +66,9 @@ open class OAuthWebViewController: OAuthViewController, OAuthSwiftURLHandlerType
         #elseif os(watchOS)
             self.dismissController()
         #elseif os(OSX)
-            if self.presentingViewController != nil { // if presentViewControllerAsModalWindow
-                self.dismissController(nil)
-                if self.parentViewController != nil {
+            if self.presenting != nil { // if presentViewControllerAsModalWindow
+                self.dismiss(nil)
+                if self.parent != nil {
                     self.removeFromParentViewController()
                 }
             }

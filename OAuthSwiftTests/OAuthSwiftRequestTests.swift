@@ -33,13 +33,13 @@ class OAuth1SwiftRequestTests: XCTestCase {
         }
         
         oAuthSwiftHTTPRequest.start()
-        waitForExpectations(withTimeout: DefaultTimeout, handler: nil)
+        waitForExpectations(timeout: DefaultTimeout, handler: nil)
     }
 
     func testSuccess() {
         let server  = HttpServer()
         server["/"] = { request in
-            return HttpResponse.OK(HttpResponseBody.Text("Success!" as String) )
+            return HttpResponse.ok(HttpResponseBody.text("Success!" as String) )
         }
         
         try! server.start(self.port)
@@ -53,13 +53,13 @@ class OAuth1SwiftRequestTests: XCTestCase {
             XCTFail("The failure handler should not be called.\(error)")
         }
         oAuthSwiftHTTPRequest.successHandler = { (data, response) in
-            if String(data: data, encoding: NSUTF8StringEncoding) == "Success!" {
+            if String(data: data, encoding: String.Encoding.utf8) == "Success!" {
                 successExpectation.fulfill()
             }
         }
         
         oAuthSwiftHTTPRequest.start()
-        waitForExpectations(withTimeout: DefaultTimeout, handler: nil)
+        waitForExpectations(timeout: DefaultTimeout, handler: nil)
     }
 
 	func testCancel() {
@@ -72,7 +72,7 @@ class OAuth1SwiftRequestTests: XCTestCase {
 		let server  = HttpServer()
 		server["/"] = { request in
 			sleep(2)
-			return HttpResponse.OK(HttpResponseBody.Text("Success!" as String) )
+			return HttpResponse.ok(HttpResponseBody.text("Success!" as String) )
 		}
 		try! server.start(self.port)
 		defer {
@@ -92,7 +92,7 @@ class OAuth1SwiftRequestTests: XCTestCase {
 
 		oAuthSwiftHTTPRequest.start()
 		oAuthSwiftHTTPRequest.cancel()
-		waitForExpectations(withTimeout: DefaultTimeout, handler: nil)
+		waitForExpectations(timeout: DefaultTimeout, handler: nil)
 	}
 
 	func testCreationFromNSURLRequest() {
@@ -108,12 +108,12 @@ class OAuth1SwiftRequestTests: XCTestCase {
 		let urlWithQueryString = urlComps!.url!
 		let request = NSMutableURLRequest(url: urlWithQueryString)
 		request.allHTTPHeaderFields = headers
-		request.HTTPMethod = method.rawValue
-		request.HTTPBody = bodyText.dataUsingEncoding(OAuthSwiftDataEncoding)
+		request.httpMethod = method.rawValue
+		request.httpBody = bodyText.data(using: OAuthSwiftDataEncoding)
 		request.timeoutInterval = timeout
 		request.httpShouldHandleCookies = true
 
-		let oauthRequest = OAuthSwiftHTTPRequest(request: request)
+		let oauthRequest = OAuthSwiftHTTPRequest(request: request as URLRequest)
 
 		XCTAssertEqualURL(oauthRequest.URL, urlWithQueryString)
 		XCTAssertEqualDictionaries(oauthRequest.parameters as! [String:String], [:])

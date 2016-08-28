@@ -87,8 +87,8 @@ class TestOAuthSwiftURLHandler: NSObject, OAuthSwiftURLHandlerType {
                     url += "&state=\(state)"
                 }
             case .error(let error,let errorDescription):
-                let e = error.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed())!
-                let ed = errorDescription.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed())!
+                let e = error.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!
+                let ed = errorDescription.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!
                 url += "?error='\(e)'&errorDescription='\(ed)'"
             case .none: break
                 // nothing

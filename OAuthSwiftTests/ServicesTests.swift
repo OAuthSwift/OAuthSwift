@@ -225,7 +225,7 @@ class ServicesURLHandlerType:NSObject, OAuthSwiftURLHandlerType {
             return
         }
         
-        browser.visitURL(url) {[unowned self] (document, error) in
+        browser.visit(url: url) {[unowned self] (document, error) in
             if self.handled {
                 return // already handled (many already connected)
             }
@@ -272,7 +272,7 @@ class ServicesURLHandlerType:NSObject, OAuthSwiftURLHandlerType {
                                         print("\(e)")
                                     }
                                     
-                                    if let currentURL = self.browser.currentURL {
+                                    if let currentURL = self.browser.url {
                                         print("\(currentURL)")
                                     }
                                     if let doc = document {
@@ -318,10 +318,10 @@ class ServicesURLHandlerType:NSObject, OAuthSwiftURLHandlerType {
             if let button = doc.querySelector(autorizeButton) {
                 button.click()
             } else {
-                XCTFail("\(self.service): \(autorizeButton) not found to valid authentification]. \(self.browser.currentURL)")
+                XCTFail("\(self.service): \(autorizeButton) not found to valid authentification]. \(self.browser.url)")
             }
         } else if !self.handled {
-            XCTFail("\(self.service): No [authorize_button_selector) to valid authentification]. \(self.browser.currentURL)")
+            XCTFail("\(self.service): No [authorize_button_selector) to valid authentification]. \(self.browser.url)")
         }
     }
 

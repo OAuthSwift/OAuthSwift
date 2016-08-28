@@ -62,7 +62,7 @@ class OAuth2SwiftTests: OAuthSwiftServerBaseTest {
                 XCTFail("The failure handler should not be called.\(error)")
         }
 
-        waitForExpectations(withTimeout: DefaultTimeout, handler: nil)
+        waitForExpectations(timeout: DefaultTimeout, handler: nil)
 
         XCTAssertEqual(oauth.client.credential.oauth_token, server.oauth_token)
     }
@@ -107,7 +107,7 @@ class OAuth2SwiftTests: OAuthSwiftServerBaseTest {
                 expectation.fulfill()
         }
         
-        waitForExpectations(withTimeout: DefaultTimeout, handler: nil)
+        waitForExpectations(timeout: DefaultTimeout, handler: nil)
     }
     
     func testExpire() {
@@ -121,7 +121,7 @@ class OAuth2SwiftTests: OAuthSwiftServerBaseTest {
             accessTokenUrl: server.accessTokenURLV2,
             responseType: "code"
         )
-        oauth.client.get(server.expireURLV2, parameters: [:],
+        let _ = oauth.client.get(server.expireURLV2, parameters: [:],
             success: {
                 data, response in
                 XCTFail("\(data).")
@@ -148,7 +148,7 @@ class OAuth2SwiftTests: OAuthSwiftServerBaseTest {
         
         
         
-        waitForExpectations(withTimeout: DefaultTimeout, handler: nil)
+        waitForExpectations(timeout: DefaultTimeout, handler: nil)
     }
     
 
