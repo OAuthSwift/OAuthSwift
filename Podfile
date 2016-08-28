@@ -2,8 +2,12 @@ use_frameworks!
 
 target 'OAuthSwiftTests' do
     platform :osx, '10.10'
-    # TODO: Switch back to just the (main) pod, once they are using Swift 3.0 by default
+    
+    # TODO: Switch these back to just the (main) pod, once they are using Swift 3.0 by default
+    
+    # TODO: PR: https://github.com/httpswift/swifter/pull/186
     pod 'Swifter',  branch: 'swift3',   git: 'https://github.com/mhmiles/swifter.git'
+    
     pod 'Erik',     branch: 'swift3.0', git: 'https://github.com/phimage/Erik.git'
     
     # Swift 3.0 versions of Erik's dependencies. TODO: Remove once the latest pod is using Swift 3.0
