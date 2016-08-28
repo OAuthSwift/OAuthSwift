@@ -84,7 +84,7 @@ open class OAuth1Swift: OAuthSwift {
                 }
             }
             // 2. Authorize
-            let urlString = self.authorize_url + (self.authorize_url.has("?") ? "&" : "?") + "oauth_token=\(credential.oauth_token.urlQueryEncoded)"
+            let urlString = self.authorize_url + (self.authorize_url.has("?") ? "&" : "?") + "oauth_token=\(credential.oauth_token.urlQueryEncoded!)"
             if let queryURL = URL(string: urlString) {
                 self.authorize_url_handler.handle(queryURL)
             }
