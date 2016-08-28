@@ -117,7 +117,7 @@ open class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftReques
             self.session = URLSession(configuration: URLSessionConfiguration.default,
                 delegate: self,
                 delegateQueue: OperationQueue.main)
-            self.task = self.session.dataTask(with:  self.request! as URLRequest) { [unowned self] (data, response, error) in
+            self.task = self.session.dataTask(with: self.request! as URLRequest) { [unowned self] (data, response, error) in
             
                 #if os(iOS)
                     #if !OAUTH_APP_EXTENSIONS
@@ -129,28 +129,29 @@ open class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftReques
                     self.failureHandler?(error! as NSError)
                     return
                 }
+                let httpResponse = response as? HTTPURLResponse
 
-                guard response != nil && (response as? HTTPURLResponse) != nil && data != nil else {
+                guard httpResponse != nil && data != nil else {
                     let responseString = String(data: self.responseData as Data, encoding: self.dataEncoding)!
                     let localizedDescription = OAuthSwiftHTTPRequest.descriptionForHTTPStatus(self.response.statusCode, responseString: responseString)
-                    let userInfo : [NSObject : AnyObject] = [NSLocalizedDescriptionKey as NSObject: localizedDescription as AnyObject, "Response-Headers" as NSObject: self.response.allHeaderFields as AnyObject]
+                    let userInfo : [String : Any] = [NSLocalizedDescriptionKey: localizedDescription, "Response-Headers": self.response.allHeaderFields]
                     let error = NSError(domain: NSURLErrorDomain, code: self.response.statusCode, userInfo: userInfo)
                     self.failureHandler?(error)
                     return
                 }
 
-                self.response = response as? HTTPURLResponse
+                self.response = httpResponse
                 self.responseData.length = 0
                 self.responseData.append(data!)
 
-                if ((response as? HTTPURLResponse)?.statusCode)! >= 400 {
+                if (httpResponse?.statusCode)! >= 400 {
                     var errorCode =  OAuthSwiftErrorCode.generalError.rawValue
                     var localizedDescription = String()
                     let responseString: String
                     
                     let responseJSON = try? JSONSerialization.jsonObject(with: self.responseData as Data, options: JSONSerialization.ReadingOptions.mutableContainers)
                     
-                  if let responseJSON = responseJSON as? [String: Any] {
+                    if let responseJSON = responseJSON as? [String: Any] {
                         if let code = responseJSON["error"] as? String, let description = responseJSON["error_description"] as? String {
                             localizedDescription = NSLocalizedString("\(code) \(description)", comment: "")
                             
