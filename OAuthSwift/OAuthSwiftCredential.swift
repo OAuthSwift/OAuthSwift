@@ -14,13 +14,13 @@ public protocol OAuthSwiftCredentialHeadersFactory {
 open class OAuthSwiftCredential: NSObject, NSCoding {
 
     public enum Version {
-        case oAuth1, oAuth2
+        case OAuth1, OAuth2
         
         public var shortVersion : String {
             switch self {
-            case .oAuth1:
+            case .OAuth1:
                 return "1.0"
-            case .oAuth2:
+            case .OAuth2:
                 return "2.0"
             }
         }
@@ -57,7 +57,7 @@ open class OAuthSwiftCredential: NSObject, NSCoding {
     open var oauth_token_secret: String = String()
     open var oauth_token_expires_at: Date? = nil
     open internal(set) var oauth_verifier: String = String()
-    open var version: Version = .oAuth1
+    open var version: Version = .OAuth1
     
     // hook to replace headers creation
     open var headersFactory: OAuthSwiftCredentialHeadersFactory? = nil
@@ -119,9 +119,9 @@ open class OAuthSwiftCredential: NSObject, NSCoding {
             return factory.make(url, method: method, parameters: parameters, body: body)
         }
         switch self.version {
-        case .oAuth1:
+        case .OAuth1:
             return ["Authorization": self.authorizationHeaderForMethod(method, url: url, parameters: parameters, body: body)]
-        case .oAuth2:
+        case .OAuth2:
             return self.oauth_token.isEmpty ? [:] : ["Authorization": "Bearer \(self.oauth_token)"]
         }
     }
@@ -137,7 +137,7 @@ open class OAuthSwiftCredential: NSObject, NSCoding {
     }
   
     open func authorizationHeaderForMethod(_ method: OAuthSwiftHTTPRequest.Method, url: URL, parameters: [String: Any], body: Data? = nil, timestamp: String, nonce: String) -> String {
-        assert(self.version == .oAuth1)
+        assert(self.version == .OAuth1)
         let authorizationParameters = self.authorizationParametersWithSignatureForMethod(method, url: url, parameters: parameters, body: body, timestamp: timestamp, nonce: nonce)
         
         var parameterComponents = authorizationParameters.urlEncodedQueryStringWithEncoding(OAuthSwiftDataEncoding).components(separatedBy: "&") as [String]

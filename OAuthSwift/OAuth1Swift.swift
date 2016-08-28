@@ -29,7 +29,7 @@ open class OAuth1Swift: OAuthSwift {
         self.authorize_url = authorizeUrl
         self.access_token_url = accessTokenUrl
         super.init(consumerKey: consumerKey, consumerSecret: consumerSecret)
-        self.client.credential.version = .oAuth1
+        self.client.credential.version = .OAuth1
     }
 
     public convenience init?(parameters: [String:String]){

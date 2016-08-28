@@ -42,7 +42,7 @@ open class OAuth2Swift: OAuthSwift {
         self.authorize_url = authorizeUrl
         self.response_type = responseType
         super.init(consumerKey: consumerKey, consumerSecret: consumerSecret)
-        self.client.credential.version = .oAuth2
+        self.client.credential.version = .OAuth2
     }
     
     public convenience init?(parameters: [String:String]){
