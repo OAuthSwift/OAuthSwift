@@ -9,11 +9,11 @@
 
 import Foundation
 
-public class HMAC {
+open class HMAC {
     
     let key:[UInt8] = []
     
-    class internal func sha1(key: Data, message: Data) -> Data? {
+    class internal func sha1(_ key: Data, message: Data) -> Data? {
         var key = key.bytes()
         let message = message.bytes()
         
