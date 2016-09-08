@@ -55,7 +55,7 @@ open class OAuth1Swift: OAuthSwift {
 
     // MARK: functions
     // 0. Start
-    open func authorizeWithCallbackURL(_ callbackURL: URL, success: TokenSuccessHandler, failure: FailureHandler?) {
+    open func authorizeWithCallbackURL(_ callbackURL: URL, success: @escaping TokenSuccessHandler, failure: FailureHandler?) {
         self.postOAuthRequestTokenWithCallbackURL(callbackURL, success: { [unowned self]
             credential, response, _ in
 
@@ -96,7 +96,7 @@ open class OAuth1Swift: OAuthSwift {
     }
 
     // 1. Request token
-    func postOAuthRequestTokenWithCallbackURL(_ callbackURL: URL, success: TokenSuccessHandler, failure: FailureHandler?) {
+    func postOAuthRequestTokenWithCallbackURL(_ callbackURL: URL, success: @escaping TokenSuccessHandler, failure: FailureHandler?) {
         var parameters =  Dictionary<String, Any>()
         parameters["oauth_callback"] = callbackURL.absoluteString
         let _ = self.client.post(self.request_token_url, parameters: parameters, success: {
@@ -114,7 +114,7 @@ open class OAuth1Swift: OAuthSwift {
     }
 
     // 3. Get Access token
-    func postOAuthAccessTokenWithRequestToken(_ success: TokenSuccessHandler, failure: FailureHandler?) {
+    func postOAuthAccessTokenWithRequestToken(_ success: @escaping TokenSuccessHandler, failure: FailureHandler?) {
         var parameters = Dictionary<String, Any>()
         parameters["oauth_token"] = self.client.credential.oauth_token
         parameters["oauth_verifier"] = self.client.credential.oauth_verifier

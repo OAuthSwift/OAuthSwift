@@ -329,7 +329,7 @@ class ServicesURLHandlerType:NSObject, OAuthSwiftURLHandlerType {
 import WebKit
 extension ServicesURLHandlerType: WKNavigationDelegate {
 
-    internal func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: (WKNavigationActionPolicy) -> Void) {
+    internal func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         
         if let url = navigationAction.request.url {
             let urlString = "\(url)"

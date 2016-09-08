@@ -70,7 +70,7 @@ open class OAuth2Swift: OAuthSwift {
     }
 
     // MARK: functions
-    open func authorizeWithCallbackURL(_ callbackURL: URL, scope: String, state: String, params: [String: String] = [String: String](), headers: [String:String]? = nil, success: TokenSuccessHandler, failure: ((_ error: NSError) -> Void)) {
+    open func authorizeWithCallbackURL(_ callbackURL: URL, scope: String, state: String, params: [String: String] = [String: String](), headers: [String:String]? = nil, success: @escaping TokenSuccessHandler, failure: @escaping ((_ error: NSError) -> Void)) {
         
          self.observeCallback { [unowned self] url in
             var responseParameters = [String: String]()
@@ -139,7 +139,7 @@ open class OAuth2Swift: OAuthSwift {
         }
     }
     
-    func postOAuthAccessTokenWithRequestTokenByCode(_ code: String, callbackURL: URL, headers: [String:String]? = nil, success: TokenSuccessHandler, failure: FailureHandler?) {
+    func postOAuthAccessTokenWithRequestTokenByCode(_ code: String, callbackURL: URL, headers: [String:String]? = nil, success: @escaping TokenSuccessHandler, failure: FailureHandler?) {
         var parameters = [String: Any]()
         parameters["client_id"] = self.consumer_key
         parameters["client_secret"] = self.consumer_secret
@@ -150,7 +150,7 @@ open class OAuth2Swift: OAuthSwift {
         requestOAuthAccessTokenWithParameters(parameters, headers: headers, success: success, failure: failure)
     }
     
-    open func renewAccessTokenWithRefreshToken(_ refreshToken: String, headers: [String:String]? = nil, success: TokenSuccessHandler, failure: FailureHandler?) {
+    open func renewAccessTokenWithRefreshToken(_ refreshToken: String, headers: [String:String]? = nil, success: @escaping TokenSuccessHandler, failure: FailureHandler?) {
       var parameters = [String: Any]()
         parameters["client_id"] = self.consumer_key
         parameters["client_secret"] = self.consumer_secret
@@ -160,7 +160,7 @@ open class OAuth2Swift: OAuthSwift {
         requestOAuthAccessTokenWithParameters(parameters, headers: headers, success: success, failure: failure)
     }
     
-    fileprivate func requestOAuthAccessTokenWithParameters(_ parameters: [String : Any], headers: [String: String]? = nil, success: TokenSuccessHandler, failure: FailureHandler?) {
+    fileprivate func requestOAuthAccessTokenWithParameters(_ parameters: [String : Any], headers: [String: String]? = nil, success: @escaping TokenSuccessHandler, failure: FailureHandler?) {
         let successHandler: OAuthSwiftHTTPRequest.SuccessHandler = { [unowned self]
             data, response in
             let responseJSON: Any? = try? JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions.mutableContainers)
@@ -231,7 +231,7 @@ open class OAuth2Swift: OAuthSwift {
      - parameter success:        The success block. Takes the successfull response and data as parameter.
      - parameter failure:        The failure block. Takes the error as parameter.
      */
-    open func startAuthorizedRequest(_ url: String, method: OAuthSwiftHTTPRequest.Method, parameters: [String: Any], headers: [String:String]? = nil, onTokenRenewal: TokenRenewedHandler? = nil, success: OAuthSwiftHTTPRequest.SuccessHandler, failure: OAuthSwiftHTTPRequest.FailureHandler) {
+    open func startAuthorizedRequest(_ url: String, method: OAuthSwiftHTTPRequest.Method, parameters: [String: Any], headers: [String:String]? = nil, onTokenRenewal: TokenRenewedHandler? = nil, success: @escaping OAuthSwiftHTTPRequest.SuccessHandler, failure: @escaping OAuthSwiftHTTPRequest.FailureHandler) {
         // build request
         let _ = self.client.request(url, method: method, parameters: parameters, headers: headers, success: success) { (error) in
             switch error.code {
@@ -253,7 +253,7 @@ open class OAuth2Swift: OAuthSwift {
         }
     }
     
-    open func authorizeDeviceToken(_ deviceCode: String, success: TokenRenewedHandler, failure: OAuthSwiftHTTPRequest.FailureHandler) {
+    open func authorizeDeviceToken(_ deviceCode: String, success: @escaping TokenRenewedHandler, failure: @escaping OAuthSwiftHTTPRequest.FailureHandler) {
         var parameters = [String: Any]()
         parameters["client_id"] = self.consumer_key
         parameters["client_secret"] = self.consumer_secret
