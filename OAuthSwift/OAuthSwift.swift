@@ -106,4 +106,23 @@ public enum OAuthSwiftErrorCode: Int {
     case EncodingError = -6
     case AuthorizationPending = -7
     case RequestCreationError = -8
+    case MissingTokenOrVerifier = -9
+    case RetainError = -10
+}
+
+extension NSError {
+    convenience init(code: OAuthSwiftErrorCode, message: String, errorKey: String = NSLocalizedFailureReasonErrorKey) {
+        let userInfo = [errorKey: message]
+        self.init(domain: OAuthSwiftErrorDomain, code: code.rawValue, userInfo: userInfo)
+    }
+}
+
+extension OAuthSwift {
+
+    static func retainError(failureHandler: FailureHandler?) {
+        #if !OAUTH_NO_RETAIN_ERROR
+        failureHandler?(error: NSError(code: .RetainError, message: "Please retain OAuthSwift object", errorKey: NSLocalizedDescriptionKey))
+        #endif
+    }
+
 }

@@ -60,6 +60,8 @@ class WebViewController: OAuthWebViewController {
     extension WebViewController: UIWebViewDelegate {
         func webView(webView: UIWebView, shouldStartLoadWithRequest request: NSURLRequest, navigationType: UIWebViewNavigationType) -> Bool {
             if let url = request.URL where (url.scheme == "oauth-swift"){
+                // Call here AppDelegate.sharedInstance.applicationHandleOpenURL(url) if necessary ie. if AppDelegate not configured to handle URL scheme
+                // compare the url with your own custom provided one in `authorizeWithCallbackURL`
                 self.dismissWebViewController()
             }
             return true

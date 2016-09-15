@@ -70,10 +70,10 @@ public class OAuth2Swift: OAuthSwift {
     }
 
     // MARK: functions
-    public func authorizeWithCallbackURL(callbackURL: NSURL, scope: String, state: String, params: [String: String] = [String: String](), headers: [String:String]? = nil, success: TokenSuccessHandler, failure: ((error: NSError) -> Void)) {
+    public func authorizeWithCallbackURL(callbackURL: NSURL, scope: String, state: String, params: [String: String] = [String: String](), headers: [String:String]? = nil, success: TokenSuccessHandler, failure: FailureHandler) {
         
-         self.observeCallback { [weak self] url in
-            guard let this = self else {return }
+        self.observeCallback { [weak self] url in
+            guard let this = self else { OAuthSwift.retainError(failure); return }
             var responseParameters = [String: String]()
             if let query = url.query {
                 responseParameters += query.parametersFromQueryString()
@@ -91,13 +91,11 @@ public class OAuth2Swift: OAuthSwift {
             else if let code = responseParameters["code"] {
                 if !this.allowMissingStateCheck {
                     guard let responseState = responseParameters["state"] else {
-                        let errorInfo = [NSLocalizedDescriptionKey: "Missing state"]
-                        failure(error: NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.MissingStateError.rawValue, userInfo: errorInfo))
+                        failure(error: NSError(code: .MissingStateError, message: "Missing state", errorKey: NSLocalizedDescriptionKey))
                         return
                     }
                     if responseState != state {
-                        let errorInfo = [NSLocalizedDescriptionKey: "state not equals"]
-                        failure(error: NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.StateNotEqualError.rawValue, userInfo: errorInfo))
+                        failure(error: NSError(code: .StateNotEqualError, message: "state not equals", errorKey: NSLocalizedDescriptionKey))
                         return
                     }
                 }
@@ -105,12 +103,12 @@ public class OAuth2Swift: OAuthSwift {
                     callbackURL:callbackURL, headers: headers , success: success, failure: failure)
             }
             else if let error = responseParameters["error"], error_description = responseParameters["error_description"] {
-                let errorInfo = [NSLocalizedFailureReasonErrorKey: NSLocalizedString(error, comment: error_description)]
-                failure(error: NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.GeneralError.rawValue, userInfo: errorInfo))
+                let message = NSLocalizedString(error, comment: error_description)
+                failure(error: NSError(code: .GeneralError, message: message))
             }
             else {
-                let errorInfo = [NSLocalizedDescriptionKey: "No access_token, no code and no error provided by server"]
-                failure(error: NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.ServerError.rawValue, userInfo: errorInfo))
+                let message = "No access_token, no code and no error provided by server"
+                failure(error: NSError(code: .ServerError, message: message, errorKey: NSLocalizedDescriptionKey))
             }
         }
 
@@ -135,8 +133,8 @@ public class OAuth2Swift: OAuthSwift {
             self.authorize_url_handler.handle(queryURL)
         }
         else {
-            let errorInfo = [NSLocalizedFailureReasonErrorKey: NSLocalizedString("Failed to create URL", comment: "\(urlString) or \(queryString) not convertible to URL, please check encoding")]
-            failure(error: NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.EncodingError.rawValue, userInfo: errorInfo))
+            let message = NSLocalizedString("Failed to create URL", comment: "\(urlString) or \(queryString) not convertible to URL, please check encoding")
+            failure(error: NSError(code: .EncodingError, message: message))
         }
     }
     
@@ -176,10 +174,8 @@ public class OAuth2Swift: OAuthSwift {
             }
             
             guard let accessToken = responseParameters["access_token"] as? String else {
-                if let failure = failure {
-                    let errorInfo = [NSLocalizedFailureReasonErrorKey: NSLocalizedString("Could not get Access Token", comment: "Due to an error in the OAuth2 process, we couldn't get a valid token.")]
-                    failure(error: NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.ServerError.rawValue, userInfo: errorInfo))
-                }
+                let message =  NSLocalizedString("Could not get Access Token", comment: "Due to an error in the OAuth2 process, we couldn't get a valid token.")
+                failure?(error: NSError(code: .ServerError, message: message))
                 return
             }
             if let refreshToken = responseParameters["refresh_token"] as? String {
@@ -204,8 +200,7 @@ public class OAuth2Swift: OAuthSwift {
             var headers: [String:String]? = nil
             if accessTokenBasicAuthentification {
                 let authentification = "\(self.consumer_key):\(self.consumer_secret)".dataUsingEncoding(NSUTF8StringEncoding)
-                if let base64Encoded = authentification?.base64EncodedStringWithOptions(NSDataBase64EncodingOptions(rawValue: 0))
-                {
+                if let base64Encoded = authentification?.base64EncodedStringWithOptions(NSDataBase64EncodingOptions(rawValue: 0)) {
                     headers = ["Authorization": "Basic \(base64Encoded)"]
                 }
             }
@@ -214,8 +209,8 @@ public class OAuth2Swift: OAuthSwift {
                 self.client.request(access_token_url, method: .POST, parameters: parameters, headers: headers, checkTokenExpiration: false, success: successHandler, failure: failure)
             }
             else {
-                let errorInfo = [NSLocalizedFailureReasonErrorKey: NSLocalizedString("access token url not defined", comment: "access token url not defined with code type auth")]
-                failure?(error: NSError(domain: OAuthSwiftErrorDomain, code: OAuthSwiftErrorCode.GeneralError.rawValue, userInfo: errorInfo))
+                let message = NSLocalizedString("access token url not defined", comment: "access token url not defined with code type auth")
+                failure?(error: NSError(code: .GeneralError, message: message))
             }
         }
     }
