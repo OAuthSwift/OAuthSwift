@@ -22,13 +22,13 @@ class Services {
             return parameters[service]
         }
         set {
-            if let value = newValue where !Services.parametersEmpty(value) {
+            if let value = newValue , !Services.parametersEmpty(value) {
                 parameters[service] = value
             }
         }
     }
     
-    func loadFromFile(path: String) {
+    func loadFromFile(_ path: String) {
         if let newParameters = NSDictionary(contentsOfFile: path) as? [String: [String: ServicesValue]] {
          
             for (service, dico) in newParameters {
@@ -40,7 +40,7 @@ class Services {
         }
     }
 
-    func updateService(service: String, dico: [String: ServicesValue]) {
+    func updateService(_ service: String, dico: [String: ServicesValue]) {
         var resultdico = dico
         if let oldDico = self.parameters[service] {
             resultdico = oldDico
@@ -49,7 +49,7 @@ class Services {
         self.parameters[service] = resultdico
     }
     
-    static func parametersEmpty(dico: [String: ServicesValue]) -> Bool {
+    static func parametersEmpty(_ dico: [String: ServicesValue]) -> Bool {
        return  Array(dico.values).filter({ (p) -> Bool in !p.isEmpty }).isEmpty
     }
 
@@ -58,7 +58,7 @@ class Services {
     }
 }
 
-func += <KeyType, ValueType> (inout left: Dictionary<KeyType, ValueType>, right: Dictionary<KeyType, ValueType>) {
+func += <KeyType, ValueType> (left: inout Dictionary<KeyType, ValueType>, right: Dictionary<KeyType, ValueType>) {
     for (k, v) in right {
         left.updateValue(v, forKey: k)
     }

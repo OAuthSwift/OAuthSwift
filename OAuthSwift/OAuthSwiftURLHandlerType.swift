@@ -21,19 +21,19 @@ import Foundation
 }
 
 // MARK: Open externally
-public class OAuthSwiftOpenURLExternally: OAuthSwiftURLHandlerType {
+open class OAuthSwiftOpenURLExternally: OAuthSwiftURLHandlerType {
 
     static var sharedInstance : OAuthSwiftOpenURLExternally = OAuthSwiftOpenURLExternally()
         
-    @objc public func handle(_ url: URL) {
+    @objc open func handle(_ url: URL) {
         #if os(iOS) || os(tvOS)
             #if !OAUTH_APP_EXTENSIONS
-                UIApplication.shared().openURL(url)
+                UIApplication.shared.openURL(url)
             #endif
         #elseif os(watchOS)
         // WATCHOS: not implemented
         #elseif os(OSX)
-            NSWorkspace.sharedWorkspace().openURL(url)
+            NSWorkspace.shared().open(url)
         #endif
     }
 }
@@ -43,41 +43,41 @@ public class OAuthSwiftOpenURLExternally: OAuthSwiftURLHandlerType {
 import SafariServices
     
     @available(iOS 9.0, *)
-    public class SafariURLHandler: NSObject, OAuthSwiftURLHandlerType, SFSafariViewControllerDelegate {
+    open class SafariURLHandler: NSObject, OAuthSwiftURLHandlerType, SFSafariViewControllerDelegate {
 
-        public let viewController: UIViewController
-        var observers = [String: AnyObject]()
+        open let viewController: UIViewController
+        var observers = [String: Any]()
 
         // configure
-        public var animated: Bool = true
-        public var factory: (URL: URL) -> SFSafariViewController = {URL in
+        open var animated: Bool = true
+        open var factory: (_ URL: URL) -> SFSafariViewController = {URL in
             return SFSafariViewController(url: URL)
         }
         
         // delegates
-        public var delegate: SFSafariViewControllerDelegate?
-        public var presentCompletion: (() -> Void)?
-        public var dismissCompletion: (() -> Void)?
+        open var delegate: SFSafariViewControllerDelegate?
+        open var presentCompletion: (() -> Void)?
+        open var dismissCompletion: (() -> Void)?
         
         // init
         public init(viewController: UIViewController) {
             self.viewController = viewController
         }
 
-        @objc public func handle(_ url: URL) {
-            let controller = factory(URL: url)
+        @objc open func handle(_ url: URL) {
+            let controller = factory(url)
             controller.delegate = self
             
             let key = UUID().uuidString
             
-            observers[key] = NotificationCenter.default().addObserver(
+            observers[key] = NotificationCenter.default.addObserver(
                 forName: NSNotification.Name(rawValue: OAuthSwift.CallbackNotification.notificationName),
                 object: nil,
-                queue: OperationQueue.main(),
+                queue: OperationQueue.main,
                 using:{ [unowned self]
                     notification in
                     if let observer = self.observers[key] {
-                        NotificationCenter.default().removeObserver(observer)
+                        NotificationCenter.default.removeObserver(observer)
                         self.observers.removeValue(forKey: key)
                     }
                     
@@ -106,15 +106,15 @@ import SafariServices
 
 
 // MARK: Open url using NSExtensionContext
-public class ExtensionContextURLHandler: OAuthSwiftURLHandlerType {
+open class ExtensionContextURLHandler: OAuthSwiftURLHandlerType {
     
-    private var extensionContext: NSExtensionContext
+    fileprivate var extensionContext: NSExtensionContext
     
     public init(extensionContext: NSExtensionContext) {
         self.extensionContext = extensionContext
     }
     
-    @objc public func handle(_ url: URL) {
+    @objc open func handle(_ url: URL) {
         extensionContext.open(url, completionHandler: nil)
     }
 }

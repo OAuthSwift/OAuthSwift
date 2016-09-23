@@ -6,7 +6,7 @@ Pod::Spec.new do |s|
   s.homepage = 'https://github.com/OAuthSwift/OAuthSwift'
   s.social_media_url = 'http://twitter.com/dongrify'
   s.authors = { 'Dongri Jin' => 'dongrify@gmail.com' }
-  s.source = { :git => 'https://github.com/OAuthSwift/OAuthSwift.git', :tag => s.version }
+  s.source = { git: 'https://github.com/OAuthSwift/OAuthSwift.git', tag: s.version }
   s.source_files = 'OAuthSwift/*.swift'
   s.ios.deployment_target = '8.0'
   s.osx.deployment_target = '10.10'

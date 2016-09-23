@@ -8,22 +8,22 @@
 
 import Foundation
 
-public class OAuthSwift: NSObject {
+open class OAuthSwift: NSObject {
     
     // MARK: Properties
     
     // Client to make signed request
-    public var client: OAuthSwiftClient
+    open var client: OAuthSwiftClient
     // Version of the protocol
-    public var version: OAuthSwiftCredential.Version { return self.client.credential.version }
+    open var version: OAuthSwiftCredential.Version { return self.client.credential.version }
     
     // Handle the authorize url into a web view or browser
-    public var authorize_url_handler: OAuthSwiftURLHandlerType = OAuthSwiftOpenURLExternally.sharedInstance
+    open var authorize_url_handler: OAuthSwiftURLHandlerType = OAuthSwiftOpenURLExternally.sharedInstance
 
     // MARK: callback alias
-    public typealias TokenSuccessHandler = (credential: OAuthSwiftCredential, response: URLResponse?, parameters: Dictionary<String, AnyObject>) -> Void
-    public typealias FailureHandler = (error: NSError) -> Void
-    public typealias TokenRenewedHandler = (credential: OAuthSwiftCredential) -> Void
+    public typealias TokenSuccessHandler = (_ credential: OAuthSwiftCredential, _ response: URLResponse?, _ parameters: [String: Any]) -> Void
+    public typealias FailureHandler = (_ error: NSError) -> Void
+    public typealias TokenRenewedHandler = (_ credential: OAuthSwiftCredential) -> Void
     
     // MARK: init
     init(consumerKey: String, consumerSecret: String) {
@@ -37,29 +37,29 @@ public class OAuthSwift: NSObject {
     }
 
     // Handle callback url which contains now token information
-    public class func handleOpenURL(_ url: URL) {
-        let notification = Notification(name: NSNotification.Name(rawValue: CallbackNotification.notificationName), object: nil,
+    open class func handleOpenURL(_ url: URL) {
+        let notification = Notification(name: Notification.Name(rawValue: CallbackNotification.notificationName), object: nil,
             userInfo: [CallbackNotification.optionsURLKey: url])
         notificationCenter.post(notification)
     }
 
     var observer: AnyObject?
     class var notificationCenter: NotificationCenter {
-        return NotificationCenter.default()
+        return NotificationCenter.default
     }
 
-    func observeCallback(_ block: (url: URL) -> Void) {
-        self.observer = OAuthSwift.notificationCenter.addObserver(forName: NSNotification.Name(rawValue: CallbackNotification.notificationName), object: nil, queue: OperationQueue.main()){
+    func observeCallback(_ block: @escaping (_ url: URL) -> Void) {
+        self.observer = OAuthSwift.notificationCenter.addObserver(forName: NSNotification.Name(rawValue: CallbackNotification.notificationName), object: nil, queue: OperationQueue.main){
             notification in
             self.removeCallbackNotificationObserver()
 
             let urlFromUserInfo = (notification as NSNotification).userInfo![CallbackNotification.optionsURLKey] as! URL
-            block(url: urlFromUserInfo)
+            block(urlFromUserInfo)
         }
     }
 
     public func removeCallbackNotificationObserver() {
-      	if let observer = self.observer {
+        if let observer = self.observer {
             OAuthSwift.notificationCenter.removeObserver(observer)
         }
     }

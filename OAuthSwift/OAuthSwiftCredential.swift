@@ -8,19 +8,19 @@
 import Foundation
 
 public protocol OAuthSwiftCredentialHeadersFactory {
-    func make(_ url:URL, method: OAuthSwiftHTTPRequest.Method, parameters: Dictionary<String, AnyObject>, body: Data?) -> Dictionary<String, String>
+    func make(_ url:URL, method: OAuthSwiftHTTPRequest.Method, parameters: [String: Any], body: Data?) -> Dictionary<String, String>
 }
 
-public class OAuthSwiftCredential: NSObject, NSCoding {
+open class OAuthSwiftCredential: NSObject, NSCoding {
 
     public enum Version {
-        case oAuth1, oAuth2
+        case OAuth1, OAuth2
         
         public var shortVersion : String {
             switch self {
-            case .oAuth1:
+            case .OAuth1:
                 return "1.0"
-            case .oAuth2:
+            case .OAuth2:
                 return "2.0"
             }
         }
@@ -36,7 +36,7 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
         func sign(_ key: Data, message: Data) -> Data? {
             switch (self) {
             case .HMAC_SHA1:
-                return HMAC.sha1(key: key, message: message)
+                return HMAC.sha1(key, message: message)
             }
         }
         
@@ -52,15 +52,15 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
     // MARK: attributes
     var consumer_key: String = String()
     var consumer_secret: String = String()
-    public var oauth_token: String = String()
-    public var oauth_refresh_token: String = String()
-    public var oauth_token_secret: String = String()
-    public var oauth_token_expires_at: Date? = nil
-    public internal(set) var oauth_verifier: String = String()
-    public var version: Version = .oAuth1
+    open var oauth_token: String = String()
+    open var oauth_refresh_token: String = String()
+    open var oauth_token_secret: String = String()
+    open var oauth_token_expires_at: Date? = nil
+    open internal(set) var oauth_verifier: String = String()
+    open var version: Version = .OAuth1
     
     // hook to replace headers creation
-    public var headersFactory: OAuthSwiftCredentialHeadersFactory? = nil
+    open var headersFactory: OAuthSwiftCredentialHeadersFactory? = nil
 
     // MARK: init
     override init(){
@@ -77,8 +77,8 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
     
     
     // MARK: NSCoding protocol
-    private struct CodingKeys {
-        static let base = Bundle.main().bundleIdentifier! + "."
+    fileprivate struct CodingKeys {
+        static let base = Bundle.main.bundleIdentifier! + "."
         static let consumerKey = base + "comsumer_key"
         static let consumerSecret = base + "consumer_secret"
         static let oauthToken = base + "oauth_token"
@@ -101,7 +101,7 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
         self.oauth_token_expires_at = (decoder.decodeObject(forKey: CodingKeys.oauthTokenExpiresAt) as? Date)
     }
     
-    public func encode(with coder: NSCoder) {
+    open func encode(with coder: NSCoder) {
         coder.encode(self.consumer_key, forKey: CodingKeys.consumerKey)
         coder.encode(self.consumer_secret, forKey: CodingKeys.consumerSecret)
         coder.encode(self.oauth_token, forKey: CodingKeys.oauthToken)
@@ -114,30 +114,30 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
 
     
     // MARK: functions
-    public func makeHeaders(_ url:URL, method: OAuthSwiftHTTPRequest.Method, parameters: Dictionary<String, AnyObject>, body: Data? = nil) -> Dictionary<String, String> {
+    open func makeHeaders(_ url:URL, method: OAuthSwiftHTTPRequest.Method, parameters: [String: Any], body: Data? = nil) -> Dictionary<String, String> {
         if let factory = headersFactory {
             return factory.make(url, method: method, parameters: parameters, body: body)
         }
         switch self.version {
-        case .oAuth1:
+        case .OAuth1:
             return ["Authorization": self.authorizationHeaderForMethod(method, url: url, parameters: parameters, body: body)]
-        case .oAuth2:
+        case .OAuth2:
             return self.oauth_token.isEmpty ? [:] : ["Authorization": "Bearer \(self.oauth_token)"]
         }
     }
 
-    public func authorizationHeaderForMethod(_ method: OAuthSwiftHTTPRequest.Method, url: URL, parameters: Dictionary<String, AnyObject>, body: Data? = nil) -> String {
+    open func authorizationHeaderForMethod(_ method: OAuthSwiftHTTPRequest.Method, url: URL, parameters: [String: Any], body: Data? = nil) -> String {
         let timestamp = String(Int64(Date().timeIntervalSince1970))
         let nonce = OAuthSwiftCredential.generateNonce()
         return self.authorizationHeaderForMethod(method, url: url, parameters: parameters, body: body, timestamp: timestamp, nonce: nonce)
     }
     
-    public class func generateNonce() -> String {
+    open class func generateNonce() -> String {
         return  (UUID().uuidString as NSString).substring(to: 8)
     }
   
-    public func authorizationHeaderForMethod(_ method: OAuthSwiftHTTPRequest.Method, url: URL, parameters: Dictionary<String, AnyObject>, body: Data? = nil, timestamp: String, nonce: String) -> String {
-        assert(self.version == .oAuth1)
+    open func authorizationHeaderForMethod(_ method: OAuthSwiftHTTPRequest.Method, url: URL, parameters: [String: Any], body: Data? = nil, timestamp: String, nonce: String) -> String {
+        assert(self.version == .OAuth1)
         let authorizationParameters = self.authorizationParametersWithSignatureForMethod(method, url: url, parameters: parameters, body: body, timestamp: timestamp, nonce: nonce)
         
         var parameterComponents = authorizationParameters.urlEncodedQueryStringWithEncoding(OAuthSwiftDataEncoding).components(separatedBy: "&") as [String]
@@ -154,13 +154,13 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
         return "OAuth " + headerComponents.joined(separator: ", ")
     }
     
-    public func authorizationParametersWithSignatureForMethod(_ method: OAuthSwiftHTTPRequest.Method, url: URL, parameters: Dictionary<String, AnyObject>, body: Data? = nil) -> Dictionary<String, AnyObject> {
+    open func authorizationParametersWithSignatureForMethod(_ method: OAuthSwiftHTTPRequest.Method, url: URL, parameters: [String: Any], body: Data? = nil) -> [String: Any] {
         let timestamp = String(Int64(Date().timeIntervalSince1970))
         let nonce = OAuthSwiftCredential.generateNonce()
         return self.authorizationParametersWithSignatureForMethod(method, url: url, parameters: parameters, body: body, timestamp: timestamp, nonce: nonce)
     }
 
-    public func authorizationParametersWithSignatureForMethod(_ method: OAuthSwiftHTTPRequest.Method, url: URL, parameters: Dictionary<String, AnyObject>, body: Data? = nil, timestamp: String, nonce: String) -> Dictionary<String, AnyObject> {
+    open func authorizationParametersWithSignatureForMethod(_ method: OAuthSwiftHTTPRequest.Method, url: URL, parameters: [String: Any], body: Data? = nil, timestamp: String, nonce: String) -> [String: Any] {
         var authorizationParameters = self.authorizationParameters(body, timestamp: timestamp, nonce: nonce)
         
         for (key, value) in parameters {
@@ -176,15 +176,15 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
         return authorizationParameters;
     }
     
-    public func authorizationParameters(_ body: Data?, timestamp: String, nonce: String) -> Dictionary<String, AnyObject> {
-        var authorizationParameters = Dictionary<String, AnyObject>()
+    open func authorizationParameters(_ body: Data?, timestamp: String, nonce: String) -> [String: Any] {
+        var authorizationParameters = [String: Any]()
         authorizationParameters["oauth_version"] = self.version.shortVersion
         authorizationParameters["oauth_signature_method"] =  self.version.signatureMethod.rawValue
         authorizationParameters["oauth_consumer_key"] = self.consumer_key
         authorizationParameters["oauth_timestamp"] = timestamp
         authorizationParameters["oauth_nonce"] = nonce
-        if let b = body, hash = self.version.signatureMethod.sign(b) {
-            authorizationParameters["oauth_body_hash"] = hash.base64EncodedString([])
+        if let b = body, let hash = self.version.signatureMethod.sign(b) {
+            authorizationParameters["oauth_body_hash"] = hash.base64EncodedString(options: [])
         }
         
         if (self.oauth_token != ""){
@@ -193,8 +193,8 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
         return authorizationParameters
     }
 
-    public func signatureForMethod(_ method: OAuthSwiftHTTPRequest.Method, url: URL, parameters: Dictionary<String, AnyObject>) -> String {
-        var tokenSecret: NSString = ""
+    open func signatureForMethod(_ method: OAuthSwiftHTTPRequest.Method, url: URL, parameters: [String: Any]) -> String {
+        var tokenSecret = ""
         tokenSecret = self.oauth_token_secret.urlEncodedStringWithEncoding(OAuthSwiftDataEncoding)
         
         let encodedConsumerSecret = self.consumer_secret.urlEncodedStringWithEncoding(OAuthSwiftDataEncoding)
@@ -215,10 +215,10 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
         let msg = signatureBaseString.data(using: String.Encoding.utf8)!
 
         let sha1 = self.version.signatureMethod.sign(key, message: msg)!
-        return sha1.base64EncodedString([])
+        return sha1.base64EncodedString(options: [])
     }
     
-    public func isTokenExpired() -> Bool {
+    open func isTokenExpired() -> Bool {
         if let expiresDate = oauth_token_expires_at {
             return expiresDate <= Date()
         }
