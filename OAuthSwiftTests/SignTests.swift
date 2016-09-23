@@ -23,13 +23,13 @@ class SignTests: XCTestCase {
 
     func testSHA1() {
         let string = "Hello World!"
-        let data = string.dataUsingEncoding(NSUTF8StringEncoding)!
+        let data = string.data(using: String.Encoding.utf8)!
         
         guard let hash = OAuthSwiftCredential.SignatureMethod.HMAC_SHA1.sign(data) else {
             XCTFail("Failed to hash")
             return
         }
-        let hashString = hash.base64EncodedStringWithOptions([])
+        let hashString = hash.base64EncodedString()
         XCTAssertEqual(hashString, "Lve95gjOVATpfV8EL5X4nxwjKHE=")
     }
     
@@ -38,15 +38,15 @@ class SignTests: XCTestCase {
         testHMAC_SHA1( "kd94hf93k423kf44&pfkkdhi9sl3r4s00", "GET&http%3A%2F%2Fphotos.example.net%2Fphotos&file%3Dvacation.jpg%26oauth_consumer_key%3Ddpf43f3p2l4k3l03%26oauth_nonce%3Dkllo9940pd9333jh%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1191242096%26oauth_token%3Dnnch734d00sl2jdk%26oauth_version%3D1.0%26size%3Doriginal&kd94hf93k423kf44&pfkkdhi9sl3r4s00", "Gcg/323lvAsQ707p+y41y14qWfY=")
     }
     
-    func testHMAC_SHA1(key: String,_ message: String,_ expected: String) {
-        let messageData = message.dataUsingEncoding(NSUTF8StringEncoding)!
-        let keyData = key.dataUsingEncoding(NSUTF8StringEncoding)!
+    func testHMAC_SHA1(_ key: String,_ message: String,_ expected: String) {
+        let messageData = message.data(using: String.Encoding.utf8)!
+        let keyData = key.data(using: String.Encoding.utf8)!
         
         guard let hash = OAuthSwiftCredential.SignatureMethod.HMAC_SHA1.sign(keyData, message: messageData) else {
             XCTFail("Failed to hash")
             return
         }
-        let hashString = hash.base64EncodedStringWithOptions([])
+        let hashString = hash.base64EncodedString()
         XCTAssertEqual(hashString, expected)
     }
     
@@ -90,24 +90,25 @@ class SignTests: XCTestCase {
 
     }
 
-    func testSignature(  url : String
+    func testSignature(  _ url : String
         , consumer : String
         , secret: String
         , token: String
         , token_secret : String
-        , var parameters : [String:String]
+        , parameters : [String:String]
         , nonce : String
         , timestamp : String
         , method:  OAuthSwiftHTTPRequest.Method = .GET
         , expected : String
         ) {
+        var parameters = parameters
             let credential = OAuthSwiftCredential(consumer_key: consumer, consumer_secret: secret)
             credential.oauth_token = token
             credential.oauth_token_secret = token_secret
 
             parameters.merge(credential.authorizationParameters(nil, timestamp: timestamp, nonce: nonce))
 
-            guard let nsurl = NSURL(string: url) else {
+            guard let nsurl = URL(string: url) else {
                 XCTFail("Not able to create NSURL \(url)")
                 return
             }

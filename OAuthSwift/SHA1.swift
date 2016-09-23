@@ -66,7 +66,7 @@ class SHA1 {
                 switch (x) {
                 case 0...15:
                     var le:UInt32 = 0
-                    (chunk as NSData).getBytes(&le, range:NSRange(location:x * sizeofValue(M[x]), length: sizeofValue(M[x])))
+                    (chunk as NSData).getBytes(&le, range:NSRange(location:x * MemoryLayout<UInt32>.size, length: MemoryLayout<UInt32>.size))
                     M[x] = le.bigEndian
                     break
                 default:
@@ -130,7 +130,7 @@ class SHA1 {
         let buf: NSMutableData = NSMutableData()
         hh.forEach({ (item) -> () in
             var i:UInt32 = item.bigEndian
-            buf.append(&i, length: sizeofValue(i))
+            buf.append(&i, length: MemoryLayout<UInt32>.size)
         })
         
         return buf.copy() as! Data

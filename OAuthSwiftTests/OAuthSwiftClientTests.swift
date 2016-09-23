@@ -54,46 +54,46 @@ class OAuthSwiftClientTests: XCTestCase {
     }
     
     func testMakePUTRequestWithBody() {
-        testMakeRequestWithBody(.PUT, url:url, emptyParameters, url, "BodyContent".dataUsingEncoding(NSUTF8StringEncoding)!)
+        testMakeRequestWithBody(.PUT, url:url, emptyParameters, url, "BodyContent".data(using: String.Encoding.utf8)!)
     }
 
-    func testMakeRequest(method: OAuthSwiftHTTPRequest.Method, url: String,_ parameters: [String:String],_ expectedURL: String, _ expectedBodyJSONDictionary: [String:String]? = nil) {
+    func testMakeRequest(_ method: OAuthSwiftHTTPRequest.Method, url: String,_ parameters: [String:String],_ expectedURL: String, _ expectedBodyJSONDictionary: [String:String]? = nil) {
 
         let request = client.makeRequest(url, method: method, parameters: parameters, headers: ["Content-Type": "application/json"])!
 
-        XCTAssertEqual(request.URL, NSURL(string: url)!)
+        XCTAssertEqual(request.URL, URL(string: url)!)
         XCTAssertEqual(request.HTTPMethod, method)
         XCTAssertEqualDictionaries(request.parameters as! [String:String], parameters)
         
         do {
             let urlRequest = try request.makeRequest()
             if let expectedJSON = expectedBodyJSONDictionary {
-                let json = try! NSJSONSerialization.JSONObjectWithData(urlRequest.HTTPBody!, options: NSJSONReadingOptions()) as! [String:String]
+                let json = try! JSONSerialization.jsonObject(with: urlRequest.httpBody!, options: JSONSerialization.ReadingOptions()) as! [String:String]
                 XCTAssertEqualDictionaries(json, expectedJSON)
             }
-            XCTAssertEqualURL(urlRequest.URL!, NSURL(string: expectedURL)!)
+            XCTAssertEqualURL(urlRequest.url!, URL(string: expectedURL)!)
             
         } catch let e {
             XCTFail("\(e)")
         }
     }
 
-    func testMakeRequestWithBody(method: OAuthSwiftHTTPRequest.Method, url: String, _ parameters: [String:String], _ expectedURL: String, _ expectedBody: NSData) {
+    func testMakeRequestWithBody(_ method: OAuthSwiftHTTPRequest.Method, url: String, _ parameters: [String:String], _ expectedURL: String, _ expectedBody: Data) {
         let request = client.makeRequest(url, method: method, parameters: parameters, headers: ["Content-Type": "foobar"], body: expectedBody)!
 
-        XCTAssertEqual(request.URL, NSURL(string: url)!)
+        XCTAssertEqual(request.URL, URL(string: url)!)
         XCTAssertEqual(request.HTTPMethod, method)
         XCTAssertEqualDictionaries(request.parameters as! [String:String], parameters)
         XCTAssertEqual(request.HTTPBody, expectedBody)
     }
 
-    func testMakeNSURLRequest(method: OAuthSwiftHTTPRequest.Method,_ urlString: String) {
+    func testMakeNSURLRequest(_ method: OAuthSwiftHTTPRequest.Method,_ urlString: String) {
 
-        let url = NSURL(string: urlString)!
-        let nsURLRequest = NSMutableURLRequest(URL: url)
-        nsURLRequest.HTTPMethod = method.rawValue
+        let url = URL(string: urlString)!
+        let nsURLRequest = NSMutableURLRequest(url: url)
+        nsURLRequest.httpMethod = method.rawValue
 
-        let request = client.makeRequest(nsURLRequest)
+        let request = client.makeRequest(nsURLRequest as URLRequest)
 
         XCTAssertEqual(request.URL, url)
         XCTAssertEqual(request.HTTPMethod, method)
@@ -101,7 +101,7 @@ class OAuthSwiftClientTests: XCTestCase {
 
         do {
             let urlFromRequest = try request.makeRequest()
-            XCTAssertEqualURL(urlFromRequest.URL!, url)
+            XCTAssertEqualURL(urlFromRequest.url!, url)
         } catch let e {
             XCTFail("\(e)")
         }
@@ -110,10 +110,10 @@ class OAuthSwiftClientTests: XCTestCase {
 
 extension XCTestCase {
     
-    func XCTAssertEqualURL(first: NSURL, _ second: NSURL, _ message: String = "") {
+    func XCTAssertEqualURL(_ first: URL, _ second: URL, _ message: String = "") {
         
-        let firstC = NSURLComponents(URL: first, resolvingAgainstBaseURL: false)!
-        let secondC = NSURLComponents(URL: second, resolvingAgainstBaseURL: false)!
+        let firstC = URLComponents(url: first, resolvingAgainstBaseURL: false)!
+        let secondC = URLComponents(url: second, resolvingAgainstBaseURL: false)!
         
         XCTAssertEqual(firstC.host, secondC.host, "host:" + message)
         XCTAssertEqual(firstC.scheme, secondC.scheme, "scheme:" + message)
@@ -122,7 +122,7 @@ extension XCTestCase {
         XCTAssertEqual(firstC.password, secondC.password, "password:" + message)
         if let firstItems = firstC.queryItems {
             if let secondItems = secondC.queryItems {
-                XCTAssertEqual(firstItems.sort({ $0.name > $1.name }), secondItems.sort({ $0.name > $1.name }),  "queryItems:" + message)
+                XCTAssertEqual(firstItems.sorted(by: { $0.name > $1.name }), secondItems.sorted(by: { $0.name > $1.name }),  "queryItems:" + message)
             } else {
                 XCTFail("queryItems:" + message)
             }
@@ -132,7 +132,7 @@ extension XCTestCase {
         }
     }
 
-    func XCTAssertEqualDictionaries<S, T: Equatable>(first: [S:T], _ second: [S:T], _ message: String = "") {
+    func XCTAssertEqualDictionaries<S, T: Equatable>(_ first: [S:T], _ second: [S:T], _ message: String = "") {
         XCTAssertTrue(first == second, message.isEmpty ? "\(first) != \(second)" : message)
     }
 

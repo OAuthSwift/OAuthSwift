@@ -28,11 +28,7 @@ extension URL {
     }
     
     var unsafeAbsoluteString: String {
-        #if swift(>=2.3)
-            return self.absoluteString!
-        #else
-            return self.absoluteString
-        #endif
+        return self.absoluteString
     }
 
 }

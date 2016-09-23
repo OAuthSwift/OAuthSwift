@@ -24,11 +24,11 @@ extension Dictionary {
         return joinedDictionary
     }
 
-    func filter(_ predicate: (key: Key, value: Value) -> Bool) -> Dictionary {
+    func filter(_ predicate: (_ key: Key, _ value: Value) -> Bool) -> Dictionary {
         var filteredDictionary = Dictionary()
 
         for (key, value) in self {
-            if predicate(key: key, value: value) {
+            if predicate(key, value) {
                 filteredDictionary.updateValue(value, forKey: key)
             }
         }
