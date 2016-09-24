@@ -116,7 +116,7 @@ open class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftReques
             }
             self.session = URLSession(configuration: URLSessionConfiguration.default,
                 delegate: self,
-                delegateQueue: OperationQueue.main)c
+                delegateQueue: OperationQueue.main)
             self.task = self.session.dataTask(with: self.request! as URLRequest) { [unowned self] (data, response, error) in
             
                 #if os(iOS)
