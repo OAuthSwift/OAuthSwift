@@ -238,7 +238,7 @@ open class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftReques
                 request.setValue(value, forHTTPHeaderField: key)
             }
 
-            let charset = CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(dataEncoding.rawValue))
+            let charset = CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(dataEncoding.rawValue))!
 
             let finalParameters : [String: Any]
             switch (paramsLocation) {
