@@ -116,7 +116,7 @@ open class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftReques
             }
             self.session = URLSession(configuration: URLSessionConfiguration.default,
                 delegate: self,
-                delegateQueue: OperationQueue.main)
+                delegateQueue: OperationQueue.main)c
             self.task = self.session.dataTask(with: self.request! as URLRequest) { [unowned self] (data, response, error) in
             
                 #if os(iOS)
@@ -238,7 +238,7 @@ open class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftReques
                 request.setValue(value, forHTTPHeaderField: key)
             }
 
-            let charset = CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(dataEncoding.rawValue))
+            let charset = CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(dataEncoding.rawValue))!
 
             let finalParameters : [String: Any]
             switch (paramsLocation) {
