@@ -66,7 +66,7 @@ func application(_ application: UIApplication, open url: URL, sourceApplication:
 ```
 - On OSX you must register an handler on `NSAppleEventManager` for event type `kAEGetURL` (see demo code)
 ```swift
-func applicationDidFinishLaunching(aNotification: NSNotification) {
+func applicationDidFinishLaunching(_ aNotification: NSNotification) {
     NSAppleEventManager.shared().setEventHandler(self, andSelector:#selector(AppDelegate.handleGetURL(event:withReplyEvent:)), forEventClass: AEEventClass(kInternetEventClass), andEventID: AEEventID(kAEGetURL))
 }
 func handleGetURL(event: NSAppleEventDescriptor!, withReplyEvent: NSAppleEventDescriptor!) {

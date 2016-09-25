@@ -56,7 +56,7 @@ extension AppDelegate: UIApplicationDelegate {
 #elseif os(OSX)
 extension AppDelegate: NSApplicationDelegate {
 
-    func applicationDidFinishLaunching(aNotification: NSNotification) {
+    func applicationDidFinishLaunching(_ aNotification: Notification) {
         // listen to scheme url
         NSAppleEventManager.shared().setEventHandler(self, andSelector:#selector(AppDelegate.handleGetURL(event:withReplyEvent:)), forEventClass: AEEventClass(kInternetEventClass), andEventID: AEEventID(kAEGetURL))
     }
