@@ -10,17 +10,17 @@ import Foundation
 import OAuthSwift
 
 enum AccessTokenResponse {
-    case AccessToken(String), Code(String, state:String?), Error(String,String), None
+    case accessToken(String), code(String, state:String?), error(String,String), none
 
     var responseType: String {
         switch self {
-        case .AccessToken:
+        case .accessToken:
             return "token"
-        case .Code:
+        case .code:
             return "code"
-        case .Error:
+        case .error:
             return "code"
-        case .None:
+        case .none:
             return "code"
         }
     }
@@ -34,8 +34,8 @@ class TestOAuthSwiftURLHandler: NSObject, OAuthSwiftURLHandlerType {
     
     var accessTokenResponse: AccessTokenResponse?
     
-    var authorizeURLComponents: NSURLComponents? {
-        return NSURLComponents(URL: NSURL(string: self.authorizeURL)!, resolvingAgainstBaseURL: false)
+    var authorizeURLComponents: URLComponents? {
+        return URLComponents(url: URL(string: self.authorizeURL)!, resolvingAgainstBaseURL: false)
     }
     
     init(callbackURL: String, authorizeURL: String, version: OAuthSwiftCredential.Version) {
@@ -43,24 +43,24 @@ class TestOAuthSwiftURLHandler: NSObject, OAuthSwiftURLHandlerType {
         self.authorizeURL = authorizeURL
         self.version = version
     }
-    @objc func handle(url: NSURL) {
+    @objc func handle(_ url: URL) {
         
         switch version {
-        case .OAuth1:
+        case .oauth1:
             handleV1(url)
-        case .OAuth2:
+        case .oauth2:
             handleV2(url)
         }
     }
     
-   func handleV1(url: NSURL) {
-        let urlComponents = NSURLComponents(URL: url, resolvingAgainstBaseURL: false)
+   func handleV1(_ url: URL) {
+        var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false)
     
         if let queryItems = urlComponents?.queryItems {
             for queryItem in queryItems {
-                if let value = queryItem.value where queryItem.name == "oauth_token" {
+                if let value = queryItem.value , queryItem.name == "oauth_token" {
                     let url = "\(self.callbackURL)?oauth_token=\(value)"
-                    OAuthSwift.handleOpenURL(NSURL(string: url)!)
+                    OAuthSwift.handle(url: URL(string: url)!)
                 }
             }
         }
@@ -75,25 +75,25 @@ class TestOAuthSwiftURLHandler: NSObject, OAuthSwiftURLHandlerType {
         // else do nothing
     }
 
-    func handleV2(url: NSURL) {
+    func handleV2(_ url: URL) {
         var url = "\(self.callbackURL)/"
         if let response = accessTokenResponse {
             switch response {
-            case .AccessToken(let token):
+            case .accessToken(let token):
                 url += "?access_token=\(token)"
-            case .Code(let code, let state):
+            case .code(let code, let state):
                 url += "?code='\(code)'"
                 if let state = state {
                     url += "&state=\(state)"
                 }
-            case .Error(let error,let errorDescription):
-                let e = error.stringByAddingPercentEncodingWithAllowedCharacters(.URLHostAllowedCharacterSet())!
-                let ed = errorDescription.stringByAddingPercentEncodingWithAllowedCharacters(.URLHostAllowedCharacterSet())!
+            case .error(let error,let errorDescription):
+                let e = error.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!
+                let ed = errorDescription.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!
                 url += "?error='\(e)'&errorDescription='\(ed)'"
-            case .None: break
+            case .none: break
                 // nothing
             }
         }
-        OAuthSwift.handleOpenURL(NSURL(string: url)!)
+        OAuthSwift.handle(url: URL(string: url)!)
     }
 }

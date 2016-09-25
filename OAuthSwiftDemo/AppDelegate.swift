@@ -23,12 +23,12 @@ import OAuthSwift
 // MARK: handle callback url
 extension AppDelegate {
     
-    func applicationHandleOpenURL(url: NSURL) {
+    func applicationHandle(url: URL) {
         if (url.host == "oauth-callback") {
-            OAuthSwift.handleOpenURL(url)
+            OAuthSwift.handle(url: url)
         } else {
             // Google provider is the only one wuth your.bundle.id url schema.
-            OAuthSwift.handleOpenURL(url)
+            OAuthSwift.handle(url: url)
         }
     }
 }
@@ -36,19 +36,19 @@ extension AppDelegate {
 // MARK: ApplicationDelegate
 #if os(iOS)
 extension AppDelegate: UIApplicationDelegate {
-
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
+    
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey : Any]? = nil) -> Bool {
         return true
     }
 
-    func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
-        applicationHandleOpenURL(url)
+    func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
+        applicationHandle(url: url)
         return true
     }
 
     @available(iOS 9.0, *)
-    func application(app: UIApplication, openURL url: NSURL, options: [String : AnyObject]) -> Bool {
-        applicationHandleOpenURL(url)
+    func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
+        applicationHandle(url: url)
         return true
     }
 }
@@ -58,17 +58,17 @@ extension AppDelegate: NSApplicationDelegate {
 
     func applicationDidFinishLaunching(aNotification: NSNotification) {
         // listen to scheme url
-        NSAppleEventManager.sharedAppleEventManager().setEventHandler(self, andSelector:#selector(AppDelegate.handleGetURLEvent(_:withReplyEvent:)), forEventClass: AEEventClass(kInternetEventClass), andEventID: AEEventID(kAEGetURL))
+        NSAppleEventManager.shared().setEventHandler(self, andSelector:#selector(AppDelegate.handleGetURL(event:withReplyEvent:)), forEventClass: AEEventClass(kInternetEventClass), andEventID: AEEventID(kAEGetURL))
     }
 
-    func handleGetURLEvent(event: NSAppleEventDescriptor!, withReplyEvent: NSAppleEventDescriptor!) {
-        if let urlString = event.paramDescriptorForKeyword(AEKeyword(keyDirectObject))?.stringValue, url = NSURL(string: urlString) {
-            applicationHandleOpenURL(url)
+    func handleGetURL(event: NSAppleEventDescriptor!, withReplyEvent: NSAppleEventDescriptor!) {
+        if let urlString = event.paramDescriptor(forKeyword: AEKeyword(keyDirectObject))?.stringValue, let url = URL(string: urlString) {
+            applicationHandle(url: url)
         }
     }
 
     class var sharedInstance: AppDelegate {
-        return NSApplication.sharedApplication().delegate as! AppDelegate
+        return NSApplication.shared().delegate as! AppDelegate
     }
     
 }

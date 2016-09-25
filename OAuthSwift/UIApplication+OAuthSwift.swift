@@ -11,11 +11,11 @@
 
     extension UIApplication {
         static var topViewController: UIViewController? {
-			#if !OAUTH_APP_EXTENSIONS
-				return UIApplication.sharedApplication().topViewController
-			#else
-				return nil
-			#endif
+            #if !OAUTH_APP_EXTENSIONS
+                return UIApplication.shared.topViewController
+            #else
+                return nil
+            #endif
         }
 
         var topViewController: UIViewController? {
@@ -28,7 +28,7 @@
 
     extension UIViewController {
 
-        static func topViewController(viewController: UIViewController) -> UIViewController {
+        static func topViewController(_ viewController: UIViewController) -> UIViewController {
             guard let presentedViewController = viewController.presentedViewController else {
                 return viewController
             }

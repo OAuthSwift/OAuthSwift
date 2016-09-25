@@ -25,20 +25,20 @@
         }
     }
     extension NSButton {
-        var on: Bool {
+        var isOn: Bool {
             get { return  self.state == NSOnState }
             set { self.state = newValue ? NSOnState : NSOffState}
         }
-        func setOn(value: Bool, animated: Bool) {
-            on = value
+        func setOn(_ value: Bool, animated: Bool) {
+            isOn = value
         }
     }
 #endif
 
 enum URLHandlerType {
-    case Internal
-    case External
-    case Safari
+    case `internal`
+    case external
+    case safari
 }
 
 
@@ -68,9 +68,9 @@ class FormViewController: FormViewControllerType {
         self.secretTextField.text = self.delegate?.secret
         
         #if os(iOS)
-            safariURLHandlerView.hidden = !self.safariURLHandlerAvailable
+            safariURLHandlerView.isHidden = !self.safariURLHandlerAvailable
         #endif
-        self.urlHandlerType = .Internal
+        self.urlHandlerType = .`internal`
     }
     
 
@@ -84,17 +84,17 @@ class FormViewController: FormViewControllerType {
     @IBOutlet weak var safariURLHandlerView: UITableViewCell!
     #endif
 
-    @IBAction func ok(sender: AnyObject?) {
-        self.dismiss(sender)
+    @IBAction func ok(_ sender: AnyObject?) {
+        self.dismiss(sender: sender)
 
         let key = keyTextField.text
         let secret = secretTextField.text
         let handlerType = urlHandlerType
-        delegate?.didValidate(key, secret: secret, handlerType: handlerType)
+        delegate?.didValidate(key: key, secret: secret, handlerType: handlerType)
     }
 
-    @IBAction func cancel(sender: AnyObject?) {
-        self.dismiss(sender)
+    @IBAction func cancel(_ sender: AnyObject?) {
+        self.dismiss(sender: sender)
         delegate?.didCancel()
     }
     
@@ -102,34 +102,34 @@ class FormViewController: FormViewControllerType {
         #if os(iOS)
             // let parent
         #else
-            self.dismissController(sender)
+            self.dismiss(sender)
         #endif
     }
     
-    @IBAction func urlHandlerChange(sender: Button) {
-        if sender.on {
+    @IBAction func urlHandlerChange(_ sender: Button) {
+        if sender.isOn {
             if externalURLHandler == sender {
-                urlHandlerType = .External
+                urlHandlerType = .external
             }
             else if internalURLHandler == sender {
-                urlHandlerType =  .Internal
+                urlHandlerType = .`internal`
             }
             #if os(iOS)
                 if safariURLHandler == sender  {
-                    urlHandlerType =  .Safari
+                    urlHandlerType = .safari
                 }
             #endif
         } else {
             // set another...
             if externalURLHandler == sender {
-                urlHandlerType = .Internal
+                urlHandlerType = .`internal`
             }
             else if internalURLHandler == sender {
-                urlHandlerType =  .External
+                urlHandlerType = .external
             }
             #if os(iOS)
                 if safariURLHandler == sender  {
-                    urlHandlerType =  .Internal
+                    urlHandlerType = .`internal`
                 }
             #endif
         }
@@ -137,36 +137,36 @@ class FormViewController: FormViewControllerType {
 
     var urlHandlerType: URLHandlerType {
         get {
-            if externalURLHandler.on {
-                return .External
+            if externalURLHandler.isOn {
+                return .external
             }
-            if internalURLHandler.on {
-                return .Internal
+            if internalURLHandler.isOn {
+                return .`internal`
             }
             #if os(iOS)
-                if safariURLHandler.on {
-                    return .Safari
+                if safariURLHandler.isOn {
+                    return .safari
                 }
             #endif
-            return .Internal
+            return .`internal`
         }
         set {
             switch newValue {
-            case .External:
+            case .external:
                 externalURLHandler.setOn(true, animated: false)
                 internalURLHandler.setOn(false, animated: true)
                 #if os(iOS)
                     safariURLHandler.setOn(false, animated: true)
                 #endif
                 break
-            case .Internal:
+            case .`internal`:
                 internalURLHandler.setOn(true, animated: false)
                 externalURLHandler.setOn(false, animated: true)
                 #if os(iOS)
                     safariURLHandler.setOn(false, animated: true)
                 #endif
                 break
-            case .Safari:
+            case .safari:
                 #if os(iOS)
                     safariURLHandler.setOn(true, animated: false)
                  #endif

@@ -9,11 +9,10 @@
 import Foundation
 import Swifter
 
-
 class TestServer {
     
     let server: HttpServer
-    var port: in_port_t = 8765
+    var port: in_port_t = 8766
     
     var baseurl: String { return "http://localhost:\(self.port)/" }
     
@@ -29,9 +28,9 @@ class TestServer {
     var expireURLV2: String { return "\(v2)expire" }
     
     enum AccessReturnType {
-        case JSON, Data
+        case json, data
     }
-    var accessReturnType: AccessReturnType  = .Data
+    var accessReturnType: AccessReturnType  = .data
     
     
 
@@ -45,22 +44,22 @@ class TestServer {
         server = HttpServer()
         server["1/requestToken"] = { request in
             guard request.method == "POST" else {
-                return .BadRequest(.Text("Method must be POST"))
+                return .badRequest(.text("Method must be POST"))
             }
             // TODO check request.headers["authorization"] for consumer key, etc...
             
             let oauth_token = "requestkey"
             let oauth_token_secret = "requestsecret"
             
-            return .OK(.Text("oauth_token=\(oauth_token)&oauth_token_secret=\(oauth_token_secret)" as String) )
+            return .ok(.text("oauth_token=\(oauth_token)&oauth_token_secret=\(oauth_token_secret)" as String) )
         }
         server["1/accessToken"] = { request in
             guard request.method == "POST" else {
-                return HttpResponse.BadRequest(.Text("Method must be POST"))
+                return HttpResponse.badRequest(.text("Method must be POST"))
             }
             // TODO check request.headers["authorization"] for consumer key, etc...
             
-            return .OK(.Text("oauth_token=\(self.oauth_token)&oauth_token_secret=\(self.oauth_token_secret)" as String) )
+            return .ok(.text("oauth_token=\(self.oauth_token)&oauth_token_secret=\(self.oauth_token_secret)" as String) )
         }
         
         /*
@@ -74,7 +73,7 @@ class TestServer {
         
         server["2/accessToken"] = { request in
             guard request.method == "POST" else {
-                return .BadRequest(.Text("Method must be POST"))
+                return .badRequest(.text("Method must be POST"))
             }
             /*guard let autho = request.headers["authorization"] where autho == "Beared" else {
                 return HttpResponse.BadRequest
@@ -82,18 +81,18 @@ class TestServer {
             // TODO check body for consumer key, etc...
             
             switch self.accessReturnType {
-            case .JSON:
-                return .OK(.Json(["access_token":self.oauth_token]))
-            case .Data:
-                return .OK(.Text("access_token=\(self.oauth_token)" as String))
+            case .json:
+                return .ok(.json(["access_token":self.oauth_token] as AnyObject))
+            case .data:
+                return .ok(.text("access_token=\(self.oauth_token)" as String))
             }
             
         }
         server["2/authorize"] = { request in
-            return .OK(HttpResponseBody.Html("You asked for \(request.path)"))
+            return .ok(HttpResponseBody.html("You asked for \(request.path)"))
         }
         server["2/expire"] = { request in
-            return HttpResponse.RAW(401, "Unauthorized",["WWW-Authenticate": "Bearer realm=\"example\",error=\"invalid_token\",error_description=\"The access token expired\""], nil)
+            return HttpResponse.raw(401, "Unauthorized",["WWW-Authenticate": "Bearer realm=\"example\",error=\"invalid_token\",error_description=\"The access token expired\""], nil)
         }
     }
     

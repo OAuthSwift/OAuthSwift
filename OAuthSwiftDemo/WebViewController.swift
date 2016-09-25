@@ -19,14 +19,14 @@ import OAuthSwift
 
 class WebViewController: OAuthWebViewController {
 
-    var targetURL : NSURL = NSURL()
-    let webView : WebView = WebView()
+    var targetURL: URL?
+    let webView: WebView = WebView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         #if os(iOS)
-            self.webView.frame = UIScreen.mainScreen().bounds
+            self.webView.frame = UIScreen.main.bounds
             self.webView.scalesPageToFit = true
             self.webView.delegate = self
             self.view.addSubview(self.webView)
@@ -37,29 +37,35 @@ class WebViewController: OAuthWebViewController {
             self.webView.navigationDelegate = self
             self.webView.translatesAutoresizingMaskIntoConstraints = false
             self.view.addSubview(self.webView)
-            self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-0-[view]-0-|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: ["view":self.webView]))
-            self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[view]-0-|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: ["view":self.webView]))
+            self.view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-0-[view]-0-|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: ["view":self.webView]))
+            self.view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[view]-0-|", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: ["view":self.webView]))
         #endif
     }
 
-    override func handle(url: NSURL) {
+    override func handle(_ url: URL) {
         targetURL = url
         super.handle(url)
-        
-        loadAddressURL()
+        self.loadAddressURL()
     }
 
     func loadAddressURL() {
-        let req = NSURLRequest(URL: targetURL)
-        self.webView.loadRequest(req)
+        guard let url = targetURL else {
+            return
+        }
+        let req = URLRequest(url: url)
+        #if os(iOS)
+            self.webView.loadRequest(req)
+        #elseif os(OSX)
+            self.webView.load(req)
+        #endif
     }
 }
 
 // MARK: delegate
 #if os(iOS)
     extension WebViewController: UIWebViewDelegate {
-        func webView(webView: UIWebView, shouldStartLoadWithRequest request: NSURLRequest, navigationType: UIWebViewNavigationType) -> Bool {
-            if let url = request.URL where (url.scheme == "oauth-swift"){
+        func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType: UIWebViewNavigationType) -> Bool {
+            if let url = request.url, url.scheme == "oauth-swift" {
                 // Call here AppDelegate.sharedInstance.applicationHandleOpenURL(url) if necessary ie. if AppDelegate not configured to handle URL scheme
                 // compare the url with your own custom provided one in `authorizeWithCallbackURL`
                 self.dismissWebViewController()
@@ -70,19 +76,19 @@ class WebViewController: OAuthWebViewController {
 
 #elseif os(OSX)
     extension WebViewController: WKNavigationDelegate {
-        
-        func webView(webView: WKWebView, decidePolicyForNavigationAction navigationAction: WKNavigationAction, decisionHandler: (WKNavigationActionPolicy) -> Void) {
+
+        func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
             
             // here we handle internally the callback url and call method that call handleOpenURL (not app scheme used)
-            if let url = navigationAction.request.URL where url.scheme == "oauth-swift" {
-                AppDelegate.sharedInstance.applicationHandleOpenURL(url)
-                decisionHandler(.Cancel)
+            if let url = navigationAction.request.url , url.scheme == "oauth-swift" {
+                AppDelegate.sharedInstance.applicationHandle(url: url)
+                decisionHandler(.cancel)
                 
                 self.dismissWebViewController()
                 return
             }
             
-            decisionHandler(.Allow)
+            decisionHandler(.allow)
         }
         
         /* override func  webView(webView: WebView!, decidePolicyForNavigationAction actionInformation: [NSObject : AnyObject]!, request: NSURLRequest!, frame: WebFrame!, decisionListener listener: WebPolicyDecisionListener!) {
@@ -92,5 +98,12 @@ class WebViewController: OAuthWebViewController {
         }
         
         } */
+        
+        
+        func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+            print("\(error)")
+            self.dismissWebViewController()
+            // maybe cancel request...
+        }
     }
 #endif

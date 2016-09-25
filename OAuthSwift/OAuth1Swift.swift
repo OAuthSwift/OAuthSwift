@@ -9,11 +9,11 @@
 import Foundation
 
 
-public class OAuth1Swift: OAuthSwift {
+open class OAuth1Swift: OAuthSwift {
 
     // If your oauth provider doesn't provide `oauth_verifier`
-    // set value to true (default: false)
-    public var allowMissingOauthVerifier: Bool = false
+    // set this value to true (default: false)
+    open var allowMissingOAuthVerifier: Bool = false
 
     var consumer_key: String
     var consumer_secret: String
@@ -29,12 +29,12 @@ public class OAuth1Swift: OAuthSwift {
         self.authorize_url = authorizeUrl
         self.access_token_url = accessTokenUrl
         super.init(consumerKey: consumerKey, consumerSecret: consumerSecret)
-        self.client.credential.version = .OAuth1
+        self.client.credential.version = .oauth1
     }
 
-    public convenience init?(parameters: [String:String]){
-        guard let consumerKey = parameters["consumerKey"], consumerSecret = parameters["consumerSecret"],
-            requestTokenUrl = parameters["requestTokenUrl"], authorizeUrl = parameters["authorizeUrl"], accessTokenUrl = parameters["accessTokenUrl"] else {
+    public convenience init?(parameters: ConfigParameters){
+        guard let consumerKey = parameters["consumerKey"], let consumerSecret = parameters["consumerSecret"],
+            let requestTokenUrl = parameters["requestTokenUrl"], let authorizeUrl = parameters["authorizeUrl"], let accessTokenUrl = parameters["accessTokenUrl"] else {
             return nil
         }
         self.init(consumerKey:consumerKey, consumerSecret: consumerSecret,
@@ -43,7 +43,7 @@ public class OAuth1Swift: OAuthSwift {
           accessTokenUrl: accessTokenUrl)
     }
 
-    public var parameters: [String: String] {
+    open var parameters: ConfigParameters {
         return [
             "consumerKey": consumer_key,
             "consumerSecret": consumer_secret,
@@ -55,8 +55,8 @@ public class OAuth1Swift: OAuthSwift {
 
     // MARK: functions
     // 0. Start
-    public func authorizeWithCallbackURL(callbackURL: NSURL, success: TokenSuccessHandler, failure: FailureHandler?) {
-        self.postOAuthRequestTokenWithCallbackURL(callbackURL, success: { [unowned self]
+    open func authorize(withCallbackURL callbackURL: URL, success: @escaping TokenSuccessHandler, failure: FailureHandler?) -> OAuthSwiftRequestHandle? {
+        return self.postOAuthRequestToken(callbackURL: callbackURL, success: { [unowned self]
             credential, response, _ in
 
             self.observeCallback { [weak self] url in
@@ -65,75 +65,90 @@ public class OAuth1Swift: OAuthSwift {
                 if let query = url.query {
                     responseParameters += query.parametersFromQueryString()
                 }
-                if let fragment = url.fragment where !fragment.isEmpty {
+                if let fragment = url.fragment , !fragment.isEmpty {
                     responseParameters += fragment.parametersFromQueryString()
                 }
                 if let token = responseParameters["token"] {
                     responseParameters["oauth_token"] = token
                 }
-                if let token = responseParameters["oauth_token"] where (this.allowMissingOauthVerifier || responseParameters["oauth_verifier"] != nil) {
+ 
+                if let token = responseParameters["oauth_token"] {
                     this.client.credential.oauth_token = token.safeStringByRemovingPercentEncoding
                     if let oauth_verifier = responseParameters["oauth_verifier"] {
                         this.client.credential.oauth_verifier = oauth_verifier.safeStringByRemovingPercentEncoding
+                    } else {
+                        if !this.allowMissingOAuthVerifier {
+                            failure?(OAuthSwiftError.configurationError(message: "Missing oauth_verifier. Maybe use allowMissingOAuthVerifier=true"))
+                            return
+                        }
                     }
-                    this.postOAuthAccessTokenWithRequestToken(success, failure: failure)
+                    let _ = this.postOAuthAccessTokenWithRequestToken(success: success, failure: failure)
+                    // TODO CANCEL REQUEST keep the returned handle into a list for cancel
                 } else {
-                    let message = this.allowMissingOauthVerifier ? "Oauth problem. oauth_token not returned" : "Oauth problem. oauth_token or oauth_verifier not returned"
-                    failure?(error: NSError(code: .MissingTokenOrVerifier, message: message))
+                    failure?(OAuthSwiftError.missingToken)
                     return
                 }
             }
             // 2. Authorize
             let urlString = self.authorize_url + (self.authorize_url.has("?") ? "&" : "?")
-            if let token = credential.oauth_token.urlQueryEncoded, queryURL = NSURL(string: urlString + "oauth_token=\(token)") {
-                self.authorize_url_handler.handle(queryURL)
+            if let token = credential.oauth_token.urlQueryEncoded, let queryURL = URL(string: urlString + "oauth_token=\(token)") {
+                self.authorizeURLHandler.handle(queryURL)
             }
             else {
-                let message = NSLocalizedString("Failed to create URL", comment: "\(urlString) not convertible to URL, please encode.")
-                failure?(error: NSError(code: .EncodingError, message: message))
+                failure?(OAuthSwiftError.encodingError(urlString: urlString))
             }
         }, failure: failure)
+    }
+
+    open func authorize(withCallbackURL urlString: String, success: @escaping TokenSuccessHandler, failure: FailureHandler?) -> OAuthSwiftRequestHandle? {
+        guard let url = URL(string: urlString) else {
+              failure?(OAuthSwiftError.encodingError(urlString: urlString))
+            return nil
+        }
+        return authorize(withCallbackURL: url, success: success, failure: failure)
     }
 
     // 1. Request token
-    func postOAuthRequestTokenWithCallbackURL(callbackURL: NSURL, success: TokenSuccessHandler, failure: FailureHandler?) {
-        var parameters =  Dictionary<String, AnyObject>()
-        if let callbackURLString: String = callbackURL.absoluteString {
-            parameters["oauth_callback"] = callbackURLString
-        }
-        self.client.post(self.request_token_url, parameters: parameters, success: {
-            [weak self] data, response in
-            guard let this = self else { OAuthSwift.retainError(failure); return }
-            let responseString = NSString(data: data, encoding: NSUTF8StringEncoding) as String!
-            let parameters = responseString.parametersFromQueryString()
-            if let oauthToken=parameters["oauth_token"] {
-                this.client.credential.oauth_token = oauthToken.safeStringByRemovingPercentEncoding
-            }
-            if let oauthTokenSecret=parameters["oauth_token_secret"] {
-                this.client.credential.oauth_token_secret = oauthTokenSecret.safeStringByRemovingPercentEncoding
-            }
-            success(credential: this.client.credential, response: response, parameters: parameters)
-        }, failure: failure)
+    func postOAuthRequestToken(callbackURL: URL, success: @escaping TokenSuccessHandler, failure: FailureHandler?) -> OAuthSwiftRequestHandle? {
+        var parameters =  Dictionary<String, Any>()
+        parameters["oauth_callback"] = callbackURL.absoluteString
+        return self.client.post(
+            self.request_token_url, parameters: parameters,
+            success: { [weak self] data, response in
+                guard let this = self else { OAuthSwift.retainError(failure); return }
+                let responseString = String(data: data, encoding: String.Encoding.utf8)!
+                let parameters = responseString.parametersFromQueryString()
+                if let oauthToken=parameters["oauth_token"] {
+                    this.client.credential.oauth_token = oauthToken.safeStringByRemovingPercentEncoding
+                }
+                if let oauthTokenSecret=parameters["oauth_token_secret"] {
+                    this.client.credential.oauth_token_secret = oauthTokenSecret.safeStringByRemovingPercentEncoding
+                }
+                success(this.client.credential, response, parameters)
+            }, failure: failure
+        )
     }
 
     // 3. Get Access token
-    func postOAuthAccessTokenWithRequestToken(success: TokenSuccessHandler, failure: FailureHandler?) {
-        var parameters = Dictionary<String, AnyObject>()
+    func postOAuthAccessTokenWithRequestToken(success: @escaping TokenSuccessHandler, failure: FailureHandler?) -> OAuthSwiftRequestHandle? {
+        var parameters = Dictionary<String, Any>()
         parameters["oauth_token"] = self.client.credential.oauth_token
         parameters["oauth_verifier"] = self.client.credential.oauth_verifier
-        self.client.post(self.access_token_url, parameters: parameters, success: {
-            [weak self] data, response in
-            guard let this = self else { OAuthSwift.retainError(failure); return }
-            let responseString = NSString(data: data, encoding: NSUTF8StringEncoding) as String!
-            let parameters = responseString.parametersFromQueryString()
-            if let oauthToken=parameters["oauth_token"] {
-                this.client.credential.oauth_token = oauthToken.safeStringByRemovingPercentEncoding
-            }
-            if let oauthTokenSecret=parameters["oauth_token_secret"] {
-                this.client.credential.oauth_token_secret = oauthTokenSecret.safeStringByRemovingPercentEncoding
-            }
-            success(credential: this.client.credential, response: response, parameters: parameters)
-        }, failure: failure)
+        return self.client.post(
+            self.access_token_url, parameters: parameters,
+            success: { [weak self] data, response in
+                guard let this = self else { OAuthSwift.retainError(failure); return }
+                let responseString = String(data: data, encoding: String.Encoding.utf8)!
+                let parameters = responseString.parametersFromQueryString()
+                if let oauthToken=parameters["oauth_token"] {
+                    this.client.credential.oauth_token = oauthToken.safeStringByRemovingPercentEncoding
+                }
+                if let oauthTokenSecret=parameters["oauth_token_secret"] {
+                    this.client.credential.oauth_token_secret = oauthTokenSecret.safeStringByRemovingPercentEncoding
+                }
+                success(this.client.credential, response, parameters)
+            }, failure: failure
+        )
     }
-
+    
 }

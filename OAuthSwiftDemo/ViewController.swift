@@ -20,16 +20,16 @@ class ViewController: OAuthViewController {
     
     var currentParameters = [String: String]()
     let formData = Semaphore<FormViewControllerData>()
-    
+
     lazy var internalWebViewController: WebViewController = {
         let controller = WebViewController()
         #if os(OSX)
             controller.view = NSView(frame: NSRect(x:0, y:0, width: 450, height: 500)) // needed if no nib or not loaded from storyboard
         #elseif os(iOS)
-            controller.view = UIView(frame: UIScreen.mainScreen().bounds) // needed if no nib or not loaded from storyboard
+            controller.view = UIView(frame: UIScreen.main.bounds) // needed if no nib or not loaded from storyboard
         #endif
         controller.delegate = self
-        controller.viewDidLoad()
+        controller.viewDidLoad() // allow WebViewController to use this ViewController as parent to be presented
         return controller
     }()
     
@@ -68,15 +68,15 @@ extension ViewController {
         
         // Check parameters
         guard var parameters = services[service] else {
-            showAlertView("Miss configuration", message: "\(service) not configured")
+            showAlertView(title: "Miss configuration", message: "\(service) not configured")
             return
         }
         self.currentParameters = parameters
         
         // Ask to user by showing form from storyboards
         self.formData.data = nil
-        Queue.Main.async { [unowned self] in
-            self.performSegueWithIdentifier(Storyboards.Main.FormSegue, sender: self)
+        Queue.main.async { [unowned self] in
+            self.performSegue(withIdentifier: Storyboards.Main.FormSegue, sender: self)
             // see prepare for segue
         }
         // Wait for result
@@ -91,8 +91,8 @@ extension ViewController {
         if Services.parametersEmpty(parameters) { // no value to set
             let message = "\(service) seems to have not weel configured. \nPlease fill consumer key and secret into configuration file \(self.confPath)"
             print(message)
-            Queue.Main.async { [unowned self] in
-                self.showAlertView("Key and secret must not be empty", message: message)
+            Queue.main.async { [unowned self] in
+                self.showAlertView(title: "Key and secret must not be empty", message: message)
             }
         }
 
@@ -167,7 +167,7 @@ extension ViewController {
     }
     
     // MARK: 500px
-    func doOAuth500px(serviceParameters: [String:String]){
+    func doOAuth500px(_ serviceParameters: [String:String]){
         let oauthswift = OAuth1Swift(
             consumerKey:    serviceParameters["consumerKey"]!,
             consumerSecret: serviceParameters["consumerSecret"]!,
@@ -177,18 +177,20 @@ extension ViewController {
         )
         
         self.oauthswift = oauthswift
-        oauthswift.authorize_url_handler = get_url_handler()
-        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/500px")!,
-                                             success: {
-                                                credential, response, parameters in
-                                                self.showTokenAlert(serviceParameters["name"], credential: credential)
-            }, failure: { error in
+        oauthswift.authorizeURLHandler = getURLHandler()
+        let _ = oauthswift.authorize(
+            withCallbackURL: URL(string: "oauth-swift://oauth-callback/500px")!,
+            success: { credential, response, parameters in
+                self.showTokenAlert(name: serviceParameters["name"], credential: credential)
+            },
+            failure: { error in
                 print(error.localizedDescription)
-        })
+            }
+        )
     }
     
     // MARK: Spotify
-    func doOAuthSpotify(serviceParameters: [String:String]){
+    func doOAuthSpotify(_ serviceParameters: [String:String]){
         let oauthswift = OAuth2Swift(
             consumerKey:    serviceParameters["consumerKey"]!,
             consumerSecret: serviceParameters["consumerSecret"]!,
@@ -197,21 +199,24 @@ extension ViewController {
             responseType:   "code"
         )
         self.oauthswift = oauthswift
-        oauthswift.authorize_url_handler = get_url_handler()
+        oauthswift.authorizeURLHandler = getURLHandler()
         let state: String = generateStateWithLength(20) as String
         
-        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/spotify")!,
-                                             scope: "user-library-modify",
-                                             state: state, success: {
-                                                credential, response, parameters in
-                                                self.showTokenAlert(serviceParameters["name"], credential: credential)
-            }, failure: { error in
+        let _ = oauthswift.authorize(
+            withCallbackURL: URL(string: "oauth-swift://oauth-callback/spotify")!,
+            scope: "user-library-modify",
+            state: state,
+            success: { credential, response, parameters in
+                self.showTokenAlert(name: serviceParameters["name"], credential: credential)
+            },
+            failure: { error in
                 print(error.localizedDescription)
-        })
+            }
+        )
     }
     
     // MARK: Twitter
-    func doOAuthTwitter(serviceParameters: [String:String]){
+    func doOAuthTwitter(_ serviceParameters: [String:String]){
         let oauthswift = OAuth1Swift(
             consumerKey:    serviceParameters["consumerKey"]!,
             consumerSecret: serviceParameters["consumerSecret"]!,
@@ -220,29 +225,32 @@ extension ViewController {
             accessTokenUrl:  "https://api.twitter.com/oauth/access_token"
         )
         self.oauthswift = oauthswift
-        oauthswift.authorize_url_handler = get_url_handler()
-        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/twitter")!, success: {
-            credential, response, parameters in
-            self.showTokenAlert(serviceParameters["name"], credential: credential)
-            self.testTwitter(oauthswift)
-            }, failure: { error in
+        oauthswift.authorizeURLHandler = getURLHandler()
+        let _ = oauthswift.authorize(
+            withCallbackURL: URL(string: "oauth-swift://oauth-callback/twitter")!,
+            success: { credential, response, parameters in
+                self.showTokenAlert(name: serviceParameters["name"], credential: credential)
+                self.testTwitter(oauthswift)
+            },
+            failure: { error in
                 print(error.localizedDescription)
             }
         )
     }
-    func testTwitter(oauthswift: OAuth1Swift) {
-        oauthswift.client.get("https://api.twitter.com/1.1/statuses/mentions_timeline.json", parameters: [:],
-                              success: {
-                                data, response in
-                                let jsonDict: AnyObject! = try? NSJSONSerialization.JSONObjectWithData(data, options: [])
-                                print(jsonDict)
+    func testTwitter(_ oauthswift: OAuth1Swift) {
+        let _ = oauthswift.client.get(
+            "https://api.twitter.com/1.1/statuses/mentions_timeline.json", parameters: [:],
+            success: { data, response in
+                let jsonDict = try? JSONSerialization.jsonObject(with:data, options: [])
+                print(jsonDict)
             }, failure: { error in
                 print(error)
-        })
+            }
+        )
     }
     
     // MARK: Flickr
-    func doOAuthFlickr(serviceParameters: [String:String]){
+    func doOAuthFlickr(_ serviceParameters: [String:String]){
         let oauthswift = OAuth1Swift(
             consumerKey:    serviceParameters["consumerKey"]!,
             consumerSecret: serviceParameters["consumerSecret"]!,
@@ -251,16 +259,19 @@ extension ViewController {
             accessTokenUrl:  "https://www.flickr.com/services/oauth/access_token"
         )
         self.oauthswift = oauthswift
-        oauthswift.authorize_url_handler = get_url_handler()
-        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/flickr")!, success: {
-            credential, response, parameters in
-            self.showTokenAlert(serviceParameters["name"], credential: credential)
-            self.testFlickr(oauthswift, consumerKey: serviceParameters["consumerKey"]!)
-            }, failure: { error in
+        oauthswift.authorizeURLHandler = getURLHandler()
+        let _ = oauthswift.authorize(
+            withCallbackURL: URL(string: "oauth-swift://oauth-callback/flickr")!,
+            success: { credential, response, parameters in
+                self.showTokenAlert(name: serviceParameters["name"], credential: credential)
+                self.testFlickr(oauthswift, consumerKey: serviceParameters["consumerKey"]!)
+            },
+            failure: { error in
                 print(error.localizedDescription)
-        })
+            }
+        )
     }
-    func testFlickr (oauthswift: OAuth1Swift, consumerKey: String) {
+    func testFlickr (_ oauthswift: OAuth1Swift, consumerKey: String) {
         let url :String = "https://api.flickr.com/services/rest/"
         let parameters :Dictionary = [
             "method"         : "flickr.photos.search",
@@ -270,18 +281,20 @@ extension ViewController {
             "nojsoncallback" : "1",
             "extras"         : "url_q,url_z"
         ]
-        oauthswift.client.get(url, parameters: parameters,
-                              success: {
-                                data, response in
-                                let jsonDict: AnyObject! = try? NSJSONSerialization.JSONObjectWithData(data, options: [])
-                                print(jsonDict)
-            }, failure: { error in
+        let _ = oauthswift.client.get(
+            url, parameters: parameters,
+            success: { data, response in
+                let jsonDict = try? JSONSerialization.jsonObject(with:data, options: [])
+                print(jsonDict)
+            },
+            failure: { error in
                 print(error)
-        })
+            }
+        )
     }
     
     // MARK: Github
-    func doOAuthGithub(serviceParameters: [String:String]){
+    func doOAuthGithub(_ serviceParameters: [String:String]){
         let oauthswift = OAuth2Swift(
             consumerKey:    serviceParameters["consumerKey"]!,
             consumerSecret: serviceParameters["consumerSecret"]!,
@@ -290,18 +303,21 @@ extension ViewController {
             responseType:   "code"
         )
         self.oauthswift = oauthswift
-        oauthswift.authorize_url_handler = get_url_handler()
+        oauthswift.authorizeURLHandler = getURLHandler()
         let state: String = generateStateWithLength(20) as String
-        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/github")!, scope: "user,repo", state: state, success: {
-            credential, response, parameters in
-            self.showTokenAlert(serviceParameters["name"], credential: credential)
-            }, failure: { error in
+        let _ = oauthswift.authorize(
+            withCallbackURL: URL(string: "oauth-swift://oauth-callback/github")!, scope: "user,repo", state: state,
+            success: { credential, response, parameters in
+                self.showTokenAlert(name: serviceParameters["name"], credential: credential)
+            },
+            failure: { error in
                 print(error.localizedDescription)
-        })
+            }
+        )
     }
     
     //MARK: Salesforce
-    func doOAuthSalesforce(serviceParameters: [String:String]){
+    func doOAuthSalesforce(_ serviceParameters: [String:String]){
         let oauthswift = OAuth2Swift(
             consumerKey:    serviceParameters["consumerKey"]!,
             consumerSecret: serviceParameters["consumerSecret"]!,
@@ -310,18 +326,21 @@ extension ViewController {
             responseType:   "code"
         )
         self.oauthswift = oauthswift
-        oauthswift.authorize_url_handler = get_url_handler()
+        oauthswift.authorizeURLHandler = getURLHandler()
         let state: String = generateStateWithLength(20) as String
-        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/salesforce")!, scope: "full", state: state, success: {
-            credential, response, parameters in
-            self.showTokenAlert(serviceParameters["name"], credential: credential)
-            }, failure: { error in
+        let _ = oauthswift.authorize(
+            withCallbackURL: URL(string: "oauth-swift://oauth-callback/salesforce")!, scope: "full", state: state,
+            success: { credential, response, parameters in
+                self.showTokenAlert(name: serviceParameters["name"], credential: credential)
+            },
+            failure: { error in
                 print(error.localizedDescription)
-        })
+            }
+        )
     }
     
     // MARK: Instagram
-    func doOAuthInstagram(serviceParameters: [String:String]){
+    func doOAuthInstagram(_ serviceParameters: [String:String]){
         let oauthswift = OAuth2Swift(
             consumerKey:    serviceParameters["consumerKey"]!,
             consumerSecret: serviceParameters["consumerSecret"]!,
@@ -334,31 +353,37 @@ extension ViewController {
         
         let state: String = generateStateWithLength(20) as String
         self.oauthswift = oauthswift
-        oauthswift.authorize_url_handler = get_url_handler()
-        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/instagram")!, scope: "likes+comments", state:state, success: {
-            credential, response, parameters in
-            self.showTokenAlert(serviceParameters["name"], credential: credential)
-            self.testInstagram(oauthswift)
-            }, failure: { error in
+        oauthswift.authorizeURLHandler = getURLHandler()
+        let _ = oauthswift.authorize(
+            withCallbackURL: URL(string: "oauth-swift://oauth-callback/instagram")!, scope: "likes+comments", state:state,
+            success: { credential, response, parameters in
+                self.showTokenAlert(name: serviceParameters["name"], credential: credential)
+                self.testInstagram(oauthswift)
+            },
+            failure: { error in
                 print(error.localizedDescription)
-        })
+            }
+        )
     }
-    func testInstagram(oauthswift: OAuth2Swift) {
+    func testInstagram(_ oauthswift: OAuth2Swift) {
         let url :String = "https://api.instagram.com/v1/users/1574083/?access_token=\(oauthswift.client.credential.oauth_token)"
         let parameters :Dictionary = Dictionary<String, AnyObject>()
-        oauthswift.client.get(url, parameters: parameters,
-                              success: {
-                                data, response in
-                                let jsonDict: AnyObject! = try? NSJSONSerialization.JSONObjectWithData(data, options: [])
-                                print(jsonDict)
-                                
-            }, failure: { error in
+        let _ = oauthswift.client.get(
+            url, parameters: parameters,
+            success: {
+                data, response in
+                let jsonDict = try? JSONSerialization.jsonObject(with:data, options: [])
+                print(jsonDict)
+                
+            },
+            failure: { error in
                 print(error)
-        })
+            }
+        )
     }
     
     // MARK: Foursquare
-    func doOAuthFoursquare(serviceParameters: [String:String]){
+    func doOAuthFoursquare(_ serviceParameters: [String:String]){
         let oauthswift = OAuth2Swift(
             consumerKey:    serviceParameters["consumerKey"]!,
             consumerSecret: serviceParameters["consumerSecret"]!,
@@ -367,17 +392,20 @@ extension ViewController {
         )
         
         self.oauthswift = oauthswift
-        oauthswift.authorize_url_handler = get_url_handler()
-        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/foursquare")!, scope: "", state: "", success: {
-            credential, response, parameters in
-            self.showTokenAlert(serviceParameters["name"], credential: credential)
-            }, failure: { error in
+        oauthswift.authorizeURLHandler = getURLHandler()
+        let _ = oauthswift.authorize(
+            withCallbackURL: URL(string: "oauth-swift://oauth-callback/foursquare")!, scope: "", state: "",
+            success: { credential, response, parameters in
+                self.showTokenAlert(name: serviceParameters["name"], credential: credential)
+            },
+            failure: { error in
                 print(error.localizedDescription)
-        })
+            }
+        )
     }
     
     // MARK: Fitbit
-    func doOAuthFitbit(serviceParameters: [String:String]){
+    func doOAuthFitbit(_ serviceParameters: [String:String]){
         let oauthswift = OAuth1Swift(
             consumerKey:    serviceParameters["consumerKey"]!,
             consumerSecret: serviceParameters["consumerSecret"]!,
@@ -387,16 +415,19 @@ extension ViewController {
         )
         
         self.oauthswift = oauthswift
-        oauthswift.authorize_url_handler = get_url_handler()
-        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/fitbit")!, success: {
-            credential, response, parameters in
-            self.showTokenAlert(serviceParameters["name"], credential: credential)
-            }, failure: { error in
+        oauthswift.authorizeURLHandler = getURLHandler()
+        let _ = oauthswift.authorize(
+            withCallbackURL: URL(string: "oauth-swift://oauth-callback/fitbit")!,
+            success: { credential, response, parameters in
+                self.showTokenAlert(name: serviceParameters["name"], credential: credential)
+            },
+            failure: { error in
                 print(error.localizedDescription)
-        })
+            }
+        )
     }
     
-    func doOAuthFitbit2(serviceParameters: [String:String]) {
+    func doOAuthFitbit2(_ serviceParameters: [String:String]) {
         let oauthswift = OAuth2Swift(
             consumerKey:    serviceParameters["consumerKey"]!,
             consumerSecret: serviceParameters["consumerSecret"]!,
@@ -407,29 +438,36 @@ extension ViewController {
         oauthswift.accessTokenBasicAuthentification = true
         
         self.oauthswift = oauthswift
-        oauthswift.authorize_url_handler = get_url_handler()
+        oauthswift.authorizeURLHandler = getURLHandler()
         let state: String = generateStateWithLength(20) as String
-        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/fitbit2")!, scope: "profile weight", state: state, success: {
-            credential, response, parameters in
-            self.showTokenAlert(serviceParameters["name"], credential: credential)
-            self.testFitbit2(oauthswift)
-            }, failure: { error in
+        let _ = oauthswift.authorize(
+            withCallbackURL: URL(string: "oauth-swift://oauth-callback/fitbit2")!, scope: "profile weight", state: state,
+            success: { credential, response, parameters in
+                self.showTokenAlert(name: serviceParameters["name"], credential: credential)
+                self.testFitbit2(oauthswift)
+            },
+            failure: { error in
                 print(error.localizedDescription)
-        })
+            }
+        )
     }
-    func testFitbit2(oauthswift: OAuth2Swift) {
-        oauthswift.client.get("https://api.fitbit.com/1/user/-/profile.json", parameters: [:],
-                              success: {
-                                data, response in
-                                let jsonDict: AnyObject! = try? NSJSONSerialization.JSONObjectWithData(data, options: [])
-                                print(jsonDict)
-            }, failure: { error in
+    func testFitbit2(_ oauthswift: OAuth2Swift) {
+        let _ = oauthswift.client.get(
+            "https://api.fitbit.com/1/user/-/profile.json",
+            parameters: [:],
+            success: {
+                data, response in
+                let jsonDict = try? JSONSerialization.jsonObject(with:data, options: [])
+                print(jsonDict)
+            },
+            failure: { error in
                 print(error.localizedDescription)
-        })
+            }
+        )
     }
     
     // MARK: Withings
-    func doOAuthWithings(serviceParameters: [String:String]){
+    func doOAuthWithings(_ serviceParameters: [String:String]){
         let oauthswift = OAuth1Swift(
             consumerKey:    serviceParameters["consumerKey"]!,
             consumerSecret: serviceParameters["consumerSecret"]!,
@@ -439,29 +477,34 @@ extension ViewController {
         )
         
         self.oauthswift = oauthswift
-        oauthswift.authorize_url_handler = get_url_handler()
-        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/withings")!, success: {
-            credential, response, parameters in
-            self.showTokenAlert(serviceParameters["name"], credential: credential)
-            self.testWithings(oauthswift, userId: parameters["userid"] as! String)
-            }, failure: { error in
+        oauthswift.authorizeURLHandler = getURLHandler()
+        let _ = oauthswift.authorize(
+            withCallbackURL: URL(string: "oauth-swift://oauth-callback/withings")!,
+            success: { credential, response, parameters in
+                self.showTokenAlert(name: serviceParameters["name"], credential: credential)
+                self.testWithings(oauthswift, userId: parameters["userid"] as! String)
+            },
+            failure: { error in
                 print(error.localizedDescription)
-        })
+            }
+        )
     }
-    func testWithings(oauthswift: OAuth1Swift, userId : NSString) {
-        oauthswift.client.paramsLocation = .RequestURIQuery
-        oauthswift.client.get("https://wbsapi.withings.net/v2/measure", parameters: ["action":"getactivity", "userid":userId, "date":"2016-02-15"],
-                              success: {
-                                data, response in
-                                let jsonDict: AnyObject! = try? NSJSONSerialization.JSONObjectWithData(data, options: [])
-                                print(jsonDict)
+    func testWithings(_ oauthswift: OAuth1Swift, userId : String) {
+        oauthswift.client.paramsLocation = .requestURIQuery
+        let _ = oauthswift.client.get(
+            "https://wbsapi.withings.net/v2/measure", parameters: ["action":"getactivity", "userid":userId, "date":"2016-02-15"],
+            success: {
+                data, response in
+                let jsonDict = try? JSONSerialization.jsonObject(with:data, options: [])
+                print(jsonDict)
             }, failure: { error in
                 print(error.localizedDescription)
-        })
+            }
+        )
     }
     
     // MARK: Linkedin
-    func doOAuthLinkedin(serviceParameters: [String:String]){
+    func doOAuthLinkedin(_ serviceParameters: [String:String]){
         let oauthswift = OAuth1Swift(
             consumerKey:    serviceParameters["consumerKey"]!,
             consumerSecret: serviceParameters["consumerSecret"]!,
@@ -471,27 +514,30 @@ extension ViewController {
         )
         
         self.oauthswift = oauthswift
-        oauthswift.authorize_url_handler = get_url_handler()
-        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/linkedin")!, success: {
-            credential, response, parameters in
-            self.showTokenAlert(serviceParameters["name"], credential: credential)
-            self.testLinkedin(oauthswift)
-            }, failure: { error in
+        oauthswift.authorizeURLHandler = getURLHandler()
+        let _ = oauthswift.authorize(
+            withCallbackURL: URL(string: "oauth-swift://oauth-callback/linkedin")!,
+            success: { credential, response, parameters in
+                self.showTokenAlert(name: serviceParameters["name"], credential: credential)
+                self.testLinkedin(oauthswift)
+            },
+            failure: { error in
                 print(error.localizedDescription)
-        })
+            }
+        )
     }
-    func testLinkedin(oauthswift: OAuth1Swift) {
-        oauthswift.client.get("https://api.linkedin.com/v1/people/~", parameters: [:],
+    func testLinkedin(_ oauthswift: OAuth1Swift) {
+        let _ = oauthswift.client.get("https://api.linkedin.com/v1/people/~", parameters: [:],
                               success: {
                                 data, response in
-                                let dataString = NSString(data: data, encoding: NSUTF8StringEncoding)
+                                let dataString = String(data: data, encoding: String.Encoding.utf8)
                                 print(dataString)
             }, failure: { error in
                 print(error)
         })
     }
     
-    func doOAuthLinkedin2(serviceParameters: [String:String]){
+    func doOAuthLinkedin2(_ serviceParameters: [String:String]){
         let oauthswift = OAuth2Swift(
             consumerKey:    serviceParameters["consumerKey"]!,
             consumerSecret: serviceParameters["consumerSecret"]!,
@@ -500,30 +546,35 @@ extension ViewController {
             responseType:   "code"
         )
         self.oauthswift = oauthswift
-        oauthswift.authorize_url_handler = get_url_handler()
+        oauthswift.authorizeURLHandler = getURLHandler()
         let state: String = generateStateWithLength(20) as String
-        oauthswift.authorizeWithCallbackURL( NSURL(string: "http://oauthswift.herokuapp.com/callback/linkedin2")!, scope: "r_fullprofile", state: state, success: {
-            credential, response, parameters in
-            self.showTokenAlert(serviceParameters["name"], credential: credential)
-            self.testLinkedin2(oauthswift)
-            
-            }, failure: { error in
+        let _ = oauthswift.authorize(
+            withCallbackURL: URL(string: "http://oauthswift.herokuapp.com/callback/linkedin2")!, scope: "r_fullprofile", state: state,
+            success: { credential, response, parameters in
+                self.showTokenAlert(name: serviceParameters["name"], credential: credential)
+                self.testLinkedin2(oauthswift)
+                
+            },
+            failure: { error in
                 print(error.localizedDescription)
-        })
+            }
+        )
     }
-    func testLinkedin2(oauthswift: OAuth2Swift) {
-        oauthswift.client.get("https://api.linkedin.com/v1/people/~?format=json", parameters: [:],
-                              success: {
-                                data, response in
-                                let dataString = NSString(data: data, encoding: NSUTF8StringEncoding)
-                                print(dataString)
-            }, failure: { error in
+    func testLinkedin2(_ oauthswift: OAuth2Swift) {
+        let _ = oauthswift.client.get(
+            "https://api.linkedin.com/v1/people/~?format=json", parameters: [:],
+            success: { data, response in
+                let dataString = String(data: data, encoding: String.Encoding.utf8)
+                print(dataString)
+            },
+            failure: { error in
                 print(error)
-        })
+            }
+        )
     }
     
     // MARK: Smugmug
-    func doOAuthSmugmug(serviceParameters: [String:String]){
+    func doOAuthSmugmug(_ serviceParameters: [String:String]){
         let oauthswift = OAuth1Swift(
             consumerKey:    serviceParameters["consumerKey"]!,
             consumerSecret: serviceParameters["consumerSecret"]!,
@@ -531,21 +582,24 @@ extension ViewController {
             authorizeUrl:    "http://api.smugmug.com/services/oauth/authorize.mg",
             accessTokenUrl:  "http://api.smugmug.com/services/oauth/getAccessToken.mg"
         )
-        oauthswift.allowMissingOauthVerifier = true
+        oauthswift.allowMissingOAuthVerifier = true
         
         self.oauthswift = oauthswift
-        oauthswift.authorize_url_handler = get_url_handler()
+        oauthswift.authorizeURLHandler = getURLHandler()
         // NOTE: Smugmug's callback URL is configured on their site and the one passed in is ignored.
-        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/smugmug")!, success: {
-            credential, response, parameters in
-            self.showTokenAlert(serviceParameters["name"], credential: credential)
-            }, failure: { error in
+        let _ = oauthswift.authorize(
+            withCallbackURL: "oauth-swift://oauth-callback/smugmug",
+            success: { credential, response, parameters in
+                self.showTokenAlert(name: serviceParameters["name"], credential: credential)
+            },
+            failure: { error in
                 print(error.localizedDescription)
-        })
+            }
+        )
     }
     
     // MARK: Dropbox
-    func doOAuthDropbox(serviceParameters: [String:String]){
+    func doOAuthDropbox(_ serviceParameters: [String:String]){
         let oauthswift = OAuth2Swift(
             consumerKey:    serviceParameters["consumerKey"]!,
             consumerSecret: serviceParameters["consumerSecret"]!,
@@ -554,27 +608,31 @@ extension ViewController {
             responseType:   "token"
         )
         self.oauthswift = oauthswift
-        oauthswift.authorize_url_handler = get_url_handler()
-        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/dropbox")!, scope: "", state: "", success: {
-            credential, response, parameters in
-            self.showTokenAlert(serviceParameters["name"], credential: credential)
-            // Get Dropbox Account Info
-            let parameters =  Dictionary<String, AnyObject>()
-            oauthswift.client.get("https://api.dropbox.com/1/account/info", parameters: parameters,
-                success: {
-                    data, response in
-                    let jsonDict: AnyObject! = try? NSJSONSerialization.JSONObjectWithData(data, options: [])
-                    print(jsonDict)
-                }, failure: { error in
-                    print(error)
-            })
-            }, failure: { error in
+        oauthswift.authorizeURLHandler = getURLHandler()
+        let _ = oauthswift.authorize(
+            withCallbackURL: URL(string: "oauth-swift://oauth-callback/dropbox")!, scope: "", state: "",
+            success: { credential, response, parameters in
+                self.showTokenAlert(name: serviceParameters["name"], credential: credential)
+                // Get Dropbox Account Info
+                let parameters =  Dictionary<String, AnyObject>()
+                let _ = oauthswift.client.get(
+                    "https://api.dropbox.com/1/account/info", parameters: parameters,
+                    success: { data, response in
+                        let jsonDict = try? JSONSerialization.jsonObject(with:data, options: [])
+                        print(jsonDict)
+                    }, failure: { error in
+                        print(error)
+                    }
+                )
+            },
+            failure: { error in
                 print(error.localizedDescription)
-        })
+            }
+        )
     }
     
     // MARK: Dribbble
-    func doOAuthDribbble(serviceParameters: [String:String]){
+    func doOAuthDribbble(_ serviceParameters: [String:String]){
         let oauthswift = OAuth2Swift(
             consumerKey:    serviceParameters["consumerKey"]!,
             consumerSecret: serviceParameters["consumerSecret"]!,
@@ -583,27 +641,32 @@ extension ViewController {
             responseType:   "code"
         )
         self.oauthswift = oauthswift
-        oauthswift.authorize_url_handler = get_url_handler()
-        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/dribbble")!, scope: "", state: "", success: {
-            credential, response, parameters in
-            self.showTokenAlert(serviceParameters["name"], credential: credential)
-            // Get User
-            let parameters =  Dictionary<String, AnyObject>()
-            oauthswift.client.get("https://api.dribbble.com/v1/user?access_token=\(credential.oauth_token)", parameters: parameters,
-                success: {
-                    data, response in
-                    let jsonDict: AnyObject! = try? NSJSONSerialization.JSONObjectWithData(data, options: [])
-                    print(jsonDict)
-                }, failure: { error in
-                    print(error)
-            })
-            }, failure: { error in
+        oauthswift.authorizeURLHandler = getURLHandler()
+        let _ = oauthswift.authorize(
+            withCallbackURL: URL(string: "oauth-swift://oauth-callback/dribbble")!, scope: "", state: "",
+            success: { credential, response, parameters in
+                self.showTokenAlert(name: serviceParameters["name"], credential: credential)
+                // Get User
+                let parameters =  [String: Any]()
+                let _ = oauthswift.client.get(
+                    "https://api.dribbble.com/v1/user?access_token=\(credential.oauth_token)", parameters: parameters,
+                    success: { data, response in
+                        let jsonDict = try? JSONSerialization.jsonObject(with:data, options: [])
+                        print(jsonDict)
+                    },
+                    failure: { error in
+                        print(error)
+                    }
+                )
+            },
+            failure: { error in
                 print(error.localizedDescription)
-        })
+            }
+        )
     }
     
     // MARK: BitBucket
-    func doOAuthBitBucket(serviceParameters: [String:String]){
+    func doOAuthBitBucket(_ serviceParameters: [String:String]){
         let oauthswift = OAuth1Swift(
             consumerKey:    serviceParameters["consumerKey"]!,
             consumerSecret: serviceParameters["consumerSecret"]!,
@@ -612,28 +675,33 @@ extension ViewController {
             accessTokenUrl:  "https://bitbucket.org/api/1.0/oauth/access_token"
         )
         self.oauthswift = oauthswift
-        oauthswift.authorize_url_handler = get_url_handler()
-        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/bitbucket")!, success: {
-            credential, response, parameters in
-            self.showTokenAlert(serviceParameters["name"], credential: credential)
-            self.testBitBucket(oauthswift)
-            }, failure: { error in
+        oauthswift.authorizeURLHandler = getURLHandler()
+        let _ = oauthswift.authorize(
+            withCallbackURL: URL(string: "oauth-swift://oauth-callback/bitbucket")!,
+            success: { credential, response, parameters in
+                self.showTokenAlert(name: serviceParameters["name"], credential: credential)
+                self.testBitBucket(oauthswift)
+            },
+            failure: { error in
                 print(error.localizedDescription)
-        })
+            }
+        )
     }
-    func testBitBucket(oauthswift: OAuth1Swift) {
-        oauthswift.client.get("https://bitbucket.org/api/1.0/user", parameters: [:],
-                              success: {
-                                data, response in
-                                let dataString = NSString(data: data, encoding: NSUTF8StringEncoding)
-                                print(dataString)
-            }, failure: { error in
+    func testBitBucket(_ oauthswift: OAuth1Swift) {
+        let _ = oauthswift.client.get(
+            "https://bitbucket.org/api/1.0/user", parameters: [:],
+            success: { data, response in
+                let dataString = String(data: data, encoding: String.Encoding.utf8)
+                print(dataString)
+            },
+            failure: { error in
                 print(error)
-        })
+            }
+        )
     }
     
     // MARK: Google
-    func doOAuthGoogle(serviceParameters: [String:String]){
+    func doOAuthGoogle(_ serviceParameters: [String:String]){
         let oauthswift = OAuth2Swift(
             consumerKey:    serviceParameters["consumerKey"]!,
             consumerSecret: serviceParameters["consumerSecret"]!,
@@ -643,28 +711,33 @@ extension ViewController {
         )
         // For googgle the redirect_uri should match your this syntax: your.bundle.id:/oauth2Callback
         self.oauthswift = oauthswift
-        oauthswift.authorize_url_handler = get_url_handler()
+        oauthswift.authorizeURLHandler = getURLHandler()
         // in plist define a url schem with: your.bundle.id:
-        oauthswift.authorizeWithCallbackURL( NSURL(string: "https://oauthswift.herokuapp.com/callback/google")!, scope: "https://www.googleapis.com/auth/drive", state: "", success: {
-            credential, response, parameters in
-            self.showTokenAlert(serviceParameters["name"], credential: credential)
-            let parameters =  Dictionary<String, AnyObject>()
-            // Multi-part upload
-            oauthswift.client.postImage("https://www.googleapis.com/upload/drive/v2/files", parameters: parameters, image: self.snapshot(),
-                success: {
-                    data, response in
-                    let jsonDict: AnyObject! = try? NSJSONSerialization.JSONObjectWithData(data, options: [])
-                    print("SUCCESS: \(jsonDict)")
-                }, failure: { error in
-                    print(error)
-            })
-            }, failure: { error in
+        let _ = oauthswift.authorize(
+            withCallbackURL: URL(string: "https://oauthswift.herokuapp.com/callback/google")!, scope: "https://www.googleapis.com/auth/drive", state: "",
+            success: { credential, response, parameters in
+                self.showTokenAlert(name: serviceParameters["name"], credential: credential)
+                let parameters =  Dictionary<String, AnyObject>()
+                // Multi-part upload
+                let _ = oauthswift.client.postImage(
+                    urlString: "https://www.googleapis.com/upload/drive/v2/files", parameters: parameters, image: self.snapshot(),
+                    success: { data, response in
+                        let jsonDict = try? JSONSerialization.jsonObject(with:data, options: [])
+                        print("SUCCESS: \(jsonDict)")
+                    },
+                    failure: { error in
+                        print(error)
+                    }
+                )
+            },
+            failure: { error in
                 print("ERROR: \(error.localizedDescription)")
-        })
+            }
+        )
     }
     
     // MARK/ Intuit
-    func doOAuthIntuit(serviceParameters: [String:String]){
+    func doOAuthIntuit(_ serviceParameters: [String:String]){
         let oauthswift = OAuth1Swift(
             consumerKey:    serviceParameters["consumerKey"]!,
             consumerSecret: serviceParameters["consumerSecret"]!,
@@ -674,67 +747,75 @@ extension ViewController {
         )
         
         self.oauthswift = oauthswift
-        oauthswift.authorize_url_handler = get_url_handler()
-        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/intuit")!, success: {
-            credential, response, parameters in
-            self.showTokenAlert(serviceParameters["name"], credential: credential)
-            self.testIntuit(oauthswift, serviceParameters: serviceParameters)
-            }, failure: { error in
+        oauthswift.authorizeURLHandler = getURLHandler()
+        let _ = oauthswift.authorize(
+            withCallbackURL: URL(string: "oauth-swift://oauth-callback/intuit")!,
+            success: { credential, response, parameters in
+                self.showTokenAlert(name: serviceParameters["name"], credential: credential)
+                self.testIntuit(oauthswift, serviceParameters: serviceParameters)
+            },
+            failure: { error in
                 print(error.localizedDescription)
-        })
+            }
+        )
     }
-    func testIntuit(oauthswift: OAuth1Swift, serviceParameters: [String:String]){
+    func testIntuit(_ oauthswift: OAuth1Swift, serviceParameters: [String:String]){
         if let companyId = serviceParameters["companyId"]  {
-            oauthswift.client.get("https://sandbox-quickbooks.api.intuit.com/v3/company/\(companyId)/account/1", headers: ["Accept":"application/json"],
-                                  success: {
-                                    data, response in
-                                    if let jsonDict = try? NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments) , dico = jsonDict as? [String: AnyObject] {
-                                        print(dico)
-                                        
-                                        // XXX to generate with good date etc...
-                                        let jsonUpdate = [
-                                            "Name": "Accounts Payable (A/P)",
-                                            "SubAccount": false,
-                                            "FullyQualifiedName": "Accounts Payable (A/P)",
-                                            "Active": true,
-                                            "Classification": "Liability",
-                                            "Description": "Description added during update.",
-                                            "AccountType": "Accounts Payable",
-                                            "AccountSubType": "AccountsPayable",
-                                            "CurrentBalance": -1091.23,
-                                            "CurrentBalanceWithSubAccounts": -1091.23,
-                                            "domain": "QBO",
-                                            "sparse": false,
-                                            "Id": "33",
-                                            "SyncToken": "0",
-                                            "MetaData": [
-                                                "CreateTime": "2014-09-12T10:12:02-07:00",
-                                                "LastUpdatedTime": "2015-06-30T15:09:07-07:00"
-                                            ]
-                                        ]
-                                        
-                                        // FIXME #80
-                                        oauthswift.client.post("https://sandbox-quickbooks.api.intuit.com/v3/company/\(companyId)/account?operation=update", parameters: jsonUpdate,
-                                            headers: ["Accept": "application/json", "Content-Type":"application/json"],
-                                            success: {
-                                                data, response in
-                                                print(data)
-                                            }, failure: { error in
-                                                print(error)
-                                        })
-                                    }
-                                    else {
-                                        print("no json response")
-                                    }
-                                    
-                }, failure: { error in
+            let _ = oauthswift.client.get(
+                "https://sandbox-quickbooks.api.intuit.com/v3/company/\(companyId)/account/1", headers: ["Accept":"application/json"],
+                success: {
+                    data, response in
+                    if let jsonDict = try? JSONSerialization.jsonObject(with:data, options: .allowFragments) , let dico = jsonDict as? [String: AnyObject] {
+                        print(dico)
+                        
+                        // XXX to generate with good date etc...
+                        let jsonUpdate: [String : Any] = [
+                            "Name": "Accounts Payable (A/P)",
+                            "SubAccount": false,
+                            "FullyQualifiedName": "Accounts Payable (A/P)",
+                            "Active": true,
+                            "Classification": "Liability",
+                            "Description": "Description added during update.",
+                            "AccountType": "Accounts Payable",
+                            "AccountSubType": "AccountsPayable",
+                            "CurrentBalance": -1091.23,
+                            "CurrentBalanceWithSubAccounts": -1091.23,
+                            "domain": "QBO",
+                            "sparse": false,
+                            "Id": "33",
+                            "SyncToken": "0",
+                            "MetaData": [
+                                "CreateTime": "2014-09-12T10:12:02-07:00",
+                                "LastUpdatedTime": "2015-06-30T15:09:07-07:00"
+                            ]
+                        ]
+                        
+                        // FIXME #80
+                        let _ = oauthswift.client.post(
+                            "https://sandbox-quickbooks.api.intuit.com/v3/company/\(companyId)/account?operation=update", parameters: jsonUpdate,
+                            headers: ["Accept": "application/json", "Content-Type":"application/json"],
+                            success: { data, response in
+                                print(data)
+                            },
+                            failure: { error in
+                                print(error)
+                            }
+                        )
+                    }
+                    else {
+                        print("no json response")
+                    }
+                    
+                },
+                failure: { error in
                     print(error)
-            })
+                }
+            )
         }
     }
     
     // MARK: Zaim
-    func doOAuthZaim(serviceParameters: [String:String]){
+    func doOAuthZaim(_ serviceParameters: [String:String]){
         let oauthswift = OAuth1Swift(
             consumerKey:    serviceParameters["consumerKey"]!,
             consumerSecret: serviceParameters["consumerSecret"]!,
@@ -744,17 +825,20 @@ extension ViewController {
         )
         
         self.oauthswift = oauthswift
-        oauthswift.authorize_url_handler = get_url_handler()
-        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/zaim")!, success: {
-            credential, response, parameters in
-            self.showTokenAlert(serviceParameters["name"], credential: credential)
-            }, failure: { error in
+        oauthswift.authorizeURLHandler = getURLHandler()
+        let _ = oauthswift.authorize(
+            withCallbackURL: URL(string: "oauth-swift://oauth-callback/zaim")!,
+            success: { credential, response, parameters in
+                self.showTokenAlert(name: serviceParameters["name"], credential: credential)
+            },
+            failure: { error in
                 print(error.localizedDescription)
-        })
+            }
+        )
     }
     
     // MARK: Tumblr
-    func doOAuthTumblr(serviceParameters: [String:String]){
+    func doOAuthTumblr(_ serviceParameters: [String:String]){
         let oauthswift = OAuth1Swift(
             consumerKey:    serviceParameters["consumerKey"]!,
             consumerSecret: serviceParameters["consumerSecret"]!,
@@ -764,17 +848,20 @@ extension ViewController {
         )
         
         self.oauthswift = oauthswift
-        oauthswift.authorize_url_handler = get_url_handler()
-        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/tumblr")!, success: {
-            credential, response, parameters in
-            self.showTokenAlert(serviceParameters["name"], credential: credential)
-            }, failure: { error in
+        oauthswift.authorizeURLHandler = getURLHandler()
+        let _ = oauthswift.authorize(
+            withCallbackURL: URL(string: "oauth-swift://oauth-callback/tumblr")!,
+            success: { credential, response, parameters in
+                self.showTokenAlert(name: serviceParameters["name"], credential: credential)
+            },
+            failure: { error in
                 print(error.localizedDescription)
-        })
+            }
+        )
     }
     
     // MARK: Slack
-    func doOAuthSlack(serviceParameters: [String:String]){
+    func doOAuthSlack(_ serviceParameters: [String:String]){
         let oauthswift = OAuth2Swift(
             consumerKey:    serviceParameters["consumerKey"]!,
             consumerSecret: serviceParameters["consumerSecret"]!,
@@ -784,18 +871,21 @@ extension ViewController {
         )
         
         self.oauthswift = oauthswift
-        oauthswift.authorize_url_handler = get_url_handler()
+        oauthswift.authorizeURLHandler = getURLHandler()
         let state: String = generateStateWithLength(20) as String
-        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/slack")!, scope: "", state: state, success: {
-            credential, response, parameters in
-            self.showTokenAlert(serviceParameters["name"], credential: credential)
-            }, failure: { error in
+        let _ = oauthswift.authorize(
+            withCallbackURL: URL(string: "oauth-swift://oauth-callback/slack")!, scope: "", state: state,
+            success: { credential, response, parameters in
+                self.showTokenAlert(name: serviceParameters["name"], credential: credential)
+            },
+            failure: { error in
                 print(error.localizedDescription, terminator: "")
-        })
+            }
+        )
     }
     
     // MARK: Uber
-    func doOAuthUber(serviceParameters: [String:String]){
+    func doOAuthUber(_ serviceParameters: [String:String]){
         let oauthswift = OAuth2Swift(
             consumerKey:    serviceParameters["consumerKey"]!,
             consumerSecret: serviceParameters["consumerSecret"]!,
@@ -806,19 +896,22 @@ extension ViewController {
         )
         
         self.oauthswift = oauthswift
-        oauthswift.authorize_url_handler = get_url_handler()
+        oauthswift.authorizeURLHandler = getURLHandler()
         let state: String = generateStateWithLength(20) as String
-        let redirectURL = "https://oauthswift.herokuapp.com/callback/uber".stringByAddingPercentEncodingWithAllowedCharacters(.URLHostAllowedCharacterSet())
-        oauthswift.authorizeWithCallbackURL( NSURL(string: redirectURL!)!, scope: "profile", state: state, success: {
-            credential, response, parameters in
-            self.showTokenAlert(serviceParameters["name"], credential: credential)
-            }, failure: { error in
+        let redirectURL = "https://oauthswift.herokuapp.com/callback/uber".addingPercentEncoding(withAllowedCharacters: CharacterSet.urlHostAllowed)
+        let _ = oauthswift.authorize(
+            withCallbackURL: URL(string: redirectURL!)!, scope: "profile", state: state,
+            success: { credential, response, parameters in
+                self.showTokenAlert(name: serviceParameters["name"], credential: credential)
+            },
+            failure: { error in
                 print(error.localizedDescription, terminator: "")
-        })
+            }
+        )
     }
     
     // MARK Gitter
-    func doOAuthGitter(serviceParameters: [String:String]){
+    func doOAuthGitter(_ serviceParameters: [String:String]){
         let oauthswift = OAuth2Swift(
             consumerKey:    serviceParameters["consumerKey"]!,
             consumerSecret: serviceParameters["consumerSecret"]!,
@@ -828,18 +921,21 @@ extension ViewController {
         )
         
         self.oauthswift = oauthswift
-        oauthswift.authorize_url_handler = get_url_handler()
+        oauthswift.authorizeURLHandler = getURLHandler()
         let state: String = generateStateWithLength(20) as String
-        oauthswift.authorizeWithCallbackURL( NSURL(string: "oauth-swift://oauth-callback/gitter")!, scope: "flow", state: state, success: {
-            credential, response, parameters in
-            self.showTokenAlert(serviceParameters["name"], credential: credential)
-            }, failure: { error in
+        let _ = oauthswift.authorize(
+            withCallbackURL: URL(string: "oauth-swift://oauth-callback/gitter")!, scope: "flow", state: state,
+            success: { credential, response, parameters in
+                self.showTokenAlert(name: serviceParameters["name"], credential: credential)
+            },
+            failure: { error in
                 print(error.localizedDescription, terminator: "")
-        })
+            }
+        )
     }
     
     // MAK : Facebook
-    func doOAuthFacebook(serviceParameters: [String:String]) {
+    func doOAuthFacebook(_ serviceParameters: [String:String]) {
         let oauthswift = OAuth2Swift(
             consumerKey:    serviceParameters["consumerKey"]!,
             consumerSecret: serviceParameters["consumerSecret"]!,
@@ -849,29 +945,32 @@ extension ViewController {
         )
         
         self.oauthswift = oauthswift
-        oauthswift.authorize_url_handler = get_url_handler()
+        oauthswift.authorizeURLHandler = getURLHandler()
         let state: String = generateStateWithLength(20) as String
-        oauthswift.authorizeWithCallbackURL( NSURL(string: "https://oauthswift.herokuapp.com/callback/facebook")!, scope: "public_profile", state: state, success: {
-            credential, response, parameters in
-            self.showTokenAlert(serviceParameters["name"], credential: credential)
-            self.testFacebook(oauthswift)
+        let _ = oauthswift.authorize(
+            withCallbackURL: URL(string: "https://oauthswift.herokuapp.com/callback/facebook")!, scope: "public_profile", state: state,
+            success: { credential, response, parameters in
+                self.showTokenAlert(name: serviceParameters["name"], credential: credential)
+                self.testFacebook(oauthswift)
             }, failure: { error in
                 print(error.localizedDescription, terminator: "")
-        })
+            }
+        )
     }
-    func testFacebook(oauthswift: OAuth2Swift) {
-        oauthswift.client.get("https://graph.facebook.com/me?",
-                              success: {
-                                data, response in
-                                let dataString = NSString(data: data, encoding: NSUTF8StringEncoding)
-                                print(dataString)
+    func testFacebook(_ oauthswift: OAuth2Swift) {
+        let _ = oauthswift.client.get(
+            "https://graph.facebook.com/me?",
+            success: { data, response in
+                let dataString = String(data: data, encoding: String.Encoding.utf8)
+                print(dataString)
             }, failure: { error in
                 print(error)
-        })
+            }
+        )
     }
     
     // MARK: Hatena
-    func doOAuthHatena(serviceParameters: [String:String]){
+    func doOAuthHatena(_ serviceParameters: [String:String]){
         let oauthswift = OAuth1Swift(
             consumerKey:    serviceParameters["consumerKey"]!,
             consumerSecret: serviceParameters["consumerSecret"]!,
@@ -881,18 +980,20 @@ extension ViewController {
         )
         
         self.oauthswift = oauthswift
-        oauthswift.authorize_url_handler = get_url_handler()
-        oauthswift.authorizeWithCallbackURL( NSURL(string: "https://oauthswift.herokuapp.com/callback/hatena")!, success: {
-            credential, response, parameters in
-            self.showTokenAlert(serviceParameters["name"], credential: credential)
-            }, failure: { error in
+        oauthswift.authorizeURLHandler = getURLHandler()
+        let _ = oauthswift.authorize(
+            withCallbackURL: URL(string: "https://oauthswift.herokuapp.com/callback/hatena")!,
+            success: { credential, response, parameters in
+                self.showTokenAlert(name: serviceParameters["name"], credential: credential)
+            },
+            failure: { error in
                 print(error.localizedDescription)
             }
         )
     }
     
     // MARK: Trello
-    func doOAuthTrello(serviceParameters: [String:String]) {
+    func doOAuthTrello(_ serviceParameters: [String:String]) {
         let oauthswift = OAuth1Swift(
             consumerKey:    serviceParameters["consumerKey"]!,
             consumerSecret: serviceParameters["consumerSecret"]!,
@@ -902,21 +1003,24 @@ extension ViewController {
         )
         
         self.oauthswift = oauthswift
-        oauthswift.authorize_url_handler = get_url_handler()
-        oauthswift.authorizeWithCallbackURL( NSURL(string: "https://oauthswift.herokuapp.com/callback/trello")!, success: {
-            credential, response, parameters in
-            self.showTokenAlert(serviceParameters["name"], credential: credential)
-            self.testTrello(oauthswift)
-            }, failure: { error in
+        oauthswift.authorizeURLHandler = getURLHandler()
+        let _ = oauthswift.authorize(
+            withCallbackURL: URL(string: "https://oauthswift.herokuapp.com/callback/trello")!,
+            success: { credential, response, parameters in
+                self.showTokenAlert(name: serviceParameters["name"], credential: credential)
+                self.testTrello(oauthswift)
+            },
+            failure: { error in
                 print(error.localizedDescription, terminator: "")
-        })
+            }
+        )
     }
     
-    func testTrello(oauthswift: OAuth1Swift) {
-        oauthswift.client.get("https://trello.com/1/members/me/boards",
+    func testTrello(_ oauthswift: OAuth1Swift) {
+        let _ = oauthswift.client.get("https://trello.com/1/members/me/boards",
                               success: {
                                 data, response in
-                                let dataString = NSString(data: data, encoding: NSUTF8StringEncoding)
+                                let dataString = String(data: data, encoding: String.Encoding.utf8)
                                 print(dataString)
             }, failure: { error in
                 print(error)
@@ -924,7 +1028,7 @@ extension ViewController {
     }
     
     // MARK: Buffer
-    func doOAuthBuffer(serviceParameters: [String:String]) {
+    func doOAuthBuffer(_ serviceParameters: [String:String]) {
         let oauthswift = OAuth2Swift(
             consumerKey:    serviceParameters["consumerKey"]!,
             consumerSecret: serviceParameters["consumerSecret"]!,
@@ -934,29 +1038,33 @@ extension ViewController {
         )
         let state: String = generateStateWithLength(20) as String
         self.oauthswift = oauthswift
-        oauthswift.authorize_url_handler = get_url_handler()
-        oauthswift.authorizeWithCallbackURL( NSURL(string: "https://oauthswift.herokuapp.com/callback/buffer")!, scope: "", state: state, success: {
-            credential, response, parameters in
-            self.showTokenAlert(serviceParameters["name"], credential: credential)
-            self.testBuffer(oauthswift)
-            }, failure: { error in
+        oauthswift.authorizeURLHandler = getURLHandler()
+        let _ = oauthswift.authorize(
+            withCallbackURL: URL(string: "https://oauthswift.herokuapp.com/callback/buffer")!, scope: "", state: state,
+            success: { credential, response, parameters in
+                self.showTokenAlert(name: serviceParameters["name"], credential: credential)
+                self.testBuffer(oauthswift)
+            },
+            failure: { error in
                 print(error.localizedDescription, terminator: "")
-        })
+            }
+        )
     }
     
-    func testBuffer(oauthswift: OAuth2Swift) {
-        oauthswift.client.get("https://api.bufferapp.com/1/user.json",
-                              success: {
-                                data, response in
-                                let dataString = NSString(data: data, encoding: NSUTF8StringEncoding)
-                                print(dataString)
+    func testBuffer(_ oauthswift: OAuth2Swift) {
+        let _ = oauthswift.client.get(
+            "https://api.bufferapp.com/1/user.json",
+            success: { data, response in
+                let dataString = String(data: data, encoding: String.Encoding.utf8)
+                print(dataString)
             }, failure: { error in
                 print(error)
-        })
+            }
+        )
     }
     
     // MARK: Goodreads
-    func doOAuthGoodreads(serviceParameters: [String:String]) {
+    func doOAuthGoodreads(_ serviceParameters: [String:String]) {
         let oauthswift = OAuth1Swift(
             consumerKey:        serviceParameters["consumerKey"]!,
             consumerSecret:     serviceParameters["consumerSecret"]!,
@@ -964,36 +1072,39 @@ extension ViewController {
             authorizeUrl:       "https://www.goodreads.com/oauth/authorize?mobile=1",
             accessTokenUrl:     "https://www.goodreads.com/oauth/access_token"
         )
-        oauthswift.allowMissingOauthVerifier = true
+        oauthswift.allowMissingOAuthVerifier = true
         self.oauthswift = oauthswift
-        oauthswift.authorize_url_handler = get_url_handler()
-        oauthswift.authorizeWithCallbackURL(
-            NSURL(string: "oauth-swift://oauth-callback/goodreads")!, success: {
-                // The callback url you set here doesn't seem to make a differnce,
-                // you have to set it up at the site when you get your developer key.
-                credential, response, parameters in
-                self.showTokenAlert(serviceParameters["name"], credential: credential)
+        oauthswift.authorizeURLHandler = getURLHandler()
+        // The callback url you set here doesn't seem to make a differnce,
+        // you have to set it up at the site when you get your developer key.
+        let _ = oauthswift.authorize(
+            withCallbackURL: URL(string: "oauth-swift://oauth-callback/goodreads")!,
+            success: { credential, response, parameters in
+                self.showTokenAlert(name: serviceParameters["name"], credential: credential)
                 self.testGoodreads(oauthswift)
-            }, failure: { error in
+            },
+            failure: { error in
                 print(error.localizedDescription, terminator: "")
-        })
+            }
+        )
         
     }
     
-    func testGoodreads(oauthswift: OAuth1Swift) {
-        oauthswift.client.get("https://www.goodreads.com/api/auth_user",
-                              success: {
-                                data, response in
-                                // Most Goodreads methods return XML, you'll need a way to parse it.
-                                let dataString = NSString(data: data, encoding: NSUTF8StringEncoding)
-                                print(dataString)
+    func testGoodreads(_ oauthswift: OAuth1Swift) {
+        let _ = oauthswift.client.get(
+            "https://www.goodreads.com/api/auth_user",
+            success: { data, response in
+                // Most Goodreads methods return XML, you'll need a way to parse it.
+                let dataString = String(data: data, encoding: String.Encoding.utf8)
+                print(dataString)
             }, failure: { error in
                 print(error)
-        })
+            }
+        )
     }
     
     // MARK: Typetalk
-    func doOAuthTypetalk(serviceParameters: [String:String]) {
+    func doOAuthTypetalk(_ serviceParameters: [String:String]) {
         let oauthswift = OAuth2Swift(
             consumerKey:    serviceParameters["consumerKey"]!,
             consumerSecret: serviceParameters["consumerSecret"]!,
@@ -1004,29 +1115,33 @@ extension ViewController {
         let state: String = generateStateWithLength(20) as String
         
         self.oauthswift = oauthswift
-        oauthswift.authorize_url_handler = get_url_handler()
-        oauthswift.authorizeWithCallbackURL( NSURL(string: "https://oauthswift.herokuapp.com/callback/typetalk")!, scope: "", state: state, success: {
-            credential, response, parameters in
-            self.showTokenAlert(serviceParameters["name"], credential: credential)
-            self.testTypetalk(oauthswift)
-            }, failure: { error in
+        oauthswift.authorizeURLHandler = getURLHandler()
+        let _ = oauthswift.authorize(
+            withCallbackURL: URL(string: "https://oauthswift.herokuapp.com/callback/typetalk")!, scope: "", state: state,
+            success: { credential, response, parameters in
+                self.showTokenAlert(name: serviceParameters["name"], credential: credential)
+                self.testTypetalk(oauthswift)
+            },
+            failure: { error in
                 print(error.localizedDescription, terminator: "")
-        })
+            }
+        )
     }
     
-    func testTypetalk(oauthswift: OAuth2Swift) {
-        oauthswift.client.get("https://typetalk.in/api/v1/profile",
-                              success: {
-                                data, response in
-                                let dataString = NSString(data: data, encoding: NSUTF8StringEncoding)
-                                print(dataString)
+    func testTypetalk(_ oauthswift: OAuth2Swift) {
+        let _ = oauthswift.client.get(
+            "https://typetalk.in/api/v1/profile",
+            success: { data, response in
+                let dataString = String(data: data, encoding: String.Encoding.utf8)
+                print(dataString)
             }, failure: { error in
                 print(error)
-        })
+            }
+        )
     }
     
     // MARK: SoundCloud
-    func doOAuthSoundCloud(serviceParameters: [String:String]) {
+    func doOAuthSoundCloud(_ serviceParameters: [String:String]) {
         let oauthswift = OAuth2Swift(
             consumerKey:    serviceParameters["consumerKey"]!,
             consumerSecret: serviceParameters["consumerSecret"]!,
@@ -1035,32 +1150,36 @@ extension ViewController {
             responseType:   "code"
         )
         self.oauthswift = oauthswift
-        oauthswift.authorize_url_handler = get_url_handler()
+        oauthswift.authorizeURLHandler = getURLHandler()
         let state: String = generateStateWithLength(20) as String
-        oauthswift.authorizeWithCallbackURL( NSURL(string: "https://oauthswift.herokuapp.com/callback/soundcloud")!, scope: "", state: state, success: {
-            credential, response, parameters in
-            self.showTokenAlert(serviceParameters["name"], credential: credential)
-            self.testSoundCloud(oauthswift,credential.oauth_token)
-            }, failure: { error in
+        let _ = oauthswift.authorize(
+            withCallbackURL: URL(string: "https://oauthswift.herokuapp.com/callback/soundcloud")!, scope: "", state: state,
+            success: { credential, response, parameters in
+                self.showTokenAlert(name: serviceParameters["name"], credential: credential)
+                self.testSoundCloud(oauthswift,credential.oauth_token)
+            },
+            failure: { error in
                 print(error.localizedDescription)
-        })
+            }
+        )
     }
     
-    func testSoundCloud(oauthswift: OAuth2Swift, _ oauthToken: String) {
-        oauthswift.client.get("https://api.soundcloud.com/me?oauth_token=\(oauthToken)",
-                              success: {
-                                data, response in
-                                let dataString = NSString(data: data, encoding: NSUTF8StringEncoding)
-                                print(dataString)
+    func testSoundCloud(_ oauthswift: OAuth2Swift, _ oauthToken: String) {
+        let _ = oauthswift.client.get(
+            "https://api.soundcloud.com/me?oauth_token=\(oauthToken)",
+            success: { data, response in
+                let dataString = String(data: data, encoding: String.Encoding.utf8)
+                print(dataString)
             }, failure: { error in
                 print(error)
-        })
+            }
+        )
     }
 }
 
 let services = Services()
-let DocumentDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
-let FileManager: NSFileManager = NSFileManager.defaultManager()
+let DocumentDirectory = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
+let FileManager: FileManager = Foundation.FileManager.default
 
 extension ViewController {
     
@@ -1071,11 +1190,11 @@ extension ViewController {
         initConf()
         
         // init now web view handler
-        internalWebViewController.webView
+        let _ = internalWebViewController.webView
         
         #if os(iOS)
             self.navigationItem.title = "OAuth"
-            let tableView: UITableView = UITableView(frame: self.view.bounds, style: .Plain)
+            let tableView: UITableView = UITableView(frame: self.view.bounds, style: .plain)
             tableView.delegate = self
             tableView.dataSource = self
             self.view.addSubview(tableView)
@@ -1086,9 +1205,9 @@ extension ViewController {
     
     var confPath: String {
         let appPath = "\(DocumentDirectory)/.oauth/"
-        if !FileManager.fileExistsAtPath(appPath) {
+        if !FileManager.fileExists(atPath: appPath) {
             do {
-                try FileManager.createDirectoryAtPath(appPath, withIntermediateDirectories: false, attributes: nil)
+                try FileManager.createDirectory(atPath: appPath, withIntermediateDirectories: false, attributes: nil)
             }catch {
                 print("Failed to create \(appPath)")
             }
@@ -1101,12 +1220,12 @@ extension ViewController {
         print("Load configuration from \n\(self.confPath)")
         
         // Load config from model file
-        if let path = NSBundle.mainBundle().pathForResource("Services", ofType: "plist") {
+        if let path = Bundle.main.path(forResource: "Services", ofType: "plist") {
             services.loadFromFile(path)
             
-            if !FileManager.fileExistsAtPath(confPath) {
+            if !FileManager.fileExists(atPath: confPath) {
                 do {
-                    try FileManager.copyItemAtPath(path, toPath: confPath)
+                    try FileManager.copyItem(atPath: path, toPath: confPath)
                 }catch {
                     print("Failed to copy empty conf to\(confPath)")
                 }
@@ -1138,31 +1257,31 @@ extension ViewController {
         services["Uber"] = Uber
     }
     
-    func snapshot() -> NSData {
+    func snapshot() -> Data {
         #if os(iOS)
             UIGraphicsBeginImageContext(self.view.frame.size)
-            self.view.layer.renderInContext(UIGraphicsGetCurrentContext()!)
+            self.view.layer.render(in: UIGraphicsGetCurrentContext()!)
             let fullScreenshot = UIGraphicsGetImageFromCurrentImageContext()
             UIGraphicsEndImageContext()
-            UIImageWriteToSavedPhotosAlbum(fullScreenshot, nil, nil, nil)
-            return  UIImageJPEGRepresentation(fullScreenshot, 0.5)!
+            UIImageWriteToSavedPhotosAlbum(fullScreenshot!, nil, nil, nil)
+            return UIImageJPEGRepresentation(fullScreenshot!, 0.5)!
         #elseif os(OSX)
-            let rep: NSBitmapImageRep = self.view.bitmapImageRepForCachingDisplayInRect(self.view.bounds)!
-            self.view.cacheDisplayInRect(self.view.bounds, toBitmapImageRep:rep)
-            return rep.TIFFRepresentation!
+            let rep: NSBitmapImageRep = self.view.bitmapImageRepForCachingDisplay(in: self.view.bounds)!
+            self.view.cacheDisplay(in: self.view.bounds, to:rep)
+            return rep.tiffRepresentation!
         #endif
     }
     
     func showAlertView(title: String, message: String) {
         #if os(iOS)
-            let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "Close", style: UIAlertActionStyle.Default, handler: nil))
-            self.presentViewController(alert, animated: true, completion: nil)
+            let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.alert)
+            alert.addAction(UIAlertAction(title: "Close", style: UIAlertActionStyle.default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
         #elseif os(OSX)
             let alert = NSAlert()
             alert.messageText = title
             alert.informativeText = message
-            alert.addButtonWithTitle("Close")
+            alert.addButton(withTitle: "Close")
             alert.runModal()
         #endif
     }
@@ -1172,7 +1291,7 @@ extension ViewController {
         if !credential.oauth_token_secret.isEmpty {
             message += "\n\noauth_toke_secret:\(credential.oauth_token_secret)"
         }
-        self.showAlertView(name ?? "Service", message: message)
+        self.showAlertView(title: name ?? "Service", message: message)
         
         if let service = name {
             services.updateService(service, dico: ["authentified":"1"])
@@ -1182,18 +1301,19 @@ extension ViewController {
     
     // MARK: handler
     
-    func get_url_handler() -> OAuthSwiftURLHandlerType {
+    func getURLHandler() -> OAuthSwiftURLHandlerType {
         guard let type = self.formData.data?.handlerType else {
             return OAuthSwiftOpenURLExternally.sharedInstance
         }
         switch type {
-        case .External :
+        case .external :
             return OAuthSwiftOpenURLExternally.sharedInstance
-        case .Internal:
-            let url_handler = internalWebViewController
-            self.addChildViewController(url_handler) // allow WebViewController to use this ViewController as parent to be presented
-            return url_handler
-        case .Safari:
+        case .`internal`:
+            if internalWebViewController.parent == nil {
+                self.addChildViewController(internalWebViewController)
+            }
+            return internalWebViewController
+        case .safari:
             #if os(iOS)
                 if #available(iOS 9.0, *) {
                     let handler = SafariURLHandler(viewController: self, oauthSwift: self.oauthswift!)
@@ -1228,12 +1348,12 @@ extension ViewController {
     //var urlForWebView:?NSURL = nil
     
     
-    override func prepareForSegue(segue: OAuthStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: OAuthStoryboardSegue, sender: Any?) {
         if segue.identifier == Storyboards.Main.FormSegue {
             #if os(OSX)
                 let controller = segue.destinationController as? FormViewController
             #else
-                let controller = segue.destinationViewController as? FormViewController
+                let controller = segue.destination as? FormViewController
             #endif
             // Fill the controller
             if let controller = controller {
@@ -1241,97 +1361,78 @@ extension ViewController {
             }
         }
         
-        super.prepareForSegue(segue, sender: sender)
-    }
-    
-    // Little class to dispatch async (could use framework like Eki or swift 3 DispatchQueue)
-    enum Queue {
-        case Main, Background
-        
-        var queue: dispatch_queue_t {
-            switch self {
-            case .Main:
-                return dispatch_get_main_queue()
-            case .Background:
-                return dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0)
-            }
-        }
-        func async(block: () -> Void) {
-            dispatch_async(self.queue) {
-                block()
-            }
-        }
+        super.prepare(for: segue, sender: sender)
     }
     
 }
 
+public typealias Queue = DispatchQueue
 // MARK: - Table
 
 #if os(iOS)
     extension ViewController: UITableViewDelegate, UITableViewDataSource {
         // MARK: UITableViewDataSource
         
-        func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
             return services.keys.count
         }
-        func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath:NSIndexPath) -> UITableViewCell {
-            let cell: UITableViewCell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "Cell")
+        func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+            let cell: UITableViewCell = UITableViewCell(style: UITableViewCellStyle.subtitle, reuseIdentifier: "Cell")
             let service = services.keys[indexPath.row]
             cell.textLabel?.text = service
             
-            if let parameters = services[service] where Services.parametersEmpty(parameters) {
-                cell.textLabel?.textColor = UIColor.redColor()
+            if let parameters = services[service] , Services.parametersEmpty(parameters) {
+                cell.textLabel?.textColor = UIColor.red
             }
-            if let parameters = services[service], authentified = parameters["authentified"] where authentified == "1" {
-                cell.textLabel?.textColor = UIColor.greenColor()
+            if let parameters = services[service], let authentified = parameters["authentified"], authentified == "1" {
+                cell.textLabel?.textColor = UIColor.green
             }
             return cell
         }
         
         // MARK: UITableViewDelegate
-        
-        func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath:NSIndexPath) {
+          func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
             let service: String = services.keys[indexPath.row]
             
-            Queue.Background.async {
-                self.doAuthService(service)
+            DispatchQueue.global(qos: .background).async {
+                self.doAuthService(service: service)
             }
-            tableView.deselectRowAtIndexPath(indexPath, animated:true)
+            tableView.deselectRow(at: indexPath, animated:true)
         }
     }
 #elseif os(OSX)
     extension ViewController: NSTableViewDataSource, NSTableViewDelegate {
         // MARK: NSTableViewDataSource
         
-        func numberOfRowsInTableView(tableView: NSTableView) -> Int {
+        func numberOfRows(in tableView: NSTableView) -> Int {
             return services.keys.count
         }
         
-        func tableView(tableView: NSTableView, objectValueForTableColumn tableColumn: NSTableColumn?, row: Int) -> AnyObject? {
+        func tableView(_ tableView: NSTableView, objectValueFor tableColumn: NSTableColumn?, row: Int) -> Any? {
             return services.keys[row]
-        }
-        
-        func tableView(tableView: NSTableView, didAddRowView rowView: NSTableRowView, forRow row: Int) {
-            let service = services.keys[row]
-            if let parameters = services[service] where Services.parametersEmpty(parameters) {
-                rowView.backgroundColor = NSColor.redColor()
-            }
-            if let parameters = services[service], authentified = parameters["authentified"] where authentified == "1" {
-                rowView.backgroundColor  = NSColor.greenColor()
-            }
         }
         
         // MARK: NSTableViewDelegate
         
-        func tableViewSelectionDidChange(notification: NSNotification) {
+        func tableView(_ tableView: NSTableView, didAdd rowView: NSTableRowView, forRow row: Int) {
+            let service = services.keys[row]
+            if let parameters = services[service], Services.parametersEmpty(parameters) {
+                rowView.backgroundColor = NSColor.red
+            }
+            if let parameters = services[service], let authentified = parameters["authentified"], authentified == "1" {
+                rowView.backgroundColor  = NSColor.green
+            }
+        }
+        
+        func tableViewSelectionDidChange(_ notification: Notification) {
             if let tableView = notification.object as? NSTableView {
                 let row = tableView.selectedRow
                 if  row != -1 {
                     let service: String = services.keys[row]
                     
                     
-                    Queue.Background.async {
-                        self.doAuthService(service)
+                    DispatchQueue.global(qos: .background).async {
+                        self.doAuthService(service: service)
                     }
                     tableView.deselectRow(row)
                 }
@@ -1354,7 +1455,7 @@ extension ViewController: FormViewControllerDelegate {
     func didValidate(key: String?, secret: String?, handlerType: URLHandlerType) {
         self.dismissForm()
         
-        self.formData.publish(FormViewControllerData(key: key ?? "", secret: secret ?? "", handlerType: handlerType))
+        self.formData.publish(data: FormViewControllerData(key: key ?? "", secret: secret ?? "", handlerType: handlerType))
     }
     
     func didCancel() {
@@ -1368,27 +1469,31 @@ extension ViewController: FormViewControllerDelegate {
             /*self.dismissViewControllerAnimated(true) { // without animation controller
              print("form dismissed")
              }*/
-            self.navigationController?.popViewControllerAnimated(true)
+            let _ = self.navigationController?.popViewController(animated: true)
         #endif
     }
 }
 
 // Little utility class to wait on data
 class Semaphore<T> {
-    let segueSemaphore = dispatch_semaphore_create(0)
+    let segueSemaphore = DispatchSemaphore(value: 0)
     var data: T?
     
-    func waitData(timeout: dispatch_time_t = DISPATCH_TIME_FOREVER) -> T? {
-        dispatch_semaphore_wait(segueSemaphore, timeout) // wait user
+    func waitData(timeout: DispatchTime? = nil) -> T? {
+        if let timeout = timeout {
+            let _ = segueSemaphore.wait(timeout: timeout) // wait user
+        } else {
+            segueSemaphore.wait()
+        }
         return data
     }
     
     func publish(data: T) {
         self.data = data
-        dispatch_semaphore_signal(segueSemaphore)
+        segueSemaphore.signal()
     }
     
     func cancel() {
-        dispatch_semaphore_signal(segueSemaphore)
+        segueSemaphore.signal()
     }
 }

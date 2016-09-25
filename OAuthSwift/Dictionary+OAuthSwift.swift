@@ -10,7 +10,7 @@ import Foundation
 
 extension Dictionary {
 
-    func join(other: Dictionary) -> Dictionary {
+    func join(_ other: Dictionary) -> Dictionary {
         var joinedDictionary = Dictionary()
 
         for (key, value) in self {
@@ -24,11 +24,11 @@ extension Dictionary {
         return joinedDictionary
     }
 
-    func filter(predicate: (key: Key, value: Value) -> Bool) -> Dictionary {
+    func filter(_ predicate: (_ key: Key, _ value: Value) -> Bool) -> Dictionary {
         var filteredDictionary = Dictionary()
 
         for (key, value) in self {
-            if predicate(key: key, value: value) {
+            if predicate(key, value) {
                 filteredDictionary.updateValue(value, forKey: key)
             }
         }
@@ -36,7 +36,7 @@ extension Dictionary {
         return filteredDictionary
     }
 
-    func urlEncodedQueryStringWithEncoding(encoding: NSStringEncoding) -> String {
+    func urlEncodedQueryStringWithEncoding(_ encoding: String.Encoding) -> String {
         var parts = [String]()
 
         for (key, value) in self {
@@ -46,10 +46,10 @@ extension Dictionary {
             parts.append(query)
         }
 
-        return parts.joinWithSeparator("&") as String
+        return parts.joined(separator: "&") as String
     }
 
-    mutating func merge<K, V>(dictionaries: Dictionary<K, V>...) {
+    mutating func merge<K, V>(_ dictionaries: Dictionary<K, V>...) {
         for dict in dictionaries {
             for (key, value) in dict {
                 self.updateValue(value as! Value, forKey: key as! Key)
@@ -57,7 +57,7 @@ extension Dictionary {
         }
     }
 
-    func map<K: Hashable, V> (transform: (Key, Value) -> (K, V)) -> Dictionary<K, V> {
+    func map<K: Hashable, V> (_ transform: (Key, Value) -> (K, V)) -> Dictionary<K, V> {
         var results: Dictionary<K, V> = [:]
         for k in self.keys {
             if let value = self[ k ] {
@@ -69,5 +69,5 @@ extension Dictionary {
     }
 }
 
-public func +=<K, V> (inout left: [K : V], right: [K : V]) { left.merge(right) }
+public func +=<K, V> (left: inout [K : V], right: [K : V]) { left.merge(right) }
 public func +<K, V> (left: [K : V], right: [K : V]) -> [K : V] { return left.join(right) }

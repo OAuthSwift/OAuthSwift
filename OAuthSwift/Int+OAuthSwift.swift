@@ -9,25 +9,25 @@
 import Foundation
 
 extension Int {
-    public func bytes(totalBytes: Int = sizeof(Int)) -> [UInt8] {
+    public func bytes(_ totalBytes: Int = MemoryLayout<Int>.size) -> [UInt8] {
         return arrayOfBytes(self, length: totalBytes)
     }
 }
 
-func arrayOfBytes<T>(value:T, length:Int? = nil) -> [UInt8] {
-    let totalBytes = length ?? (sizeofValue(value) * 8)
+func arrayOfBytes<T>(_ value:T, length:Int? = nil) -> [UInt8] {
+    let totalBytes = length ?? (MemoryLayout<T>.size * 8)
     
-    let valuePointer = UnsafeMutablePointer<T>.alloc(1)
-    valuePointer.memory = value
+    let valuePointer = UnsafeMutablePointer<T>.allocate(capacity: 1)
+    valuePointer.pointee = value
     
-    let bytesPointer = UnsafeMutablePointer<UInt8>(valuePointer)
-    var bytes = [UInt8](count: totalBytes, repeatedValue: 0)
-    for j in 0..<min(sizeof(T),totalBytes) {
-        bytes[totalBytes - 1 - j] = (bytesPointer + j).memory
+    let bytesPointer = valuePointer.withMemoryRebound(to: UInt8.self, capacity: 1) { return $0 }
+    var bytes = [UInt8](repeating: 0, count: totalBytes)
+    for j in 0..<min(MemoryLayout<T>.size,totalBytes) {
+        bytes[totalBytes - 1 - j] = (bytesPointer + j).pointee
     }
     
-    valuePointer.destroy()
-    valuePointer.dealloc(1)
+    valuePointer.deinitialize()
+    valuePointer.deallocate(capacity: 1)
     
     return bytes
 }

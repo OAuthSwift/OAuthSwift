@@ -31,9 +31,9 @@ struct Storyboards {
         
         static func instantiateForm() -> FormViewController {
             #if os(iOS)
-                return self.storyboard.instantiateViewControllerWithIdentifier("Form") as! FormViewController
+                return self.storyboard.instantiateViewController(withIdentifier: "Form") as! FormViewController
             #elseif os(OSX)
-                return self.storyboard.instantiateControllerWithIdentifier("Form") as! FormViewController
+                return self.storyboard.instantiateController(withIdentifier: "Form") as! FormViewController
             #endif
         }
 

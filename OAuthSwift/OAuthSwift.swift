@@ -8,22 +8,18 @@
 
 import Foundation
 
-public class OAuthSwift: NSObject {
+open class OAuthSwift: NSObject, OAuthSwiftRequestHandle {
     
     // MARK: Properties
     
     // Client to make signed request
-    public var client: OAuthSwiftClient
+    open var client: OAuthSwiftClient
     // Version of the protocol
-    public var version: OAuthSwiftCredential.Version { return self.client.credential.version }
+    open var version: OAuthSwiftCredential.Version { return self.client.credential.version }
     
     // Handle the authorize url into a web view or browser
-    public var authorize_url_handler: OAuthSwiftURLHandlerType = OAuthSwiftOpenURLExternally.sharedInstance
+    open var authorizeURLHandler: OAuthSwiftURLHandlerType = OAuthSwiftOpenURLExternally.sharedInstance
 
-    // MARK: callback alias
-    public typealias TokenSuccessHandler = (credential: OAuthSwiftCredential, response: NSURLResponse?, parameters: Dictionary<String, AnyObject>) -> Void
-    public typealias FailureHandler = (error: NSError) -> Void
-    public typealias TokenRenewedHandler = (credential: OAuthSwiftCredential) -> Void
     
     // MARK: init
     init(consumerKey: String, consumerSecret: String) {
@@ -32,32 +28,32 @@ public class OAuthSwift: NSObject {
 
     // MARK: callback notification
     struct CallbackNotification {
-        static let notificationName = "OAuthSwiftCallbackNotificationName"
+        static let notificationName = Notification.Name(rawValue: "OAuthSwiftCallbackNotificationName")
         static let optionsURLKey = "OAuthSwiftCallbackNotificationOptionsURLKey"
     }
 
     // Handle callback url which contains now token information
-    public class func handleOpenURL(url: NSURL) {
-        let notification = NSNotification(name: CallbackNotification.notificationName, object: nil,
+    open class func handle(url: URL) {
+        let notification = Notification(name: CallbackNotification.notificationName, object: nil,
             userInfo: [CallbackNotification.optionsURLKey: url])
-        notificationCenter.postNotification(notification)
+        notificationCenter.post(notification)
     }
 
-    var observer: AnyObject?
-    class var notificationCenter: NSNotificationCenter {
-        return NSNotificationCenter.defaultCenter()
+    var observer: NSObjectProtocol?
+    open class var notificationCenter: NotificationCenter {
+        return NotificationCenter.default
     }
-    class var notificationQueue: NSOperationQueue {
-        return NSOperationQueue.mainQueue()
+    open class var notificationQueue: OperationQueue {
+        return OperationQueue.main
     }
 
-    func observeCallback(block: (url: NSURL) -> Void) {
-        self.observer = OAuthSwift.notificationCenter.addObserverForName(CallbackNotification.notificationName, object: nil, queue: OAuthSwift.notificationQueue){
+    func observeCallback(_ block: @escaping (_ url: URL) -> Void) {
+        self.observer = OAuthSwift.notificationCenter.addObserver(forName: CallbackNotification.notificationName, object: nil, queue: OperationQueue.main){
             [weak self] notification in
             self?.removeCallbackNotificationObserver()
 
-            if let urlFromUserInfo = notification.userInfo?[CallbackNotification.optionsURLKey] as? NSURL {
-                block(url: urlFromUserInfo)
+            if let urlFromUserInfo = notification.userInfo?[CallbackNotification.optionsURLKey] as? URL {
+                block(urlFromUserInfo)
             } else {
                 // Internal error
                 assertionFailure()
@@ -67,7 +63,7 @@ public class OAuthSwift: NSObject {
 
     // Remove internal observer on authentification
     public func removeCallbackNotificationObserver() {
-      	if let observer = self.observer {
+        if let observer = self.observer {
             OAuthSwift.notificationCenter.removeObserver(observer)
         }
     }
@@ -75,14 +71,16 @@ public class OAuthSwift: NSObject {
     // Function to call when web view is dismissed without authentification
     public func cancel() {
         self.removeCallbackNotificationObserver()
+        // TODO CANCEL REQUEST cancel also all current request
     }
     
-    static func main(block: () -> Void) {
-        if NSThread.isMainThread() {
+    // Run block in main thread
+    static func main(block: @escaping () -> Void) {
+        if Thread.isMainThread {
             block()
         }
         else {
-            dispatch_async(dispatch_get_main_queue()) {
+            DispatchQueue.main.async {
                 block()
             }
         }
@@ -90,38 +88,107 @@ public class OAuthSwift: NSObject {
 
 }
 
+// MARK: - alias
+extension OAuthSwift {
+    
+    public typealias Parameters = [String: Any]
+    public typealias Headers = [String: String]
+    public typealias ConfigParameters = [String: String]
+    /// MARK: callback alias
+    public typealias TokenSuccessHandler = (_ credential: OAuthSwiftCredential, _ response: URLResponse?, _ parameters: Parameters) -> Void
+    public typealias FailureHandler = (_ error: OAuthSwiftError) -> Void
+    public typealias TokenRenewedHandler = (_ credential: OAuthSwiftCredential) -> Void
+}
 
-// MARK: OAuthSwift errors
-public let OAuthSwiftErrorDomain = "oauthswift.error"
+// MARK: - OAuthSwift errors
+public enum OAuthSwiftError: Error {
+    // Configuration problem with oauth provider.
+    case configurationError(message: String)
+    // The provided token is expired, retrieve new token by using the refresh token
+    case tokenExpired(error: Error?)
+    // State missing from request (you can set allowMissingStateCheck = true to ignore)
+    case missingState
+    // Returned state value is wrong
+    case stateNotEqual(state: String, responseState: String)
+    // Error from server
+    case serverError(message: String)
+    // Failed to create URL \(urlString) not convertible to URL, please encode
+    case encodingError(urlString: String)
+    case authorizationPending
+    // Failed to create request with \(urlString)
+    case requestCreation(message: String)
+    // Authentification failed. No token
+    case missingToken
+    // Please retain OAuthSwift object or handle
+    case retain
+    // Request error
+    case requestError(error: Error)
+    // Request cancelled
+    case cancelled
 
-public let OAuthSwiftErrorResponseDataKey = "oauthswift.error.response.data"
-public let OAuthSwiftErrorResponseKey = "oauthswift.error.response"
-
-public enum OAuthSwiftErrorCode: Int {
-    case GeneralError = -1
-    case TokenExpiredError = -2
-    case MissingStateError = -3
-    case StateNotEqualError = -4
-    case ServerError = -5
-    case EncodingError = -6
-    case AuthorizationPending = -7
-    case RequestCreationError = -8
-    case MissingTokenOrVerifier = -9
-    case RetainError = -10
+    public static let Domain = "OAuthSwiftError"
+    public static let ResponseDataKey = "OAuthSwiftError.response.data"
+    public static let ResponseKey = "OAuthSwiftError.response"
+    
+    fileprivate enum Code : Int {
+        case configurationError = -1
+        case tokenExpired = -2
+        case missingState = -3
+        case stateNotEqual = -4
+        case serverError = -5
+        case encodingError = -6
+        case authorizationPending = -7
+        case requestCreation = -8
+        case missingToken = -9
+        case retain = -10
+        case requestError = -11
+        case cancelled = -12
+    }
+    
+    fileprivate var code: Code {
+        switch self {
+        case .configurationError: return Code.configurationError
+        case .tokenExpired: return Code.tokenExpired
+        case .missingState: return Code.missingState
+        case .stateNotEqual: return Code.stateNotEqual
+        case .serverError: return Code.serverError
+        case .encodingError: return Code.encodingError
+        case .authorizationPending: return Code.authorizationPending
+        case .requestCreation: return Code.requestCreation
+        case .missingToken: return Code.missingToken
+        case .retain: return Code.retain
+        case .requestError: return Code.requestError
+        case .cancelled : return Code.cancelled
+        }
+    }
+    // For NSError
+    public var _code: Int {
+        return self.code.rawValue
+    }
+    public var _domain: String {
+        return OAuthSwiftError.Domain
+    }
 }
 
 extension NSError {
-    convenience init(code: OAuthSwiftErrorCode, message: String, errorKey: String = NSLocalizedFailureReasonErrorKey) {
+    fileprivate convenience init(code: OAuthSwiftError.Code, message: String, errorKey: String = NSLocalizedFailureReasonErrorKey) {
         let userInfo = [errorKey: message]
-        self.init(domain: OAuthSwiftErrorDomain, code: code.rawValue, userInfo: userInfo)
+        self.init(domain: OAuthSwiftError.Domain, code: code.rawValue, userInfo: userInfo)
     }
+}
+extension OAuthSwiftError {
+
+    var nsError: NSError {
+        return NSError(code: self.code, message: "")
+    }
+
 }
 
 extension OAuthSwift {
 
-    static func retainError(failureHandler: FailureHandler?) {
+    static func retainError(_ failureHandler: FailureHandler?) {
         #if !OAUTH_NO_RETAIN_ERROR
-        failureHandler?(error: NSError(code: .RetainError, message: "Please retain OAuthSwift object", errorKey: NSLocalizedDescriptionKey))
+        failureHandler?(OAuthSwiftError.retain)
         #endif
     }
 

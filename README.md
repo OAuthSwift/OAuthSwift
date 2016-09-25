@@ -24,7 +24,7 @@ OAuthSwift is packaged as a Swift framework. Currently this is the simplest way 
 * Install Carthage (https://github.com/Carthage/Carthage)
 * Create Cartfile file
 ```
-github "OAuthSwift/OAuthSwift" ~> 0.5.0
+github "OAuthSwift/OAuthSwift" ~> 1.0.0
 ```
 * Run `carthage update`.
 * On your application targets’ “General” settings tab, in the “Embedded Binaries” section, drag and drop OAuthSwift.framework from the Carthage/Build/iOS folder on disk.
@@ -37,20 +37,20 @@ github "OAuthSwift/OAuthSwift" ~> 0.5.0
 platform :ios, '8.0'
 use_frameworks!
 
-pod 'OAuthSwift', '~> 0.5.0'
+pod 'OAuthSwift', '~> 1.0.0'
 ```
 ## How to
 ### Setting URL Schemes
+In info tab of your target
 ![Image](Assets/URLSchemes.png "Image")
 Replace oauth-swift by your application name
-### Examples
 
-#### Handle URL in AppDelegate
+### Handle URL in AppDelegate
 - On iOS9 implement `UIApplicationDelegate` method
 ```swift
-func application(app: UIApplication, openURL url: NSURL, options: [String : AnyObject]) -> Bool {
+func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
   if (url.host == "oauth-callback") {
-    OAuthSwift.handleOpenURL(url)
+    OAuthSwift.handle(url: url)
   }
   return true
 }
@@ -62,21 +62,32 @@ if (options["UIApplicationOpenURLOptionsSourceApplicationKey"] as? String == "co
 
 - On previous iOS version
 ```swift
-func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
+func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
 ```
 - On OSX you must register an handler on `NSAppleEventManager` for event type `kAEGetURL` (see demo code)
-
-#### OAuth1.0
 ```swift
-let oauthswift = OAuth1Swift(
+func applicationDidFinishLaunching(aNotification: NSNotification) {
+    NSAppleEventManager.shared().setEventHandler(self, andSelector:#selector(AppDelegate.handleGetURL(event:withReplyEvent:)), forEventClass: AEEventClass(kInternetEventClass), andEventID: AEEventID(kAEGetURL))
+}
+func handleGetURL(event: NSAppleEventDescriptor!, withReplyEvent: NSAppleEventDescriptor!) {
+    if let urlString = event.paramDescriptor(forKeyword: AEKeyword(keyDirectObject))?.stringValue, let url = URL(string: urlString) {
+        OAuthSwift.handle(url: url)
+    }
+}
+```
+
+### Authorize with OAuth1.0
+```swift
+// create an instance and retain it
+oauthswift = OAuth1Swift(
     consumerKey:    "********",
     consumerSecret: "********",
     requestTokenUrl: "https://api.twitter.com/oauth/request_token",
     authorizeUrl:    "https://api.twitter.com/oauth/authorize",
     accessTokenUrl:  "https://api.twitter.com/oauth/access_token"
 )
-oauthswift.authorizeWithCallbackURL(
-    NSURL(string: "oauth-swift://oauth-callback/twitter")!,
+let handle = oauthswift.authorize(
+    withCallbackURL: URL(string: "oauth-swift://oauth-callback/twitter")!,
     success: { credential, response, parameters in
       print(credential.oauth_token)
       print(credential.oauth_token_secret)
@@ -87,16 +98,16 @@ oauthswift.authorizeWithCallbackURL(
     }             
 )
 ```
-#### OAuth2.0
+### Authorize with OAuth2.0
 ```swift
-let oauthswift = OAuth2Swift(
+oauthswift = OAuth2Swift(
     consumerKey:    "********",
     consumerSecret: "********",
     authorizeUrl:   "https://api.instagram.com/oauth/authorize",
     responseType:   "token"
 )
-oauthswift.authorizeWithCallbackURL(
-    NSURL(string: "oauth-swift://oauth-callback/instagram")!,
+let handle = oauthswift.authorize(
+    withCallbackURL: URL(string: "oauth-swift://oauth-callback/instagram")!,
     scope: "likes+comments", state:"INSTAGRAM",
     success: { credential, response, parameters in
       print(credential.oauth_token)
@@ -115,38 +126,37 @@ The authorize URL allows the user to connect to a provider and give access to yo
 
 By default this URL is opened into the external web browser (ie. safari), but apple does not allow it for app-store iOS applications.
 
-To change this behavior you must set an `OAuthSwiftURLHandlerType`, simple protocol to handle an `NSURL`
+To change this behavior you must set an `OAuthSwiftURLHandlerType`, simple protocol to handle an `URL`
 ```swift
-oauthswift.authorize_url_handler = ..
+oauthswift.authorizeURLHandler = ..
 ```
 For instance you can embed a web view into your application by providing a controller that displays a web view (`UIWebView`, `WKWebView`).
 Then this controller must implement `OAuthSwiftURLHandlerType` to load the URL into the web view
 ```swift
-func handle(url: NSURL) {
-  let req = NSURLRequest(URL: targetURL)
+func handle(_ url: NSURL) {
+  let req = URLRequest(URL: targetURL)
   self.webView.loadRequest(req)
   ...
 ```
-and present the view (`presentViewController`, `performSegueWithIdentifier`, ...)
+and present the view (`present(viewController`, `performSegue(withIdentifier: `, ...)
 *You can extends `OAuthWebViewController` for a default implementation of view presentation and dismiss*
 
 #### Use the SFSafariViewController (iOS9)
 A default implementation of `OAuthSwiftURLHandlerType` is provided using the `SFSafariViewController`, with automatic view dismiss.
 ```swift
-oauthswift.authorize_url_handler = SafariURLHandler(viewController: self)
+oauthswift.authorizeURLHandler = SafariURLHandler(viewController: self, oauthSwift: oauthswift)
 ```
 Of course you can create your own class or customize the controller by setting the variable `SafariURLHandler#factory`.
 
-## Make signed request
+### Make signed request
 
 ```swift
 oauthswift.client.get("https://api.linkedin.com/v1/people/~",
-      success: {
-        data, response in
-        let dataString = NSString(data: data, encoding: NSUTF8StringEncoding)
+      success: { data, response in
+        let dataString = String(data: data, encoding: String.Encoding.utf8)
         print(dataString)
-      }
-      , failure: { error in
+      },
+      failure: { error in
         print(error)
       }
 )

@@ -18,12 +18,12 @@ public extension NSError {
     ///
     /// Also implements a special handling for the Facebook API, which indicates invalid tokens in a 
     /// different manner. See https://developers.facebook.com/docs/graph-api/using-graph-api#errors
-	public var isExpiredTokenError: Bool {
+	public var isExpiredToken: Bool {
 		if self.domain == NSURLErrorDomain && self.code == 401 {
 			if let reponseHeaders = self.userInfo["Response-Headers"] as? [String:String],
-				authenticateHeader = reponseHeaders["WWW-Authenticate"] ?? reponseHeaders["Www-Authenticate"] {
+				let authenticateHeader = reponseHeaders["WWW-Authenticate"] ?? reponseHeaders["Www-Authenticate"] {
 				let headerDictionary = authenticateHeader.headerDictionary
-				if let error = headerDictionary["error"] where error == "invalid_token" || error == "\"invalid_token\"" {
+				if let error = headerDictionary["error"],  error == "invalid_token" || error == "\"invalid_token\"" {
 					return true
 				}
 			}
@@ -33,11 +33,11 @@ public extension NSError {
         // Docu: https://developers.facebook.com/docs/graph-api/using-graph-api#errors
         if self.domain == NSURLErrorDomain && self.code == 400 {
             if let urlString = self.userInfo[NSURLErrorFailingURLErrorKey] as? String
-                where urlString.containsString("graph.facebook.com")
+                , urlString.contains("graph.facebook.com")
             {
                 if let body = self.userInfo["Response-Body"] as? String,
-                    let bodyData = body.dataUsingEncoding(OAuthSwiftDataEncoding),
-                    let json = try? NSJSONSerialization.JSONObjectWithData(bodyData, options: NSJSONReadingOptions()),
+                    let bodyData = body.data(using: OAuthSwiftDataEncoding),
+                    let json = try? JSONSerialization.jsonObject(with: bodyData, options: []),
                     let jsonDic = json as? [String: AnyObject]
                 {
                     let errorCode = jsonDic["error"]?["code"] as? Int

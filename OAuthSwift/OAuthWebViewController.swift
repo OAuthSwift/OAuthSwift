@@ -33,11 +33,10 @@ public protocol OAuthWebViewControllerDelegate {
     func oauthWebViewControllerDidAppear()
     func oauthWebViewControllerWillDisappear()
     func oauthWebViewControllerDidDisappear()
-
 }
 
 // A web view controller, which handler OAuthSwift authentification.
-public class OAuthWebViewController: OAuthViewController, OAuthSwiftURLHandlerType {
+open class OAuthWebViewController: OAuthViewController, OAuthSwiftURLHandlerType {
  
     #if os(iOS) || os(tvOS) || os(OSX)
     // Delegate for this view
@@ -58,17 +57,17 @@ public class OAuthWebViewController: OAuthViewController, OAuthSwiftURLHandlerTy
     #elseif os(OSX)
     // How to present this view controller if parent view controller set
     public enum Present {
-        case AsModalWindow
-        case AsSheet
-        case AsPopover(relativeToRect: NSRect, ofView : NSView, preferredEdge: NSRectEdge, behavior: NSPopoverBehavior)
-        case TransitionFrom(fromViewController: NSViewController, options: NSViewControllerTransitionOptions)
-        case Animator(animator: NSViewControllerPresentationAnimator)
-        case Segue(segueIdentifier: String)
+        case asModalWindow
+        case asSheet
+        case asPopover(relativeToRect: NSRect, ofView : NSView, preferredEdge: NSRectEdge, behavior: NSPopoverBehavior)
+        case transitionFrom(fromViewController: NSViewController, options: NSViewControllerTransitionOptions)
+        case animator(animator: NSViewControllerPresentationAnimator)
+        case segue(segueIdentifier: String)
     }
-    public var present: Present = .AsModalWindow
+    public var present: Present = .asModalWindow
     #endif
     
-    public func handle(url: NSURL) {
+    open func handle(_ url: URL) {
         // do UI in main thread
         OAuthSwift.main { [unowned self] in
              self.doHandle(url)
@@ -79,87 +78,91 @@ public class OAuthWebViewController: OAuthViewController, OAuthSwiftURLHandlerTy
     public static var userActivityType: String = "org.github.dongri.oauthswift.connect"
     #endif
 
-    public func doHandle(url: NSURL) {
+    open func doHandle(_ url: URL) {
         #if os(iOS) || os(tvOS)
             let completion: () -> Void = { [unowned self] in
                 self.delegate?.oauthWebViewControllerDidPresent()
             }
             let animated = true
-            if let navigationController = self.navigationController where (!useTopViewControlerInsteadOfNavigation || self.topViewController == nil) {
+            if let navigationController = self.navigationController, (!useTopViewControlerInsteadOfNavigation || self.topViewController == nil) {
                 navigationController.pushViewController(self, animated: animated)
             }
-            else if let p = self.parentViewController {
-                p.presentViewController(self, animated: animated, completion: completion)
+            else if let p = self.parent {
+                p.present(self, animated: animated, completion: completion)
             }
             else if let topViewController = topViewController {
-                topViewController.presentViewController(self, animated: animated, completion: completion)
+                topViewController.present(self, animated: animated, completion: completion)
             }
             else {
                 // assert no presentation
+                assertionFailure("Failed to present. Maybe add a parent")
             }
         #elseif os(watchOS)
             if (url.scheme == "http" || url.scheme == "https") {
                 self.updateUserActivity(OAuthWebViewController.userActivityType, userInfo: nil, webpageURL: url)
             }
         #elseif os(OSX)
-            if let p = self.parentViewController { // default behaviour if this controller affected as child controller
+            if let p = self.parent { // default behaviour if this controller affected as child controller
                 switch self.present {
-                case .AsSheet:
+                case .asSheet:
                     p.presentViewControllerAsSheet(self)
                     break
-                case .AsModalWindow:
+                case .asModalWindow:
                     p.presentViewControllerAsModalWindow(self)
                     // FIXME: if we present as window, window close must detected and oauthswift.cancel() must be called...
                     break
-                case .AsPopover(let positioningRect, let positioningView, let preferredEdge, let behavior):
-                    p.presentViewController(self, asPopoverRelativeToRect: positioningRect, ofView : positioningView, preferredEdge: preferredEdge, behavior: behavior)
+                case .asPopover(let positioningRect, let positioningView, let preferredEdge, let behavior):
+                    p.presentViewController(self, asPopoverRelativeTo: positioningRect, of : positioningView, preferredEdge: preferredEdge, behavior: behavior)
                     break
-                case .TransitionFrom(let fromViewController, let options):
+                case .transitionFrom(let fromViewController, let options):
                     let completion: () -> Void = { /*[unowned self] in*/
                         //self.delegate?.oauthWebViewControllerDidPresent()
                     }
-                    p.transitionFromViewController(fromViewController, toViewController: self, options: options, completionHandler: completion)
+                    p.transition(from: fromViewController, to: self, options: options, completionHandler: completion)
                     break
-                case .Animator(let animator):
+                case .animator(let animator):
                     p.presentViewController(self, animator: animator)
-                case .Segue(let segueIdentifier):
-                    p.performSegueWithIdentifier(segueIdentifier, sender: self) // The segue must display self.view
+                case .segue(let segueIdentifier):
+                    p.performSegue(withIdentifier: segueIdentifier, sender: self) // The segue must display self.view
                     break
                 }
             }
             else if let window = self.view.window {
                 window.makeKeyAndOrderFront(nil)
             }
+            else {
+                assertionFailure("Failed to present. Add controller into a window or add a parent")
+            }
             // or create an NSWindow or NSWindowController (/!\ keep a strong reference on it)
         #endif
     }
 
-    public func dismissWebViewController() {
+    open func dismissWebViewController() {
         #if os(iOS) || os(tvOS)
             let completion: () -> Void = { [unowned self] in
                 self.delegate?.oauthWebViewControllerDidDismiss()
             }
             let animated = true
-            if let navigationController = self.navigationController where (!useTopViewControlerInsteadOfNavigation || self.topViewController == nil){
-                navigationController.popViewControllerAnimated(animated)
+            if let navigationController = self.navigationController , (!useTopViewControlerInsteadOfNavigation || self.topViewController == nil){
+                navigationController.popViewController(animated: animated)
             }
-            else if let parentViewController = self.parentViewController {
+            else if let parentViewController = self.parent {
                 // The presenting view controller is responsible for dismissing the view controller it presented
-                parentViewController.dismissViewControllerAnimated(animated, completion: completion)
+                parentViewController.dismiss(animated: animated, completion: completion)
             }
             else if let topViewController = topViewController {
-                topViewController.dismissViewControllerAnimated(animated, completion: completion)
+                topViewController.dismiss(animated: animated, completion: completion)
             }
             else {
                 // keep old code...
-                self.dismissViewControllerAnimated(animated, completion: completion)
+                self.dismiss(animated: animated, completion: completion)
             }
         #elseif os(watchOS)
-            self.dismissController()
+            self.dismiss()
         #elseif os(OSX)
-            if self.presentingViewController != nil {
-                self.dismissController(nil)
-                if self.parentViewController != nil {
+            if self.presenting != nil {
+                self.dismiss(nil)
+                if self.parent != nil {
                     self.removeFromParentViewController()
                 }
             }
@@ -171,29 +174,29 @@ public class OAuthWebViewController: OAuthViewController, OAuthSwiftURLHandlerTy
     
     // MARK: overrides
     #if os(iOS) || os(tvOS)
-    public override func viewWillAppear(animated: Bool) {
+    open override func viewWillAppear(_ animated: Bool) {
         self.delegate?.oauthWebViewControllerWillAppear()
     }
-    public override func viewDidAppear(animated: Bool) {
+    open override func viewDidAppear(_ animated: Bool) {
         self.delegate?.oauthWebViewControllerDidAppear()
     }
-    public override func viewWillDisappear(animated: Bool) {
+    open override func viewWillDisappear(_ animated: Bool) {
         self.delegate?.oauthWebViewControllerWillDisappear()
     }
-    public override func viewDidDisappear(animated: Bool) {
+    open override func viewDidDisappear(_ animated: Bool) {
         self.delegate?.oauthWebViewControllerDidDisappear()
     }
     #elseif os(OSX)
-    public override func viewWillAppear() {
+    open override func viewWillAppear() {
         self.delegate?.oauthWebViewControllerWillAppear()
     }
-    public override func viewDidAppear() {
+    open override func viewDidAppear() {
         self.delegate?.oauthWebViewControllerDidAppear()
     }
-    public override func viewWillDisappear() {
+    open override func viewWillDisappear() {
         self.delegate?.oauthWebViewControllerWillDisappear()
     }
-    public override func viewDidDisappear() {
+    open override func viewDidDisappear() {
         self.delegate?.oauthWebViewControllerDidDisappear()
     }
     
