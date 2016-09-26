@@ -97,11 +97,11 @@ open class OAuthSwiftClient: NSObject {
         return request
     }
 
-    public func postImage(urlString: String, parameters: [String:AnyObject], image: Data, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?)  -> OAuthSwiftRequestHandle? {
+    public func postImage(_ urlString: String, parameters: OAuthSwift.Parameters, image: Data, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?)  -> OAuthSwiftRequestHandle? {
         return self.multiPartRequest(url: urlString, method: .POST, parameters: parameters, image: image, success: success, failure: failure)
     }
 
-    func multiPartRequest(url: String, method: OAuthSwiftHTTPRequest.Method, parameters: [String:AnyObject], image: Data, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) -> OAuthSwiftRequestHandle? {
+    func multiPartRequest(url: String, method: OAuthSwiftHTTPRequest.Method, parameters: OAuthSwift.Parameters, image: Data, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) -> OAuthSwiftRequestHandle? {
         
         let paramImage: OAuthSwift.Parameters = ["media": image]
         let boundary = "AS-boundary-\(arc4random())-\(arc4random())"
