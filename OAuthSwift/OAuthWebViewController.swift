@@ -64,7 +64,7 @@ open class OAuthWebViewController: OAuthViewController, OAuthSwiftURLHandlerType
         #if os(iOS) || os(tvOS)
             self.dismiss(animated: true, completion: nil)
         #elseif os(watchOS)
-            self.dismissController()
+            self.dismiss()
         #elseif os(OSX)
             if self.presenting != nil { // if presentViewControllerAsModalWindow
                 self.dismiss(nil)
