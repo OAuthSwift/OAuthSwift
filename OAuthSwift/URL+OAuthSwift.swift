@@ -1,5 +1,5 @@
 //
-//  NSURL+OAuthSwift.swift
+//  URL+OAuthSwift.swift
 //  OAuthSwift
 //
 //  Created by Dongri Jin on 6/21/14.
@@ -19,13 +19,12 @@ extension URL {
         var absoluteURLString = absoluteString
 
         if absoluteURLString.hasSuffix("?") {
-            // TODO remove NSString
-            absoluteURLString = (absoluteURLString as NSString).substring(to: absoluteURLString.utf16.count - 1)
+             absoluteURLString.dropLast()
         }
 
-        let URLString = absoluteURLString + (absoluteURLString.range(of: "?") != nil ? "&" : "?") + queryString
+        let string = absoluteURLString + (absoluteURLString.range(of: "?") != nil ? "&" : "?") + queryString
 
-        return URL(string: URLString)!
+        return URL(string: string)!
     }
 
 }

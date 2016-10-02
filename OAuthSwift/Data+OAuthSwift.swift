@@ -34,14 +34,13 @@ extension Data {
         append(UInt32(byte >> 32 & 0xFFFFFFFF))
     }
 
-    func bytes() -> [UInt8] {
-        let count = self.count / MemoryLayout<UInt8>.size
-        var bytesArray = [UInt8](repeating: 0, count: count)
-        // TODO remove NSData
-        (self as NSData).getBytes(&bytesArray, length:count * MemoryLayout<UInt8>.size)
-        return bytesArray
+    var bytes: [UInt8] {
+        return Array(self)
+        /* let count = self.count / MemoryLayout<UInt8>.size
+         var bytesArray = [UInt8](repeating: 0, count: count)
+        self.copyBytes(to:&bytesArray, count: count * MemoryLayout<UInt8>.size)
+        return bytesArray*/
     }
-    
 
 }
 

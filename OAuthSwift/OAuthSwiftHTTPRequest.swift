@@ -281,7 +281,7 @@ open class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftReques
                 let charset = dataEncoding.charset
                 let headers = request.allHTTPHeaderFields ?? [:]
                 if request.httpMethod == "GET" || request.httpMethod == "HEAD" || request.httpMethod == "DELETE" {
-                    let queryString = finalParameters.urlEncodedQueryStringWithEncoding(dataEncoding)
+                    let queryString = finalParameters.urlEncodedQuery
                     let url = request.url!
                     request.url = url.urlByAppending(queryString: queryString)
                     if headers[kHTTPHeaderContentType] == nil {
@@ -296,8 +296,8 @@ open class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftReques
                     }
                     else {
                         request.setValue("application/x-www-form-urlencoded; charset=\(charset)", forHTTPHeaderField: kHTTPHeaderContentType)
-                        let queryString = finalParameters.urlEncodedQueryStringWithEncoding(dataEncoding)
-                        request.httpBody = queryString.data(using: String.Encoding.utf8, allowLossyConversion: true)
+                        let queryString = finalParameters.urlEncodedQuery
+                        request.httpBody = queryString.data(using: dataEncoding, allowLossyConversion: true)
                     }
                 }
             }
@@ -367,7 +367,7 @@ open class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftReques
             requestHeaders += credential.makeHeaders(signatureUrl, method: method, parameters: signatureParameters, body: body)
         case .requestURIQuery:
             //Add oauth parameters as request parameters
-            self.config.parameters += credential.authorizationParametersWithSignatureForMethod(method, url: signatureUrl, parameters: signatureParameters, body: body)
+            self.config.parameters += credential.authorizationParametersWithSignature(method: method, url: signatureUrl, parameters: signatureParameters, body: body)
         }
 
         self.config.urlRequest.allHTTPHeaderFields = requestHeaders + headers

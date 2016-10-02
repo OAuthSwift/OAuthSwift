@@ -22,11 +22,10 @@ extension String {
         return pos
     }
 
-    func urlEncodedStringWithEncoding(_ encoding: String.Encoding) -> String {
-        let originalString = self as NSString
-        let customAllowedSet =  CharacterSet(charactersIn:"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~")
-        let escapedString = originalString.addingPercentEncoding(withAllowedCharacters: customAllowedSet)
-        return escapedString! as String
+    var urlEncodedString: String {
+        let customAllowedSet =  CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~")
+        let escapedString = self.addingPercentEncoding(withAllowedCharacters: customAllowedSet)
+        return escapedString!
     }
 
     func parametersFromQueryString() -> Dictionary<String, String> {
@@ -96,26 +95,8 @@ extension String {
             return false
         }
     }
-    func hasBegin(_ s:String)->Bool{
-        if self.hasPrefix(s) {
-            return true
-        }else{
-            return false
-        }
-    }
-    func hasEnd(_ s:String)->Bool{
-        if self.hasSuffix(s) {
-            return true
-        }else{
-            return false
-        }
-    }
-    func length()->Int{
-        return self.utf16.count
-    }
-    func size()->Int{
-        return self.utf16.count
-    }
+ 
+ 
     func `repeat`(_ times: Int) -> String{
         var result = ""
         for _ in 0..<times {
@@ -131,6 +112,23 @@ extension String {
         }
         return x
     }
+    
+    var droppedLast: String {
+       return self.substring(to: self.index(before: self.endIndex))
+    }
+
+    mutating func dropLast() {
+        self.remove(at: self.index(before: self.endIndex))
+    }
+
+    func substring(to offset: String.IndexDistance) -> String{
+        return self.substring(to: self.index(self.startIndex, offsetBy: offset))
+    }
+
+    func substring(from offset: String.IndexDistance) -> String{
+        return self.substring(from: self.index(self.startIndex, offsetBy: offset))
+    }
+    
 }
 
 extension String.Encoding {

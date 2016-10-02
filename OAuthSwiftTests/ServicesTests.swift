@@ -160,7 +160,7 @@ class ServicesTests: XCTestCase {
         
         let expectation = self.expectation(description: service)
         
-        let state: String = generateStateWithLength(20) as String
+        let state = generateState(withLength: 20)
         let _ = oauthswift.authorize(withCallbackURL: URL(string: callbackURL)!, scope: scope, state: state, success: {
             credential, response, parameters in
             expectation.fulfill()

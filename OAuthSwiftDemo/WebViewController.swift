@@ -91,7 +91,7 @@ class WebViewController: OAuthWebViewController {
             decisionHandler(.allow)
         }
         
-        /* override func  webView(webView: WebView!, decidePolicyForNavigationAction actionInformation: [NSObject : AnyObject]!, request: NSURLRequest!, frame: WebFrame!, decisionListener listener: WebPolicyDecisionListener!) {
+        /* override func  webView(webView: WebView!, decidePolicyForNavigationAction actionInformation: [NSObject : AnyObject]!, request: URLRequest!, frame: WebFrame!, decisionListener listener: WebPolicyDecisionListener!) {
         
         if request.URL?.scheme == "oauth-swift" {
         self.dismissWebViewController()

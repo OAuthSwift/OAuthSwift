@@ -1,3 +1,4 @@
+
 //
 //  OAuth2Swift.swift
 //  OAuthSwift
@@ -17,30 +18,30 @@ open class OAuth2Swift: OAuthSwift {
     // Set to true to deactivate state check. Be careful of CSRF
     open var allowMissingStateCheck: Bool = false
 
-    var consumer_key: String
-    var consumer_secret: String
-    var authorize_url: String
-    var access_token_url: String?
-    var response_type: String
-    var content_type: String?
+    var consumerKey: String
+    var consumerSecret: String
+    var authorizeUrl: String
+    var accessTokenUrl: String?
+    var responseType: String
+    var contentType: String?
     
     // MARK: init
     public convenience init(consumerKey: String, consumerSecret: String, authorizeUrl: String, accessTokenUrl: String, responseType: String){
         self.init(consumerKey: consumerKey, consumerSecret: consumerSecret, authorizeUrl: authorizeUrl, responseType: responseType)
-        self.access_token_url = accessTokenUrl
+        self.accessTokenUrl = accessTokenUrl
     }
 
     public convenience init(consumerKey: String, consumerSecret: String, authorizeUrl: String, accessTokenUrl: String, responseType: String, contentType: String){
         self.init(consumerKey: consumerKey, consumerSecret: consumerSecret, authorizeUrl: authorizeUrl, responseType: responseType)
-        self.access_token_url = accessTokenUrl
-        self.content_type = contentType
+        self.accessTokenUrl = accessTokenUrl
+        self.contentType = contentType
     }
 
     public init(consumerKey: String, consumerSecret: String, authorizeUrl: String, responseType: String){
-        self.consumer_key = consumerKey
-        self.consumer_secret = consumerSecret
-        self.authorize_url = authorizeUrl
-        self.response_type = responseType
+        self.consumerKey = consumerKey
+        self.consumerSecret = consumerSecret
+        self.authorizeUrl = authorizeUrl
+        self.responseType = responseType
         super.init(consumerKey: consumerKey, consumerSecret: consumerSecret)
         self.client.credential.version = .oauth2
     }
@@ -61,11 +62,11 @@ open class OAuth2Swift: OAuthSwift {
 
     open var parameters: ConfigParameters {
         return [
-            "consumerKey": consumer_key,
-            "consumerSecret": consumer_secret,
-            "authorizeUrl": authorize_url,
-            "accessTokenUrl": access_token_url ?? "",
-            "responseType": response_type
+            "consumerKey": consumerKey,
+            "consumerSecret": consumerSecret,
+            "authorizeUrl": authorizeUrl,
+            "accessTokenUrl": accessTokenUrl ?? "",
+            "responseType": responseType
         ]
     }
 
@@ -82,9 +83,9 @@ open class OAuth2Swift: OAuthSwift {
                 responseParameters += fragment.parametersFromQueryString()
             }
             if let accessToken = responseParameters["access_token"] {
-                this.client.credential.oauth_token = accessToken.safeStringByRemovingPercentEncoding
+                this.client.credential.oauthToken = accessToken.safeStringByRemovingPercentEncoding
                 if let expiresIn:String = responseParameters["expires_in"], let offset = Double(expiresIn)  {
-                    this.client.credential.oauth_token_expires_at = Date(timeInterval: offset, since: Date())
+                    this.client.credential.oauthTokenExpiresAt = Date(timeInterval: offset, since: Date())
                 }
                 success(this.client.credential, nil, responseParameters)
             }
@@ -99,10 +100,11 @@ open class OAuth2Swift: OAuthSwift {
                         return
                     }
                 }
-                let _ = this.postOAuthAccessTokenWithRequestToken(
+                if let handle = this.postOAuthAccessTokenWithRequestToken(
                     byCode: code.safeStringByRemovingPercentEncoding,
-                    callbackURL:callbackURL, headers: headers , success: success, failure: failure)
-                // TODO CANCEL REQUEST keep the returned handle into a list for cancel
+                    callbackURL: callbackURL, headers: headers , success: success, failure: failure) {
+                    this.putHandle(handle, withKey: UUID().uuidString)
+                }
             }
             else if let error = responseParameters["error"] {
                 let description = responseParameters["error_description"] ?? ""
@@ -116,9 +118,9 @@ open class OAuth2Swift: OAuthSwift {
         }
 
         
-        var queryString = "client_id=\(self.consumer_key)"
+        var queryString = "client_id=\(self.consumerKey)"
         queryString += "&redirect_uri=\(callbackURL.absoluteString)"
-        queryString += "&response_type=\(self.response_type)"
+        queryString += "&response_type=\(self.responseType)"
         if !scope.isEmpty {
             queryString += "&scope=\(scope)"
         }
@@ -129,8 +131,8 @@ open class OAuth2Swift: OAuthSwift {
             queryString += "&\(param.0)=\(param.1)"
         }
         
-        var urlString = self.authorize_url
-        urlString += (self.authorize_url.has("?") ? "&" : "?")
+        var urlString = self.authorizeUrl
+        urlString += (self.authorizeUrl.has("?") ? "&" : "?")
         
         if let encodedQuery = queryString.urlQueryEncoded, let queryURL = URL(string: urlString + encodedQuery) {
             self.authorizeURLHandler.handle(queryURL)
@@ -151,8 +153,8 @@ open class OAuth2Swift: OAuthSwift {
 
     func postOAuthAccessTokenWithRequestToken(byCode code: String, callbackURL: URL, headers: OAuthSwift.Headers? = nil, success: @escaping TokenSuccessHandler, failure: FailureHandler?) -> OAuthSwiftRequestHandle? {
         var parameters = OAuthSwift.Parameters()
-        parameters["client_id"] = self.consumer_key
-        parameters["client_secret"] = self.consumer_secret
+        parameters["client_id"] = self.consumerKey
+        parameters["client_secret"] = self.consumerSecret
         parameters["code"] = code
         parameters["grant_type"] = "authorization_code"
         parameters["redirect_uri"] = callbackURL.absoluteString.safeStringByRemovingPercentEncoding
@@ -162,8 +164,8 @@ open class OAuth2Swift: OAuthSwift {
     
     open func renewAccessToken(withRefreshToken refreshToken: String, headers: OAuthSwift.Headers? = nil, success: @escaping TokenSuccessHandler, failure: FailureHandler?) -> OAuthSwiftRequestHandle? {
       var parameters = OAuthSwift.Parameters()
-        parameters["client_id"] = self.consumer_key
-        parameters["client_secret"] = self.consumer_secret
+        parameters["client_id"] = self.consumerKey
+        parameters["client_secret"] = self.consumerSecret
         parameters["refresh_token"] = refreshToken
         parameters["grant_type"] = "refresh_token"
         
@@ -190,41 +192,41 @@ open class OAuth2Swift: OAuthSwift {
                 return
             }
             if let refreshToken = responseParameters["refresh_token"] as? String {
-                self.client.credential.oauth_refresh_token = refreshToken.safeStringByRemovingPercentEncoding
+                self.client.credential.oauthRefreshToken = refreshToken.safeStringByRemovingPercentEncoding
             }
 
             if let expiresIn = responseParameters["expires_in"] as? String, let offset = Double(expiresIn)  {
-                self.client.credential.oauth_token_expires_at = Date(timeInterval: offset, since: Date())
+                self.client.credential.oauthTokenExpiresAt = Date(timeInterval: offset, since: Date())
             } else if let expiresIn = responseParameters["expires_in"] as? Double {
-                self.client.credential.oauth_token_expires_at = Date(timeInterval: expiresIn, since: Date())
+                self.client.credential.oauthTokenExpiresAt = Date(timeInterval: expiresIn, since: Date())
             }
             
-            self.client.credential.oauth_token = accessToken.safeStringByRemovingPercentEncoding
+            self.client.credential.oauthToken = accessToken.safeStringByRemovingPercentEncoding
             success(self.client.credential, response, responseParameters)
         }
+        
+        guard let accessTokenUrl = accessTokenUrl else {
+            let message = NSLocalizedString("access token url not defined", comment: "access token url not defined with code type auth")
+            failure?(OAuthSwiftError.configurationError(message: message))
+            return nil
+        }
 
-        if self.content_type == "multipart/form-data" {
+        if self.contentType == "multipart/form-data" {
             // Request new access token by disabling check on current token expiration. This is safe because the implementation wants the user to retrieve a new token.
-            return self.client.postMultiPartRequest(self.access_token_url!, method: .POST, parameters: parameters, headers: headers, checkTokenExpiration: false, success: successHandler, failure: failure)
+            return self.client.postMultiPartRequest(accessTokenUrl, method: .POST, parameters: parameters, headers: headers, checkTokenExpiration: false, success: successHandler, failure: failure)
         } else {
             // special headers
             var headers: OAuthSwift.Headers? = nil
             if accessTokenBasicAuthentification {
  
-                let authentification = "\(self.consumer_key):\(self.consumer_secret)".data(using: String.Encoding.utf8)
+                let authentification = "\(self.consumerKey):\(self.consumerSecret)".data(using: String.Encoding.utf8)
                 if let base64Encoded = authentification?.base64EncodedString(options: Data.Base64EncodingOptions(rawValue: 0)) {
                     headers = ["Authorization": "Basic \(base64Encoded)"]
                 }
             }
-            if let access_token_url = access_token_url {
-                // Request new access token by disabling check on current token expiration. This is safe because the implementation wants the user to retrieve a new token.
-                return self.client.request(access_token_url, method: .POST, parameters: parameters, headers: headers, checkTokenExpiration: false, success: successHandler, failure: failure)
-            }
-            else {
-                let message = NSLocalizedString("access token url not defined", comment: "access token url not defined with code type auth")
-                failure?(OAuthSwiftError.configurationError(message: message))
-                return nil
-            }
+     
+            // Request new access token by disabling check on current token expiration. This is safe because the implementation wants the user to retrieve a new token.
+            return self.client.request(accessTokenUrl, method: .POST, parameters: parameters, headers: headers, checkTokenExpiration: false, success: successHandler, failure: failure)
         }
     }
 
@@ -247,7 +249,7 @@ open class OAuth2Swift: OAuthSwift {
             switch error {
 
             case OAuthSwiftError.tokenExpired:
-                let _ = self.renewAccessToken(withRefreshToken: self.client.credential.oauth_refresh_token, headers: headers, success: { (credential, response, parameters) in
+                let _ = self.renewAccessToken(withRefreshToken: self.client.credential.oauthRefreshToken, headers: headers, success: { (credential, response, parameters) in
                     // We have successfully renewed the access token.
                     
                     // If provided, fire the onRenewal closure
@@ -266,8 +268,8 @@ open class OAuth2Swift: OAuthSwift {
     
     open func authorize(deviceToken deviceCode: String, success: @escaping TokenRenewedHandler, failure: @escaping OAuthSwiftHTTPRequest.FailureHandler) -> OAuthSwiftRequestHandle? {
         var parameters = OAuthSwift.Parameters()
-        parameters["client_id"] = self.consumer_key
-        parameters["client_secret"] = self.consumer_secret
+        parameters["client_id"] = self.consumerKey
+        parameters["client_secret"] = self.consumerSecret
         parameters["code"] = deviceCode
         parameters["grant_type"] = "http://oauth.net/grant_type/device/1.0"
         

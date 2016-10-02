@@ -200,7 +200,7 @@ extension ViewController {
         )
         self.oauthswift = oauthswift
         oauthswift.authorizeURLHandler = getURLHandler()
-        let state: String = generateStateWithLength(20) as String
+        let state = generateState(withLength: 20)
         
         let _ = oauthswift.authorize(
             withCallbackURL: URL(string: "oauth-swift://oauth-callback/spotify")!,
@@ -304,7 +304,7 @@ extension ViewController {
         )
         self.oauthswift = oauthswift
         oauthswift.authorizeURLHandler = getURLHandler()
-        let state: String = generateStateWithLength(20) as String
+        let state = generateState(withLength: 20)
         let _ = oauthswift.authorize(
             withCallbackURL: URL(string: "oauth-swift://oauth-callback/github")!, scope: "user,repo", state: state,
             success: { credential, response, parameters in
@@ -327,7 +327,7 @@ extension ViewController {
         )
         self.oauthswift = oauthswift
         oauthswift.authorizeURLHandler = getURLHandler()
-        let state: String = generateStateWithLength(20) as String
+        let state = generateState(withLength: 20)
         let _ = oauthswift.authorize(
             withCallbackURL: URL(string: "oauth-swift://oauth-callback/salesforce")!, scope: "full", state: state,
             success: { credential, response, parameters in
@@ -351,7 +351,7 @@ extension ViewController {
             // responseType:   "code"
         )
         
-        let state: String = generateStateWithLength(20) as String
+        let state = generateState(withLength: 20)
         self.oauthswift = oauthswift
         oauthswift.authorizeURLHandler = getURLHandler()
         let _ = oauthswift.authorize(
@@ -366,7 +366,7 @@ extension ViewController {
         )
     }
     func testInstagram(_ oauthswift: OAuth2Swift) {
-        let url :String = "https://api.instagram.com/v1/users/1574083/?access_token=\(oauthswift.client.credential.oauth_token)"
+        let url :String = "https://api.instagram.com/v1/users/1574083/?access_token=\(oauthswift.client.credential.oauthToken)"
         let parameters :Dictionary = Dictionary<String, AnyObject>()
         let _ = oauthswift.client.get(
             url, parameters: parameters,
@@ -439,7 +439,7 @@ extension ViewController {
         
         self.oauthswift = oauthswift
         oauthswift.authorizeURLHandler = getURLHandler()
-        let state: String = generateStateWithLength(20) as String
+        let state = generateState(withLength: 20)
         let _ = oauthswift.authorize(
             withCallbackURL: URL(string: "oauth-swift://oauth-callback/fitbit2")!, scope: "profile weight", state: state,
             success: { credential, response, parameters in
@@ -547,7 +547,7 @@ extension ViewController {
         )
         self.oauthswift = oauthswift
         oauthswift.authorizeURLHandler = getURLHandler()
-        let state: String = generateStateWithLength(20) as String
+        let state = generateState(withLength: 20)
         let _ = oauthswift.authorize(
             withCallbackURL: URL(string: "http://oauthswift.herokuapp.com/callback/linkedin2")!, scope: "r_fullprofile", state: state,
             success: { credential, response, parameters in
@@ -649,7 +649,7 @@ extension ViewController {
                 // Get User
                 let parameters =  [String: Any]()
                 let _ = oauthswift.client.get(
-                    "https://api.dribbble.com/v1/user?access_token=\(credential.oauth_token)", parameters: parameters,
+                    "https://api.dribbble.com/v1/user?access_token=\(credential.oauthToken)", parameters: parameters,
                     success: { data, response in
                         let jsonDict = try? JSONSerialization.jsonObject(with:data, options: [])
                         print(jsonDict)
@@ -720,7 +720,7 @@ extension ViewController {
                 let parameters =  Dictionary<String, AnyObject>()
                 // Multi-part upload
                 let _ = oauthswift.client.postImage(
-                    urlString: "https://www.googleapis.com/upload/drive/v2/files", parameters: parameters, image: self.snapshot(),
+                    "https://www.googleapis.com/upload/drive/v2/files", parameters: parameters, image: self.snapshot(),
                     success: { data, response in
                         let jsonDict = try? JSONSerialization.jsonObject(with:data, options: [])
                         print("SUCCESS: \(jsonDict)")
@@ -872,7 +872,7 @@ extension ViewController {
         
         self.oauthswift = oauthswift
         oauthswift.authorizeURLHandler = getURLHandler()
-        let state: String = generateStateWithLength(20) as String
+        let state = generateState(withLength: 20)
         let _ = oauthswift.authorize(
             withCallbackURL: URL(string: "oauth-swift://oauth-callback/slack")!, scope: "", state: state,
             success: { credential, response, parameters in
@@ -897,7 +897,7 @@ extension ViewController {
         
         self.oauthswift = oauthswift
         oauthswift.authorizeURLHandler = getURLHandler()
-        let state: String = generateStateWithLength(20) as String
+        let state = generateState(withLength: 20)
         let redirectURL = "https://oauthswift.herokuapp.com/callback/uber".addingPercentEncoding(withAllowedCharacters: CharacterSet.urlHostAllowed)
         let _ = oauthswift.authorize(
             withCallbackURL: URL(string: redirectURL!)!, scope: "profile", state: state,
@@ -922,7 +922,7 @@ extension ViewController {
         
         self.oauthswift = oauthswift
         oauthswift.authorizeURLHandler = getURLHandler()
-        let state: String = generateStateWithLength(20) as String
+        let state = generateState(withLength: 20)
         let _ = oauthswift.authorize(
             withCallbackURL: URL(string: "oauth-swift://oauth-callback/gitter")!, scope: "flow", state: state,
             success: { credential, response, parameters in
@@ -946,7 +946,7 @@ extension ViewController {
         
         self.oauthswift = oauthswift
         oauthswift.authorizeURLHandler = getURLHandler()
-        let state: String = generateStateWithLength(20) as String
+        let state = generateState(withLength: 20)
         let _ = oauthswift.authorize(
             withCallbackURL: URL(string: "https://oauthswift.herokuapp.com/callback/facebook")!, scope: "public_profile", state: state,
             success: { credential, response, parameters in
@@ -1036,7 +1036,7 @@ extension ViewController {
             accessTokenUrl: "https://api.bufferapp.com/1/oauth2/token.json",
             responseType:   "code"
         )
-        let state: String = generateStateWithLength(20) as String
+        let state = generateState(withLength: 20)
         self.oauthswift = oauthswift
         oauthswift.authorizeURLHandler = getURLHandler()
         let _ = oauthswift.authorize(
@@ -1112,7 +1112,7 @@ extension ViewController {
             accessTokenUrl: "https://typetalk.in/oauth2/access_token",
             responseType:   "code"
         )
-        let state: String = generateStateWithLength(20) as String
+        let state = generateState(withLength: 20)
         
         self.oauthswift = oauthswift
         oauthswift.authorizeURLHandler = getURLHandler()
@@ -1151,12 +1151,12 @@ extension ViewController {
         )
         self.oauthswift = oauthswift
         oauthswift.authorizeURLHandler = getURLHandler()
-        let state: String = generateStateWithLength(20) as String
+        let state = generateState(withLength: 20)
         let _ = oauthswift.authorize(
             withCallbackURL: URL(string: "https://oauthswift.herokuapp.com/callback/soundcloud")!, scope: "", state: state,
             success: { credential, response, parameters in
                 self.showTokenAlert(name: serviceParameters["name"], credential: credential)
-                self.testSoundCloud(oauthswift,credential.oauth_token)
+                self.testSoundCloud(oauthswift,credential.oauthToken)
             },
             failure: { error in
                 print(error.localizedDescription)
@@ -1287,9 +1287,9 @@ extension ViewController {
     }
     
     func showTokenAlert(name: String?, credential: OAuthSwiftCredential) {
-        var message = "oauth_token:\(credential.oauth_token)"
-        if !credential.oauth_token_secret.isEmpty {
-            message += "\n\noauth_toke_secret:\(credential.oauth_token_secret)"
+        var message = "oauth_token:\(credential.oauthToken)"
+        if !credential.oauthTokenSecret.isEmpty {
+            message += "\n\noauth_toke_secret:\(credential.oauthTokenSecret)"
         }
         self.showAlertView(title: name ?? "Service", message: message)
         
@@ -1345,7 +1345,7 @@ extension ViewController {
     //(I)
     //let webViewController: WebViewController = internalWebViewController
     //(S)
-    //var urlForWebView:?NSURL = nil
+    //var urlForWebView:?URL = nil
     
     
     override func prepare(for segue: OAuthStoryboardSegue, sender: Any?) {

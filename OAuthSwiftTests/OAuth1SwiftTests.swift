@@ -61,8 +61,8 @@ class OAuth1SwiftTests: XCTestCase {
         
         waitForExpectations(timeout: DefaultTimeout, handler: nil)
         
-        XCTAssertEqual(oauth.client.credential.oauth_token, server.oauth_token)
-        XCTAssertEqual(oauth.client.credential.oauth_token_secret, server.oauth_token_secret)
+        XCTAssertEqual(oauth.client.credential.oauthToken, server.oauth_token)
+        XCTAssertEqual(oauth.client.credential.oauthTokenSecret, server.oauth_token_secret)
     }
 
     func testOAuthbinSuccess() {
@@ -97,8 +97,8 @@ class OAuth1SwiftTests: XCTestCase {
         
         let oauth_token = "accesskey"
         let oauth_token_secret = "accesssecret"
-        XCTAssertEqual(oauth.client.credential.oauth_token, oauth_token)
-        XCTAssertEqual(oauth.client.credential.oauth_token_secret, oauth_token_secret)
+        XCTAssertEqual(oauth.client.credential.oauthToken, oauth_token)
+        XCTAssertEqual(oauth.client.credential.oauthTokenSecret, oauth_token_secret)
     }
     
     func testOAuthbinBadConsumerKey() {

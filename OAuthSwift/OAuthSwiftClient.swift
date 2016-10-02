@@ -25,18 +25,21 @@ open class OAuthSwiftClient: NSObject {
     }()
 
     // MARK: init
-    public init(consumerKey: String, consumerSecret: String) {
-        self.credential = OAuthSwiftCredential(consumer_key: consumerKey, consumer_secret: consumerSecret)
-    }
-    
-    public init(consumerKey: String, consumerSecret: String, accessToken: String, accessTokenSecret: String) {
-        self.credential = OAuthSwiftCredential(oauth_token: accessToken, oauth_token_secret: accessTokenSecret)
-        self.credential.consumer_key = consumerKey
-        self.credential.consumer_secret = consumerSecret
-    }
-    
     public init(credential: OAuthSwiftCredential) {
         self.credential = credential
+    }
+    
+    public convenience init(consumerKey: String, consumerSecret: String, version: OAuthSwiftCredential.Version = .oauth1) {
+        let credential = OAuthSwiftCredential(consumerKey: consumerKey, consumerSecret: consumerSecret)
+        credential.version = version
+        self.init(credential: credential)
+    }
+
+    public convenience init(consumerKey: String, consumerSecret: String, oauthToken: String, oauthTokenSecret: String, version: OAuthSwiftCredential.Version) {
+        self.init(consumerKey: consumerKey, consumerSecret: consumerSecret, version: version)
+        self.credential.oauthToken = oauthToken
+        self.credential.oauthTokenSecret = oauthTokenSecret
+        
     }
 
     // MARK: client methods
@@ -106,7 +109,7 @@ open class OAuthSwiftClient: NSObject {
         let paramImage: OAuthSwift.Parameters = ["media": image]
         let boundary = "AS-boundary-\(arc4random())-\(arc4random())"
         let type = "multipart/form-data; boundary=\(boundary)"
-        let body = self.multiPartBodyFromParams(paramImage, boundary: boundary)
+        let body = self.multiPartBody(from: paramImage, boundary: boundary)
         let headers = [kHTTPHeaderContentType: type]
 
         if let request = makeRequest(url, method: method, parameters: parameters, headers: headers, body: body) { // TODO check if headers do not override others...
@@ -118,7 +121,7 @@ open class OAuthSwiftClient: NSObject {
         return nil
     }
 
-    open func multiPartBodyFromParams(_ parameters: OAuthSwift.Parameters, boundary: String) -> Data {
+    open func multiPartBody(from parameters: OAuthSwift.Parameters, boundary: String) -> Data {
         var data = Data()
 
         let prefixString = "--\(boundary)\r\n"
@@ -139,7 +142,7 @@ open class OAuthSwiftClient: NSObject {
 
             data.append(prefixData)
             let multipartData = OAuthSwiftMultipartData(name: key, data: sectionData, fileName: sectionFilename, mimeType: sectionType)
-            data.appendMultipartData(multipartData, encoding: OAuthSwiftDataEncoding, separatorData: OAuthSwiftClient.separatorData)
+            data.append(multipartData, encoding: OAuthSwiftDataEncoding, separatorData: OAuthSwiftClient.separatorData)
         }
 
         let endingString = "--\(boundary)--\r\n"
@@ -178,12 +181,12 @@ open class OAuthSwiftClient: NSObject {
             }
             data.append(prefixData)
             let multipartData = OAuthSwiftMultipartData(name: key, data: valueData, fileName: nil, mimeType: nil)
-            data.appendMultipartData(multipartData, encoding: OAuthSwiftDataEncoding, separatorData: OAuthSwiftClient.separatorData)
+            data.append(multipartData, encoding: OAuthSwiftDataEncoding, separatorData: OAuthSwiftClient.separatorData)
         }
 
         for multipart in multiparts {
             data.append(prefixData)
-            data.appendMultipartData(multipart, encoding: OAuthSwiftDataEncoding, separatorData: OAuthSwiftClient.separatorData)
+            data.append(multipart, encoding: OAuthSwiftDataEncoding, separatorData: OAuthSwiftClient.separatorData)
         }
 
         let endingString = "--\(boundary)--\r\n"

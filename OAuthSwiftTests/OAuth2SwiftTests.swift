@@ -33,13 +33,13 @@ class OAuth2SwiftTests: XCTestCase {
 
     func testDataSuccess() {
         objc_sync_enter(server)
-        let state: String = generateStateWithLength(20) as String
+        let state = generateState(withLength: 20)
         testSuccess(.data, response: .code("code", state:state))
         objc_sync_exit(server)
     }
     func testJSON_Code_Success() {
         objc_sync_enter(server)
-        let state: String = generateStateWithLength(20) as String
+        let state = generateState(withLength: 20)
         testSuccess(.json, response: .code("code", state:state))
         objc_sync_exit(server)
     }
@@ -85,7 +85,7 @@ class OAuth2SwiftTests: XCTestCase {
         
         waitForExpectations(timeout: DefaultTimeout, handler: nil)
         
-        XCTAssertEqual(oauth.client.credential.oauth_token, server.oauth_token)
+        XCTAssertEqual(oauth.client.credential.oauthToken, server.oauth_token)
     }
     
     func testJSON_Error_Failure() {
@@ -120,7 +120,7 @@ class OAuth2SwiftTests: XCTestCase {
         
         let expectation = self.expectation(description: "request should failed")
         
-        let state: String = generateStateWithLength(20) as String
+        let state = generateState(withLength: 20)
         let _ = oauth.authorize(
             withCallbackURL: URL(string:callbackURL)!, scope: "all", state: state, parameters: [:],
             success: { credential, response, parameters in

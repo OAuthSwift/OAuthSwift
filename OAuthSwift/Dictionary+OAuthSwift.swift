@@ -36,17 +36,17 @@ extension Dictionary {
         return filteredDictionary
     }
 
-    func urlEncodedQueryStringWithEncoding(_ encoding: String.Encoding) -> String {
+    var urlEncodedQuery: String {
         var parts = [String]()
 
         for (key, value) in self {
-            let keyString = "\(key)".urlEncodedStringWithEncoding(encoding)
-            let valueString = "\(value)".urlEncodedStringWithEncoding(encoding)
-            let query = "\(keyString)=\(valueString)" as String
+            let keyString = "\(key)".urlEncodedString
+            let valueString = "\(value)".urlEncodedString
+            let query = "\(keyString)=\(valueString)"
             parts.append(query)
         }
 
-        return parts.joined(separator: "&") as String
+        return parts.joined(separator: "&")
     }
 
     mutating func merge<K, V>(_ dictionaries: Dictionary<K, V>...) {

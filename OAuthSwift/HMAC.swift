@@ -14,31 +14,29 @@ open class HMAC {
     let key:[UInt8] = []
     
     class internal func sha1(key: Data, message: Data) -> Data? {
-        var key = key.bytes()
-        let message = message.bytes()
-        
-        // key
-        if (key.count > 64) {
-            key = SHA1(Data(bytes: key)).calculate().bytes()
+        let blockSize = 64
+        var key = key.bytes
+        let message = message.bytes
+
+        if (key.count > blockSize) {
+            key = SHA1(key).calculate()
+        }
+        else if (key.count < blockSize) { // padding
+            key = key + [UInt8](repeating: 0, count: blockSize - key.count)
         }
         
-        if (key.count < 64) {
-            key = key + [UInt8](repeating: 0, count: 64 - key.count)
-        }
-        
-        //
-        var opad = [UInt8](repeating: 0x5c, count: 64)
-        for (idx, _) in key.enumerated() {
-            opad[idx] = key[idx] ^ opad[idx]
-        }
-        var ipad = [UInt8](repeating: 0x36, count: 64)
-        for (idx, _) in key.enumerated() {
+        var ipad = [UInt8](repeating: 0x36, count: blockSize)
+        for idx in key.indices {
             ipad[idx] = key[idx] ^ ipad[idx]
         }
-        
-        let ipadAndMessageHash = SHA1(Data(bytes: (ipad + message))).calculate().bytes()
-        let finalHash = SHA1(Data(bytes: opad + ipadAndMessageHash)).calculate().bytes()
-        let mac = finalHash
+
+        var opad = [UInt8](repeating: 0x5c, count: blockSize)
+        for idx in key.indices {
+            opad[idx] = key[idx] ^ opad[idx]
+        }
+
+        let ipadAndMessageHash = SHA1(ipad + message).calculate()
+        let mac = SHA1(opad + ipadAndMessageHash).calculate()
 
         return Data(bytes: UnsafePointer<UInt8>(mac), count: mac.count)
 
