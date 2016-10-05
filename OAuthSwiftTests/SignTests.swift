@@ -90,6 +90,21 @@ class SignTests: XCTestCase {
 
     }
 
+    func testSignatureWithSamePrefix() {
+
+        testSignature("http://photos.example.net/photos",
+            consumer: "dpf43f3p2l4k3l03",
+            secret: "kd94hf93k423kf44",
+            token: "nnch734d00sl2jdk",
+            token_secret: "pfkkdhi9sl3r4s00",
+            parameters: ["file_1":"vacation.jpg", "file_10":"original"],
+            nonce: "kllo9940pd9333jh",
+            timestamp: "1191242096",
+            method: .GET,
+            expected: "2qG5S5iX/g/6NIKutdcSYACUHsg=")
+
+    }
+
     func testSignature(  url : String
         , consumer : String
         , secret: String
