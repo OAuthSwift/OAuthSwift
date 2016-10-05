@@ -202,7 +202,12 @@ public class OAuthSwiftCredential: NSObject, NSCoding {
         let signingKey = "\(encodedConsumerSecret)&\(tokenSecret)"
         
         var parameterComponents = parameters.urlEncodedQueryStringWithEncoding(OAuthSwiftDataEncoding).componentsSeparatedByString("&") as [String]
-        parameterComponents.sortInPlace { $0 < $1 }
+        parameterComponents.sortInPlace {
+            let p0 = $0.componentsSeparatedByString("=")
+            let p1 = $1.componentsSeparatedByString("=")
+            if p0.first == p1.first { return p0.last < p1.last }
+            return p0.first < p1.first
+        }
         
         let parameterString = parameterComponents.joinWithSeparator("&")
         let encodedParameterString = parameterString.urlEncodedStringWithEncoding(OAuthSwiftDataEncoding)
