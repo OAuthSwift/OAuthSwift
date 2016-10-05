@@ -235,8 +235,8 @@
 		F435026B1A6790EC00038A29 /* OAuthSwiftCredential.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = OAuthSwiftCredential.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		F435026C1A6790EC00038A29 /* OAuthSwiftHTTPRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = OAuthSwiftHTTPRequest.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		F435027A1A6791B200038A29 /* OAuthSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OAuthSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		F435027D1A6791B200038A29 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		F435027E1A6791B200038A29 /* OAuthSwift.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OAuthSwift.h; sourceTree = "<group>"; };
+		F435027D1A6791B200038A29 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../OAuthSwift/Info.plist; sourceTree = "<group>"; };
+		F435027E1A6791B200038A29 /* OAuthSwift.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = OAuthSwift.h; path = OAuthSwift/OAuthSwift.h; sourceTree = "<group>"; };
 		F451E3C5195B8CD80051434C /* OAuthSwiftDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OAuthSwiftDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F451E3E3195B8D030051434C /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F451E3E4195B8D030051434C /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
@@ -363,6 +363,35 @@
 			name = Extensions;
 			sourceTree = "<group>";
 		};
+		C499735C1DA566A300583191 /* OAuthSwift */ = {
+			isa = PBXGroup;
+			children = (
+				F435027E1A6791B200038A29 /* OAuthSwift.h */,
+				F435027C1A6791B200038A29 /* Supporting Files */,
+			);
+			name = OAuthSwift;
+			sourceTree = "<group>";
+		};
+		C499735D1DA566B400583191 /* Xcode */ = {
+			isa = PBXGroup;
+			children = (
+				C40890C11C11B37000E3146A /* OAuthSwiftWatchOS */,
+				C4B6EE1F1BF74CE300443596 /* OAuthSwiftTVOS */,
+				C499735C1DA566A300583191 /* OAuthSwift */,
+				C48B28031AFA598D00C7DEF6 /* OAuthSwiftOSX */,
+			);
+			name = Xcode;
+			sourceTree = "<group>";
+		};
+		C499735E1DA5674200583191 /* Demo */ = {
+			isa = PBXGroup;
+			children = (
+				C49FD5251AFB5DF500791E1A /* OAuthSwiftOSXDemo */,
+				F451E3E2195B8D030051434C /* OAuthSwiftDemo */,
+			);
+			name = Demo;
+			sourceTree = "<group>";
+		};
 		C49FD5251AFB5DF500791E1A /* OAuthSwiftOSXDemo */ = {
 			isa = PBXGroup;
 			children = (
@@ -416,7 +445,7 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
-		F435027B1A6791B200038A29 /* OAuthSwift */ = {
+		F435027B1A6791B200038A29 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
 				C40890D71C11D48300E3146A /* OAuthSwift.swift */,
@@ -433,10 +462,8 @@
 				F47599AC1A78FF23004A96C1 /* SHA1.swift */,
 				F47599B21A7901DF004A96C1 /* HMAC.swift */,
 				C49624741B00F8240010BD09 /* Extensions */,
-				F435027E1A6791B200038A29 /* OAuthSwift.h */,
-				F435027C1A6791B200038A29 /* Supporting Files */,
 			);
-			path = OAuthSwift;
+			path = Sources;
 			sourceTree = "<group>";
 		};
 		F435027C1A6791B200038A29 /* Supporting Files */ = {
@@ -445,19 +472,17 @@
 				F435027D1A6791B200038A29 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			path = Sources;
 			sourceTree = "<group>";
 		};
 		F451E3BC195B8CD80051434C = {
 			isa = PBXGroup;
 			children = (
-				F435027B1A6791B200038A29 /* OAuthSwift */,
-				F451E3E2195B8D030051434C /* OAuthSwiftDemo */,
-				C48B28031AFA598D00C7DEF6 /* OAuthSwiftOSX */,
-				C49FD5251AFB5DF500791E1A /* OAuthSwiftOSXDemo */,
-				C4B6EE1F1BF74CE300443596 /* OAuthSwiftTVOS */,
+				F435027B1A6791B200038A29 /* Sources */,
+				C499735E1DA5674200583191 /* Demo */,
 				C4D50DF81BFB693F0053B624 /* OAuthSwiftTests */,
-				C40890C11C11B37000E3146A /* OAuthSwiftWatchOS */,
 				F451E3C6195B8CD80051434C /* Products */,
+				C499735D1DA566B400583191 /* Xcode */,
 				35741230A135FD687D2F5317 /* Frameworks */,
 				CA3ACD041FFBE0A411836F6D /* Pods */,
 			);
