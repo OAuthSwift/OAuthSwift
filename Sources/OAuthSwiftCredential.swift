@@ -134,6 +134,7 @@ open class OAuthSwiftCredential: NSObject, NSCoding {
 
     
     // MARK: functions
+    // for OAuth1 parameters must contains sorted query parameters and url must not contains query parameters
     open func makeHeaders(_ url:URL, method: OAuthSwiftHTTPRequest.Method, parameters: OAuthSwift.Parameters, body: Data? = nil) -> Dictionary<String, String> {
         if let factory = headersFactory {
             return factory.make(url, method: method, parameters: parameters, body: body)

@@ -30,51 +30,8 @@ open class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftReques
         case authorizationHeader, /*FormEncodedBody,*/ requestURIQuery
     }
 
-    // Configuration for request
-    public struct Config {
+    public var config: Config
 
-        // URLRequest (url, method, ...)
-        public var urlRequest: URLRequest
-        /// These parameters are either added to the query string for GET, HEAD and DELETE requests or
-        /// used as the http body in case of POST, PUT or PATCH requests.
-        ///
-        /// If used in the body they are either encoded as JSON or as encoded plaintext based on the Content-Type header field.
-        public var parameters: OAuthSwift.Parameters
-        public let paramsLocation: ParamsLocation
-        public let dataEncoding: String.Encoding
-        
-        public var httpMethod: Method {
-            if let requestMethod = urlRequest.httpMethod {
-                return Method(rawValue: requestMethod) ?? .GET
-            }
-            return .GET
-        }
-        
-        public var url: Foundation.URL? {
-            return urlRequest.url
-        }
-
-        public init(url: URL, httpMethod: Method = .GET, httpBody: Data? = nil, headers: OAuthSwift.Headers = [:], timeoutInterval: TimeInterval = 60
-            , httpShouldHandleCookies: Bool = false, parameters: OAuthSwift.Parameters, paramsLocation: ParamsLocation = .authorizationHeader, dataEncoding: String.Encoding = OAuthSwiftDataEncoding) {
-            var urlRequest = URLRequest(url: url)
-            urlRequest.httpMethod = httpMethod.rawValue
-            urlRequest.httpBody = httpBody
-            urlRequest.allHTTPHeaderFields = headers
-            urlRequest.timeoutInterval = timeoutInterval
-            urlRequest.httpShouldHandleCookies = httpShouldHandleCookies
-            self.init(urlRequest: urlRequest, parameters: parameters, paramsLocation: paramsLocation, dataEncoding: dataEncoding)
-        }
-        
-        public init(urlRequest: URLRequest, parameters: OAuthSwift.Parameters = [:], paramsLocation: ParamsLocation = .authorizationHeader, dataEncoding: String.Encoding = OAuthSwiftDataEncoding) {
-            self.urlRequest = urlRequest
-            self.parameters = parameters
-            self.paramsLocation = paramsLocation
-            self.dataEncoding = dataEncoding
-        }
-    }
-    public private(set) var config: Config
-    
-    
     private var request: URLRequest?
     private var task: URLSessionTask?
     private var session: URLSession!
@@ -226,7 +183,7 @@ open class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftReques
         return try OAuthSwiftHTTPRequest.makeRequest(config: self.config)
     }
     
-    open class func makeRequest(config: Config)  throws -> URLRequest  {
+    open class func makeRequest(config: Config) throws -> URLRequest  {
         var request = config.urlRequest
         return try setupRequestForOAuth(request: &request,
                                         parameters: config.parameters,
@@ -305,74 +262,123 @@ open class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftReques
         return request
     }
 
-    // TODO call this in request init ?
-    func makeOAuthSwiftHTTPRequest(credential: OAuthSwiftCredential) {
-        let method = self.config.httpMethod
-        let url = self.config.urlRequest.url!
-        let headers: OAuthSwift.Headers = self.config.urlRequest.allHTTPHeaderFields ?? [:]
-        let paramsLocation = self.config.paramsLocation
-        let parameters = self.config.parameters
+}
+
+extension OAuthSwiftHTTPRequest  {
+    
+    // Configuration for request
+    public struct Config {
         
-        var signatureUrl = url
-        var signatureParameters = parameters
+        // URLRequest (url, method, ...)
+        public var urlRequest: URLRequest
+        /// These parameters are either added to the query string for GET, HEAD and DELETE requests or
+        /// used as the http body in case of POST, PUT or PATCH requests.
+        ///
+        /// If used in the body they are either encoded as JSON or as encoded plaintext based on the Content-Type header field.
+        public var parameters: OAuthSwift.Parameters
+        public let paramsLocation: ParamsLocation
+        public let dataEncoding: String.Encoding
+
+        public var httpMethod: Method {
+            if let requestMethod = urlRequest.httpMethod {
+                return Method(rawValue: requestMethod) ?? .GET
+            }
+            return .GET
+        }
         
-        // Check if body must be hashed (oauth1)
-        let body: Data? = nil
-        if method.isBody {
-            if let contentType = headers[kHTTPHeaderContentType]?.lowercased() {
-                
-                if contentType.contains("application/json") {
-                    // TODO: oauth_body_hash create body before signing if implementing body hashing
-                    /*do {
-                     let jsonData: Data = try JSONSerialization.jsonObject(parameters, options: [])
-                     request.HTTPBody = jsonData
-                     requestHeaders["Content-Length"] = "\(jsonData.length)"
-                     body = jsonData
-                     }
-                     catch {
-                     }*/
+        public var url: Foundation.URL? {
+            return urlRequest.url
+        }
+        
+        public init(url: URL, httpMethod: Method = .GET, httpBody: Data? = nil, headers: OAuthSwift.Headers = [:], timeoutInterval: TimeInterval = 60
+            , httpShouldHandleCookies: Bool = false, parameters: OAuthSwift.Parameters, paramsLocation: ParamsLocation = .authorizationHeader, dataEncoding: String.Encoding = OAuthSwiftDataEncoding) {
+            var urlRequest = URLRequest(url: url)
+            urlRequest.httpMethod = httpMethod.rawValue
+            urlRequest.httpBody = httpBody
+            urlRequest.allHTTPHeaderFields = headers
+            urlRequest.timeoutInterval = timeoutInterval
+            urlRequest.httpShouldHandleCookies = httpShouldHandleCookies
+            self.init(urlRequest: urlRequest, parameters: parameters, paramsLocation: paramsLocation, dataEncoding: dataEncoding)
+        }
+        
+        public init(urlRequest: URLRequest, parameters: OAuthSwift.Parameters = [:], paramsLocation: ParamsLocation = .authorizationHeader, dataEncoding: String.Encoding = OAuthSwiftDataEncoding) {
+            self.urlRequest = urlRequest
+            self.parameters = parameters
+            self.paramsLocation = paramsLocation
+            self.dataEncoding = dataEncoding
+        }
+        
+        
+        // Modify request with authentification
+        public mutating func updateRequest(credential: OAuthSwiftCredential) {
+            let method = self.httpMethod
+            let url = self.urlRequest.url!
+            let headers: OAuthSwift.Headers = self.urlRequest.allHTTPHeaderFields ?? [:]
+            let paramsLocation = self.paramsLocation
+            let parameters = self.parameters
+            
+            var signatureUrl = url
+            var signatureParameters = parameters
+            
+            
+            // Check if body must be hashed (oauth1)
+            let body: Data? = nil
+            if method.isBody {
+                if let contentType = headers[kHTTPHeaderContentType]?.lowercased() {
                     
-                    signatureParameters = [:] // parameters are not used for general signature (could only be used for body hashing
+                    if contentType.contains("application/json") {
+                        // TODO: oauth_body_hash create body before signing if implementing body hashing
+                        /*do {
+                         let jsonData: Data = try JSONSerialization.jsonObject(parameters, options: [])
+                         request.HTTPBody = jsonData
+                         requestHeaders["Content-Length"] = "\(jsonData.length)"
+                         body = jsonData
+                         }
+                         catch {
+                         }*/
+                        
+                        signatureParameters = [:] // parameters are not used for general signature (could only be used for body hashing
+                    }
+                    // else other type are not supported, see setupRequestForOAuth()
                 }
-                // else other type are not supported, see setupRequestForOAuth()
             }
-        }
-        
-        // Need to account for the fact that some consumers will have additional parameters on the
-        // querystring, including in the case of fetching a request token. Especially in the case of
-        // additional parameters on the request, authorize, or access token exchanges, we need to
-        // normalize the URL and add to the parametes collection.
-        
-        var queryStringParameters = OAuthSwift.Parameters()
-        var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false )
-        if let queryItems = urlComponents?.queryItems {
-            for queryItem in queryItems {
-                let value = queryItem.value?.safeStringByRemovingPercentEncoding ?? ""
-                queryStringParameters.updateValue(value, forKey: queryItem.name)
+            
+            // Need to account for the fact that some consumers will have additional parameters on the
+            // querystring, including in the case of fetching a request token. Especially in the case of
+            // additional parameters on the request, authorize, or access token exchanges, we need to
+            // normalize the URL and add to the parametes collection.
+            
+            var queryStringParameters = OAuthSwift.Parameters()
+            var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false )
+            if let queryItems = urlComponents?.queryItems {
+                for queryItem in queryItems {
+                    let value = queryItem.value?.safeStringByRemovingPercentEncoding ?? ""
+                    queryStringParameters.updateValue(value, forKey: queryItem.name)
+                }
             }
+            
+            // According to the OAuth1.0a spec, the url used for signing is ONLY scheme, path, and query
+            if queryStringParameters.count>0 {
+                urlComponents?.query = nil
+                // This is safe to unwrap because these just came from an NSURL
+                signatureUrl = urlComponents?.url ?? url
+            }
+            signatureParameters = signatureParameters.join(queryStringParameters)
+            
+            var requestHeaders = OAuthSwift.Headers()
+            switch paramsLocation {
+            case .authorizationHeader:
+                //Add oauth parameters in the Authorization header
+                requestHeaders += credential.makeHeaders(signatureUrl, method: method, parameters: signatureParameters, body: body)
+            case .requestURIQuery:
+                //Add oauth parameters as request parameters
+                self.parameters += credential.authorizationParametersWithSignature(method: method, url: signatureUrl, parameters: signatureParameters, body: body)
+            }
+            
+            self.urlRequest.allHTTPHeaderFields = requestHeaders + headers
         }
         
-        // According to the OAuth1.0a spec, the url used for signing is ONLY scheme, path, and query
-        if queryStringParameters.count>0 {
-            urlComponents?.query = nil
-            // This is safe to unwrap because these just came from an NSURL
-            signatureUrl = urlComponents?.url ?? url
-        }
-        signatureParameters = signatureParameters.join(queryStringParameters)
-        
-        var requestHeaders = OAuthSwift.Headers()
-        switch paramsLocation {
-        case .authorizationHeader:
-            //Add oauth parameters in the Authorization header
-            requestHeaders += credential.makeHeaders(signatureUrl, method: method, parameters: signatureParameters, body: body)
-        case .requestURIQuery:
-            //Add oauth parameters as request parameters
-            self.config.parameters += credential.authorizationParametersWithSignature(method: method, url: signatureUrl, parameters: signatureParameters, body: body)
-        }
-
-        self.config.urlRequest.allHTTPHeaderFields = requestHeaders + headers
     }
-
 }
 
 // MARK: status code mapping
