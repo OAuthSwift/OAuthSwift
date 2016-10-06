@@ -75,7 +75,6 @@ class SignTests: XCTestCase {
     }
 
     func testSignatureWithSpaceInURL() {
-        
         testSignature("http://photos.example.net/ph%20otos",
                       consumer: "abcd",
                       secret: "efgh",
@@ -88,6 +87,19 @@ class SignTests: XCTestCase {
                       // TODO: see https://github.com/OAuthSwift/OAuthSwift/issues/115 maybe bY1K6fPxYDwb34nUm8CIZjKtWWY= is the correct signature?
             expected: "g2HpPCyQIVxLC3NNVn2x9oeUtyg=")
         
+    }
+    
+    func testSignatureWithSamePrefix() {
+        testSignature("http://photos.example.net/photos",
+                      consumer: "dpf43f3p2l4k3l03",
+                      secret: "kd94hf93k423kf44",
+                      token: "nnch734d00sl2jdk",
+                      token_secret: "pfkkdhi9sl3r4s00",
+                      parameters: ["file_1":"vacation.jpg", "file_10":"original"],
+                      nonce: "kllo9940pd9333jh",
+                      timestamp: "1191242096",
+                      method: .GET,
+                      expected: "2qG5S5iX/g/6NIKutdcSYACUHsg=")
     }
     
     func testSignature(_ urlString : String

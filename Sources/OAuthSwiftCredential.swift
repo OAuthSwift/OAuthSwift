@@ -222,8 +222,13 @@ open class OAuthSwiftCredential: NSObject, NSCoding {
         let signingKey = "\(encodedConsumerSecret)&\(encodedTokenSecret)"
         
         var parameterComponents = parameters.urlEncodedQuery.components(separatedBy: "&")
-        parameterComponents.sort { $0 < $1 }
-        
+        parameterComponents.sort {
+            let p0 = $0.components(separatedBy: "=")
+            let p1 = $1.components(separatedBy: "=")
+            if p0.first == p1.first { return p0.last ?? "" < p1.last ?? "" }
+            return p0.first ?? "" < p1.first ?? ""
+        }
+
         let parameterString = parameterComponents.joined(separator: "&")
         let encodedParameterString = parameterString.urlEncodedString
         
