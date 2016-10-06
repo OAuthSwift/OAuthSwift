@@ -55,6 +55,7 @@ open class OAuth1Swift: OAuthSwift {
 
     // MARK: functions
     // 0. Start
+    @discardableResult
     open func authorize(withCallbackURL callbackURL: URL, success: @escaping TokenSuccessHandler, failure: FailureHandler?) -> OAuthSwiftRequestHandle? {
     
         self.postOAuthRequestToken(callbackURL: callbackURL, success: { [unowned self]
@@ -101,7 +102,8 @@ open class OAuth1Swift: OAuthSwift {
 
         return self
     }
-
+    
+    @discardableResult
     open func authorize(withCallbackURL urlString: String, success: @escaping TokenSuccessHandler, failure: FailureHandler?) -> OAuthSwiftRequestHandle? {
         guard let url = URL(string: urlString) else {
               failure?(OAuthSwiftError.encodingError(urlString: urlString))

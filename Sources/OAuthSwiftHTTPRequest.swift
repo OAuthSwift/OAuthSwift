@@ -360,7 +360,7 @@ open class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftReques
         }
         signatureParameters = signatureParameters.join(queryStringParameters)
         
-        var requestHeaders = [String:String]()
+        var requestHeaders = OAuthSwift.Headers()
         switch paramsLocation {
         case .authorizationHeader:
             //Add oauth parameters in the Authorization header

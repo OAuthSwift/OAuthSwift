@@ -69,5 +69,8 @@ extension Dictionary {
     }
 }
 
-public func +=<K, V> (left: inout [K : V], right: [K : V]) { left.merge(right) }
-public func +<K, V> (left: [K : V], right: [K : V]) -> [K : V] { return left.join(right) }
+func +=<K, V> (left: inout [K : V], right: [K : V]) { left.merge(right) }
+func +<K, V> (left: [K : V], right: [K : V]) -> [K : V] { return left.join(right) }
+func +=<K, V> (left: inout [K : V]?, right: [K : V]) {
+    if let _ = left { left?.merge(right) } else { left = right }
+}

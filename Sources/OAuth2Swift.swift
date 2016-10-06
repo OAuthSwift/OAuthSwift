@@ -71,6 +71,7 @@ open class OAuth2Swift: OAuthSwift {
     }
 
     // MARK: functions
+    @discardableResult
     open func authorize(withCallbackURL callbackURL: URL, scope: String, state: String, parameters: Parameters = [:], headers: OAuthSwift.Headers? = nil, success: @escaping TokenSuccessHandler, failure: FailureHandler?)  -> OAuthSwiftRequestHandle? {
         
         self.observeCallback { [weak self] url in
@@ -143,6 +144,7 @@ open class OAuth2Swift: OAuthSwift {
         return self
     }
     
+    @discardableResult
     open func authorize(withCallbackURL urlString: String, scope: String, state: String, parameters: Parameters = [:], headers: OAuthSwift.Headers? = nil, success: @escaping TokenSuccessHandler, failure: FailureHandler?) -> OAuthSwiftRequestHandle? {
         guard let url = URL(string: urlString) else {
             failure?(OAuthSwiftError.encodingError(urlString: urlString))
@@ -162,6 +164,7 @@ open class OAuth2Swift: OAuthSwift {
         return requestOAuthAccessToken(withParameters: parameters, headers: headers, success: success, failure: failure)
     }
     
+    @discardableResult
     open func renewAccessToken(withRefreshToken refreshToken: String, headers: OAuthSwift.Headers? = nil, success: @escaping TokenSuccessHandler, failure: FailureHandler?) -> OAuthSwiftRequestHandle? {
       var parameters = OAuthSwift.Parameters()
         parameters["client_id"] = self.consumerKey
@@ -216,17 +219,17 @@ open class OAuth2Swift: OAuthSwift {
             return self.client.postMultiPartRequest(accessTokenUrl, method: .POST, parameters: parameters, headers: headers, checkTokenExpiration: false, success: successHandler, failure: failure)
         } else {
             // special headers
-            var headers: OAuthSwift.Headers? = nil
+            var finalHeaders: OAuthSwift.Headers? = nil
             if accessTokenBasicAuthentification {
  
                 let authentification = "\(self.consumerKey):\(self.consumerSecret)".data(using: String.Encoding.utf8)
                 if let base64Encoded = authentification?.base64EncodedString(options: Data.Base64EncodingOptions(rawValue: 0)) {
-                    headers = ["Authorization": "Basic \(base64Encoded)"]
+                    finalHeaders += ["Authorization": "Basic \(base64Encoded)"] as OAuthSwift.Headers
                 }
             }
      
             // Request new access token by disabling check on current token expiration. This is safe because the implementation wants the user to retrieve a new token.
-            return self.client.request(accessTokenUrl, method: .POST, parameters: parameters, headers: headers, checkTokenExpiration: false, success: successHandler, failure: failure)
+            return self.client.request(accessTokenUrl, method: .POST, parameters: parameters, headers: finalHeaders, checkTokenExpiration: false, success: successHandler, failure: failure)
         }
     }
 
@@ -243,6 +246,7 @@ open class OAuth2Swift: OAuthSwift {
      - parameter success:        The success block. Takes the successfull response and data as parameter.
      - parameter failure:        The failure block. Takes the error as parameter.
      */
+    @discardableResult
     open func startAuthorizedRequest(_ url: String, method: OAuthSwiftHTTPRequest.Method, parameters: OAuthSwift.Parameters, headers: OAuthSwift.Headers? = nil, onTokenRenewal: TokenRenewedHandler? = nil, success: @escaping OAuthSwiftHTTPRequest.SuccessHandler, failure: @escaping OAuthSwiftHTTPRequest.FailureHandler) -> OAuthSwiftRequestHandle? {
         // build request
         return self.client.request(url, method: method, parameters: parameters, headers: headers, success: success) { (error) in
@@ -266,6 +270,7 @@ open class OAuth2Swift: OAuthSwift {
         }
     }
     
+    @discardableResult
     open func authorize(deviceToken deviceCode: String, success: @escaping TokenRenewedHandler, failure: @escaping OAuthSwiftHTTPRequest.FailureHandler) -> OAuthSwiftRequestHandle? {
         var parameters = OAuthSwift.Parameters()
         parameters["client_id"] = self.consumerKey

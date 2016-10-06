@@ -64,11 +64,11 @@ class ServicesTests: XCTestCase {
         }
     }
     
-    func testDropBox() {
+    func _testDropBox() {
         testService("Dropbox")
     }
     
-    func testBitBucket() {
+    func _testBitBucket() {
         testService("BitBucket")
     }
     
