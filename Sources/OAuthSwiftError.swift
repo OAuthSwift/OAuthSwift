@@ -78,6 +78,26 @@ public enum OAuthSwiftError: Error {
     }
 }
 
+extension OAuthSwiftError: CustomStringConvertible {
+    
+    public var description: String {
+        switch self {
+        case .configurationError(let m): return "configurationError[\(m)]"
+        case .tokenExpired(let e): return "tokenExpired[\(e)]"
+        case .missingState: return "missingState"
+        case .stateNotEqual(let s, let e): return "stateNotEqual[\(s)<>\(e)]"
+        case .serverError(let m): return "serverError[\(m)]"
+        case .encodingError(let urlString): return "encodingError[\(urlString)]"
+        case .authorizationPending: return "authorizationPending"
+        case .requestCreation(let m): return "requestCreation[\(m)]"
+        case .missingToken: return "missingToken"
+        case .retain: return "retain"
+        case .requestError(let e): return "requestError[\(e)]"
+        case .cancelled : return "cancelled"
+        }
+    }
+}
+
 extension NSError {
     fileprivate convenience init(code: OAuthSwiftError.Code, message: String, errorKey: String = NSLocalizedFailureReasonErrorKey) {
         let userInfo = [errorKey: message]

@@ -91,7 +91,7 @@ open class OAuthSwiftClient: NSObject {
     }
 
     open func makeRequest(_ request: URLRequest) -> OAuthSwiftHTTPRequest {
-        var request = OAuthSwiftHTTPRequest(request: request, paramsLocation: self.paramsLocation)
+        let request = OAuthSwiftHTTPRequest(request: request, paramsLocation: self.paramsLocation)
         request.config.updateRequest(credential: self.credential)
         return request
     }
@@ -101,7 +101,7 @@ open class OAuthSwiftClient: NSObject {
             return nil
         }
 
-        var request = OAuthSwiftHTTPRequest(url: url, method: method, parameters: parameters, paramsLocation: self.paramsLocation, httpBody: body, headers: headers ?? [:])
+        let request = OAuthSwiftHTTPRequest(url: url, method: method, parameters: parameters, paramsLocation: self.paramsLocation, httpBody: body, headers: headers ?? [:])
         request.config.updateRequest(credential: self.credential)
         return request
     }

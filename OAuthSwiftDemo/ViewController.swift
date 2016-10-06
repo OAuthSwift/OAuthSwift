@@ -184,7 +184,7 @@ extension ViewController {
                 self.showTokenAlert(name: serviceParameters["name"], credential: credential)
             },
             failure: { error in
-                print(error.localizedDescription)
+                print(error.description)
             }
         )
     }
@@ -210,7 +210,7 @@ extension ViewController {
                 self.showTokenAlert(name: serviceParameters["name"], credential: credential)
             },
             failure: { error in
-                print(error.localizedDescription)
+                print(error.description)
             }
         )
     }
@@ -227,13 +227,13 @@ extension ViewController {
         self.oauthswift = oauthswift
         oauthswift.authorizeURLHandler = getURLHandler()
         let _ = oauthswift.authorize(
-            withCallbackURL: URL(string: "oauth-swift://oauth-callback/twitter")!,
+            withCallbackURL: URL(string: "http://oauthswift.herokuapp.com/callback/twitter")!,
             success: { credential, response, parameters in
                 self.showTokenAlert(name: serviceParameters["name"], credential: credential)
                 self.testTwitter(oauthswift)
             },
             failure: { error in
-                print(error.localizedDescription)
+                print(error.description)
             }
         )
     }
@@ -267,7 +267,7 @@ extension ViewController {
                 self.testFlickr(oauthswift, consumerKey: serviceParameters["consumerKey"]!)
             },
             failure: { error in
-                print(error.localizedDescription)
+                print(error.description)
             }
         )
     }
@@ -311,7 +311,7 @@ extension ViewController {
                 self.showTokenAlert(name: serviceParameters["name"], credential: credential)
             },
             failure: { error in
-                print(error.localizedDescription)
+                print(error.description)
             }
         )
     }
@@ -334,7 +334,7 @@ extension ViewController {
                 self.showTokenAlert(name: serviceParameters["name"], credential: credential)
             },
             failure: { error in
-                print(error.localizedDescription)
+                print(error.description)
             }
         )
     }
@@ -361,7 +361,7 @@ extension ViewController {
                 self.testInstagram(oauthswift)
             },
             failure: { error in
-                print(error.localizedDescription)
+                print(error.description)
             }
         )
     }
@@ -399,7 +399,7 @@ extension ViewController {
                 self.showTokenAlert(name: serviceParameters["name"], credential: credential)
             },
             failure: { error in
-                print(error.localizedDescription)
+                print(error.description)
             }
         )
     }
@@ -422,7 +422,7 @@ extension ViewController {
                 self.showTokenAlert(name: serviceParameters["name"], credential: credential)
             },
             failure: { error in
-                print(error.localizedDescription)
+                print(error.description)
             }
         )
     }
@@ -447,7 +447,7 @@ extension ViewController {
                 self.testFitbit2(oauthswift)
             },
             failure: { error in
-                print(error.localizedDescription)
+                print(error.description)
             }
         )
     }
@@ -461,7 +461,7 @@ extension ViewController {
                 print(jsonDict)
             },
             failure: { error in
-                print(error.localizedDescription)
+                print(error.description)
             }
         )
     }
@@ -485,7 +485,7 @@ extension ViewController {
                 self.testWithings(oauthswift, userId: parameters["userid"] as! String)
             },
             failure: { error in
-                print(error.localizedDescription)
+                print(error.description)
             }
         )
     }
@@ -498,7 +498,7 @@ extension ViewController {
                 let jsonDict = try? JSONSerialization.jsonObject(with:data, options: [])
                 print(jsonDict)
             }, failure: { error in
-                print(error.localizedDescription)
+                print(error.description)
             }
         )
     }
@@ -522,7 +522,7 @@ extension ViewController {
                 self.testLinkedin(oauthswift)
             },
             failure: { error in
-                print(error.localizedDescription)
+                print(error.description)
             }
         )
     }
@@ -556,7 +556,7 @@ extension ViewController {
                 
             },
             failure: { error in
-                print(error.localizedDescription)
+                print(error.description)
             }
         )
     }
@@ -593,7 +593,7 @@ extension ViewController {
                 self.showTokenAlert(name: serviceParameters["name"], credential: credential)
             },
             failure: { error in
-                print(error.localizedDescription)
+                print(error.description)
             }
         )
     }
@@ -626,7 +626,7 @@ extension ViewController {
                 )
             },
             failure: { error in
-                print(error.localizedDescription)
+                print(error.description)
             }
         )
     }
@@ -660,7 +660,7 @@ extension ViewController {
                 )
             },
             failure: { error in
-                print(error.localizedDescription)
+                print(error.description)
             }
         )
     }
@@ -683,7 +683,7 @@ extension ViewController {
                 self.testBitBucket(oauthswift)
             },
             failure: { error in
-                print(error.localizedDescription)
+                print(error.description)
             }
         )
     }
@@ -755,7 +755,7 @@ extension ViewController {
                 self.testIntuit(oauthswift, serviceParameters: serviceParameters)
             },
             failure: { error in
-                print(error.localizedDescription)
+                print(error.description)
             }
         )
     }
@@ -832,7 +832,7 @@ extension ViewController {
                 self.showTokenAlert(name: serviceParameters["name"], credential: credential)
             },
             failure: { error in
-                print(error.localizedDescription)
+                print(error.description)
             }
         )
     }
@@ -855,7 +855,7 @@ extension ViewController {
                 self.showTokenAlert(name: serviceParameters["name"], credential: credential)
             },
             failure: { error in
-                print(error.localizedDescription)
+                print(error.description)
             }
         )
     }
@@ -987,7 +987,7 @@ extension ViewController {
                 self.showTokenAlert(name: serviceParameters["name"], credential: credential)
             },
             failure: { error in
-                print(error.localizedDescription)
+                print(error.description)
             }
         )
     }
@@ -1159,7 +1159,7 @@ extension ViewController {
                 self.testSoundCloud(oauthswift,credential.oauthToken)
             },
             failure: { error in
-                print(error.localizedDescription)
+                print(error.description)
             }
         )
     }
