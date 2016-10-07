@@ -282,6 +282,9 @@ public class OAuthSwiftHTTPRequest: NSObject, NSURLSessionDelegate, OAuthSwiftRe
                         request.setValue("application/json; charset=\(charset)", forHTTPHeaderField: kHTTPHeaderContentType)
                         request.HTTPBody = jsonData
                     }
+                    else if let contentType = finalHeaders[kHTTPHeaderContentType] where contentType.rangeOfString("multipart/form-data") != nil {
+                        // snip
+                    }
                     else {
                         request.setValue("application/x-www-form-urlencoded; charset=\(charset)", forHTTPHeaderField: kHTTPHeaderContentType)
                         let queryString = finalParameters.urlEncodedQueryStringWithEncoding(dataEncoding)
