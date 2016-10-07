@@ -111,20 +111,27 @@ open class OAuthSwiftClient: NSObject {
         return self.multiPartRequest(url: urlString, method: .POST, parameters: parameters, image: image, success: success, failure: failure)
     }
 
-    func multiPartRequest(url: String, method: OAuthSwiftHTTPRequest.Method, parameters: OAuthSwift.Parameters, image: Data, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) -> OAuthSwiftRequestHandle? {
-        
-        let paramImage: OAuthSwift.Parameters = ["media": image]
+    open func makeMultiPartRequest(_ urlString: String, method: OAuthSwiftHTTPRequest.Method, parameters: OAuthSwift.Parameters = [:], multiparts: Array<OAuthSwiftMultipartData> = [], headers: OAuthSwift.Headers? = nil) -> OAuthSwiftHTTPRequest? {
         let boundary = "AS-boundary-\(arc4random())-\(arc4random())"
         let type = "multipart/form-data; boundary=\(boundary)"
-        let body = self.multiPartBody(from: paramImage + parameters, boundary: boundary)
-        let headers = [kHTTPHeaderContentType: type]
+        let body = self.multiDataFromObject(parameters, multiparts: multiparts, boundary: boundary)
 
-        if let request = makeRequest(url, method: method, parameters: parameters, headers: headers, body: body) { // TODO check if headers do not override others...
+        var finalHeaders = [kHTTPHeaderContentType: type]
+        finalHeaders += headers ?? [:]
+
+        return makeRequest(urlString, method: method, parameters: parameters, headers: finalHeaders, body: body)
+    }
+
+    func multiPartRequest(url: String, method: OAuthSwiftHTTPRequest.Method, parameters: OAuthSwift.Parameters, image: Data, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) -> OAuthSwiftRequestHandle? {
+        let multiparts = [ OAuthSwiftMultipartData(name: "media", data: image, fileName: "file", mimeType: "image/jpeg") ]
+
+        if let request = makeMultiPartRequest(url, method: method, parameters: parameters, multiparts: multiparts) {
             request.successHandler = success
             request.failureHandler = failure
             request.start()
             return request
         }
+
         return nil
     }
 
@@ -148,14 +155,12 @@ open class OAuthSwiftClient: NSObject {
     @discardableResult
     open func postMultiPartRequest(_ url: String, method: OAuthSwiftHTTPRequest.Method, parameters: OAuthSwift.Parameters, headers: Dictionary<String, String>? = nil, multiparts: Array<OAuthSwiftMultipartData> = [], checkTokenExpiration: Bool = true, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) -> OAuthSwiftRequestHandle? {
         
-        let boundary = "POST-boundary-\(arc4random())-\(arc4random())"
-        let type = "multipart/form-data; boundary=\(boundary)"
-        let body = self.multiDataFromObject(parameters, multiparts: multiparts, boundary: boundary)
-        
-        var finalHeaders = [kHTTPHeaderContentType: type]
-        finalHeaders += headers ?? [:]
-        
-        if let request = makeRequest(url, method: method, parameters: parameters, headers: finalHeaders, body: body) { // TODO check if headers do not override 
+        if checkTokenExpiration && self.credential.isTokenExpired() {
+            failure?(OAuthSwiftError.tokenExpired(error: nil))
+            return nil
+        }
+
+        if let request = makeMultiPartRequest(url, method: method, parameters: parameters, multiparts: multiparts, headers: headers) {
             request.successHandler = success
             request.failureHandler = failure
             request.start()
