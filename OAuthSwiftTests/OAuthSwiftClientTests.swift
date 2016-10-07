@@ -128,6 +128,41 @@ class OAuthSwiftClientTests: XCTestCase {
             XCTFail("\(e)")
         }
     }
+
+    func testMultiPartBodyFromParams() {
+        let binary = "binary".data(using: OAuthSwiftDataEncoding)!
+        let parameters: OAuthSwift.Parameters = [ "media": binary, "a": "b" ]
+        let data = client.multiPartBody(from: parameters, boundary: "boundary")
+        let result = String(data: data, encoding: OAuthSwiftDataEncoding)!
+
+        let expectedString = "--boundary\r\nContent-Disposition: form-data; name=\"a\";\r\n\r\nb\r\n--boundary\r\nContent-Disposition: form-data; name=\"media\"; filename=\"file\"\r\nContent-Type: image/jpeg\r\n\r\nbinary\r\n--boundary--\r\n"
+        XCTAssertEqual(result, expectedString)
+    }
+
+    func testMakeMultipartRequest() {
+        let binary = "binary".data(using: OAuthSwiftDataEncoding)!
+        let multiparts = [ OAuthSwiftMultipartData(name: "media", data: binary, fileName: "file", mimeType: "image/jpeg") ]
+        let request = client.makeMultiPartRequest(url, method: .POST, multiparts: multiparts)!
+
+        XCTAssertEqualURL(request.config.url!, URL(string: url)!)
+
+        let bodyString = String(data: request.config.urlRequest.httpBody!, encoding: OAuthSwiftDataEncoding)
+        XCTAssertTrue(bodyString?.contains("image/jpeg\r\n\r\nbinary\r\n") == true)
+    }
+
+    func testMakeMultipartRequestWithParameter() {
+        let binary = "binary".data(using: OAuthSwiftDataEncoding)!
+        let multiparts = [ OAuthSwiftMultipartData(name: "media", data: binary, fileName: "file", mimeType: "image/jpeg") ]
+        let parameters: OAuthSwift.Parameters = [ "a": "b" ]
+        let request = client.makeMultiPartRequest(url, method: .POST, parameters: parameters, multiparts: multiparts)!
+
+        XCTAssertEqualURL(request.config.url!, URL(string: url)!)
+
+        let bodyString = String(data: request.config.urlRequest.httpBody!, encoding: OAuthSwiftDataEncoding)
+        XCTAssertTrue(bodyString?.contains("image/jpeg\r\n\r\nbinary\r\n") == true)
+        XCTAssertTrue(bodyString?.contains("form-data; name=\"a\";\r\n\r\nb") == true)
+    }
+
 }
 
 extension XCTestCase {

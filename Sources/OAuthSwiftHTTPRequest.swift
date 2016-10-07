@@ -251,6 +251,9 @@ open class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftReques
                         request.setValue("application/json; charset=\(charset)", forHTTPHeaderField: kHTTPHeaderContentType)
                         request.httpBody = jsonData
                     }
+                    else if let contentType = headers[kHTTPHeaderContentType], contentType.contains("multipart/form-data") {
+                    // snip
+                    }
                     else {
                         request.setValue("application/x-www-form-urlencoded; charset=\(charset)", forHTTPHeaderField: kHTTPHeaderContentType)
                         let queryString = finalParameters.urlEncodedQuery
