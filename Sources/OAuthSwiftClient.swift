@@ -116,7 +116,7 @@ open class OAuthSwiftClient: NSObject {
         let paramImage: OAuthSwift.Parameters = ["media": image]
         let boundary = "AS-boundary-\(arc4random())-\(arc4random())"
         let type = "multipart/form-data; boundary=\(boundary)"
-        let body = self.multiPartBody(from: paramImage, boundary: boundary)
+        let body = self.multiPartBody(from: paramImage + parameters, boundary: boundary)
         let headers = [kHTTPHeaderContentType: type]
 
         if let request = makeRequest(url, method: method, parameters: parameters, headers: headers, body: body) { // TODO check if headers do not override others...
