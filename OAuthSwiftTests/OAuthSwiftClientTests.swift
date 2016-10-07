@@ -128,6 +128,17 @@ class OAuthSwiftClientTests: XCTestCase {
             XCTFail("\(e)")
         }
     }
+
+    func testMultiPartBodyFromParams() {
+        let binary = "binary".dataUsingEncoding(NSUTF8StringEncoding)!
+        let parameters: [String:AnyObject] = [ "media": binary, "a": "b" ]
+        let data = client.multiPartBodyFromParams(parameters, boundary: "boundary")
+        let result = String(data: data, encoding: NSUTF8StringEncoding)!
+
+        let expectedString = "--boundary\r\nContent-Disposition: form-data; name=\"a\";\r\n\r\nb\r\n--boundary\r\nContent-Disposition: form-data; name=\"media\"; filename=\"file\"\r\nContent-Type: image/jpeg\r\n\r\nbinary\r\n--boundary--\r\n"
+        XCTAssertEqual(result, expectedString)
+    }
+
 }
 
 extension XCTestCase {
