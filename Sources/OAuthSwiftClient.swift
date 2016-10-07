@@ -128,34 +128,21 @@ open class OAuthSwiftClient: NSObject {
         return nil
     }
 
-    open func multiPartBody(from parameters: OAuthSwift.Parameters, boundary: String) -> Data {
-        var data = Data()
-
-        let prefixString = "--\(boundary)\r\n"
-        let prefixData = prefixString.data(using: OAuthSwiftDataEncoding)!
-
+    open func multiPartBody(from inputParameters: OAuthSwift.Parameters, boundary: String) -> Data {
+        var parameters = OAuthSwift.Parameters()
+        var multiparts = Array<OAuthSwiftMultipartData>()
         
-        for (key, value) in parameters {
-            var sectionData: Data
-            var sectionType: String?
-            var sectionFilename: String?
-            if  let multiData = value as? Data , key == "media" {
-                sectionData = multiData
-                sectionType = "image/jpeg"
-                sectionFilename = "file"
+        for (key, value) in inputParameters {
+            if  let data = value as? Data , key == "media" {
+                let sectionType = "image/jpeg"
+                let sectionFilename = "file"
+                multiparts.append(OAuthSwiftMultipartData(name: key, data: data, fileName: sectionFilename, mimeType: sectionType))
             } else {
-                sectionData = "\(value)".data(using: OAuthSwiftDataEncoding)!
+                parameters[key] = value
             }
-
-            data.append(prefixData)
-            let multipartData = OAuthSwiftMultipartData(name: key, data: sectionData, fileName: sectionFilename, mimeType: sectionType)
-            data.append(multipartData, encoding: OAuthSwiftDataEncoding, separatorData: OAuthSwiftClient.separatorData)
         }
-
-        let endingString = "--\(boundary)--\r\n"
-        let endingData = endingString.data(using: OAuthSwiftDataEncoding)!
-        data.append(endingData)
-        return data
+        
+        return multiDataFromObject(parameters, multiparts: multiparts, boundary: boundary)
     }
     
     @discardableResult
@@ -177,7 +164,7 @@ open class OAuthSwiftClient: NSObject {
         return nil
     }
 
-    func multiDataFromObject(_ object: OAuthSwift.Parameters, multiparts: Array<OAuthSwiftMultipartData>, boundary: String) -> Data? {
+    func multiDataFromObject(_ object: OAuthSwift.Parameters, multiparts: Array<OAuthSwiftMultipartData>, boundary: String) -> Data {
         var data = Data()
 
         let prefixString = "--\(boundary)\r\n"
