@@ -139,6 +139,30 @@ class OAuthSwiftClientTests: XCTestCase {
         XCTAssertEqual(result, expectedString)
     }
 
+    func testMakeMultipartRequest() {
+        let binary = "binary".dataUsingEncoding(NSUTF8StringEncoding)!
+        let multiparts = [ OAuthSwiftMultipartData(name: "media", data: binary, fileName: "file", mimeType: "image/jpeg") ]
+        let request = client.makeMultiPartRequest(url, method: .POST, multiparts: multiparts)!
+
+        XCTAssertEqualURL(request.config.URL!, NSURL(string: url)!)
+
+        let bodyString = String(data: request.config.urlRequest.HTTPBody!, encoding: OAuthSwiftDataEncoding)
+        XCTAssertNotNil(bodyString?.rangeOfString("image/jpeg\r\n\r\nbinary\r\n"))
+    }
+
+    func testMakeMultipartRequestWithParameter() {
+        let binary = "binary".dataUsingEncoding(NSUTF8StringEncoding)!
+        let multiparts = [ OAuthSwiftMultipartData(name: "media", data: binary, fileName: "file", mimeType: "image/jpeg") ]
+        let parameters: [String:AnyObject] = [ "a": "b" ]
+        let request = client.makeMultiPartRequest(url, method: .POST, parameters: parameters, multiparts: multiparts)!
+
+        XCTAssertEqualURL(request.config.URL!, NSURL(string: url)!)
+
+        let bodyString = String(data: request.config.urlRequest.HTTPBody!, encoding: OAuthSwiftDataEncoding)
+        XCTAssertNotNil(bodyString?.rangeOfString("image/jpeg\r\n\r\nbinary\r\n"))
+        XCTAssertNotNil(bodyString?.rangeOfString("form-data; name=\"a\";\r\n\r\nb"))
+    }
+
 }
 
 extension XCTestCase {
