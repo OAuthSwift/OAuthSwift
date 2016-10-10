@@ -65,10 +65,10 @@ open class OAuth1Swift: OAuthSwift {
                 guard let this = self else { OAuthSwift.retainError(failure); return }
                 var responseParameters = [String: String]()
                 if let query = url.query {
-                    responseParameters += query.parametersFromQueryString()
+                    responseParameters += query.parametersFromQueryString
                 }
                 if let fragment = url.fragment , !fragment.isEmpty {
-                    responseParameters += fragment.parametersFromQueryString()
+                    responseParameters += fragment.parametersFromQueryString
                 }
                 if let token = responseParameters["token"] {
                     responseParameters["oauth_token"] = token
@@ -91,7 +91,7 @@ open class OAuth1Swift: OAuthSwift {
                 }
             }
             // 2. Authorize
-            let urlString = self.authorizeUrl + (self.authorizeUrl.has("?") ? "&" : "?")
+            let urlString = self.authorizeUrl + (self.authorizeUrl.contains("?") ? "&" : "?")
             if let token = credential.oauthToken.urlQueryEncoded, let queryURL = URL(string: urlString + "oauth_token=\(token)") {
                 self.authorizeURLHandler.handle(queryURL)
             }
@@ -122,7 +122,7 @@ open class OAuth1Swift: OAuthSwift {
             success: { [weak self] data, response in
                 guard let this = self else { OAuthSwift.retainError(failure); return }
                 let responseString = String(data: data, encoding: String.Encoding.utf8)!
-                let parameters = responseString.parametersFromQueryString()
+                let parameters = responseString.parametersFromQueryString
                 if let oauthToken=parameters["oauth_token"] {
                     this.client.credential.oauthToken = oauthToken.safeStringByRemovingPercentEncoding
                 }
@@ -147,7 +147,7 @@ open class OAuth1Swift: OAuthSwift {
             success: { [weak self] data, response in
                 guard let this = self else { OAuthSwift.retainError(failure); return }
                 let responseString = String(data: data, encoding: String.Encoding.utf8)!
-                let parameters = responseString.parametersFromQueryString()
+                let parameters = responseString.parametersFromQueryString
                 if let oauthToken=parameters["oauth_token"] {
                     this.client.credential.oauthToken = oauthToken.safeStringByRemovingPercentEncoding
                 }

@@ -78,10 +78,10 @@ open class OAuth2Swift: OAuthSwift {
             guard let this = self else { OAuthSwift.retainError(failure); return }
             var responseParameters = [String: String]()
             if let query = url.query {
-                responseParameters += query.parametersFromQueryString()
+                responseParameters += query.parametersFromQueryString
             }
             if let fragment = url.fragment , !fragment.isEmpty {
-                responseParameters += fragment.parametersFromQueryString()
+                responseParameters += fragment.parametersFromQueryString
             }
             if let accessToken = responseParameters["access_token"] {
                 this.client.credential.oauthToken = accessToken.safeStringByRemovingPercentEncoding
@@ -133,7 +133,7 @@ open class OAuth2Swift: OAuthSwift {
         }
         
         var urlString = self.authorizeUrl
-        urlString += (self.authorizeUrl.has("?") ? "&" : "?")
+        urlString += (self.authorizeUrl.contains("?") ? "&" : "?")
         
         if let encodedQuery = queryString.urlQueryEncoded, let queryURL = URL(string: urlString + encodedQuery) {
             self.authorizeURLHandler.handle(queryURL)
@@ -186,7 +186,7 @@ open class OAuth2Swift: OAuthSwift {
                 responseParameters = jsonDico
             } else {
                 let responseString = String(data: data, encoding: String.Encoding.utf8)!
-                responseParameters = responseString.parametersFromQueryString()
+                responseParameters = responseString.parametersFromQueryString
             }
             
             guard let accessToken = responseParameters["access_token"] as? String else {
