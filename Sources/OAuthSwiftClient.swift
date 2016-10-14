@@ -49,8 +49,8 @@ open class OAuthSwiftClient: NSObject {
     }
     
     @discardableResult
-    open func post(_ urlString: String, parameters: OAuthSwift.Parameters = [:], headers: OAuthSwift.Headers? = nil, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) -> OAuthSwiftRequestHandle? {
-        return self.request(urlString, method: .POST, parameters: parameters, headers: headers, success: success, failure: failure)
+    open func post(_ urlString: String, parameters: OAuthSwift.Parameters = [:], headers: OAuthSwift.Headers? = nil, body: Data? = nil, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) -> OAuthSwiftRequestHandle? {
+        return self.request(urlString, method: .POST, parameters: parameters, headers: headers, body: body, success: success, failure: failure)
     }
     
     @discardableResult
