@@ -8,7 +8,7 @@ Swift based OAuth library for iOS and OSX.
 
 ## Support OAuth1.0, OAuth2.0
 
-Twitter, Flickr, Github, Instagram, Foursquare. Fitbit, Withings, Linkedin, Dropbox, Dribbble, Salesforce, BitBucket, GoogleDrive, Smugmug, Intuit, Zaim, Tumblr, Slack, Uber, Gitter, Facebook, Spotify, Typetalk, SoundCloud etc
+Twitter, Flickr, Github, Instagram, Foursquare. Fitbit, Withings, Linkedin, Dropbox, Dribbble, Salesforce, BitBucket, GoogleDrive, Smugmug, Intuit, Zaim, Tumblr, Slack, Uber, Gitter, Facebook, Spotify, Typetalk, SoundCloud, etc
 
 ## Installation
 
@@ -208,6 +208,17 @@ See more examples in the demo application: [ViewController.swift](/OAuthSwiftDem
  See [CONTRIBUTING.md](CONTRIBUTING.md)
 
 [Add a new service in demo app](https://github.com/OAuthSwift/OAuthSwift/wiki/Demo-application#add-a-new-service-in-demo-app)
+
+
+## Integration
+OAuthSwift could be used with others frameworks
+
+You can sign [Alamofire](https://github.com/Alamofire/Alamofire) request with [OAuthSwiftAlamofire](https://github.com/OAuthSwift/OAuthSwiftAlamofire)
+
+To achieve great asynchronous code you can use one of this integration frameworks
+- [OAuthSwiftFutures](https://github.com/OAuthSwift/OAuthSwiftFutures) - [BrightFutures](https://github.com/Thomvis/BrightFutures)
+- [OAuthRxSwift](https://github.com/OAuthSwift/OAuthRxSwift) - [RxSwift](https://github.com/ReactiveX/RxSwift)
+- [OAuthReactiveSwift](https://github.com/OAuthSwift/OAuthReactiveSwift) - [ReactiveSwift](https://github.com/ReactiveCocoa/ReactiveSwift)
 
 ## License
 

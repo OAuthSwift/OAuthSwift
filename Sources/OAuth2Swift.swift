@@ -137,11 +137,13 @@ open class OAuth2Swift: OAuthSwift {
         
         if let encodedQuery = queryString.urlQueryEncoded, let queryURL = URL(string: urlString + encodedQuery) {
             self.authorizeURLHandler.handle(queryURL)
+            return self
         }
         else {
+            self.cancel() // ie. remove the observer.
             failure?(OAuthSwiftError.encodingError(urlString: urlString))
+            return nil
         }
-        return self
     }
     
     @discardableResult
