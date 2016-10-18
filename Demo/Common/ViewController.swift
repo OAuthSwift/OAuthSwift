@@ -840,11 +840,11 @@ extension ViewController {
     // MARK: Tumblr
     func doOAuthTumblr(_ serviceParameters: [String:String]){
         let oauthswift = OAuth1Swift(
-            consumerKey:    serviceParameters["consumerKey"]!,
-            consumerSecret: serviceParameters["consumerSecret"]!,
-            requestTokenUrl: "http://www.tumblr.com/oauth/request_token",
-            authorizeUrl:    "http://www.tumblr.com/oauth/authorize",
-            accessTokenUrl:  "http://www.tumblr.com/oauth/access_token"
+            consumerKey:     serviceParameters["consumerKey"]!,
+            consumerSecret:  serviceParameters["consumerSecret"]!,
+            requestTokenUrl: "https://www.tumblr.com/oauth/request_token",
+            authorizeUrl:    "https://www.tumblr.com/oauth/authorize",
+            accessTokenUrl:  "https://www.tumblr.com/oauth/access_token"
         )
         
         self.oauthswift = oauthswift
@@ -853,12 +853,30 @@ extension ViewController {
             withCallbackURL: URL(string: "oauth-swift://oauth-callback/tumblr")!,
             success: { credential, response, parameters in
                 self.showTokenAlert(name: serviceParameters["name"], credential: credential)
+                self.testTumblr(oauthswift, serviceParameters: serviceParameters)
             },
             failure: { error in
                 print(error.description)
             }
         )
     }
+    func testTumblr(_ oauthswift: OAuth1Swift, serviceParameters: [String:String]){
+        let _ = oauthswift.client.get(
+            "https://api.tumblr.com/v2/user/info", headers: ["Accept":"application/json"],
+            success: { data, response in
+                if let jsonDict = try? JSONSerialization.jsonObject(with:data, options: .allowFragments) , let dico = jsonDict as? [String: Any] {
+                    print(dico)
+                }
+                else {
+                    print("no json response")
+                }
+            },
+            failure: { error in
+                print(error)
+            }
+        )
+    }
+    
     
     // MARK: Slack
     func doOAuthSlack(_ serviceParameters: [String:String]){

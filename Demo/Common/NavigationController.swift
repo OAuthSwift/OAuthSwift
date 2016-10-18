@@ -5,7 +5,7 @@
 //  Created by phimage on 25/07/16.
 //  Copyright © 2016 Dongri Jin. All rights reserved.
 //
-
+#if os(iOS)
 import UIKit
 
 class NavigationController: UINavigationController {
@@ -33,3 +33,4 @@ class NavigationController: UINavigationController {
     */
 
 }
+#endif
