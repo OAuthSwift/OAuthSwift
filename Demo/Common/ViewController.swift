@@ -875,6 +875,17 @@ extension ViewController {
                 print(error)
             }
         )
+        
+        let url = serviceParameters["blogURL"] ?? "good.tumblr.com"
+        let _ = oauthswift.client.post(
+            "https://api.tumblr.com/v2/user/follow", parameters: ["url": url],
+            success: { data, response in
+                print(String(data: data, encoding: .utf8))
+            },
+            failure: { error in
+                print(error)
+            }
+        )
     }
     
     

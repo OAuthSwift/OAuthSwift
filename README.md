@@ -166,7 +166,7 @@ oauthswift.client.request("https://api.linkedin.com/v1/people/~", .GET,
       success: { ...
 ```
 
-See more examples in the demo application: [ViewController.swift](/OAuthSwiftDemo/ViewController.swift)
+See more examples in the demo application: [ViewController.swift](/Demo/Common/ViewController.swift)
 
 ## OAuth provider pages
 
