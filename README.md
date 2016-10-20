@@ -205,7 +205,7 @@ See more examples in the demo application: [ViewController.swift](/Demo/Common/V
 ![Image](Assets/TwitterOAuthTokens.png "Image")
 
 ## Contributing
- See [CONTRIBUTING.md](CONTRIBUTING.md)
+ See [CONTRIBUTING.md](.github/CONTRIBUTING.md)
 
 [Add a new service in demo app](https://github.com/OAuthSwift/OAuthSwift/wiki/Demo-application#add-a-new-service-in-demo-app)
 
