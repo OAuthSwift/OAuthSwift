@@ -188,7 +188,7 @@ See more examples in the demo application: [ViewController.swift](/Demo/Common/V
 * [Zaim](https://dev.zaim.net/home/api/authorize)
 * [Tumblr](https://www.tumblr.com/docs/en/api/v2#auth)
 * [Slack](https://api.slack.com/docs/oauth)
-* [Uber](https://developer.uber.com/v1/auth/)
+* [Uber](https://developer.uber.com/docs/ride-requests/guides/authentication/introduction#oauth-20)
 * [Gitter](https://developer.gitter.im/docs/authentication)
 * [Facebook](https://developers.facebook.com/docs/facebook-login)
 * [Spotify](https://developer.spotify.com/web-api/authorization-guide/)
