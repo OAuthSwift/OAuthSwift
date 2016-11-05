@@ -65,7 +65,7 @@ class OAuthSwiftClientTests: XCTestCase {
     }
     
     func testMakePUTRequestWithBody() {
-        testMakeRequestWithBody(.PUT, url:url, emptyParameters, url, "BodyContent".data(using: String.Encoding.utf8)!)
+        testMakeRequestWithBody(.PUT, url:url, emptyParameters, url, "BodyContent".data(using: .utf8)!)
     }
 
     func testMakeRequest(_ method: OAuthSwiftHTTPRequest.Method, url: String,_ parameters: OAuthSwift.Parameters,_ expectedURL: String, _ expectedBodyJSONDictionary: [String:String]? = nil) {

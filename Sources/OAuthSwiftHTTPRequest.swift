@@ -12,7 +12,7 @@ let kHTTPHeaderContentType = "Content-Type"
 
 open class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftRequestHandle {
 
-    public typealias SuccessHandler = (_ data: Data, _ response: HTTPURLResponse) -> Void
+    public typealias SuccessHandler = (_ response: OAuthSwiftResponse) -> Void
     public typealias FailureHandler = (_ error: OAuthSwiftError) -> Void
 
     // HTTP request method
@@ -70,7 +70,7 @@ open class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftReques
             self.request = try self.makeRequest()
         } catch let error as NSError {
             failureHandler?(OAuthSwiftError.requestCreation(message: error.localizedDescription))
-                self.request = nil
+            self.request = nil
             return
         }
 
@@ -85,7 +85,8 @@ open class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftReques
             self.session = URLSession(configuration: URLSessionConfiguration.default,
                 delegate: self,
                 delegateQueue: OperationQueue.main)
-            self.task = self.session.dataTask(with: self.request!) { (data, response, error) in
+            let usedRequest = self.request!
+            self.task = self.session.dataTask(with: usedRequest) { (data, response, error) in
             
                 #if os(iOS)
                     #if !OAUTH_APP_EXTENSIONS
@@ -94,7 +95,7 @@ open class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftReques
                 #endif
                 
                 if let error = error {
-                    var oauthError: OAuthSwiftError = .requestError(error: error)
+                    var oauthError: OAuthSwiftError = .requestError(error: error, request: usedRequest)
                     let nsError = error as NSError
                     if nsError.code == NSURLErrorCancelled {
                         oauthError = .cancelled
@@ -112,7 +113,7 @@ open class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftReques
                     let localizedDescription = OAuthSwiftHTTPRequest.descriptionForHTTPStatus(badRequestCode, responseString: "")
                     let userInfo : [AnyHashable : Any] = [NSLocalizedDescriptionKey: localizedDescription]
                     let error = NSError(domain: OAuthSwiftError.Domain, code: badRequestCode, userInfo: userInfo)
-                    failureHandler?(.requestError(error:error))
+                    failureHandler?(.requestError(error:error, request: usedRequest))
                     return
                 }
 
@@ -120,7 +121,7 @@ open class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftReques
                     var localizedDescription = String()
                     let responseString = String(data: responseData, encoding: OAuthSwiftDataEncoding)
                     
-                    let responseJSON = try? JSONSerialization.jsonObject(with: responseData, options: JSONSerialization.ReadingOptions.mutableContainers)
+                    let responseJSON = try? JSONSerialization.jsonObject(with: responseData, options: .mutableContainers)
                     if let responseJSON = responseJSON as? OAuthSwift.Parameters {
                         if let code = responseJSON["error"] as? String, let description = responseJSON["error_description"] as? String {
                             
@@ -149,12 +150,12 @@ open class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftReques
                         failureHandler?(.tokenExpired(error: error))
                     }
                     else {
-                        failureHandler?(.requestError(error: error))
+                        failureHandler?(.requestError(error: error, request: usedRequest))
                     }
                     return
                 }
 
-                successHandler?(responseData, response)
+                successHandler?(OAuthSwiftResponse(data: responseData, response: response, request: usedRequest))
             }
             self.task?.resume()
             self.session.finishTasksAndInvalidate()

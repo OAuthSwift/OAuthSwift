@@ -147,8 +147,8 @@ class OAuth2SwiftTests: XCTestCase {
         )
         let _ = oauth.client.get(
             server.expireURLV2, parameters: [:],
-            success: { data, response in
-                XCTFail("data receive \(data).")
+            success: { response in
+                XCTFail("data receive \(response.data).")
             },
             failure: { error in
                 switch error {

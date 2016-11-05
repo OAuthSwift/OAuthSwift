@@ -240,8 +240,8 @@ extension ViewController {
     func testTwitter(_ oauthswift: OAuth1Swift) {
         let _ = oauthswift.client.get(
             "https://api.twitter.com/1.1/statuses/mentions_timeline.json", parameters: [:],
-            success: { data, response in
-                let jsonDict = try? JSONSerialization.jsonObject(with:data, options: [])
+            success: { response in
+                let jsonDict = try? response.jsonObject()
                 print(jsonDict)
             }, failure: { error in
                 print(error)
@@ -283,8 +283,8 @@ extension ViewController {
         ]
         let _ = oauthswift.client.get(
             url, parameters: parameters,
-            success: { data, response in
-                let jsonDict = try? JSONSerialization.jsonObject(with:data, options: [])
+            success: { response in
+                let jsonDict = try? response.jsonObject()
                 print(jsonDict)
             },
             failure: { error in
@@ -370,9 +370,8 @@ extension ViewController {
         let parameters :Dictionary = Dictionary<String, AnyObject>()
         let _ = oauthswift.client.get(
             url, parameters: parameters,
-            success: {
-                data, response in
-                let jsonDict = try? JSONSerialization.jsonObject(with:data, options: [])
+            success: { response in
+                let jsonDict = try? response.jsonObject()
                 print(jsonDict)
                 
             },
@@ -455,9 +454,8 @@ extension ViewController {
         let _ = oauthswift.client.get(
             "https://api.fitbit.com/1/user/-/profile.json",
             parameters: [:],
-            success: {
-                data, response in
-                let jsonDict = try? JSONSerialization.jsonObject(with:data, options: [])
+            success: { response in
+                let jsonDict = try? response.jsonObject()
                 print(jsonDict)
             },
             failure: { error in
@@ -493,9 +491,8 @@ extension ViewController {
         oauthswift.client.paramsLocation = .requestURIQuery
         let _ = oauthswift.client.get(
             "https://wbsapi.withings.net/v2/measure", parameters: ["action":"getactivity", "userid":userId, "date":"2016-02-15"],
-            success: {
-                data, response in
-                let jsonDict = try? JSONSerialization.jsonObject(with:data, options: [])
+            success: { response in
+                let jsonDict = try? response.jsonObject()
                 print(jsonDict)
             }, failure: { error in
                 print(error.description)
@@ -527,14 +524,15 @@ extension ViewController {
         )
     }
     func testLinkedin(_ oauthswift: OAuth1Swift) {
-        let _ = oauthswift.client.get("https://api.linkedin.com/v1/people/~", parameters: [:],
-                              success: {
-                                data, response in
-                                let dataString = String(data: data, encoding: String.Encoding.utf8)
-                                print(dataString)
+        let _ = oauthswift.client.get(
+            "https://api.linkedin.com/v1/people/~", parameters: [:],
+            success: { response in
+                let dataString = response.string!
+                print(dataString)
             }, failure: { error in
                 print(error)
-        })
+            }
+        )
     }
     
     func doOAuthLinkedin2(_ serviceParameters: [String:String]){
@@ -563,8 +561,8 @@ extension ViewController {
     func testLinkedin2(_ oauthswift: OAuth2Swift) {
         let _ = oauthswift.client.get(
             "https://api.linkedin.com/v1/people/~?format=json", parameters: [:],
-            success: { data, response in
-                let dataString = String(data: data, encoding: String.Encoding.utf8)
+            success: { response in
+                let dataString = response.string!
                 print(dataString)
             },
             failure: { error in
@@ -617,8 +615,8 @@ extension ViewController {
                 let parameters =  Dictionary<String, AnyObject>()
                 let _ = oauthswift.client.get(
                     "https://api.dropbox.com/1/account/info", parameters: parameters,
-                    success: { data, response in
-                        let jsonDict = try? JSONSerialization.jsonObject(with:data, options: [])
+                    success: { response in
+                        let jsonDict = try? response.jsonObject()
                         print(jsonDict)
                     }, failure: { error in
                         print(error)
@@ -650,8 +648,8 @@ extension ViewController {
                 let parameters =  [String: Any]()
                 let _ = oauthswift.client.get(
                     "https://api.dribbble.com/v1/user?access_token=\(credential.oauthToken)", parameters: parameters,
-                    success: { data, response in
-                        let jsonDict = try? JSONSerialization.jsonObject(with:data, options: [])
+                    success: { response in
+                        let jsonDict = try? response.jsonObject()
                         print(jsonDict)
                     },
                     failure: { error in
@@ -690,8 +688,8 @@ extension ViewController {
     func testBitBucket(_ oauthswift: OAuth1Swift) {
         let _ = oauthswift.client.get(
             "https://bitbucket.org/api/1.0/user", parameters: [:],
-            success: { data, response in
-                let dataString = String(data: data, encoding: String.Encoding.utf8)
+            success: { response in
+                let dataString = response.string!
                 print(dataString)
             },
             failure: { error in
@@ -721,8 +719,8 @@ extension ViewController {
                 // Multi-part upload
                 let _ = oauthswift.client.postImage(
                     "https://www.googleapis.com/upload/drive/v2/files", parameters: parameters, image: self.snapshot(),
-                    success: { data, response in
-                        let jsonDict = try? JSONSerialization.jsonObject(with:data, options: [])
+                    success: { response in
+                        let jsonDict = try? response.jsonObject()
                         print("SUCCESS: \(jsonDict)")
                     },
                     failure: { error in
@@ -763,9 +761,8 @@ extension ViewController {
         if let companyId = serviceParameters["companyId"]  {
             let _ = oauthswift.client.get(
                 "https://sandbox-quickbooks.api.intuit.com/v3/company/\(companyId)/account/1", headers: ["Accept":"application/json"],
-                success: {
-                    data, response in
-                    if let jsonDict = try? JSONSerialization.jsonObject(with:data, options: .allowFragments) , let dico = jsonDict as? [String: AnyObject] {
+                success: { response in
+                    if let jsonDict = try? response.jsonObject(options: .allowFragments) , let dico = jsonDict as? [String: AnyObject] {
                         print(dico)
                         
                         // XXX to generate with good date etc...
@@ -794,8 +791,8 @@ extension ViewController {
                         let _ = oauthswift.client.post(
                             "https://sandbox-quickbooks.api.intuit.com/v3/company/\(companyId)/account?operation=update", parameters: jsonUpdate,
                             headers: ["Accept": "application/json", "Content-Type":"application/json"],
-                            success: { data, response in
-                                print(data)
+                            success: { response in
+                                print(response.data)
                             },
                             failure: { error in
                                 print(error)
@@ -863,8 +860,8 @@ extension ViewController {
     func testTumblr(_ oauthswift: OAuth1Swift, serviceParameters: [String:String]){
         let _ = oauthswift.client.get(
             "https://api.tumblr.com/v2/user/info", headers: ["Accept":"application/json"],
-            success: { data, response in
-                if let jsonDict = try? JSONSerialization.jsonObject(with:data, options: .allowFragments) , let dico = jsonDict as? [String: Any] {
+            success: { response in
+                if let jsonDict = try? response.jsonObject(options: .allowFragments) , let dico = jsonDict as? [String: Any] {
                     print(dico)
                 }
                 else {
@@ -879,8 +876,9 @@ extension ViewController {
         let url = serviceParameters["blogURL"] ?? "good.tumblr.com"
         let _ = oauthswift.client.post(
             "https://api.tumblr.com/v2/user/follow", parameters: ["url": url],
-            success: { data, response in
-                print(String(data: data, encoding: .utf8))
+            success: { response in
+                let dataString = response.string!
+                print(dataString)
             },
             failure: { error in
                 print(error)
@@ -989,8 +987,8 @@ extension ViewController {
     func testFacebook(_ oauthswift: OAuth2Swift) {
         let _ = oauthswift.client.get(
             "https://graph.facebook.com/me?",
-            success: { data, response in
-                let dataString = String(data: data, encoding: String.Encoding.utf8)
+            success: { response in
+                let dataString = response.string!
                 print(dataString)
             }, failure: { error in
                 print(error)
@@ -1046,14 +1044,15 @@ extension ViewController {
     }
     
     func testTrello(_ oauthswift: OAuth1Swift) {
-        let _ = oauthswift.client.get("https://trello.com/1/members/me/boards",
-                              success: {
-                                data, response in
-                                let dataString = String(data: data, encoding: String.Encoding.utf8)
-                                print(dataString)
+        let _ = oauthswift.client.get(
+            "https://trello.com/1/members/me/boards",
+            success: { response in
+                let dataString = response.string!
+                print(dataString)
             }, failure: { error in
                 print(error)
-        })
+            }
+        )
     }
     
     // MARK: Buffer
@@ -1083,8 +1082,8 @@ extension ViewController {
     func testBuffer(_ oauthswift: OAuth2Swift) {
         let _ = oauthswift.client.get(
             "https://api.bufferapp.com/1/user.json",
-            success: { data, response in
-                let dataString = String(data: data, encoding: String.Encoding.utf8)
+            success: { response in
+                let dataString = response.string!
                 print(dataString)
             }, failure: { error in
                 print(error)
@@ -1122,9 +1121,9 @@ extension ViewController {
     func testGoodreads(_ oauthswift: OAuth1Swift) {
         let _ = oauthswift.client.get(
             "https://www.goodreads.com/api/auth_user",
-            success: { data, response in
+            success: { response in
                 // Most Goodreads methods return XML, you'll need a way to parse it.
-                let dataString = String(data: data, encoding: String.Encoding.utf8)
+                let dataString = response.string!
                 print(dataString)
             }, failure: { error in
                 print(error)
@@ -1160,8 +1159,8 @@ extension ViewController {
     func testTypetalk(_ oauthswift: OAuth2Swift) {
         let _ = oauthswift.client.get(
             "https://typetalk.in/api/v1/profile",
-            success: { data, response in
-                let dataString = String(data: data, encoding: String.Encoding.utf8)
+            success: { response in
+                let dataString = response.string!
                 print(dataString)
             }, failure: { error in
                 print(error)
@@ -1196,8 +1195,8 @@ extension ViewController {
     func testSoundCloud(_ oauthswift: OAuth2Swift, _ oauthToken: String) {
         let _ = oauthswift.client.get(
             "https://api.soundcloud.com/me?oauth_token=\(oauthToken)",
-            success: { data, response in
-                let dataString = String(data: data, encoding: String.Encoding.utf8)
+            success: { response in
+                let dataString = response.string!
                 print(dataString)
             }, failure: { error in
                 print(error)

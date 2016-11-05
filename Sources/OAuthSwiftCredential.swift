@@ -236,8 +236,8 @@ open class OAuthSwiftCredential: NSObject, NSCoding {
         
         let signatureBaseString = "\(method)&\(encodedURL)&\(encodedParameterString)"
         
-        let key = signingKey.data(using: String.Encoding.utf8)!
-        let msg = signatureBaseString.data(using: String.Encoding.utf8)!
+        let key = signingKey.data(using: .utf8)!
+        let msg = signatureBaseString.data(using: .utf8)!
 
         let sha1 = self.version.signatureMethod.sign(key: key, message: msg)!
         return sha1.base64EncodedString(options: [])

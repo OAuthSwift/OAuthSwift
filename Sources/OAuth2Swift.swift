@@ -179,16 +179,15 @@ open class OAuth2Swift: OAuthSwift {
     
     fileprivate func requestOAuthAccessToken(withParameters parameters: OAuthSwift.Parameters, headers: OAuthSwift.Headers? = nil, success: @escaping TokenSuccessHandler, failure: FailureHandler?) -> OAuthSwiftRequestHandle? {
         let successHandler: OAuthSwiftHTTPRequest.SuccessHandler = { [unowned self]
-            data, response in
-            let responseJSON: Any? = try? JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions.mutableContainers)
+            response in
+            let responseJSON: Any? = try? response.jsonObject(options: .mutableContainers)
             
             let responseParameters: OAuthSwift.Parameters
             
             if let jsonDico = responseJSON as? [String:Any] {
                 responseParameters = jsonDico
             } else {
-                let responseString = String(data: data, encoding: String.Encoding.utf8)!
-                responseParameters = responseString.parametersFromQueryString
+                responseParameters =  response.string?.parametersFromQueryString ?? [:]
             }
             
             guard let accessToken = responseParameters["access_token"] as? String else {

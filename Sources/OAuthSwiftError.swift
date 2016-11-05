@@ -10,6 +10,7 @@ import Foundation
 
 // MARK: - OAuthSwift errors
 public enum OAuthSwiftError: Error {
+
     // Configuration problem with oauth provider.
     case configurationError(message: String)
     // The provided token is expired, retrieve new token by using the refresh token
@@ -30,7 +31,7 @@ public enum OAuthSwiftError: Error {
     // Please retain OAuthSwift object or handle
     case retain
     // Request error
-    case requestError(error: Error)
+    case requestError(error: Error, request: URLRequest)
     // Request cancelled
     case cancelled
     
@@ -73,7 +74,7 @@ public enum OAuthSwiftError: Error {
     public var underlyingError: Error? {
         switch self {
         case .tokenExpired(let e): return e
-        case .requestError(let e): return e
+        case .requestError(let e, _): return e
         default: return nil
         }
     }
@@ -103,7 +104,7 @@ extension OAuthSwiftError: CustomStringConvertible {
         case .requestCreation(let m): return "requestCreation[\(m)]"
         case .missingToken: return "missingToken"
         case .retain: return "retain"
-        case .requestError(let e): return "requestError[\(e)]"
+        case .requestError(let e, _): return "requestError[\(e)]"
         case .cancelled : return "cancelled"
         }
     }
@@ -134,7 +135,7 @@ extension OAuthSwiftError: CustomNSError {
         case .requestCreation(let m): return ["message": m]
             
         case .tokenExpired(let e): return ["error": e]
-        case .requestError(let e): return ["error": e]
+        case .requestError(let e, let request): return ["error": e, "request": request]
             
         case .encodingError(let urlString): return ["url": urlString]
             

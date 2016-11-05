@@ -55,8 +55,8 @@ class OAuth1SwiftRequestTests: XCTestCase {
         oAuthSwiftHTTPRequest.failureHandler = { error in
             XCTFail("The failure handler should not be called.\(error)")
         }
-        oAuthSwiftHTTPRequest.successHandler = { (data, response) in
-            if String(data: data, encoding: String.Encoding.utf8) == "Success!" {
+        oAuthSwiftHTTPRequest.successHandler = { response in
+            if response.string == "Success!" {
                 successExpectation.fulfill()
             }
         }
@@ -90,7 +90,7 @@ class OAuth1SwiftRequestTests: XCTestCase {
             switch error {
             case .cancelled:
                 failureExpectation.fulfill()
-            case .requestError(let error):
+            case .requestError(let error, _):
                 XCTAssertEqual(error._code, NSURLErrorCancelled) // old ways
             default:
                 XCTFail("Wrong error type: \(error)")

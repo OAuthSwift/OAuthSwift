@@ -24,7 +24,7 @@ OAuthSwift is packaged as a Swift framework. Currently this is the simplest way 
 * Install Carthage (https://github.com/Carthage/Carthage)
 * Create Cartfile file
 ```
-github "OAuthSwift/OAuthSwift" ~> 1.0.0
+github "OAuthSwift/OAuthSwift" ~> 1.1.0
 ```
 * Run `carthage update`.
 * On your application targets’ “General” settings tab, in the “Embedded Binaries” section, drag and drop OAuthSwift.framework from the Carthage/Build/iOS folder on disk.
@@ -37,7 +37,7 @@ github "OAuthSwift/OAuthSwift" ~> 1.0.0
 platform :ios, '8.0'
 use_frameworks!
 
-pod 'OAuthSwift', '~> 1.0.0'
+pod 'OAuthSwift', '~> 1.1.0'
 ```
 ## How to
 ### Setting URL Schemes
@@ -152,8 +152,8 @@ Of course you can create your own class or customize the controller by setting t
 
 ```swift
 oauthswift.client.get("https://api.linkedin.com/v1/people/~",
-      success: { data, response in
-        let dataString = String(data: data, encoding: String.Encoding.utf8)
+      success: { response in
+        let dataString = response.string
         print(dataString)
       },
       failure: { error in
