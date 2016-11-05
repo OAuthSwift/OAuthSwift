@@ -161,6 +161,8 @@ extension ViewController {
             doOAuthTypetalk(parameters)
         case "SoundCloud":
             doOAuthSoundCloud(parameters)
+        case "Wordpress" :
+            doOAuthWordpress(parameters)
         default:
             print("\(service) not implemented")
         }
@@ -1203,6 +1205,33 @@ extension ViewController {
             }
         )
     }
+    
+    func doOAuthWordpress(_ serviceParameters: [String:String]) {
+        let wordpressURL = serviceParameters["url"] ?? "http://localhost/wordpress"
+        let oauthswift = OAuth1Swift(
+            consumerKey:        serviceParameters["consumerKey"]!,
+            consumerSecret:     serviceParameters["consumerSecret"]!,
+            requestTokenUrl:    "\(wordpressURL)/oauth1/request",
+            authorizeUrl:       "\(wordpressURL)/oauth1/authorize",
+            accessTokenUrl:     "\(wordpressURL)/oauth1/access"
+            
+        )
+        self.oauthswift = oauthswift
+        oauthswift.authorizeURLHandler = getURLHandler()
+        // The callback url you set here doesn't seem to make a differnce,
+        // you have to set it up at the site when you get your developer key.
+        let _ = oauthswift.authorize(
+            withCallbackURL: URL(string: "oauth-swift://oauth-callback/wordpress")!,
+            success: { credential, response, parameters in
+                self.showTokenAlert(name: serviceParameters["name"], credential: credential)
+              
+            },
+            failure: { error in
+                print(error.localizedDescription, terminator: "")
+            }
+        )
+
+    }
 }
 
 let services = Services()
@@ -1317,7 +1346,7 @@ extension ViewController {
     func showTokenAlert(name: String?, credential: OAuthSwiftCredential) {
         var message = "oauth_token:\(credential.oauthToken)"
         if !credential.oauthTokenSecret.isEmpty {
-            message += "\n\noauth_toke_secret:\(credential.oauthTokenSecret)"
+            message += "\n\noauth_token_secret:\(credential.oauthTokenSecret)"
         }
         self.showAlertView(title: name ?? "Service", message: message)
         
