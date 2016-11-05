@@ -9,13 +9,21 @@
 import Foundation
 
 // Response object
-public struct OAuthSwiftResponse {
+@objc
+public class OAuthSwiftResponse: NSObject { // not a struct for objc
     // The data returned by the server.
     public var data: Data
     // The server's response to the URL request.
     public var response: HTTPURLResponse
     // The URL request sent to the server.
     public var request: URLRequest?
+
+    public init(data: Data, response: HTTPURLResponse, request: URLRequest?) {
+        self.data = data
+        self.response = response
+        self.request = request
+    }
+
 }
 
 // Extends this object to convert data into your business objects
