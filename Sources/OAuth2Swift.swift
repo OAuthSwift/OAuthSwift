@@ -254,14 +254,14 @@ open class OAuth2Swift: OAuthSwift {
             switch error {
 
             case OAuthSwiftError.tokenExpired:
-                let _ = self.renewAccessToken(withRefreshToken: self.client.credential.oauthRefreshToken, headers: headers, success: { (credential, response, parameters) in
+                let _ = self.renewAccessToken(withRefreshToken: self.client.credential.oauthRefreshToken, headers: headers, success: { (credential, response, _) in // Ommit response parameters so they don't override the original ones
                     // We have successfully renewed the access token.
                     
                     // If provided, fire the onRenewal closure
                     if let renewalCallBack = onTokenRenewal {
                         renewalCallBack(credential)
                     }
-                    
+                  
                     // Reauthorize the request again, this time with a brand new access token ready to be used.
                    let _ = self.startAuthorizedRequest(url, method: method, parameters: parameters, headers: headers, onTokenRenewal: onTokenRenewal, success: success, failure: failure)
                     }, failure: failure)
