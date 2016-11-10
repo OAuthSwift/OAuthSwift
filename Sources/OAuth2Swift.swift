@@ -261,9 +261,13 @@ open class OAuth2Swift: OAuthSwift {
                     if let renewalCallBack = onTokenRenewal {
                         renewalCallBack(credential)
                     }
-                    
+                  
+                    // Unset access_token parameter
+                    var authParameters = parameters
+                    authParameters.removeValue(forKey: "access_token")
+                  
                     // Reauthorize the request again, this time with a brand new access token ready to be used.
-                   let _ = self.startAuthorizedRequest(url, method: method, parameters: parameters, headers: headers, onTokenRenewal: onTokenRenewal, success: success, failure: failure)
+                   let _ = self.startAuthorizedRequest(url, method: method, parameters: authParameters, headers: headers, onTokenRenewal: onTokenRenewal, success: success, failure: failure)
                     }, failure: failure)
             default:
                 failure(error)
