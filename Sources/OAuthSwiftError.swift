@@ -134,7 +134,7 @@ extension OAuthSwiftError: CustomNSError {
         case .serverError(let m): return ["message": m]
         case .requestCreation(let m): return ["message": m]
             
-        case .tokenExpired(let e): return ["error": e]
+        case .tokenExpired(let e): return ["error": e as Any]
         case .requestError(let e, let request): return ["error": e, "request": request]
             
         case .encodingError(let urlString): return ["url": urlString]

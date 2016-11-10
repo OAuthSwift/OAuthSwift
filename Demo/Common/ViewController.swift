@@ -244,13 +244,13 @@ extension ViewController {
             "https://api.twitter.com/1.1/statuses/mentions_timeline.json", parameters: [:],
             success: { response in
                 let jsonDict = try? response.jsonObject()
-                print(jsonDict)
+                print(jsonDict as Any)
             }, failure: { error in
                 print(error)
             }
         )
     }
-    
+
     // MARK: Flickr
     func doOAuthFlickr(_ serviceParameters: [String:String]){
         let oauthswift = OAuth1Swift(
@@ -287,7 +287,7 @@ extension ViewController {
             url, parameters: parameters,
             success: { response in
                 let jsonDict = try? response.jsonObject()
-                print(jsonDict)
+                print(jsonDict as Any)
             },
             failure: { error in
                 print(error)
@@ -374,7 +374,7 @@ extension ViewController {
             url, parameters: parameters,
             success: { response in
                 let jsonDict = try? response.jsonObject()
-                print(jsonDict)
+                print(jsonDict as Any)
                 
             },
             failure: { error in
@@ -458,7 +458,7 @@ extension ViewController {
             parameters: [:],
             success: { response in
                 let jsonDict = try? response.jsonObject()
-                print(jsonDict)
+                print(jsonDict as Any)
             },
             failure: { error in
                 print(error.description)
@@ -495,7 +495,7 @@ extension ViewController {
             "https://wbsapi.withings.net/v2/measure", parameters: ["action":"getactivity", "userid":userId, "date":"2016-02-15"],
             success: { response in
                 let jsonDict = try? response.jsonObject()
-                print(jsonDict)
+                print(jsonDict as Any)
             }, failure: { error in
                 print(error.description)
             }
@@ -619,7 +619,7 @@ extension ViewController {
                     "https://api.dropbox.com/1/account/info", parameters: parameters,
                     success: { response in
                         let jsonDict = try? response.jsonObject()
-                        print(jsonDict)
+                        print(jsonDict as Any)
                     }, failure: { error in
                         print(error)
                     }
@@ -652,7 +652,7 @@ extension ViewController {
                     "https://api.dribbble.com/v1/user?access_token=\(credential.oauthToken)", parameters: parameters,
                     success: { response in
                         let jsonDict = try? response.jsonObject()
-                        print(jsonDict)
+                        print(jsonDict as Any)
                     },
                     failure: { error in
                         print(error)

@@ -10,7 +10,7 @@ import Foundation
 
 let kHTTPHeaderContentType = "Content-Type"
 
-open class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftRequestHandle {
+open class OAuthSwiftHTTPRequest: NSObject, OAuthSwiftRequestHandle {
 
     public typealias SuccessHandler = (_ response: OAuthSwiftResponse) -> Void
     public typealias FailureHandler = (_ error: OAuthSwiftError) -> Void
@@ -38,14 +38,10 @@ open class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftReques
     
     fileprivate var cancelRequested = false
 
-    var successHandler: SuccessHandler?
-    var failureHandler: FailureHandler?
-    
-
     open static var executionContext: (@escaping () -> Void) -> Void = { block in
         return DispatchQueue.main.async(execute: block)
     }
-    
+
     // MARK: INIT
 
     convenience init(url: URL, method: Method = .GET, parameters: OAuthSwift.Parameters = [:], paramsLocation : ParamsLocation = .authorizationHeader, httpBody: Data? = nil, headers: OAuthSwift.Headers = [:]) {
@@ -60,12 +56,14 @@ open class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftReques
         self.config = config
     }
     
-    func start() {
+    
+    // MARK: START request
+    func start(success: SuccessHandler?, failure: FailureHandler?) {
         guard request == nil else { return } // Don't start the same request twice!
-        
-        let successHandler = self.successHandler
-        let failureHandler = self.failureHandler
-        
+
+        let successHandler = success
+        let failureHandler = failure
+
         do {
             self.request = try self.makeRequest()
         } catch let error as NSError {
@@ -82,11 +80,9 @@ open class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftReques
                 return
             }
 
-            self.session = URLSession(configuration: URLSessionConfiguration.default,
-                delegate: self,
-                delegateQueue: OperationQueue.main)
+            self.session = OAuthSwift.session.newURLSession()
             let usedRequest = self.request!
-            self.task = self.session.dataTask(with: usedRequest) { (data, response, error) in
+            self.task = self.session.dataTask(with: usedRequest) { (data, resp, error) in
             
                 #if os(iOS)
                     #if !OAUTH_APP_EXTENSIONS
@@ -94,6 +90,7 @@ open class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftReques
                     #endif
                 #endif
                 
+                // MARK: failure error returned by server
                 if let error = error {
                     var oauthError: OAuthSwiftError = .requestError(error: error, request: usedRequest)
                     let nsError = error as NSError
@@ -108,19 +105,30 @@ open class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftReques
                     return
                 }
                 
-                guard let response = response as? HTTPURLResponse, let responseData = data else {
+                // MARK: failure no response or data returned by server
+                guard let response = resp as? HTTPURLResponse, let responseData = data else {
                     let badRequestCode = 400
                     let localizedDescription = OAuthSwiftHTTPRequest.descriptionForHTTPStatus(badRequestCode, responseString: "")
-                    let userInfo : [AnyHashable : Any] = [NSLocalizedDescriptionKey: localizedDescription]
+                    var userInfo : [AnyHashable : Any] = [
+                        NSLocalizedDescriptionKey: localizedDescription
+                    ]
+                    if let response = resp { // there is only no data
+                        userInfo[OAuthSwiftError.ResponseKey] = response
+                    }
+                    if let response = resp as? HTTPURLResponse {
+                        userInfo["Response-Headers"] = response.allHeaderFields
+                    }
                     let error = NSError(domain: OAuthSwiftError.Domain, code: badRequestCode, userInfo: userInfo)
                     failureHandler?(.requestError(error:error, request: usedRequest))
                     return
                 }
 
+                // MARK: failure code > 400
                 guard response.statusCode < 400 else {
                     var localizedDescription = String()
                     let responseString = String(data: responseData, encoding: OAuthSwiftDataEncoding)
                     
+                    // Try to get error information from data as json
                     let responseJSON = try? JSONSerialization.jsonObject(with: responseData, options: .mutableContainers)
                     if let responseJSON = responseJSON as? OAuthSwift.Parameters {
                         if let code = responseJSON["error"] as? String, let description = responseJSON["error_description"] as? String {
@@ -131,19 +139,23 @@ open class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftReques
                                 return
                             }
                         }
-                        
-                    } else {
+                    }
+                    else {
                         localizedDescription = OAuthSwiftHTTPRequest.descriptionForHTTPStatus(response.statusCode, responseString: String(data: responseData, encoding: OAuthSwiftDataEncoding)!)
                     }
  
-                    let userInfo: OAuthSwift.Parameters = [
+                    var userInfo: [AnyHashable : Any] = [
                         NSLocalizedDescriptionKey: localizedDescription,
                         "Response-Headers": response.allHeaderFields,
-                        "Response-Body": responseString,
-                        NSURLErrorFailingURLErrorKey: response.url?.absoluteString,
                         OAuthSwiftError.ResponseKey: response,
                         OAuthSwiftError.ResponseDataKey: responseData
                     ]
+                    if let string = responseString {
+                        userInfo["Response-Body"] = string
+                    }
+                    if let urlString = response.url?.absoluteString {
+                        userInfo[NSURLErrorFailingURLErrorKey] = urlString
+                    }
                     
                     let error = NSError(domain: NSURLErrorDomain, code: response.statusCode, userInfo: userInfo)
                     if error.isExpiredToken {
@@ -155,6 +167,7 @@ open class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftReques
                     return
                 }
 
+                // MARK: success
                 successHandler?(OAuthSwiftResponse(data: responseData, response: response, request: usedRequest))
             }
             self.task?.resume()
@@ -162,7 +175,7 @@ open class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftReques
 
             #if os(iOS)
                 #if !OAUTH_APP_EXTENSIONS
-                    UIApplication.shared.isNetworkActivityIndicatorVisible = true
+                    UIApplication.shared.isNetworkActivityIndicatorVisible = OAuthSwift.sessionConfiguration.isNetworkActivityIndicatorVisible
                 #endif
             #endif
         }
@@ -268,6 +281,7 @@ open class OAuthSwiftHTTPRequest: NSObject, URLSessionDelegate, OAuthSwiftReques
 
 }
 
+// MARK: - Request configuraiton
 extension OAuthSwiftHTTPRequest  {
     
     // Configuration for request
@@ -282,7 +296,8 @@ extension OAuthSwiftHTTPRequest  {
         public var parameters: OAuthSwift.Parameters
         public let paramsLocation: ParamsLocation
         public let dataEncoding: String.Encoding
-
+        
+        // Shortcut
         public var httpMethod: Method {
             if let requestMethod = urlRequest.httpMethod {
                 return Method(rawValue: requestMethod) ?? .GET
@@ -294,6 +309,7 @@ extension OAuthSwiftHTTPRequest  {
             return urlRequest.url
         }
         
+        // MARK: init
         public init(url: URL, httpMethod: Method = .GET, httpBody: Data? = nil, headers: OAuthSwift.Headers = [:], timeoutInterval: TimeInterval = 60
             , httpShouldHandleCookies: Bool = false, parameters: OAuthSwift.Parameters, paramsLocation: ParamsLocation = .authorizationHeader, dataEncoding: String.Encoding = OAuthSwiftDataEncoding) {
             var urlRequest = URLRequest(url: url)
@@ -385,7 +401,7 @@ extension OAuthSwiftHTTPRequest  {
     }
 }
 
-// MARK: status code mapping
+// MARK: - status code mapping
 
 extension OAuthSwiftHTTPRequest {
     

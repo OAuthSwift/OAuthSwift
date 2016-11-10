@@ -82,9 +82,7 @@ open class OAuthSwiftClient: NSObject {
         }
 
         if let request = makeRequest(urlString, method: method, parameters: parameters, headers: headers, body: body) {
-            request.successHandler = success
-            request.failureHandler = failure
-            request.start()
+            request.start(success: success, failure: failure)
             return request
         }
         return nil
@@ -126,9 +124,7 @@ open class OAuthSwiftClient: NSObject {
         let multiparts = [ OAuthSwiftMultipartData(name: "media", data: image, fileName: "file", mimeType: "image/jpeg") ]
 
         if let request = makeMultiPartRequest(url, method: method, parameters: parameters, multiparts: multiparts) {
-            request.successHandler = success
-            request.failureHandler = failure
-            request.start()
+            request.start(success: success, failure: failure)
             return request
         }
 
@@ -161,9 +157,7 @@ open class OAuthSwiftClient: NSObject {
         }
 
         if let request = makeMultiPartRequest(url, method: method, parameters: parameters, multiparts: multiparts, headers: headers) {
-            request.successHandler = success
-            request.failureHandler = failure
-            request.start()
+            request.start(success: success, failure: failure)
             return request
         }
         return nil

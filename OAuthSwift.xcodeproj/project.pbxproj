@@ -48,7 +48,6 @@
 		C44244DD1C0631D500880DAB /* Services.plist in Resources */ = {isa = PBXBuildFile; fileRef = C4E038A51BF4B92A007CECEA /* Services.plist */; };
 		C4472DE61C07235800B95B4B /* ServicesTest.plist in Resources */ = {isa = PBXBuildFile; fileRef = C4472DE51C07235800B95B4B /* ServicesTest.plist */; };
 		C4698E341BFDE25500FADE29 /* OAuthSwiftClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4698E331BFDE25500FADE29 /* OAuthSwiftClientTests.swift */; };
-		C47F539E1DB6207600B4978A /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C47F539B1DB6207600B4978A /* Info.plist */; };
 		C47F539F1DB6207600B4978A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C47F539C1DB6207600B4978A /* LaunchScreen.storyboard */; };
 		C47F53A01DB6207600B4978A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C47F539D1DB6207600B4978A /* Main.storyboard */; };
 		C47F53A31DB6260F00B4978A /* OAuthSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C48B28021AFA598D00C7DEF6 /* OAuthSwift.framework */; };
@@ -740,7 +739,7 @@
 			attributes = {
 				LastSwiftMigration = 0700;
 				LastSwiftUpdateCheck = 0710;
-				LastUpgradeCheck = 0800;
+				LastUpgradeCheck = 0810;
 				ORGANIZATIONNAME = "Dongri Jin";
 				TargetAttributes = {
 					C40890BF1C11B37000E3146A = {
@@ -850,7 +849,6 @@
 			files = (
 				C4E038A61BF4B92A007CECEA /* Services.plist in Resources */,
 				F451E3E7195B8D030051434C /* Images.xcassets in Resources */,
-				C47F539E1DB6207600B4978A /* Info.plist in Resources */,
 				C47F53A01DB6207600B4978A /* Main.storyboard in Resources */,
 				F490AA261A67EA7D00765D10 /* InfoPlist.strings in Resources */,
 				C47F539F1DB6207600B4978A /* LaunchScreen.storyboard in Resources */,

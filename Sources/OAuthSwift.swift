@@ -109,3 +109,23 @@ extension OAuthSwift {
     public typealias FailureHandler = (_ error: OAuthSwiftError) -> Void
     public typealias TokenRenewedHandler = (_ credential: OAuthSwiftCredential) -> Void
 }
+
+// MARK: - session configuration
+
+
+extension OAuthSwift {
+
+    public struct Session {
+        var configuration = URLSessionConfiguration.default
+        var queue = OperationQueue.main
+        var delegate: URLSessionDelegate?
+        var isNetworkActivityIndicatorVisible = true
+        
+        func newURLSession() -> URLSession {
+            return URLSession(configuration: self.configuration, delegate: self.delegate, delegateQueue: self.queue)
+        }
+    }
+    public static var session = Session()
+    
+}
+
