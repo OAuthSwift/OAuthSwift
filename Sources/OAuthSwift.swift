@@ -115,10 +115,14 @@ extension OAuthSwift {
 
 extension OAuthSwift {
 
+    // configure how URLSession is initialized
     public struct Session {
         var configuration = URLSessionConfiguration.default
         var queue = OperationQueue.main
+        // An optional delegate for the URLSession
         var delegate: URLSessionDelegate?
+
+        // Monitor session: see UIApplication.shared.isNetworkActivityIndicatorVisible
         var isNetworkActivityIndicatorVisible = true
         
         func newURLSession() -> URLSession {

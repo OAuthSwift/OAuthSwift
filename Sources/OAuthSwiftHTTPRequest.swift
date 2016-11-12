@@ -175,7 +175,7 @@ open class OAuthSwiftHTTPRequest: NSObject, OAuthSwiftRequestHandle {
 
             #if os(iOS)
                 #if !OAUTH_APP_EXTENSIONS
-                    UIApplication.shared.isNetworkActivityIndicatorVisible = OAuthSwift.sessionConfiguration.isNetworkActivityIndicatorVisible
+                    UIApplication.shared.isNetworkActivityIndicatorVisible = OAuthSwift.session.isNetworkActivityIndicatorVisible
                 #endif
             #endif
         }
