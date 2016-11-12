@@ -44,7 +44,7 @@ open class OAuthSwiftCredential: NSObject, NSCoding {
             case 1:
                 self = .oauth1
             case 2:
-                self = .oauth1
+                self = .oauth2
             default:
                 self = .oauth1
             }
