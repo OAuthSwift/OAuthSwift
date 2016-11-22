@@ -44,12 +44,12 @@ open class OAuthSwiftHTTPRequest: NSObject, OAuthSwiftRequestHandle {
 
     // MARK: INIT
 
-    convenience init(url: URL, method: Method = .GET, parameters: OAuthSwift.Parameters = [:], paramsLocation : ParamsLocation = .authorizationHeader, httpBody: Data? = nil, headers: OAuthSwift.Headers = [:]) {
-        self.init(config: Config(url: url, httpMethod: method, httpBody: httpBody, headers: headers, parameters: parameters, paramsLocation: paramsLocation))
+    convenience init(url: URL, method: Method = .GET, parameters: OAuthSwift.Parameters = [:], paramsLocation : ParamsLocation = .authorizationHeader, httpBody: Data? = nil, headers: OAuthSwift.Headers = [:], sessionFactory: URLSessionFactory = .default) {
+        self.init(config: Config(url: url, httpMethod: method, httpBody: httpBody, headers: headers, parameters: parameters, paramsLocation: paramsLocation, sessionFactory: sessionFactory))
     }
 
-    convenience init(request: URLRequest, paramsLocation : ParamsLocation = .authorizationHeader) {
-        self.init(config: Config(urlRequest: request, paramsLocation: paramsLocation))
+    convenience init(request: URLRequest, paramsLocation : ParamsLocation = .authorizationHeader, sessionFactory: URLSessionFactory = .default) {
+        self.init(config: Config(urlRequest: request, paramsLocation: paramsLocation, sessionFactory: sessionFactory))
     }
     
     init(config: Config) {
@@ -80,7 +80,7 @@ open class OAuthSwiftHTTPRequest: NSObject, OAuthSwiftRequestHandle {
                 return
             }
 
-            self.session = OAuthSwift.session.newURLSession()
+            self.session = self.config.sessionFactory.build()
             let usedRequest = self.request!
             self.task = self.session.dataTask(with: usedRequest) { (data, resp, error) in
             
@@ -175,7 +175,7 @@ open class OAuthSwiftHTTPRequest: NSObject, OAuthSwiftRequestHandle {
 
             #if os(iOS)
                 #if !OAUTH_APP_EXTENSIONS
-                    UIApplication.shared.isNetworkActivityIndicatorVisible = OAuthSwift.session.isNetworkActivityIndicatorVisible
+                    UIApplication.shared.isNetworkActivityIndicatorVisible = self.config.sessionFactory.isNetworkActivityIndicatorVisible
                 #endif
             #endif
         }
@@ -296,6 +296,7 @@ extension OAuthSwiftHTTPRequest  {
         public var parameters: OAuthSwift.Parameters
         public let paramsLocation: ParamsLocation
         public let dataEncoding: String.Encoding
+        public let sessionFactory: URLSessionFactory
         
         // Shortcut
         public var httpMethod: Method {
@@ -311,21 +312,22 @@ extension OAuthSwiftHTTPRequest  {
         
         // MARK: init
         public init(url: URL, httpMethod: Method = .GET, httpBody: Data? = nil, headers: OAuthSwift.Headers = [:], timeoutInterval: TimeInterval = 60
-            , httpShouldHandleCookies: Bool = false, parameters: OAuthSwift.Parameters, paramsLocation: ParamsLocation = .authorizationHeader, dataEncoding: String.Encoding = OAuthSwiftDataEncoding) {
+            , httpShouldHandleCookies: Bool = false, parameters: OAuthSwift.Parameters, paramsLocation: ParamsLocation = .authorizationHeader, dataEncoding: String.Encoding = OAuthSwiftDataEncoding, sessionFactory: URLSessionFactory = .default) {
             var urlRequest = URLRequest(url: url)
             urlRequest.httpMethod = httpMethod.rawValue
             urlRequest.httpBody = httpBody
             urlRequest.allHTTPHeaderFields = headers
             urlRequest.timeoutInterval = timeoutInterval
             urlRequest.httpShouldHandleCookies = httpShouldHandleCookies
-            self.init(urlRequest: urlRequest, parameters: parameters, paramsLocation: paramsLocation, dataEncoding: dataEncoding)
+            self.init(urlRequest: urlRequest, parameters: parameters, paramsLocation: paramsLocation, dataEncoding: dataEncoding, sessionFactory: sessionFactory)
         }
         
-        public init(urlRequest: URLRequest, parameters: OAuthSwift.Parameters = [:], paramsLocation: ParamsLocation = .authorizationHeader, dataEncoding: String.Encoding = OAuthSwiftDataEncoding) {
+        public init(urlRequest: URLRequest, parameters: OAuthSwift.Parameters = [:], paramsLocation: ParamsLocation = .authorizationHeader, dataEncoding: String.Encoding = OAuthSwiftDataEncoding, sessionFactory: URLSessionFactory = .default) {
             self.urlRequest = urlRequest
             self.parameters = parameters
             self.paramsLocation = paramsLocation
             self.dataEncoding = dataEncoding
+            self.sessionFactory = sessionFactory
         }
         
         
@@ -400,6 +402,28 @@ extension OAuthSwiftHTTPRequest  {
         
     }
 }
+
+// MARK: - session configuration
+
+// configure how URLSession is initialized
+public struct URLSessionFactory {
+    
+    public static let `default` = URLSessionFactory()
+    
+    public var configuration = URLSessionConfiguration.default
+    public var queue = OperationQueue.main
+    // An optional delegate for the URLSession
+    public var delegate: URLSessionDelegate?
+    
+    // Monitor session: see UIApplication.shared.isNetworkActivityIndicatorVisible
+    public var isNetworkActivityIndicatorVisible = true
+    
+    // Create a new URLSession
+    func build() -> URLSession {
+        return URLSession(configuration: self.configuration, delegate: self.delegate, delegateQueue: self.queue)
+    }
+}
+
 
 // MARK: - status code mapping
 

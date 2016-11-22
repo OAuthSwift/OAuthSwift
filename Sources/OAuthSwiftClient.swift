@@ -18,6 +18,8 @@ open class OAuthSwiftClient: NSObject {
 
     fileprivate(set) open var credential: OAuthSwiftCredential
     open var paramsLocation: OAuthSwiftHTTPRequest.ParamsLocation = .authorizationHeader
+    // Contains default URL session configuration
+    open var sessionFactory = URLSessionFactory()
 
     static let separator: String = "\r\n"
     static var separatorData: Data = {
@@ -89,7 +91,7 @@ open class OAuthSwiftClient: NSObject {
     }
 
     open func makeRequest(_ request: URLRequest) -> OAuthSwiftHTTPRequest {
-        let request = OAuthSwiftHTTPRequest(request: request, paramsLocation: self.paramsLocation)
+        let request = OAuthSwiftHTTPRequest(request: request, paramsLocation: self.paramsLocation, sessionFactory: self.sessionFactory)
         request.config.updateRequest(credential: self.credential)
         return request
     }
@@ -99,7 +101,7 @@ open class OAuthSwiftClient: NSObject {
             return nil
         }
 
-        let request = OAuthSwiftHTTPRequest(url: url, method: method, parameters: parameters, paramsLocation: self.paramsLocation, httpBody: body, headers: headers ?? [:])
+        let request = OAuthSwiftHTTPRequest(url: url, method: method, parameters: parameters, paramsLocation: self.paramsLocation, httpBody: body, headers: headers ?? [:], sessionFactory: self.sessionFactory)
         request.config.updateRequest(credential: self.credential)
         return request
     }
