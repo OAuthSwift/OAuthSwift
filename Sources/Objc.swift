@@ -34,6 +34,10 @@ extension OAuth2Swift {
         }
         return authorize(withCallbackURL: url, scope: scope, state: state, parameters: parameters, headers: headers, success: success, failure: failure)
     }
+	
+	open func objc_renewAccessToken(withRefreshToken refreshToken: String, headers: OAuthSwift.Headers? = nil, success: @escaping TokenSuccessHandler, failure: Obj_FailureHandler?) -> OAuthSwiftRequestHandle? {
+		return renewAccessToken(withRefreshToken: refreshToken, headers: headers, success: success, failure: failure)
+	}
     
 }
 
