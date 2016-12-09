@@ -89,8 +89,8 @@ oauthswift = OAuth1Swift(
 let handle = oauthswift.authorize(
     withCallbackURL: URL(string: "oauth-swift://oauth-callback/twitter")!,
     success: { credential, response, parameters in
-      print(credential.oauth_token)
-      print(credential.oauth_token_secret)
+      print(credential.oauthToken)
+      print(credential.oauthTokenSecret)
       print(parameters["user_id"])
     },
     failure: { error in
@@ -110,7 +110,7 @@ let handle = oauthswift.authorize(
     withCallbackURL: URL(string: "oauth-swift://oauth-callback/instagram")!,
     scope: "likes+comments", state:"INSTAGRAM",
     success: { credential, response, parameters in
-      print(credential.oauth_token)
+      print(credential.oauthToken)
     },
     failure: { error in
       print(error.localizedDescription)
