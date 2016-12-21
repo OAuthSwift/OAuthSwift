@@ -120,7 +120,7 @@ open class OAuth2Swift: OAuthSwift {
 
         
         var queryString = "client_id=\(self.consumerKey)"
-        queryString += "&redirect_uri=\(callbackURL.absoluteString)"
+        queryString += "&redirect_uri=\(callbackURL.absoluteString.urlEncodedString)"
         queryString += "&response_type=\(self.responseType)"
         if !scope.isEmpty {
             queryString += "&scope=\(scope)"
