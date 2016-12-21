@@ -139,7 +139,7 @@ func handle(_ url: NSURL) {
   ...
 ```
 and present the view (`present(viewController`, `performSegue(withIdentifier: `, ...)
-*You can extends `OAuthWebViewController` for a default implementation of view presentation and dismiss*
+*You can extend `OAuthWebViewController` for a default implementation of view presentation and dismiss*
 
 #### Use the SFSafariViewController (iOS9)
 A default implementation of `OAuthSwiftURLHandlerType` is provided using the `SFSafariViewController`, with automatic view dismiss.
