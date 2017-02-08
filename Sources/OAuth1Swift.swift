@@ -139,7 +139,9 @@ open class OAuth1Swift: OAuthSwift {
     func postOAuthAccessTokenWithRequestToken(success: @escaping TokenSuccessHandler, failure: FailureHandler?) {
         var parameters = Dictionary<String, Any>()
         parameters["oauth_token"] = self.client.credential.oauthToken
-        parameters["oauth_verifier"] = self.client.credential.oauthVerifier
+        if !this.allowMissingOAuthVerifier {
+            parameters["oauth_verifier"] = self.client.credential.oauthVerifier
+        }
         
         if let handle = self.client.post(
             self.accessTokenUrl, parameters: parameters,
