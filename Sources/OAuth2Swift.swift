@@ -167,8 +167,8 @@ open class OAuth2Swift: OAuthSwift {
     }
     
     @discardableResult
-    open func renewAccessToken(withRefreshToken refreshToken: String, headers: OAuthSwift.Headers? = nil, success: @escaping TokenSuccessHandler, failure: FailureHandler?) -> OAuthSwiftRequestHandle? {
-      var parameters = OAuthSwift.Parameters()
+    open func renewAccessToken(withRefreshToken refreshToken: String, parameters: OAuthSwift.Parameters? = nil, headers: OAuthSwift.Headers? = nil, success: @escaping TokenSuccessHandler, failure: FailureHandler?) -> OAuthSwiftRequestHandle? {
+      var parameters = parameters ?? OAuthSwift.Parameters()
         parameters["client_id"] = self.consumerKey
         parameters["client_secret"] = self.consumerSecret
         parameters["refresh_token"] = refreshToken
@@ -177,7 +177,7 @@ open class OAuth2Swift: OAuthSwift {
         return requestOAuthAccessToken(withParameters: parameters, headers: headers, success: success, failure: failure)
     }
     
-    open func requestOAuthAccessToken(withParameters parameters: OAuthSwift.Parameters, headers: OAuthSwift.Headers? = nil, success: @escaping TokenSuccessHandler, failure: FailureHandler?) -> OAuthSwiftRequestHandle? {
+    fileprivate func requestOAuthAccessToken(withParameters parameters: OAuthSwift.Parameters, headers: OAuthSwift.Headers? = nil, success: @escaping TokenSuccessHandler, failure: FailureHandler?) -> OAuthSwiftRequestHandle? {
         let successHandler: OAuthSwiftHTTPRequest.SuccessHandler = { [unowned self]
             response in
             let responseJSON: Any? = try? response.jsonObject(options: .mutableContainers)
