@@ -177,7 +177,7 @@ open class OAuth2Swift: OAuthSwift {
         return requestOAuthAccessToken(withParameters: parameters, headers: headers, success: success, failure: failure)
     }
     
-    fileprivate func requestOAuthAccessToken(withParameters parameters: OAuthSwift.Parameters, headers: OAuthSwift.Headers? = nil, success: @escaping TokenSuccessHandler, failure: FailureHandler?) -> OAuthSwiftRequestHandle? {
+    open func requestOAuthAccessToken(withParameters parameters: OAuthSwift.Parameters, headers: OAuthSwift.Headers? = nil, success: @escaping TokenSuccessHandler, failure: FailureHandler?) -> OAuthSwiftRequestHandle? {
         let successHandler: OAuthSwiftHTTPRequest.SuccessHandler = { [unowned self]
             response in
             let responseJSON: Any? = try? response.jsonObject(options: .mutableContainers)
