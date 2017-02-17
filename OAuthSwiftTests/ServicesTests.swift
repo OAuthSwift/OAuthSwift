@@ -319,7 +319,7 @@ class ServicesURLHandlerType: LayoutEngineNavigationDelegate, OAuthSwiftURLHandl
             if let button = doc.querySelector(autorizeButton) {
                 button.click()
             } else {
-                print(doc.toHTML)
+                print(doc.toHTML ?? "ERROR: no HTML doc")
                 XCTFail("\(self.service): \(autorizeButton) not found to valid authentification]. \(self.browser.url)")
             }
         } else if !self.handled {

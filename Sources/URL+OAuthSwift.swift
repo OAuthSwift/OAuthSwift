@@ -8,11 +8,10 @@
 
 import Foundation
 
-
 extension URL {
 
     func urlByAppending(queryString: String) -> URL {
-        if queryString.utf16.count == 0 {
+        if queryString.utf16.isEmpty {
             return self
         }
 

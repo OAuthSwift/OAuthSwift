@@ -9,15 +9,15 @@
 import Foundation
 
 extension Collection where Self.Iterator.Element == UInt8, Self.Index == Int {
-    
+
     var toUInt32: UInt32 {
         assert(self.count > 3)
         // XXX optimize do the job only for the first one...
         return toUInt32Array()[0]
     }
-    
-    func toUInt32Array() -> Array<UInt32> {
-        var result = Array<UInt32>()
+
+    func toUInt32Array() -> [UInt32] {
+        var result = [UInt32]()
         result.reserveCapacity(16)
         for idx in stride(from: self.startIndex, to: self.endIndex, by: MemoryLayout<UInt32>.size) {
             var val: UInt32 = 0
@@ -27,7 +27,7 @@ extension Collection where Self.Iterator.Element == UInt8, Self.Index == Int {
             val |= self.count > 0 ? UInt32(self[idx]) : 0
             result.append(val)
         }
-        
+
         return result
     }
 }

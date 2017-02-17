@@ -8,10 +8,10 @@
 
 import Foundation
 
-public func generateState(withLength len : Int) -> String {
+public func generateState(withLength len: Int) -> String {
     let letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
     let length = UInt32(letters.characters.count)
-    
+
     var randomString = ""
     for _ in 0..<len {
         let rand = arc4random_uniform(length)

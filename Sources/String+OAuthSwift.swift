@@ -19,19 +19,19 @@ extension String {
     var parametersFromQueryString: [String: String] {
         return dictionaryBySplitting("&", keyValueSeparator: "=")
     }
-    
+
     var urlQueryEncoded: String? {
         return self.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)
     }
 
     fileprivate func dictionaryBySplitting(_ elementSeparator: String, keyValueSeparator: String) -> [String: String] {
-		
+
 		var string = self
-		if(hasPrefix(elementSeparator)) {
+		if hasPrefix(elementSeparator) {
 			string = String(characters.dropFirst(1))
 		}
-		
-        var parameters = Dictionary<String, String>()
+
+        var parameters = [String: String]()
 
         let scanner = Scanner(string: string)
 
@@ -51,14 +51,14 @@ extension String {
                 parameters.updateValue(value, forKey: key)
             }
         }
-        
+
         return parameters
     }
-        
+
     public var headerDictionary: OAuthSwift.Headers {
         return dictionaryBySplitting(",", keyValueSeparator: "=")
     }
-    
+
     var safeStringByRemovingPercentEncoding: String {
         return self.removingPercentEncoding ?? self
     }
@@ -71,22 +71,22 @@ extension String {
         self.remove(at: self.index(before: self.endIndex))
     }
 
-    func substring(to offset: String.IndexDistance) -> String{
+    func substring(to offset: String.IndexDistance) -> String {
         return self.substring(to: self.index(self.startIndex, offsetBy: offset))
     }
 
-    func substring(from offset: String.IndexDistance) -> String{
+    func substring(from offset: String.IndexDistance) -> String {
         return self.substring(from: self.index(self.startIndex, offsetBy: offset))
     }
-    
+
 }
 
 extension String.Encoding {
-    
+
     var charset: String {
         let charset = CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(self.rawValue))
+        // swiftlint:disable force_cast
         return charset as! String
     }
 
 }
-

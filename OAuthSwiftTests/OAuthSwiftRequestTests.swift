@@ -24,14 +24,14 @@ class OAuth1SwiftRequestTests: XCTestCase {
         let oAuthSwiftHTTPRequest = OAuthSwiftHTTPRequest(url: URL(string: "http://127.0.0.1:\(8765)")!)
         
         let failureExpectation = expectation(description: "Expected `failure` to be called")
-        oAuthSwiftHTTPRequest.failureHandler = { _ in
+        let failureHandler: OAuthSwiftHTTPRequest.FailureHandler = { _ in
             failureExpectation.fulfill()
         }
-        oAuthSwiftHTTPRequest.successHandler = { _ in
+        let successHandler: OAuthSwiftHTTPRequest.SuccessHandler = { _ in
             XCTFail("The success handler should not be called. This can happen if you have a\nlocal server running on :\(8765)")
         }
         
-        oAuthSwiftHTTPRequest.start()
+        oAuthSwiftHTTPRequest.start(success: successHandler, failure: failureHandler)
         waitForExpectations(timeout: DefaultTimeout, handler: nil)
     }
 
@@ -52,16 +52,18 @@ class OAuth1SwiftRequestTests: XCTestCase {
         
         let oAuthSwiftHTTPRequest = OAuthSwiftHTTPRequest(url: URL(string: "http://127.0.0.1:\(port)")!)
         let successExpectation = expectation(description: "Expected `failure` to be called")
-        oAuthSwiftHTTPRequest.failureHandler = { error in
+        
+        let failureHandler: OAuthSwiftHTTPRequest.FailureHandler  = { error in
             XCTFail("The failure handler should not be called.\(error)")
         }
-        oAuthSwiftHTTPRequest.successHandler = { response in
+        
+          let successHandler: OAuthSwiftHTTPRequest.SuccessHandler = { response in
             if response.string == "Success!" {
                 successExpectation.fulfill()
             }
         }
         
-        oAuthSwiftHTTPRequest.start()
+        oAuthSwiftHTTPRequest.start(success: successHandler, failure: failureHandler)
         waitForExpectations(timeout: DefaultTimeout, handler: nil)
     }
 
@@ -86,7 +88,8 @@ class OAuth1SwiftRequestTests: XCTestCase {
 		let oAuthSwiftHTTPRequest = OAuthSwiftHTTPRequest(url: URL(string: "http://127.0.0.1:\(port)")!)
 
 		let failureExpectation = expectation(description: "Expected `failure` to be called because of canceling the request")
-		oAuthSwiftHTTPRequest.failureHandler = { error in
+        
+        let failureHandler: OAuthSwiftHTTPRequest.FailureHandler = { error in
             switch error {
             case .cancelled:
                 failureExpectation.fulfill()
@@ -96,11 +99,11 @@ class OAuth1SwiftRequestTests: XCTestCase {
                 XCTFail("Wrong error type: \(error)")
             }
 		}
-		oAuthSwiftHTTPRequest.successHandler = { _ in
+		let successHandler: OAuthSwiftHTTPRequest.SuccessHandler  = { _ in
 			XCTFail("The success handler should not be called. This can happen if you have a\nlocal server running on :\(port)")
 		}
 
-		oAuthSwiftHTTPRequest.start()
+		oAuthSwiftHTTPRequest.start(success: successHandler, failure: failureHandler)
 		oAuthSwiftHTTPRequest.cancel()
 		waitForExpectations(timeout: DefaultTimeout, handler: nil)
 	}

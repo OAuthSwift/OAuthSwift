@@ -34,12 +34,12 @@ public enum OAuthSwiftError: Error {
     case requestError(error: Error, request: URLRequest)
     // Request cancelled
     case cancelled
-    
+
     public static let Domain = "OAuthSwiftError"
     public static let ResponseDataKey = "OAuthSwiftError.response.data"
     public static let ResponseKey = "OAuthSwiftError.response"
-    
-    fileprivate enum Code : Int {
+
+    fileprivate enum Code: Int {
         case configurationError = -1
         case tokenExpired = -2
         case missingState = -3
@@ -53,7 +53,7 @@ public enum OAuthSwiftError: Error {
         case requestError = -11
         case cancelled = -12
     }
-    
+
     fileprivate var code: Code {
         switch self {
         case .configurationError: return Code.configurationError
@@ -78,7 +78,7 @@ public enum OAuthSwiftError: Error {
         default: return nil
         }
     }
-    
+
     public var underlyingMessage: String? {
         switch self {
         case .serverError(let m): return m
@@ -91,7 +91,7 @@ public enum OAuthSwiftError: Error {
 }
 
 extension OAuthSwiftError: CustomStringConvertible {
-    
+
     public var description: String {
         switch self {
         case .configurationError(let m): return "configurationError[\(m)]"
@@ -111,34 +111,34 @@ extension OAuthSwiftError: CustomStringConvertible {
 }
 
 extension OAuthSwift {
-    
+
     static func retainError(_ failureHandler: FailureHandler?) {
         #if !OAUTH_NO_RETAIN_ERROR
             failureHandler?(OAuthSwiftError.retain)
         #endif
     }
-    
+
 }
 
 // MARK NSError
 extension OAuthSwiftError: CustomNSError {
-    
+
     public static var errorDomain: String { return OAuthSwiftError.Domain }
-    
+
     public var errorCode: Int { return self.code.rawValue }
-    
+
     /// The user-info dictionary.
     public var errorUserInfo: [String : Any] {
         switch self {
         case .configurationError(let m): return ["message": m]
         case .serverError(let m): return ["message": m]
         case .requestCreation(let m): return ["message": m]
-            
+
         case .tokenExpired(let e): return ["error": e as Any]
         case .requestError(let e, let request): return ["error": e, "request": request]
-            
+
         case .encodingError(let urlString): return ["url": urlString]
-            
+
         case .stateNotEqual(let s, let e): return ["state": s, "expected": e]
         default: return [:]
         }

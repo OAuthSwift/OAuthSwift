@@ -52,13 +52,15 @@ extension Dictionary {
     mutating func merge<K, V>(_ dictionaries: Dictionary<K, V>...) {
         for dict in dictionaries {
             for (key, value) in dict {
-                self.updateValue(value as! Value, forKey: key as! Key)
+                if let v = value as? Value, let k = key as? Key {
+                    self.updateValue(v, forKey: k)
+                }
             }
         }
     }
 
-    func map<K: Hashable, V> (_ transform: (Key, Value) -> (K, V)) -> Dictionary<K, V> {
-        var results: Dictionary<K, V> = [:]
+    func map<K: Hashable, V> (_ transform: (Key, Value) -> (K, V)) -> [K: V] {
+        var results: [K: V] = [:]
         for k in self.keys {
             if let value = self[ k ] {
                 let (u, w) = transform(k, value)

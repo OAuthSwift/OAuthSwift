@@ -6,25 +6,23 @@
 //  Copyright (c) 2015 Dongri Jin. All rights reserved.
 //
 
-
 import Foundation
 
 open class HMAC {
-    
-    let key:[UInt8] = []
-    
+
+    let key: [UInt8] = []
+
     class internal func sha1(key: Data, message: Data) -> Data? {
         let blockSize = 64
         var key = key.bytes
         let message = message.bytes
 
-        if (key.count > blockSize) {
+        if key.count > blockSize {
             key = SHA1(key).calculate()
+        } else if key.count < blockSize { // padding
+            key += [UInt8](repeating: 0, count: blockSize - key.count)
         }
-        else if (key.count < blockSize) { // padding
-            key = key + [UInt8](repeating: 0, count: blockSize - key.count)
-        }
-        
+
         var ipad = [UInt8](repeating: 0x36, count: blockSize)
         for idx in key.indices {
             ipad[idx] = key[idx] ^ ipad[idx]
