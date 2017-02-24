@@ -16,6 +16,10 @@ open class OAuth2Swift: OAuthSwift {
 
     // Set to true to deactivate state check. Be careful of CSRF
     open var allowMissingStateCheck: Bool = false
+    
+    // Encode callback url. Default false
+    // issue #339, pr ##325
+    open var encodeCallbackURL: Bool = false
 
     var consumerKey: String
     var consumerSecret: String
@@ -115,7 +119,11 @@ open class OAuth2Swift: OAuthSwift {
         }
 
         var queryString = "client_id=\(self.consumerKey)"
-        queryString += "&redirect_uri=\(callbackURL.absoluteString.urlEncodedString)"
+        if encodeCallbackURL {
+            queryString += "&redirect_uri=\(callbackURL.absoluteString.urlEncodedString)"
+        } else {
+            queryString += "&redirect_uri=\(callbackURL.absoluteString)"
+        }
         queryString += "&response_type=\(self.responseType)"
         if !scope.isEmpty {
             queryString += "&scope=\(scope)"
