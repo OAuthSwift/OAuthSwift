@@ -108,3 +108,8 @@ let Uber =
     "consumerKey": "",
     "consumerSecret": ""
 ]
+let Digu =
+[
+    "consumerKey": "",
+    "consumerSecret": ""
+]
