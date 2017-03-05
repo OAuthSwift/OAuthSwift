@@ -197,6 +197,7 @@ See more examples in the demo application: [ViewController.swift](/Demo/Common/V
 * [Goodreads](https://www.goodreads.com/api/documentation#oauth)
 * [Typetalk](http://developer.nulab-inc.com/docs/typetalk/auth)
 * [SoundCloud](https://developers.soundcloud.com/docs/api/guide#authentication)
+* [Digu](https://digu.io/developer/oauth)
 
 ## Images
 
