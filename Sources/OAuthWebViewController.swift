@@ -47,6 +47,9 @@ open class OAuthWebViewController: OAuthViewController, OAuthSwiftURLHandlerType
     // If controller have an navigation controller, application top view controller could be used if true
     public var useTopViewControlerInsteadOfNavigation = false
 
+    // If you want you could set animation transition to NO
+    public var presentViewControllerAnimated = true
+    
     public var topViewController: UIViewController? {
         #if !OAUTH_APP_EXTENSIONS
             return UIApplication.topViewController
@@ -83,13 +86,12 @@ open class OAuthWebViewController: OAuthViewController, OAuthSwiftURLHandlerType
             let completion: () -> Void = { [unowned self] in
                 self.delegate?.oauthWebViewControllerDidPresent()
             }
-            let animated = true
             if let navigationController = self.navigationController, (!useTopViewControlerInsteadOfNavigation || self.topViewController == nil) {
-                navigationController.pushViewController(self, animated: animated)
+                navigationController.pushViewController(self, animated: presentViewControllerAnimated)
             } else if let p = self.parent {
-                p.present(self, animated: animated, completion: completion)
+                p.present(self, animated: presentViewControllerAnimated, completion: completion)
             } else if let topViewController = topViewController {
-                topViewController.present(self, animated: animated, completion: completion)
+                topViewController.present(self, animated: presentViewControllerAnimated, completion: completion)
             } else {
                 // assert no presentation
                 assertionFailure("Failed to present. Maybe add a parent")
