@@ -102,7 +102,7 @@ import SafariServices
             let key = UUID().uuidString
 
             observers[key] = OAuthSwift.notificationCenter.addObserver(
-                forName: OAuthSwift.CallbackNotification.notificationName,
+                forName: NSNotification.Name.OAuthSwiftHandleCallbackURL,
                 object: nil,
                 queue: OperationQueue.main,
                 using: { [weak self] _ in

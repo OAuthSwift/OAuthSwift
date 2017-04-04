@@ -29,13 +29,14 @@ open class OAuthSwift: NSObject, OAuthSwiftRequestHandle {
 
     // MARK: callback notification
     struct CallbackNotification {
+        @available(*, deprecated: 0.5, message: "Use NSNotification.Name.OAuthSwiftHandleCallbackURL")
         static let notificationName = Notification.Name(rawValue: "OAuthSwiftCallbackNotificationName")
         static let optionsURLKey = "OAuthSwiftCallbackNotificationOptionsURLKey"
     }
 
     // Handle callback url which contains now token information
     open class func handle(url: URL) {
-        let notification = Notification(name: CallbackNotification.notificationName, object: nil,
+        let notification = Notification(name: NSNotification.Name.OAuthSwiftHandleCallbackURL, object: nil,
             userInfo: [CallbackNotification.optionsURLKey: url])
         notificationCenter.post(notification)
     }
@@ -49,7 +50,7 @@ open class OAuthSwift: NSObject, OAuthSwiftRequestHandle {
     }
 
     func observeCallback(_ block: @escaping (_ url: URL) -> Void) {
-        self.observer = OAuthSwift.notificationCenter.addObserver(forName: CallbackNotification.notificationName, object: nil, queue: OperationQueue.main) { [weak self] notification in
+        self.observer = OAuthSwift.notificationCenter.addObserver(forName: NSNotification.Name.OAuthSwiftHandleCallbackURL, object: nil, queue: OperationQueue.main) { [weak self] notification in
             self?.removeCallbackNotificationObserver()
 
             if let urlFromUserInfo = notification.userInfo?[CallbackNotification.optionsURLKey] as? URL {
