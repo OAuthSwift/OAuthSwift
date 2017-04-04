@@ -29,7 +29,7 @@ open class OAuthSwift: NSObject, OAuthSwiftRequestHandle {
 
     // MARK: callback notification
     struct CallbackNotification {
-        @available(*, deprecated: 0.5, message: "Use NSNotification.Name.OAuthSwiftHandleCallbackURL")
+        @available(*, deprecated: 0.5, message: "Use Notification.Name.OAuthSwiftHandleCallbackURL")
         static let notificationName = Notification.Name(rawValue: "OAuthSwiftCallbackNotificationName")
         static let optionsURLKey = "OAuthSwiftCallbackNotificationOptionsURLKey"
     }
