@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6053EF6F1E93821400EB28B3 /* NotificationCenter+OAuthSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6053EF6E1E93821400EB28B3 /* NotificationCenter+OAuthSwift.swift */; };
+		6053EF701E93832400EB28B3 /* NotificationCenter+OAuthSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6053EF6E1E93821400EB28B3 /* NotificationCenter+OAuthSwift.swift */; };
+		6053EF711E93832500EB28B3 /* NotificationCenter+OAuthSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6053EF6E1E93821400EB28B3 /* NotificationCenter+OAuthSwift.swift */; };
+		6053EF721E93832600EB28B3 /* NotificationCenter+OAuthSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6053EF6E1E93821400EB28B3 /* NotificationCenter+OAuthSwift.swift */; };
 		B95BA395473AEEC62457C930 /* Pods_OAuthSwiftTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0ED45F76F07F16FB6FF639B7 /* Pods_OAuthSwiftTests.framework */; };
 		C40890C31C11B37000E3146A /* OAuthSwiftWatchOS.h in Headers */ = {isa = PBXBuildFile; fileRef = C40890C21C11B37000E3146A /* OAuthSwiftWatchOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C40890C81C11B38000E3146A /* OAuth1Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = F43502681A6790EC00038A29 /* OAuth1Swift.swift */; };
@@ -194,6 +198,7 @@
 
 /* Begin PBXFileReference section */
 		0ED45F76F07F16FB6FF639B7 /* Pods_OAuthSwiftTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_OAuthSwiftTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		6053EF6E1E93821400EB28B3 /* NotificationCenter+OAuthSwift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NotificationCenter+OAuthSwift.swift"; sourceTree = "<group>"; };
 		674EB2AA3430160EBBAC72A1 /* Pods-OAuthSwiftTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OAuthSwiftTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-OAuthSwiftTests/Pods-OAuthSwiftTests.debug.xcconfig"; sourceTree = "<group>"; };
 		C40890C01C11B37000E3146A /* OAuthSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OAuthSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C40890C21C11B37000E3146A /* OAuthSwiftWatchOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OAuthSwiftWatchOS.h; sourceTree = "<group>"; };
@@ -399,6 +404,7 @@
 				F47599B41A7903C9004A96C1 /* Int+OAuthSwift.swift */,
 				C42D41BB1C1AD11600DEDF53 /* UIApplication+OAuthSwift.swift */,
 				C4328F5E1DA151F800847FA3 /* Collection+OAuthSwift.swift */,
+				6053EF6E1E93821400EB28B3 /* NotificationCenter+OAuthSwift.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -915,7 +921,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -932,6 +938,7 @@
 				C40890CC1C11B38000E3146A /* OAuthSwiftHTTPRequest.swift in Sources */,
 				C40890D31C11B38700E3146A /* URL+OAuthSwift.swift in Sources */,
 				C40890C81C11B38000E3146A /* OAuth1Swift.swift in Sources */,
+				6053EF721E93832600EB28B3 /* NotificationCenter+OAuthSwift.swift in Sources */,
 				C40890CB1C11B38000E3146A /* OAuthSwiftCredential.swift in Sources */,
 				C40890D21C11B38700E3146A /* Dictionary+OAuthSwift.swift in Sources */,
 				C40890CD1C11B38000E3146A /* OAuthSwiftURLHandlerType.swift in Sources */,
@@ -960,6 +967,7 @@
 				C48B28251AFA599A00C7DEF6 /* OAuthSwiftHTTPRequest.swift in Sources */,
 				C48B28211AFA599400C7DEF6 /* OAuth1Swift.swift in Sources */,
 				C48B282B1AFA599A00C7DEF6 /* String+OAuthSwift.swift in Sources */,
+				6053EF701E93832400EB28B3 /* NotificationCenter+OAuthSwift.swift in Sources */,
 				C49624731B00F54A0010BD09 /* OAuthSwiftURLHandlerType.swift in Sources */,
 				C48B28241AFA599A00C7DEF6 /* OAuthSwiftCredential.swift in Sources */,
 				C48B282A1AFA599A00C7DEF6 /* URL+OAuthSwift.swift in Sources */,
@@ -1017,6 +1025,7 @@
 				C42D41BD1C1AD11600DEDF53 /* UIApplication+OAuthSwift.swift in Sources */,
 				C4B6EE341BF74CF400443596 /* Int+OAuthSwift.swift in Sources */,
 				C4328F611DA158AD00847FA3 /* Collection+OAuthSwift.swift in Sources */,
+				6053EF711E93832500EB28B3 /* NotificationCenter+OAuthSwift.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1057,6 +1066,7 @@
 				F47599AD1A78FF23004A96C1 /* SHA1.swift in Sources */,
 				C40890D81C11D48300E3146A /* OAuthSwift.swift in Sources */,
 				F4805E221A6BB5DD00F7677E /* URL+OAuthSwift.swift in Sources */,
+				6053EF6F1E93821400EB28B3 /* NotificationCenter+OAuthSwift.swift in Sources */,
 				F4E9A4E01A67944C00B4F3C8 /* OAuthSwiftHTTPRequest.swift in Sources */,
 				F47599B51A7903C9004A96C1 /* Int+OAuthSwift.swift in Sources */,
 				C42349991DCCE5F600BD980F /* OAuthSwiftResponse.swift in Sources */,
