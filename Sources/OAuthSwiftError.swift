@@ -95,7 +95,7 @@ extension OAuthSwiftError: CustomStringConvertible {
     public var description: String {
         switch self {
         case .configurationError(let m): return "configurationError[\(m)]"
-        case .tokenExpired(let e): return "tokenExpired[\(e ?? "")]"
+        case .tokenExpired(let e): return "tokenExpired[\(String(describing: e))]"
         case .missingState: return "missingState"
         case .stateNotEqual(let s, let e): return "stateNotEqual[\(s)<>\(e)]"
         case .serverError(let m): return "serverError[\(m)]"
