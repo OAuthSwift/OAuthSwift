@@ -57,7 +57,7 @@ func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpe
 ```
 :warning: Any other application may try to open a URL with your url scheme. So you can check the source application, for instance for safari controller :
 ```
-if (options["UIApplicationOpenURLOptionsSourceApplicationKey"] as? String == "com.apple.SafariViewService") {
+if (options[.sourceApplication] as? String == "com.apple.SafariViewService") {
 ```
 
 - On previous iOS version
