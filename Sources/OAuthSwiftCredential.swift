@@ -94,7 +94,10 @@ open class OAuthSwiftCredential: NSObject, NSCoding {
 
     // MARK: NSCoding protocol
     fileprivate struct CodingKeys {
-        static let base = Bundle.main.bundleIdentifier! + "."
+        static let bundleId = Bundle.main.bundleIdentifier
+            ?? Bundle(for: OAuthSwiftCredential.self).bundleIdentifier
+            ?? ""
+        static let base = bundleId + "."
         static let consumerKey = base + "comsumer_key"
         static let consumerSecret = base + "consumer_secret"
         static let oauthToken = base + "oauth_token"
