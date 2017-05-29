@@ -98,6 +98,22 @@ let handle = oauthswift.authorize(
     }             
 )
 ```
+
+### Request example with OAuth1.0a
+```swift
+// create an instance and retain it
+oauthswift = OAuth1Swift(
+consumerKey:    "********",
+consumerSecret: "********")
+
+oauthswift.client.get("http://api.example.com/foo/bar", success: { data in
+//....
+}, failure: { error in
+//...
+})
+```
+
+
 ### Authorize with OAuth2.0
 ```swift
 oauthswift = OAuth2Swift(
