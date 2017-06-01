@@ -222,7 +222,7 @@ open class OAuth2Swift: OAuthSwift {
             return self.client.postMultiPartRequest(accessTokenUrl, method: .POST, parameters: parameters, headers: headers, checkTokenExpiration: false, success: successHandler, failure: failure)
         } else {
             // special headers
-            var finalHeaders: OAuthSwift.Headers? = nil
+            var finalHeaders: OAuthSwift.Headers? = headers
             if accessTokenBasicAuthentification {
 
                 let authentification = "\(self.consumerKey):\(self.consumerSecret)".data(using: String.Encoding.utf8)
