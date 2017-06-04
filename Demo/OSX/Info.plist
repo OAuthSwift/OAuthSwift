@@ -47,6 +47,16 @@
         <true/>
         <key>NSAllowsArbitraryLoadsInWebContent</key>
         <true/>
+        <key>NSExceptionDomains</key>
+        <dict>
+            <key>api.thenounproject.com</key>
+            <dict>
+                <key>NSIncludesSubdomains</key>
+                <true/>
+                <key>NSThirdPartyExceptionAllowsInsecureHTTPLoads</key>
+                <true/>
+            </dict>
+        </dict>
     </dict>
 </dict>
 </plist>

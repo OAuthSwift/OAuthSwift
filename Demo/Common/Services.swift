@@ -54,7 +54,7 @@ class Services {
     }
 
     var keys: [String] {
-        return Array(self.parameters.keys)
+        return Array(self.parameters.keys).sorted()
     }
 }
 

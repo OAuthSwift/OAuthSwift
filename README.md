@@ -86,33 +86,38 @@ oauthswift = OAuth1Swift(
     authorizeUrl:    "https://api.twitter.com/oauth/authorize",
     accessTokenUrl:  "https://api.twitter.com/oauth/access_token"
 )
+// authorize
 let handle = oauthswift.authorize(
     withCallbackURL: URL(string: "oauth-swift://oauth-callback/twitter")!,
     success: { credential, response, parameters in
       print(credential.oauthToken)
       print(credential.oauthTokenSecret)
       print(parameters["user_id"])
+      // Do your request
     },
     failure: { error in
       print(error.localizedDescription)
     }             
 )
 ```
-
-### Request example with OAuth1.0a
+### OAuth1 without authorization
+No urls to specify here
 ```swift
 // create an instance and retain it
 oauthswift = OAuth1Swift(
-consumerKey:    "********",
-consumerSecret: "********")
-
-oauthswift.client.get("http://api.example.com/foo/bar", success: { data in
-//....
-}, failure: { error in
-//...
-})
+    consumerKey:    "********",
+    consumerSecret: "********"
+)
+// do your HTTP request without authorize
+oauthswift.client.get("https://api.example.com/foo/bar",
+    success: { response in
+        //....
+    },
+    failure: { error in
+        //...
+    }
+)
 ```
-
 
 ### Authorize with OAuth2.0
 ```swift
@@ -127,6 +132,7 @@ let handle = oauthswift.authorize(
     scope: "likes+comments", state:"INSTAGRAM",
     success: { credential, response, parameters in
       print(credential.oauthToken)
+      // Do your request
     },
     failure: { error in
       print(error.localizedDescription)
@@ -165,6 +171,8 @@ oauthswift.authorizeURLHandler = SafariURLHandler(viewController: self, oauthSwi
 Of course you can create your own class or customize the controller by setting the variable `SafariURLHandler#factory`.
 
 ### Make signed request
+
+Just call HTTP functions of `oauthswift.client`
 
 ```swift
 oauthswift.client.get("https://api.linkedin.com/v1/people/~",
@@ -214,6 +222,7 @@ See more examples in the demo application: [ViewController.swift](/Demo/Common/V
 * [Typetalk](http://developer.nulab-inc.com/docs/typetalk/auth)
 * [SoundCloud](https://developers.soundcloud.com/docs/api/guide#authentication)
 * [Digu](https://digu.io/developer/oauth)
+* [NounProject](http://api.thenounproject.com/getting_started.html#authentication)
 
 ## Images
 

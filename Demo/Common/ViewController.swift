@@ -161,10 +161,12 @@ extension ViewController {
             doOAuthTypetalk(parameters)
         case "SoundCloud":
             doOAuthSoundCloud(parameters)
-        case "Wordpress" :
+        case "Wordpress":
             doOAuthWordpress(parameters)
-        case "Digu" :
+        case "Digu":
             doOAuthDigu(parameters)
+        case "Noun":
+            doOAuthNoun(parameters)
         default:
             print("\(service) not implemented")
         }
@@ -246,7 +248,7 @@ extension ViewController {
             "https://api.twitter.com/1.1/statuses/mentions_timeline.json", parameters: [:],
             success: { response in
                 let jsonDict = try? response.jsonObject()
-                print(jsonDict as Any)
+                print(jsonDict)
             }, failure: { error in
                 print(error)
             }
@@ -1208,6 +1210,7 @@ extension ViewController {
         )
     }
     
+    // MARK: Wordpress
     func doOAuthWordpress(_ serviceParameters: [String:String]) {
         let wordpressURL = serviceParameters["url"] ?? "http://localhost/wordpress"
         let oauthswift = OAuth1Swift(
@@ -1256,6 +1259,30 @@ extension ViewController {
                     print(error.description)
             }
         )
+    }
+
+    // MARK: Noun
+    func doOAuthNoun(_ serviceParameters: [String:String]) {
+        let oauthswift = OAuth1Swift(
+            consumerKey:        serviceParameters["consumerKey"]!,
+            consumerSecret:     serviceParameters["consumerSecret"]!,
+            requestTokenUrl:    "",
+            authorizeUrl:       "",
+            accessTokenUrl: ""
+        )
+        self.oauthswift = oauthswift
+        
+        self.testNoun(oauthswift)
+    }
+
+    func testNoun(_ oauthswift: OAuth1Swift) {
+        let _ = oauthswift.client.get("http://api.thenounproject.com/icon/apple",
+           success: { response in
+             let dataJSON = try? response.jsonObject()
+            print(String(describing: dataJSON))
+        }, failure: { error in
+            print(error)
+        })
     }
 
 }
