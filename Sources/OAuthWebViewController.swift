@@ -49,7 +49,7 @@ open class OAuthWebViewController: OAuthViewController, OAuthSwiftURLHandlerType
 
     // If you want you could set animation transition to NO
     public var presentViewControllerAnimated = true
-    
+
     public var topViewController: UIViewController? {
         #if !OAUTH_APP_EXTENSIONS
             return UIApplication.topViewController

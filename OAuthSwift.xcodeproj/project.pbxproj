@@ -711,6 +711,7 @@
 				F43502761A6791B200038A29 /* Frameworks */,
 				F43502771A6791B200038A29 /* Headers */,
 				F43502781A6791B200038A29 /* Resources */,
+				C41824251EE4079C00C5D0A3 /* swiftlint */,
 			);
 			buildRules = (
 				F4E9A4D81A67940200B4F3C8 /* PBXBuildRule */,
@@ -749,7 +750,7 @@
 			attributes = {
 				LastSwiftMigration = 0700;
 				LastSwiftUpdateCheck = 0710;
-				LastUpgradeCheck = 0820;
+				LastUpgradeCheck = 0830;
 				ORGANIZATIONNAME = "Dongri Jin";
 				TargetAttributes = {
 					C40890BF1C11B37000E3146A = {
@@ -897,6 +898,20 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-OAuthSwiftTests/Pods-OAuthSwiftTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		C41824251EE4079C00C5D0A3 /* swiftlint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = swiftlint;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which swiftlint >/dev/null; then\nswiftlint\nelse\necho \"SwiftLint does not exist, download from https://github.com/realm/SwiftLint\"\nfi";
 		};
 		C4CD121A1E5753880040620A /* swiftlint */ = {
 			isa = PBXShellScriptBuildPhase;

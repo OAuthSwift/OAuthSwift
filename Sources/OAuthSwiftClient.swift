@@ -77,7 +77,7 @@ open class OAuthSwiftClient: NSObject {
             return nil
         }
 
-        guard let _ = URL(string: urlString) else {
+        guard URL(string: urlString) != nil else {
             failure?(OAuthSwiftError.encodingError(urlString: urlString))
             return nil
         }

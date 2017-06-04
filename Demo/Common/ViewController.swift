@@ -248,7 +248,7 @@ extension ViewController {
             "https://api.twitter.com/1.1/statuses/mentions_timeline.json", parameters: [:],
             success: { response in
                 let jsonDict = try? response.jsonObject()
-                print(jsonDict)
+                print(String(describing: jsonDict))
             }, failure: { error in
                 print(error)
             }
@@ -727,7 +727,7 @@ extension ViewController {
                     "https://www.googleapis.com/upload/drive/v2/files", parameters: parameters, image: self.snapshot(),
                     success: { response in
                         let jsonDict = try? response.jsonObject()
-                        print("SUCCESS: \(jsonDict)")
+                        print("SUCCESS: \(String(describing: jsonDict))")
                     },
                     failure: { error in
                         print(error)

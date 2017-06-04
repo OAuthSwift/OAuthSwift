@@ -16,7 +16,7 @@ open class OAuth2Swift: OAuthSwift {
 
     // Set to true to deactivate state check. Be careful of CSRF
     open var allowMissingStateCheck: Bool = false
-    
+
     // Encode callback url. Default false
     // issue #339, pr ##325
     open var encodeCallbackURL: Bool = false
@@ -256,7 +256,7 @@ open class OAuth2Swift: OAuthSwift {
             switch error {
 
             case OAuthSwiftError.tokenExpired:
-                let _ = self.renewAccessToken(withRefreshToken: self.client.credential.oauthRefreshToken, headers: headers, success: { (credential, _, _) in // Ommit response parameters so they don't override the original ones
+                _ = self.renewAccessToken(withRefreshToken: self.client.credential.oauthRefreshToken, headers: headers, success: { (credential, _, _) in // Ommit response parameters so they don't override the original ones
                     // We have successfully renewed the access token.
 
                     // If provided, fire the onRenewal closure
@@ -265,7 +265,7 @@ open class OAuth2Swift: OAuthSwift {
                     }
 
                     // Reauthorize the request again, this time with a brand new access token ready to be used.
-                   let _ = self.startAuthorizedRequest(url, method: method, parameters: parameters, headers: headers, onTokenRenewal: onTokenRenewal, success: success, failure: failure)
+                   _ = self.startAuthorizedRequest(url, method: method, parameters: parameters, headers: headers, onTokenRenewal: onTokenRenewal, success: success, failure: failure)
                     }, failure: failure)
             default:
                 failure(error)
@@ -283,7 +283,7 @@ open class OAuth2Swift: OAuthSwift {
 
         return requestOAuthAccessToken(
             withParameters: parameters,
-            success: { (credential, _, parameters) in
+            success: { (credential, _, _) in
                 success(credential)
             }, failure: failure
         )
