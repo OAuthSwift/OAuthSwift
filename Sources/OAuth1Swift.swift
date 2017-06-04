@@ -10,9 +10,12 @@ import Foundation
 
 open class OAuth1Swift: OAuthSwift {
 
-    // If your oauth provider doesn't provide `oauth_verifier`
+    /// If your oauth provider doesn't provide `oauth_verifier`
     // set this value to true (default: false)
     open var allowMissingOAuthVerifier: Bool = false
+
+    /// Optionally add callback URL to authorize Url (default: false)
+    open var addCallbackURLToAuthorizeURL: Bool = false
 
     var consumerKey: String
     var consumerSecret: String
@@ -93,12 +96,21 @@ open class OAuth1Swift: OAuthSwift {
                 }
             }
             // 2. Authorize
-            let urlString = self.authorizeUrl + (self.authorizeUrl.contains("?") ? "&" : "?")
-            if let token = credential.oauthToken.urlQueryEncoded, let queryURL = URL(string: urlString + "oauth_token=\(token)") {
-                self.authorizeURLHandler.handle(queryURL)
+            if let token = credential.oauthToken.urlQueryEncoded {
+                var urlString = self.authorizeUrl + (self.authorizeUrl.contains("?") ? "&" : "?")
+                urlString += "oauth_token=\(token)"
+                if self.addCallbackURLToAuthorizeURL {
+                    urlString += "&oauth_callback=\(callbackURL.absoluteString)"
+                }
+                if let queryURL = URL(string: urlString) {
+                    self.authorizeURLHandler.handle(queryURL)
+                } else {
+                    failure?(OAuthSwiftError.encodingError(urlString: urlString))
+                }
             } else {
-                failure?(OAuthSwiftError.encodingError(urlString: urlString))
+                failure?(OAuthSwiftError.encodingError(urlString: credential.oauthToken)) //TODO specific error
             }
+
         }, failure: failure)
 
         return self
