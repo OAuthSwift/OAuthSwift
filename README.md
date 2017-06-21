@@ -205,7 +205,7 @@ See more examples in the demo application: [ViewController.swift](/Demo/Common/V
 * [Dropbox](https://www.dropbox.com/developers/core/docs)  
 * [Dribbble](http://developer.dribbble.com/v1/oauth/)
 * [Salesforce](https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/)
-* [BitBucket](https://confluence.atlassian.com/display/BITBUCKET/OAuth+on+Bitbucket)
+* [BitBucket](https://confluence.atlassian.com/bitbucket/oauth-on-bitbucket-cloud-238027431.html)
 * [GoogleDrive](https://developers.google.com/drive/v2/reference/)
 * [Smugmug](https://smugmug.atlassian.net/wiki/display/API/OAuth)
 * [Intuit](https://developer.intuit.com/docs/0100_accounting/0060_authentication_and_authorization/oauth_management_api)
@@ -241,7 +241,7 @@ OAuthSwift could be used with others frameworks
 
 You can sign [Alamofire](https://github.com/Alamofire/Alamofire) request with [OAuthSwiftAlamofire](https://github.com/OAuthSwift/OAuthSwiftAlamofire)
 
-To achieve great asynchronous code you can use one of this integration frameworks
+To achieve great asynchronous code you can use one of these integration frameworks
 - [OAuthSwiftFutures](https://github.com/OAuthSwift/OAuthSwiftFutures) - [BrightFutures](https://github.com/Thomvis/BrightFutures)
 - [OAuthRxSwift](https://github.com/OAuthSwift/OAuthRxSwift) - [RxSwift](https://github.com/ReactiveX/RxSwift)
 - [OAuthReactiveSwift](https://github.com/OAuthSwift/OAuthReactiveSwift) - [ReactiveSwift](https://github.com/ReactiveCocoa/ReactiveSwift)
