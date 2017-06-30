@@ -70,11 +70,11 @@ import SafariServices
         // init
         public init(viewController: UIViewController, oauthSwift: OAuthSwift) {
             self.oauthSwift = oauthSwift
-            self.present = { controller, handler in
-                viewController.present(controller, animated: handler.animated, completion: handler.presentCompletion)
+            self.present = { [weak viewController] controller, handler in
+                viewController?.present(controller, animated: handler.animated, completion: handler.presentCompletion)
             }
-            self.dismiss = { controller, handler in
-                viewController.dismiss(animated: handler.animated, completion: handler.dismissCompletion)
+            self.dismiss = { [weak viewController] _, handler in
+                viewController?.dismiss(animated: handler.animated, completion: handler.dismissCompletion)
             }
         }
 
