@@ -4,7 +4,7 @@
 
 # OAuthSwift
 
-Swift based OAuth library for iOS and OSX.
+Swift based OAuth library for iOS and macOS.
 
 ## Support OAuth1.0, OAuth2.0
 
@@ -64,7 +64,7 @@ if (options[.sourceApplication] as? String == "com.apple.SafariViewService") {
 ```swift
 func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
 ```
-- On OSX you must register an handler on `NSAppleEventManager` for event type `kAEGetURL` (see demo code)
+- On macOS you must register an handler on `NSAppleEventManager` for event type `kAEGetURL` (see demo code)
 ```swift
 func applicationDidFinishLaunching(_ aNotification: NSNotification) {
     NSAppleEventManager.shared().setEventHandler(self, andSelector:#selector(AppDelegate.handleGetURL(event:withReplyEvent:)), forEventClass: AEEventClass(kInternetEventClass), andEventID: AEEventID(kAEGetURL))
