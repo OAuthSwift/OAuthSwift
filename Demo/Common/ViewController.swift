@@ -10,6 +10,7 @@ import OAuthSwift
 
 #if os(iOS)
     import UIKit
+    import SafariServices
 #elseif os(OSX)
     import AppKit
 #endif
@@ -716,6 +717,7 @@ extension ViewController {
         // For googgle the redirect_uri should match your this syntax: your.bundle.id:/oauth2Callback
         self.oauthswift = oauthswift
         oauthswift.authorizeURLHandler = getURLHandler()
+        oauthswift.allowMissingStateCheck = true
         // in plist define a url schem with: your.bundle.id:
         let _ = oauthswift.authorize(
             withCallbackURL: URL(string: "https://oauthswift.herokuapp.com/callback/google")!, scope: "https://www.googleapis.com/auth/drive", state: "",
@@ -1434,6 +1436,15 @@ extension ViewController {
                     handler.dismissCompletion = {
                         print("Safari dismissed")
                     }
+                    handler.factory = { url in
+                        let controller = SFSafariViewController(url: url)
+                        // Customize it, for instance
+                        if #available(iOS 10.0, *) {
+                           //  controller.preferredBarTintColor = UIColor.red
+                        }
+                        return controller
+                    }
+                    
                     return handler
                 }
             #endif
