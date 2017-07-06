@@ -15,7 +15,7 @@ open class OAuthSwift: NSObject, OAuthSwiftRequestHandle {
     // Client to make signed request
     open var client: OAuthSwiftClient
     // Version of the protocol
-    open var version: OAuthSwiftCredential.Version { return self.client.credential.version }
+    open var version: OAuthSwiftVersion { return self.client.credential.version }
 
     // Handle the authorize url into a web view or browser
     open var authorizeURLHandler: OAuthSwiftURLHandlerType = OAuthSwiftOpenURLExternally.sharedInstance
@@ -23,8 +23,8 @@ open class OAuthSwift: NSObject, OAuthSwiftRequestHandle {
     fileprivate var currentRequests: [String: OAuthSwiftRequestHandle] = [:]
 
     // MARK: init
-    init(consumerKey: String, consumerSecret: String) {
-        self.client = OAuthSwiftClient(consumerKey: consumerKey, consumerSecret: consumerSecret)
+    init(consumerKey: String, consumerSecret: String, credential: OAuthSwiftCredential) {
+        self.client = OAuthSwiftClient(consumerKey: consumerKey, consumerSecret: consumerSecret, credential: credential)
     }
 
     // MARK: callback notification
