@@ -8,6 +8,50 @@
 
 /* Begin PBXBuildFile section */
 		0738BC6B1EBA755C000FA2F2 /* OAuthSwiftCredentialTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0738BC6A1EBA755C000FA2F2 /* OAuthSwiftCredentialTests.swift */; };
+		5F4C09701EFACCB60013CFF0 /* OAuthSwiftCredential.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4C096F1EFACCB60013CFF0 /* OAuthSwiftCredential.swift */; };
+		5F4C09721EFAF2800013CFF0 /* BaseOAuthSwiftCredential.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4C09711EFAF2800013CFF0 /* BaseOAuthSwiftCredential.swift */; };
+		5F4C09781EFC19150013CFF0 /* OAuthSwiftSignatureMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4C09771EFC19150013CFF0 /* OAuthSwiftSignatureMethod.swift */; };
+		5F4C097A1EFC19580013CFF0 /* OAuthSwiftVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4C09791EFC19580013CFF0 /* OAuthSwiftVersion.swift */; };
+		5F4C097D1EFC1C8E0013CFF0 /* BaseOAuthSwiftSignatureMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4C097C1EFC1C8E0013CFF0 /* BaseOAuthSwiftSignatureMethod.swift */; };
+		5F4C097F1EFC1D150013CFF0 /* BaseOAuthSwiftVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4C097E1EFC1D150013CFF0 /* BaseOAuthSwiftVersion.swift */; };
+		5F4C09801EFC24780013CFF0 /* BaseOAuthSwiftCredential.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4C09711EFAF2800013CFF0 /* BaseOAuthSwiftCredential.swift */; };
+		5F4C09811EFC24790013CFF0 /* BaseOAuthSwiftCredential.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4C09711EFAF2800013CFF0 /* BaseOAuthSwiftCredential.swift */; };
+		5F4C09821EFC247A0013CFF0 /* BaseOAuthSwiftCredential.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4C09711EFAF2800013CFF0 /* BaseOAuthSwiftCredential.swift */; };
+		5F4C09831EFC247E0013CFF0 /* BaseOAuthSwiftSignatureMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4C097C1EFC1C8E0013CFF0 /* BaseOAuthSwiftSignatureMethod.swift */; };
+		5F4C09841EFC247E0013CFF0 /* BaseOAuthSwiftSignatureMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4C097C1EFC1C8E0013CFF0 /* BaseOAuthSwiftSignatureMethod.swift */; };
+		5F4C09851EFC247F0013CFF0 /* BaseOAuthSwiftSignatureMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4C097C1EFC1C8E0013CFF0 /* BaseOAuthSwiftSignatureMethod.swift */; };
+		5F4C09861EFC24820013CFF0 /* BaseOAuthSwiftVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4C097E1EFC1D150013CFF0 /* BaseOAuthSwiftVersion.swift */; };
+		5F4C09871EFC24820013CFF0 /* BaseOAuthSwiftVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4C097E1EFC1D150013CFF0 /* BaseOAuthSwiftVersion.swift */; };
+		5F4C09881EFC24820013CFF0 /* BaseOAuthSwiftVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4C097E1EFC1D150013CFF0 /* BaseOAuthSwiftVersion.swift */; };
+		5F4C09891EFC24860013CFF0 /* OAuthSwiftCredential.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4C096F1EFACCB60013CFF0 /* OAuthSwiftCredential.swift */; };
+		5F4C098A1EFC24870013CFF0 /* OAuthSwiftCredential.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4C096F1EFACCB60013CFF0 /* OAuthSwiftCredential.swift */; };
+		5F4C098B1EFC24870013CFF0 /* OAuthSwiftCredential.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4C096F1EFACCB60013CFF0 /* OAuthSwiftCredential.swift */; };
+		5F4C098C1EFC248A0013CFF0 /* OAuthSwiftSignatureMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4C09771EFC19150013CFF0 /* OAuthSwiftSignatureMethod.swift */; };
+		5F4C098D1EFC248B0013CFF0 /* OAuthSwiftSignatureMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4C09771EFC19150013CFF0 /* OAuthSwiftSignatureMethod.swift */; };
+		5F4C098E1EFC248C0013CFF0 /* OAuthSwiftSignatureMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4C09771EFC19150013CFF0 /* OAuthSwiftSignatureMethod.swift */; };
+		5F4C098F1EFC248F0013CFF0 /* OAuthSwiftVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4C09791EFC19580013CFF0 /* OAuthSwiftVersion.swift */; };
+		5F4C09901EFC24900013CFF0 /* OAuthSwiftVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4C09791EFC19580013CFF0 /* OAuthSwiftVersion.swift */; };
+		5F4C09911EFC24900013CFF0 /* OAuthSwiftVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4C09791EFC19580013CFF0 /* OAuthSwiftVersion.swift */; };
+		5F4C09941EFC331F0013CFF0 /* OAuth1SwiftCredential.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4C09931EFC331F0013CFF0 /* OAuth1SwiftCredential.swift */; };
+		5F4C09961EFC33460013CFF0 /* OAuth2SwiftCredential.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4C09951EFC33460013CFF0 /* OAuth2SwiftCredential.swift */; };
+		5F4C09971EFC33460013CFF0 /* OAuth2SwiftCredential.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4C09951EFC33460013CFF0 /* OAuth2SwiftCredential.swift */; };
+		5F4C09981EFC33460013CFF0 /* OAuth2SwiftCredential.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4C09951EFC33460013CFF0 /* OAuth2SwiftCredential.swift */; };
+		5F4C09991EFC33460013CFF0 /* OAuth2SwiftCredential.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4C09951EFC33460013CFF0 /* OAuth2SwiftCredential.swift */; };
+		5F4C099A1EFC33540013CFF0 /* OAuth1SwiftCredential.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4C09931EFC331F0013CFF0 /* OAuth1SwiftCredential.swift */; };
+		5F4C099B1EFC33550013CFF0 /* OAuth1SwiftCredential.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4C09931EFC331F0013CFF0 /* OAuth1SwiftCredential.swift */; };
+		5F4C099C1EFC33550013CFF0 /* OAuth1SwiftCredential.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4C09931EFC331F0013CFF0 /* OAuth1SwiftCredential.swift */; };
+		5F4C099E1EFC336A0013CFF0 /* HMAC_SHA1SignatureMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4C099D1EFC336A0013CFF0 /* HMAC_SHA1SignatureMethod.swift */; };
+		5F4C099F1EFC336A0013CFF0 /* HMAC_SHA1SignatureMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4C099D1EFC336A0013CFF0 /* HMAC_SHA1SignatureMethod.swift */; };
+		5F4C09A01EFC336A0013CFF0 /* HMAC_SHA1SignatureMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4C099D1EFC336A0013CFF0 /* HMAC_SHA1SignatureMethod.swift */; };
+		5F4C09A11EFC336A0013CFF0 /* HMAC_SHA1SignatureMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4C099D1EFC336A0013CFF0 /* HMAC_SHA1SignatureMethod.swift */; };
+		5F4C09A31EFC33870013CFF0 /* OAuth1Version.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4C09A21EFC33870013CFF0 /* OAuth1Version.swift */; };
+		5F4C09A41EFC33870013CFF0 /* OAuth1Version.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4C09A21EFC33870013CFF0 /* OAuth1Version.swift */; };
+		5F4C09A51EFC33870013CFF0 /* OAuth1Version.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4C09A21EFC33870013CFF0 /* OAuth1Version.swift */; };
+		5F4C09A61EFC33870013CFF0 /* OAuth1Version.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4C09A21EFC33870013CFF0 /* OAuth1Version.swift */; };
+		5F4C09A81EFC339F0013CFF0 /* OAuth2Version.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4C09A71EFC339F0013CFF0 /* OAuth2Version.swift */; };
+		5F4C09A91EFC339F0013CFF0 /* OAuth2Version.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4C09A71EFC339F0013CFF0 /* OAuth2Version.swift */; };
+		5F4C09AA1EFC339F0013CFF0 /* OAuth2Version.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4C09A71EFC339F0013CFF0 /* OAuth2Version.swift */; };
+		5F4C09AB1EFC339F0013CFF0 /* OAuth2Version.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4C09A71EFC339F0013CFF0 /* OAuth2Version.swift */; };
 		6053EF6F1E93821400EB28B3 /* NotificationCenter+OAuthSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6053EF6E1E93821400EB28B3 /* NotificationCenter+OAuthSwift.swift */; };
 		6053EF701E93832400EB28B3 /* NotificationCenter+OAuthSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6053EF6E1E93821400EB28B3 /* NotificationCenter+OAuthSwift.swift */; };
 		6053EF711E93832500EB28B3 /* NotificationCenter+OAuthSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6053EF6E1E93821400EB28B3 /* NotificationCenter+OAuthSwift.swift */; };
@@ -17,7 +61,6 @@
 		C40890C81C11B38000E3146A /* OAuth1Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = F43502681A6790EC00038A29 /* OAuth1Swift.swift */; };
 		C40890C91C11B38000E3146A /* OAuth2Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = F43502691A6790EC00038A29 /* OAuth2Swift.swift */; };
 		C40890CA1C11B38000E3146A /* OAuthSwiftClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = F435026A1A6790EC00038A29 /* OAuthSwiftClient.swift */; };
-		C40890CB1C11B38000E3146A /* OAuthSwiftCredential.swift in Sources */ = {isa = PBXBuildFile; fileRef = F435026B1A6790EC00038A29 /* OAuthSwiftCredential.swift */; };
 		C40890CC1C11B38000E3146A /* OAuthSwiftHTTPRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = F435026C1A6790EC00038A29 /* OAuthSwiftHTTPRequest.swift */; };
 		C40890CD1C11B38000E3146A /* OAuthSwiftURLHandlerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C49624711B00F54A0010BD09 /* OAuthSwiftURLHandlerType.swift */; };
 		C40890CE1C11B38000E3146A /* OAuthWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C496246E1B00D6C30010BD09 /* OAuthWebViewController.swift */; };
@@ -60,7 +103,6 @@
 		C48B28211AFA599400C7DEF6 /* OAuth1Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = F43502681A6790EC00038A29 /* OAuth1Swift.swift */; };
 		C48B28221AFA599700C7DEF6 /* OAuth2Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = F43502691A6790EC00038A29 /* OAuth2Swift.swift */; };
 		C48B28231AFA599A00C7DEF6 /* OAuthSwiftClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = F435026A1A6790EC00038A29 /* OAuthSwiftClient.swift */; };
-		C48B28241AFA599A00C7DEF6 /* OAuthSwiftCredential.swift in Sources */ = {isa = PBXBuildFile; fileRef = F435026B1A6790EC00038A29 /* OAuthSwiftCredential.swift */; };
 		C48B28251AFA599A00C7DEF6 /* OAuthSwiftHTTPRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = F435026C1A6790EC00038A29 /* OAuthSwiftHTTPRequest.swift */; };
 		C48B28261AFA599A00C7DEF6 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = F47599AE1A78FFAF004A96C1 /* Utils.swift */; };
 		C48B28271AFA599A00C7DEF6 /* SHA1.swift in Sources */ = {isa = PBXBuildFile; fileRef = F47599AC1A78FF23004A96C1 /* SHA1.swift */; };
@@ -80,7 +122,6 @@
 		C4B6EE261BF74CF400443596 /* OAuth1Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = F43502681A6790EC00038A29 /* OAuth1Swift.swift */; };
 		C4B6EE271BF74CF400443596 /* OAuth2Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = F43502691A6790EC00038A29 /* OAuth2Swift.swift */; };
 		C4B6EE281BF74CF400443596 /* OAuthSwiftClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = F435026A1A6790EC00038A29 /* OAuthSwiftClient.swift */; };
-		C4B6EE291BF74CF400443596 /* OAuthSwiftCredential.swift in Sources */ = {isa = PBXBuildFile; fileRef = F435026B1A6790EC00038A29 /* OAuthSwiftCredential.swift */; };
 		C4B6EE2A1BF74CF400443596 /* OAuthSwiftHTTPRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = F435026C1A6790EC00038A29 /* OAuthSwiftHTTPRequest.swift */; };
 		C4B6EE2B1BF74CF400443596 /* OAuthSwiftURLHandlerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C49624711B00F54A0010BD09 /* OAuthSwiftURLHandlerType.swift */; };
 		C4B6EE2C1BF74CF400443596 /* OAuthWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C496246E1B00D6C30010BD09 /* OAuthWebViewController.swift */; };
@@ -142,7 +183,6 @@
 		F4E9A4DC1A67944C00B4F3C8 /* OAuth1Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = F43502681A6790EC00038A29 /* OAuth1Swift.swift */; };
 		F4E9A4DD1A67944C00B4F3C8 /* OAuth2Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = F43502691A6790EC00038A29 /* OAuth2Swift.swift */; };
 		F4E9A4DE1A67944C00B4F3C8 /* OAuthSwiftClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = F435026A1A6790EC00038A29 /* OAuthSwiftClient.swift */; };
-		F4E9A4DF1A67944C00B4F3C8 /* OAuthSwiftCredential.swift in Sources */ = {isa = PBXBuildFile; fileRef = F435026B1A6790EC00038A29 /* OAuthSwiftCredential.swift */; };
 		F4E9A4E01A67944C00B4F3C8 /* OAuthSwiftHTTPRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = F435026C1A6790EC00038A29 /* OAuthSwiftHTTPRequest.swift */; };
 		F4E9A8011B08635E0003988B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F451E3E4195B8D030051434C /* Images.xcassets */; };
 /* End PBXBuildFile section */
@@ -200,6 +240,17 @@
 /* Begin PBXFileReference section */
 		0738BC6A1EBA755C000FA2F2 /* OAuthSwiftCredentialTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OAuthSwiftCredentialTests.swift; sourceTree = "<group>"; };
 		0ED45F76F07F16FB6FF639B7 /* Pods_OAuthSwiftTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_OAuthSwiftTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5F4C096F1EFACCB60013CFF0 /* OAuthSwiftCredential.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthSwiftCredential.swift; sourceTree = "<group>"; };
+		5F4C09711EFAF2800013CFF0 /* BaseOAuthSwiftCredential.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseOAuthSwiftCredential.swift; sourceTree = "<group>"; };
+		5F4C09771EFC19150013CFF0 /* OAuthSwiftSignatureMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthSwiftSignatureMethod.swift; sourceTree = "<group>"; };
+		5F4C09791EFC19580013CFF0 /* OAuthSwiftVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthSwiftVersion.swift; sourceTree = "<group>"; };
+		5F4C097C1EFC1C8E0013CFF0 /* BaseOAuthSwiftSignatureMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseOAuthSwiftSignatureMethod.swift; sourceTree = "<group>"; };
+		5F4C097E1EFC1D150013CFF0 /* BaseOAuthSwiftVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseOAuthSwiftVersion.swift; sourceTree = "<group>"; };
+		5F4C09931EFC331F0013CFF0 /* OAuth1SwiftCredential.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuth1SwiftCredential.swift; sourceTree = "<group>"; };
+		5F4C09951EFC33460013CFF0 /* OAuth2SwiftCredential.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuth2SwiftCredential.swift; sourceTree = "<group>"; };
+		5F4C099D1EFC336A0013CFF0 /* HMAC_SHA1SignatureMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HMAC_SHA1SignatureMethod.swift; sourceTree = "<group>"; };
+		5F4C09A21EFC33870013CFF0 /* OAuth1Version.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuth1Version.swift; sourceTree = "<group>"; };
+		5F4C09A71EFC339F0013CFF0 /* OAuth2Version.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuth2Version.swift; sourceTree = "<group>"; };
 		6053EF6E1E93821400EB28B3 /* NotificationCenter+OAuthSwift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NotificationCenter+OAuthSwift.swift"; sourceTree = "<group>"; };
 		674EB2AA3430160EBBAC72A1 /* Pods-OAuthSwiftTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OAuthSwiftTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-OAuthSwiftTests/Pods-OAuthSwiftTests.debug.xcconfig"; sourceTree = "<group>"; };
 		C40890C01C11B37000E3146A /* OAuthSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OAuthSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -250,7 +301,6 @@
 		F43502681A6790EC00038A29 /* OAuth1Swift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = OAuth1Swift.swift; sourceTree = "<group>"; };
 		F43502691A6790EC00038A29 /* OAuth2Swift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = OAuth2Swift.swift; sourceTree = "<group>"; };
 		F435026A1A6790EC00038A29 /* OAuthSwiftClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = OAuthSwiftClient.swift; sourceTree = "<group>"; };
-		F435026B1A6790EC00038A29 /* OAuthSwiftCredential.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = OAuthSwiftCredential.swift; sourceTree = "<group>"; };
 		F435026C1A6790EC00038A29 /* OAuthSwiftHTTPRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = OAuthSwiftHTTPRequest.swift; sourceTree = "<group>"; };
 		F435027A1A6791B200038A29 /* OAuthSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OAuthSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F435027D1A6791B200038A29 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; name = Info.plist; path = Xcode/iOS/Info.plist; sourceTree = "<group>"; };
@@ -338,6 +388,48 @@
 				0ED45F76F07F16FB6FF639B7 /* Pods_OAuthSwiftTests.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		5F4C09731EFB149C0013CFF0 /* Credential */ = {
+			isa = PBXGroup;
+			children = (
+				5F4C09921EFC33000013CFF0 /* Concrete Credential Classes */,
+				5F4C097B1EFC1A3D0013CFF0 /* Credential Base Classes */,
+				5F4C09761EFC18E00013CFF0 /* Credential Protocols */,
+			);
+			path = Credential;
+			sourceTree = "<group>";
+		};
+		5F4C09761EFC18E00013CFF0 /* Credential Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				5F4C096F1EFACCB60013CFF0 /* OAuthSwiftCredential.swift */,
+				5F4C09771EFC19150013CFF0 /* OAuthSwiftSignatureMethod.swift */,
+				5F4C09791EFC19580013CFF0 /* OAuthSwiftVersion.swift */,
+			);
+			path = "Credential Protocols";
+			sourceTree = "<group>";
+		};
+		5F4C097B1EFC1A3D0013CFF0 /* Credential Base Classes */ = {
+			isa = PBXGroup;
+			children = (
+				5F4C09711EFAF2800013CFF0 /* BaseOAuthSwiftCredential.swift */,
+				5F4C097C1EFC1C8E0013CFF0 /* BaseOAuthSwiftSignatureMethod.swift */,
+				5F4C097E1EFC1D150013CFF0 /* BaseOAuthSwiftVersion.swift */,
+			);
+			path = "Credential Base Classes";
+			sourceTree = "<group>";
+		};
+		5F4C09921EFC33000013CFF0 /* Concrete Credential Classes */ = {
+			isa = PBXGroup;
+			children = (
+				5F4C09931EFC331F0013CFF0 /* OAuth1SwiftCredential.swift */,
+				5F4C09951EFC33460013CFF0 /* OAuth2SwiftCredential.swift */,
+				5F4C099D1EFC336A0013CFF0 /* HMAC_SHA1SignatureMethod.swift */,
+				5F4C09A21EFC33870013CFF0 /* OAuth1Version.swift */,
+				5F4C09A71EFC339F0013CFF0 /* OAuth2Version.swift */,
+			);
+			path = "Concrete Credential Classes";
 			sourceTree = "<group>";
 		};
 		C40890C11C11B37000E3146A /* WatchOS */ = {
@@ -505,7 +597,7 @@
 				F43502681A6790EC00038A29 /* OAuth1Swift.swift */,
 				F43502691A6790EC00038A29 /* OAuth2Swift.swift */,
 				F435026A1A6790EC00038A29 /* OAuthSwiftClient.swift */,
-				F435026B1A6790EC00038A29 /* OAuthSwiftCredential.swift */,
+				5F4C09731EFB149C0013CFF0 /* Credential */,
 				F435026C1A6790EC00038A29 /* OAuthSwiftHTTPRequest.swift */,
 				C42349981DCCE5F600BD980F /* OAuthSwiftResponse.swift */,
 				C49624711B00F54A0010BD09 /* OAuthSwiftURLHandlerType.swift */,
@@ -954,22 +1046,32 @@
 				C40890C91C11B38000E3146A /* OAuth2Swift.swift in Sources */,
 				C423499C1DCCE5F600BD980F /* OAuthSwiftResponse.swift in Sources */,
 				C40890CC1C11B38000E3146A /* OAuthSwiftHTTPRequest.swift in Sources */,
+				5F4C099C1EFC33550013CFF0 /* OAuth1SwiftCredential.swift in Sources */,
+				5F4C09991EFC33460013CFF0 /* OAuth2SwiftCredential.swift in Sources */,
+				5F4C09AB1EFC339F0013CFF0 /* OAuth2Version.swift in Sources */,
 				C40890D31C11B38700E3146A /* URL+OAuthSwift.swift in Sources */,
 				C40890C81C11B38000E3146A /* OAuth1Swift.swift in Sources */,
 				6053EF721E93832600EB28B3 /* NotificationCenter+OAuthSwift.swift in Sources */,
-				C40890CB1C11B38000E3146A /* OAuthSwiftCredential.swift in Sources */,
 				C40890D21C11B38700E3146A /* Dictionary+OAuthSwift.swift in Sources */,
+				5F4C09A11EFC336A0013CFF0 /* HMAC_SHA1SignatureMethod.swift in Sources */,
 				C40890CD1C11B38000E3146A /* OAuthSwiftURLHandlerType.swift in Sources */,
 				C40890D01C11B38000E3146A /* SHA1.swift in Sources */,
 				C40890D41C11B38700E3146A /* String+OAuthSwift.swift in Sources */,
+				5F4C09881EFC24820013CFF0 /* BaseOAuthSwiftVersion.swift in Sources */,
+				5F4C098B1EFC24870013CFF0 /* OAuthSwiftCredential.swift in Sources */,
 				C40890DB1C11D48300E3146A /* OAuthSwift.swift in Sources */,
 				C4328F671DA1958D00847FA3 /* OAuthSwiftError.swift in Sources */,
 				C40890D11C11B38000E3146A /* HMAC.swift in Sources */,
 				C40890CA1C11B38000E3146A /* OAuthSwiftClient.swift in Sources */,
 				C40890CE1C11B38000E3146A /* OAuthWebViewController.swift in Sources */,
+				5F4C09851EFC247F0013CFF0 /* BaseOAuthSwiftSignatureMethod.swift in Sources */,
 				C40890D61C11B38700E3146A /* Int+OAuthSwift.swift in Sources */,
+				5F4C09A61EFC33870013CFF0 /* OAuth1Version.swift in Sources */,
 				C4E46C4F1D462D4B00BFCEF4 /* NSError+OAuthSwift.swift in Sources */,
+				5F4C09821EFC247A0013CFF0 /* BaseOAuthSwiftCredential.swift in Sources */,
+				5F4C098E1EFC248C0013CFF0 /* OAuthSwiftSignatureMethod.swift in Sources */,
 				C40890D51C11B38700E3146A /* Data+OAuthSwift.swift in Sources */,
+				5F4C09911EFC24900013CFF0 /* OAuthSwiftVersion.swift in Sources */,
 				C40890CF1C11B38000E3146A /* Utils.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -983,22 +1085,32 @@
 				C48B28221AFA599700C7DEF6 /* OAuth2Swift.swift in Sources */,
 				C423499A1DCCE5F600BD980F /* OAuthSwiftResponse.swift in Sources */,
 				C48B28251AFA599A00C7DEF6 /* OAuthSwiftHTTPRequest.swift in Sources */,
+				5F4C099A1EFC33540013CFF0 /* OAuth1SwiftCredential.swift in Sources */,
+				5F4C09971EFC33460013CFF0 /* OAuth2SwiftCredential.swift in Sources */,
+				5F4C09A91EFC339F0013CFF0 /* OAuth2Version.swift in Sources */,
 				C48B28211AFA599400C7DEF6 /* OAuth1Swift.swift in Sources */,
 				C48B282B1AFA599A00C7DEF6 /* String+OAuthSwift.swift in Sources */,
 				6053EF701E93832400EB28B3 /* NotificationCenter+OAuthSwift.swift in Sources */,
 				C49624731B00F54A0010BD09 /* OAuthSwiftURLHandlerType.swift in Sources */,
-				C48B28241AFA599A00C7DEF6 /* OAuthSwiftCredential.swift in Sources */,
+				5F4C099F1EFC336A0013CFF0 /* HMAC_SHA1SignatureMethod.swift in Sources */,
 				C48B282A1AFA599A00C7DEF6 /* URL+OAuthSwift.swift in Sources */,
 				C48B282C1AFA599A00C7DEF6 /* Data+OAuthSwift.swift in Sources */,
 				C48B28271AFA599A00C7DEF6 /* SHA1.swift in Sources */,
+				5F4C09861EFC24820013CFF0 /* BaseOAuthSwiftVersion.swift in Sources */,
+				5F4C09891EFC24860013CFF0 /* OAuthSwiftCredential.swift in Sources */,
 				C40890D91C11D48300E3146A /* OAuthSwift.swift in Sources */,
 				C4328F651DA1958D00847FA3 /* OAuthSwiftError.swift in Sources */,
 				C48B28231AFA599A00C7DEF6 /* OAuthSwiftClient.swift in Sources */,
 				C48B28281AFA599A00C7DEF6 /* HMAC.swift in Sources */,
 				C48B282D1AFA599C00C7DEF6 /* Int+OAuthSwift.swift in Sources */,
+				5F4C09831EFC247E0013CFF0 /* BaseOAuthSwiftSignatureMethod.swift in Sources */,
 				C48B28261AFA599A00C7DEF6 /* Utils.swift in Sources */,
+				5F4C09A41EFC33870013CFF0 /* OAuth1Version.swift in Sources */,
 				C4E46C4D1D462D4B00BFCEF4 /* NSError+OAuthSwift.swift in Sources */,
+				5F4C09801EFC24780013CFF0 /* BaseOAuthSwiftCredential.swift in Sources */,
+				5F4C098C1EFC248A0013CFF0 /* OAuthSwiftSignatureMethod.swift in Sources */,
 				C48B28291AFA599A00C7DEF6 /* Dictionary+OAuthSwift.swift in Sources */,
+				5F4C098F1EFC248F0013CFF0 /* OAuthSwiftVersion.swift in Sources */,
 				C49624701B00D6C30010BD09 /* OAuthWebViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1022,13 +1134,19 @@
 			buildActionMask = 2147483647;
 			files = (
 				D20BBB771C2459CF00F2B012 /* OAuthSwiftMultipartData.swift in Sources */,
+				5F4C09A01EFC336A0013CFF0 /* HMAC_SHA1SignatureMethod.swift in Sources */,
+				5F4C09AA1EFC339F0013CFF0 /* OAuth2Version.swift in Sources */,
 				C4B6EE261BF74CF400443596 /* OAuth1Swift.swift in Sources */,
 				C4B6EE271BF74CF400443596 /* OAuth2Swift.swift in Sources */,
 				C4B6EE281BF74CF400443596 /* OAuthSwiftClient.swift in Sources */,
-				C4B6EE291BF74CF400443596 /* OAuthSwiftCredential.swift in Sources */,
+				5F4C098A1EFC24870013CFF0 /* OAuthSwiftCredential.swift in Sources */,
+				5F4C09A51EFC33870013CFF0 /* OAuth1Version.swift in Sources */,
 				C4B6EE2A1BF74CF400443596 /* OAuthSwiftHTTPRequest.swift in Sources */,
+				5F4C098D1EFC248B0013CFF0 /* OAuthSwiftSignatureMethod.swift in Sources */,
 				C4328F661DA1958D00847FA3 /* OAuthSwiftError.swift in Sources */,
+				5F4C099B1EFC33550013CFF0 /* OAuth1SwiftCredential.swift in Sources */,
 				C4B6EE2B1BF74CF400443596 /* OAuthSwiftURLHandlerType.swift in Sources */,
+				5F4C09841EFC247E0013CFF0 /* BaseOAuthSwiftSignatureMethod.swift in Sources */,
 				C4E46C4E1D462D4B00BFCEF4 /* NSError+OAuthSwift.swift in Sources */,
 				C4B6EE2C1BF74CF400443596 /* OAuthWebViewController.swift in Sources */,
 				C4B6EE2D1BF74CF400443596 /* Utils.swift in Sources */,
@@ -1041,7 +1159,11 @@
 				C4B6EE321BF74CF400443596 /* String+OAuthSwift.swift in Sources */,
 				C4B6EE331BF74CF400443596 /* Data+OAuthSwift.swift in Sources */,
 				C42D41BD1C1AD11600DEDF53 /* UIApplication+OAuthSwift.swift in Sources */,
+				5F4C09981EFC33460013CFF0 /* OAuth2SwiftCredential.swift in Sources */,
 				C4B6EE341BF74CF400443596 /* Int+OAuthSwift.swift in Sources */,
+				5F4C09811EFC24790013CFF0 /* BaseOAuthSwiftCredential.swift in Sources */,
+				5F4C09901EFC24900013CFF0 /* OAuthSwiftVersion.swift in Sources */,
+				5F4C09871EFC24820013CFF0 /* BaseOAuthSwiftVersion.swift in Sources */,
 				C4328F611DA158AD00847FA3 /* Collection+OAuthSwift.swift in Sources */,
 				6053EF711E93832500EB28B3 /* NotificationCenter+OAuthSwift.swift in Sources */,
 			);
@@ -1071,27 +1193,37 @@
 			buildActionMask = 2147483647;
 			files = (
 				F4E9A4DC1A67944C00B4F3C8 /* OAuth1Swift.swift in Sources */,
+				5F4C09A81EFC339F0013CFF0 /* OAuth2Version.swift in Sources */,
 				F4E9A4DD1A67944C00B4F3C8 /* OAuth2Swift.swift in Sources */,
+				5F4C09701EFACCB60013CFF0 /* OAuthSwiftCredential.swift in Sources */,
 				F47599B31A7901DF004A96C1 /* HMAC.swift in Sources */,
 				F4805E231A6BB5DD00F7677E /* String+OAuthSwift.swift in Sources */,
 				C49624721B00F54A0010BD09 /* OAuthSwiftURLHandlerType.swift in Sources */,
 				F4E9A4DE1A67944C00B4F3C8 /* OAuthSwiftClient.swift in Sources */,
+				5F4C09721EFAF2800013CFF0 /* BaseOAuthSwiftCredential.swift in Sources */,
 				C4328F641DA1958D00847FA3 /* OAuthSwiftError.swift in Sources */,
-				F4E9A4DF1A67944C00B4F3C8 /* OAuthSwiftCredential.swift in Sources */,
 				C4E46C4C1D462D4B00BFCEF4 /* NSError+OAuthSwift.swift in Sources */,
 				F47599AF1A78FFAF004A96C1 /* Utils.swift in Sources */,
 				D20BBB751C2454A900F2B012 /* OAuthSwiftMultipartData.swift in Sources */,
+				5F4C09A31EFC33870013CFF0 /* OAuth1Version.swift in Sources */,
 				C4F6FE7D1DCE3AC300C0B62A /* Objc.swift in Sources */,
 				F47599AD1A78FF23004A96C1 /* SHA1.swift in Sources */,
+				5F4C09941EFC331F0013CFF0 /* OAuth1SwiftCredential.swift in Sources */,
 				C40890D81C11D48300E3146A /* OAuthSwift.swift in Sources */,
 				F4805E221A6BB5DD00F7677E /* URL+OAuthSwift.swift in Sources */,
+				5F4C09961EFC33460013CFF0 /* OAuth2SwiftCredential.swift in Sources */,
 				6053EF6F1E93821400EB28B3 /* NotificationCenter+OAuthSwift.swift in Sources */,
+				5F4C097D1EFC1C8E0013CFF0 /* BaseOAuthSwiftSignatureMethod.swift in Sources */,
+				5F4C099E1EFC336A0013CFF0 /* HMAC_SHA1SignatureMethod.swift in Sources */,
 				F4E9A4E01A67944C00B4F3C8 /* OAuthSwiftHTTPRequest.swift in Sources */,
 				F47599B51A7903C9004A96C1 /* Int+OAuthSwift.swift in Sources */,
 				C42349991DCCE5F600BD980F /* OAuthSwiftResponse.swift in Sources */,
 				F4805E211A6BB5DD00F7677E /* Dictionary+OAuthSwift.swift in Sources */,
 				F47599B11A79001B004A96C1 /* Data+OAuthSwift.swift in Sources */,
 				C42D41BC1C1AD11600DEDF53 /* UIApplication+OAuthSwift.swift in Sources */,
+				5F4C097F1EFC1D150013CFF0 /* BaseOAuthSwiftVersion.swift in Sources */,
+				5F4C097A1EFC19580013CFF0 /* OAuthSwiftVersion.swift in Sources */,
+				5F4C09781EFC19150013CFF0 /* OAuthSwiftSignatureMethod.swift in Sources */,
 				C496246F1B00D6C30010BD09 /* OAuthWebViewController.swift in Sources */,
 				C4328F5F1DA151F800847FA3 /* Collection+OAuthSwift.swift in Sources */,
 			);

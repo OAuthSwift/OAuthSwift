@@ -30,11 +30,10 @@ open class OAuth1Swift: OAuthSwift {
         self.requestTokenUrl = requestTokenUrl
         self.authorizeUrl = authorizeUrl
         self.accessTokenUrl = accessTokenUrl
-        super.init(consumerKey: consumerKey, consumerSecret: consumerSecret)
-        self.client.credential.version = .oauth1
+        super.init(consumerKey: consumerKey, consumerSecret: consumerSecret, credential: OAuth1SwiftCredential())
     }
 
-    public convenience override init(consumerKey: String, consumerSecret: String) {
+    public convenience init(consumerKey: String, consumerSecret: String) {
         self.init(consumerKey: consumerKey, consumerSecret: consumerSecret, requestTokenUrl: "", authorizeUrl: "", accessTokenUrl: "")
     }
 

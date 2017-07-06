@@ -16,7 +16,7 @@ var OAuthSwiftDataEncoding: String.Encoding = .utf8
 
 open class OAuthSwiftClient: NSObject {
 
-    fileprivate(set) open var credential: OAuthSwiftCredential
+    open var credential: OAuthSwiftCredential
     open var paramsLocation: OAuthSwiftHTTPRequest.ParamsLocation = .authorizationHeader
     // Contains default URL session configuration
     open var sessionFactory = URLSessionFactory()
@@ -30,19 +30,19 @@ open class OAuthSwiftClient: NSObject {
     public init(credential: OAuthSwiftCredential) {
         self.credential = credential
     }
-
-    public convenience init(consumerKey: String, consumerSecret: String, version: OAuthSwiftCredential.Version = .oauth1) {
-        let credential = OAuthSwiftCredential(consumerKey: consumerKey, consumerSecret: consumerSecret)
-        credential.version = version
+    
+    public convenience init(consumerKey: String, consumerSecret: String, credential: OAuthSwiftCredential) {
         self.init(credential: credential)
+        self.credential.consumerKey = consumerKey
+        self.credential.consumerSecret = consumerSecret
     }
-
-    public convenience init(consumerKey: String, consumerSecret: String, oauthToken: String, oauthTokenSecret: String, version: OAuthSwiftCredential.Version) {
-        self.init(consumerKey: consumerKey, consumerSecret: consumerSecret, version: version)
+    
+    public convenience init(consumerKey: String, consumerSecret: String, oauthToken: String, oauthTokenSecret: String, credential: OAuthSwiftCredential) {
+        self.init(consumerKey: consumerKey, consumerSecret: consumerSecret, credential: credential)
         self.credential.oauthToken = oauthToken
         self.credential.oauthTokenSecret = oauthTokenSecret
     }
-
+    
     // MARK: client methods
     @discardableResult
     open func get(_ urlString: String, parameters: OAuthSwift.Parameters = [:], headers: OAuthSwift.Headers? = nil, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) -> OAuthSwiftRequestHandle? {

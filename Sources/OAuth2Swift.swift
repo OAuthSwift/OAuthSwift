@@ -45,8 +45,7 @@ open class OAuth2Swift: OAuthSwift {
         self.consumerSecret = consumerSecret
         self.authorizeUrl = authorizeUrl
         self.responseType = responseType
-        super.init(consumerKey: consumerKey, consumerSecret: consumerSecret)
-        self.client.credential.version = .oauth2
+        super.init(consumerKey: consumerKey, consumerSecret: consumerSecret, credential: OAuth2SwiftCredential())
     }
 
     public convenience init?(parameters: ConfigParameters) {
