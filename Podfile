@@ -1,5 +1,15 @@
 use_frameworks!
 
+target 'OAuthSwift' do
+    platform :ios, '8.3'
+    pod 'SwiftyRSA', '~> 1.2.0'
+end
+
+target 'OAuthSwiftDemo' do
+    platform :ios, '8.3'
+    pod 'SwiftyRSA', '~> 1.2.0'
+end
+
 target 'OAuthSwiftTests' do
     platform :osx, '10.10'
 
