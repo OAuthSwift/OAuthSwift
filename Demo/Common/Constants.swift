@@ -69,9 +69,14 @@ let Dribbble =
     "consumerSecret": ""
 ]
 let BitBucket =
-[
-    "consumerKey": "",
-    "consumerSecret": ""
+    [
+        "consumerKey": "",
+        "consumerSecret": ""
+]
+let Jira =
+    [
+        "consumerKey": "",
+        "consumerSecret": ""
 ]
 let GoogleDrive =
 [
