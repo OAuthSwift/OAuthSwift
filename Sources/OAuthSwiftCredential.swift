@@ -16,11 +16,11 @@ public protocol OAuthSwiftCredentialHeadersFactory {
 open class OAuthSwiftCredential: NSObject, NSCoding {
 
     public enum Version {
-        case oauth1, oauth2
+        case oauth1, oauth1RSA, oauth2
 
         public var shortVersion: String {
             switch self {
-            case .oauth1:
+            case .oauth1,.oauth1RSA:
                 return "1.0"
             case .oauth2:
                 return "2.0"
@@ -28,12 +28,12 @@ open class OAuthSwiftCredential: NSObject, NSCoding {
         }
 
         public var signatureMethod: SignatureMethod {
-            return .HMAC_SHA1
+            return (self == .oauth1RSA) ? .RSA_SHA1 : .HMAC_SHA1
         }
 
         var toInt32: Int32 {
             switch self {
-            case .oauth1:
+            case .oauth1, .oauth1RSA:
                 return 1
             case .oauth2:
                 return 2
@@ -53,17 +53,20 @@ open class OAuthSwiftCredential: NSObject, NSCoding {
 
     public enum SignatureMethod: String {
         case HMAC_SHA1 = "HMAC-SHA1"//, RSA_SHA1 = "RSA-SHA1", PLAINTEXT = "PLAINTEXT"
-
+        case RSA_SHA1 = "RSA-SHA1"
+        
         func sign(key: Data, message: Data) -> Data? {
             switch self {
             case .HMAC_SHA1:
                 return HMAC.sha1(key: key, message: message)
+            case .RSA_SHA1:
+                return RSA.sha1(key: key, message: message)
             }
         }
 
         func sign(data: Data) -> Data? {
             switch self {
-            case .HMAC_SHA1:
+            case .HMAC_SHA1, .RSA_SHA1:
                 let mac = SHA1(data).calculate()
                 return Data(bytes: UnsafePointer<UInt8>(mac), count: mac.count)
             }
@@ -141,7 +144,7 @@ open class OAuthSwiftCredential: NSObject, NSCoding {
             return factory.make(url, method: method, parameters: parameters, body: body)
         }
         switch self.version {
-        case .oauth1:
+        case .oauth1, .oauth1RSA:
             return ["Authorization": self.authorizationHeader(method: method, url: url, parameters: parameters, body: body)]
         case .oauth2:
             return self.oauthToken.isEmpty ? [:] : ["Authorization": "Bearer \(self.oauthToken)"]
@@ -160,7 +163,7 @@ open class OAuthSwiftCredential: NSObject, NSCoding {
     }
 
     open func authorizationHeader(method: OAuthSwiftHTTPRequest.Method, url: URL, parameters: OAuthSwift.Parameters, body: Data? = nil, timestamp: String, nonce: String) -> String {
-        assert(self.version == .oauth1)
+        assert(self.version == .oauth1 || self.version == .oauth1RSA)
         let authorizationParameters = self.authorizationParametersWithSignature(method: method, url: url, parameters: parameters, body: body, timestamp: timestamp, nonce: nonce)
 
         var parameterComponents = authorizationParameters.urlEncodedQuery.components(separatedBy: "&") as [String]

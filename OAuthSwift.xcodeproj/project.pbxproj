@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		0738BC6B1EBA755C000FA2F2 /* OAuthSwiftCredentialTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0738BC6A1EBA755C000FA2F2 /* OAuthSwiftCredentialTests.swift */; };
+		5FEA5A3C1EF82BDF0010B838 /* RSA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FEA5A3B1EF82BDF0010B838 /* RSA.swift */; };
+		5FEA5A3D1EF82BDF0010B838 /* RSA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FEA5A3B1EF82BDF0010B838 /* RSA.swift */; };
+		5FEA5A3E1EF82BDF0010B838 /* RSA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FEA5A3B1EF82BDF0010B838 /* RSA.swift */; };
+		5FEA5A3F1EF82BDF0010B838 /* RSA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FEA5A3B1EF82BDF0010B838 /* RSA.swift */; };
 		6053EF6F1E93821400EB28B3 /* NotificationCenter+OAuthSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6053EF6E1E93821400EB28B3 /* NotificationCenter+OAuthSwift.swift */; };
 		6053EF701E93832400EB28B3 /* NotificationCenter+OAuthSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6053EF6E1E93821400EB28B3 /* NotificationCenter+OAuthSwift.swift */; };
 		6053EF711E93832500EB28B3 /* NotificationCenter+OAuthSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6053EF6E1E93821400EB28B3 /* NotificationCenter+OAuthSwift.swift */; };
@@ -200,6 +204,7 @@
 /* Begin PBXFileReference section */
 		0738BC6A1EBA755C000FA2F2 /* OAuthSwiftCredentialTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OAuthSwiftCredentialTests.swift; sourceTree = "<group>"; };
 		0ED45F76F07F16FB6FF639B7 /* Pods_OAuthSwiftTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_OAuthSwiftTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5FEA5A3B1EF82BDF0010B838 /* RSA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RSA.swift; sourceTree = "<group>"; };
 		6053EF6E1E93821400EB28B3 /* NotificationCenter+OAuthSwift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NotificationCenter+OAuthSwift.swift"; sourceTree = "<group>"; };
 		674EB2AA3430160EBBAC72A1 /* Pods-OAuthSwiftTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OAuthSwiftTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-OAuthSwiftTests/Pods-OAuthSwiftTests.debug.xcconfig"; sourceTree = "<group>"; };
 		C40890C01C11B37000E3146A /* OAuthSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OAuthSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -514,6 +519,7 @@
 				F47599AE1A78FFAF004A96C1 /* Utils.swift */,
 				F47599AC1A78FF23004A96C1 /* SHA1.swift */,
 				F47599B21A7901DF004A96C1 /* HMAC.swift */,
+				5FEA5A3B1EF82BDF0010B838 /* RSA.swift */,
 				C4F6FE7C1DCE3AC300C0B62A /* Objc.swift */,
 				C49624741B00F8240010BD09 /* Extensions */,
 			);
@@ -952,6 +958,7 @@
 				D20BBB781C2459DB00F2B012 /* OAuthSwiftMultipartData.swift in Sources */,
 				C4328F621DA158AD00847FA3 /* Collection+OAuthSwift.swift in Sources */,
 				C40890C91C11B38000E3146A /* OAuth2Swift.swift in Sources */,
+				5FEA5A3F1EF82BDF0010B838 /* RSA.swift in Sources */,
 				C423499C1DCCE5F600BD980F /* OAuthSwiftResponse.swift in Sources */,
 				C40890CC1C11B38000E3146A /* OAuthSwiftHTTPRequest.swift in Sources */,
 				C40890D31C11B38700E3146A /* URL+OAuthSwift.swift in Sources */,
@@ -981,6 +988,7 @@
 				D20BBB761C2459C300F2B012 /* OAuthSwiftMultipartData.swift in Sources */,
 				C4328F601DA158AC00847FA3 /* Collection+OAuthSwift.swift in Sources */,
 				C48B28221AFA599700C7DEF6 /* OAuth2Swift.swift in Sources */,
+				5FEA5A3D1EF82BDF0010B838 /* RSA.swift in Sources */,
 				C423499A1DCCE5F600BD980F /* OAuthSwiftResponse.swift in Sources */,
 				C48B28251AFA599A00C7DEF6 /* OAuthSwiftHTTPRequest.swift in Sources */,
 				C48B28211AFA599400C7DEF6 /* OAuth1Swift.swift in Sources */,
@@ -1023,6 +1031,7 @@
 			files = (
 				D20BBB771C2459CF00F2B012 /* OAuthSwiftMultipartData.swift in Sources */,
 				C4B6EE261BF74CF400443596 /* OAuth1Swift.swift in Sources */,
+				5FEA5A3E1EF82BDF0010B838 /* RSA.swift in Sources */,
 				C4B6EE271BF74CF400443596 /* OAuth2Swift.swift in Sources */,
 				C4B6EE281BF74CF400443596 /* OAuthSwiftClient.swift in Sources */,
 				C4B6EE291BF74CF400443596 /* OAuthSwiftCredential.swift in Sources */,
@@ -1084,6 +1093,7 @@
 				C4F6FE7D1DCE3AC300C0B62A /* Objc.swift in Sources */,
 				F47599AD1A78FF23004A96C1 /* SHA1.swift in Sources */,
 				C40890D81C11D48300E3146A /* OAuthSwift.swift in Sources */,
+				5FEA5A3C1EF82BDF0010B838 /* RSA.swift in Sources */,
 				F4805E221A6BB5DD00F7677E /* URL+OAuthSwift.swift in Sources */,
 				6053EF6F1E93821400EB28B3 /* NotificationCenter+OAuthSwift.swift in Sources */,
 				F4E9A4E01A67944C00B4F3C8 /* OAuthSwiftHTTPRequest.swift in Sources */,
