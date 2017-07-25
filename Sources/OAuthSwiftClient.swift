@@ -18,7 +18,7 @@ open class OAuthSwiftClient: NSObject {
 
     fileprivate(set) open var credential: OAuthSwiftCredential
     open var paramsLocation: OAuthSwiftHTTPRequest.ParamsLocation = .authorizationHeader
-    // Contains default URL session configuration
+    /// Contains default URL session configuration
     open var sessionFactory = URLSessionFactory()
 
     static let separator: String = "\r\n"

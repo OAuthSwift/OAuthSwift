@@ -11,7 +11,7 @@ import Foundation
 open class OAuth1Swift: OAuthSwift {
 
     /// If your oauth provider doesn't provide `oauth_verifier`
-    // set this value to true (default: false)
+    /// set this value to true (default: false)
     open var allowMissingOAuthVerifier: Bool = false
 
     /// Optionally add callback URL to authorize Url (default: false)

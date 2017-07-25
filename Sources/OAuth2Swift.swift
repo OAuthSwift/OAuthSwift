@@ -10,15 +10,15 @@ import Foundation
 
 open class OAuth2Swift: OAuthSwift {
 
-    // If your oauth provider need to use basic authentification
-    // set value to true (default: false)
+    /// If your oauth provider need to use basic authentification
+    /// set value to true (default: false)
     open var accessTokenBasicAuthentification = false
 
-    // Set to true to deactivate state check. Be careful of CSRF
+    /// Set to true to deactivate state check. Be careful of CSRF
     open var allowMissingStateCheck: Bool = false
 
-    // Encode callback url. Default false
-    // issue #339, pr ##325
+    /// Encode callback url. Default false
+    /// issue #339, pr ##325
     open var encodeCallbackURL: Bool = false
 
     var consumerKey: String
