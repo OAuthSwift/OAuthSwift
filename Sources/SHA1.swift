@@ -21,7 +21,7 @@ class SHA1 {
         self.message = message
     }
 
-    /** Common part for hash calculation. Prepare header data. */
+    /// Common part for hash calculation. Prepare header data.
     func prepare(_ message: [UInt8], _ blockSize: Int, _ allowance: Int) -> [UInt8] {
         var tmpMessage = message
 

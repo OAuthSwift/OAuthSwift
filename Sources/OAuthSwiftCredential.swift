@@ -7,12 +7,12 @@
 //
 import Foundation
 
-// Allow to customize computed headers
+/// Allow to customize computed headers
 public protocol OAuthSwiftCredentialHeadersFactory {
     func make(_ url: URL, method: OAuthSwiftHTTPRequest.Method, parameters: OAuthSwift.Parameters, body: Data?) -> [String: String]
 }
 
-// The credential for authentification
+/// The credential for authentification
 open class OAuthSwiftCredential: NSObject, NSCoding {
 
     public enum Version {
@@ -80,7 +80,7 @@ open class OAuthSwiftCredential: NSObject, NSCoding {
     open internal(set) var oauthVerifier = ""
     open var version: Version = .oauth1
 
-    // hook to replace headers creation
+    /// hook to replace headers creation
     open var headersFactory: OAuthSwiftCredentialHeadersFactory?
 
     // MARK: init
@@ -108,8 +108,8 @@ open class OAuthSwiftCredential: NSObject, NSCoding {
         static let version = base + "version"
     }
 
-    // Cannot declare a required initializer within an extension.
-    // extension OAuthSwiftCredential: NSCoding {
+    /// Cannot declare a required initializer within an extension.
+    /// extension OAuthSwiftCredential: NSCoding {
     public required convenience init?(coder decoder: NSCoder) {
         self.init()
         self.consumerKey = (decoder.decodeObject(forKey: CodingKeys.consumerKey) as? String) ?? String()
@@ -135,7 +135,7 @@ open class OAuthSwiftCredential: NSObject, NSCoding {
     // } // End NSCoding extension
 
     // MARK: functions
-    // for OAuth1 parameters must contains sorted query parameters and url must not contains query parameters
+    /// for OAuth1 parameters must contains sorted query parameters and url must not contains query parameters
     open func makeHeaders(_ url: URL, method: OAuthSwiftHTTPRequest.Method, parameters: OAuthSwift.Parameters, body: Data? = nil) -> [String: String] {
         if let factory = headersFactory {
             return factory.make(url, method: method, parameters: parameters, body: body)
