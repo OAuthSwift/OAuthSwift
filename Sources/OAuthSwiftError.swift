@@ -11,28 +11,28 @@ import Foundation
 // MARK: - OAuthSwift errors
 public enum OAuthSwiftError: Error {
 
-    // Configuration problem with oauth provider.
+    /// Configuration problem with oauth provider.
     case configurationError(message: String)
-    // The provided token is expired, retrieve new token by using the refresh token
+    /// The provided token is expired, retrieve new token by using the refresh token
     case tokenExpired(error: Error?)
-    // State missing from request (you can set allowMissingStateCheck = true to ignore)
+    /// State missing from request (you can set allowMissingStateCheck = true to ignore)
     case missingState
-    // Returned state value is wrong
+    /// Returned state value is wrong
     case stateNotEqual(state: String, responseState: String)
-    // Error from server
+    /// Error from server
     case serverError(message: String)
-    // Failed to create URL \(urlString) not convertible to URL, please encode
+    /// Failed to create URL \(urlString) not convertible to URL, please encode
     case encodingError(urlString: String)
     case authorizationPending
-    // Failed to create request with \(urlString)
+    /// Failed to create request with \(urlString)
     case requestCreation(message: String)
-    // Authentification failed. No token
+    /// Authentification failed. No token
     case missingToken
-    // Please retain OAuthSwift object or handle
+    /// Please retain OAuthSwift object or handle
     case retain
-    // Request error
+    /// Request error
     case requestError(error: Error, request: URLRequest)
-    // Request cancelled
+    /// Request cancelled
     case cancelled
 
     public static let Domain = "OAuthSwiftError"
