@@ -50,14 +50,14 @@ import SafariServices
         open let oauthSwift: OAuthSwift
         open var present: UITransion
         open var dismiss: UITransion
-        // retains observers
+        /// retains observers
         var observers = [String: NSObjectProtocol]()
 
         open var factory: (_ URL: URL) -> SFSafariViewController = {URL in
             return SFSafariViewController(url: URL)
         }
 
-        // delegates
+        /// delegates
         open weak var delegate: SFSafariViewControllerDelegate?
 
         // configure default presentation and dismissal code
@@ -67,7 +67,7 @@ import SafariServices
         open var dismissCompletion: (() -> Void)?
         open var delay: UInt32? = 1
 
-        // init
+        /// init
         public init(viewController: UIViewController, oauthSwift: OAuthSwift) {
             self.oauthSwift = oauthSwift
             self.present = { [weak viewController] controller, handler in
@@ -120,7 +120,7 @@ import SafariServices
             )
         }
 
-        // Clear internal observers on authentification flow
+        /// Clear internal observers on authentification flow
         open func clearObservers() {
             clearLocalObservers()
             self.oauthSwift.removeCallbackNotificationObserver()
@@ -133,7 +133,7 @@ import SafariServices
             observers.removeAll()
         }
 
-        // SFSafariViewControllerDelegate
+        /// SFSafariViewControllerDelegate
         public func safariViewController(_ controller: SFSafariViewController, activityItemsFor URL: Foundation.URL, title: String?) -> [UIActivity] {
             return self.delegate?.safariViewController?(controller, activityItemsFor: URL, title: title) ?? []
         }

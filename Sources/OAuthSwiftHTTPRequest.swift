@@ -15,8 +15,8 @@ open class OAuthSwiftHTTPRequest: NSObject, OAuthSwiftRequestHandle {
     public typealias SuccessHandler = (_ response: OAuthSwiftResponse) -> Void
     public typealias FailureHandler = (_ error: OAuthSwiftError) -> Void
 
-    // HTTP request method
-    // https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods
+    /// HTTP request method
+    /// https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods
     public enum Method: String {
         case GET, POST, PUT, DELETE, PATCH, HEAD //, OPTIONS, TRACE, CONNECT
 
@@ -25,7 +25,7 @@ open class OAuthSwiftHTTPRequest: NSObject, OAuthSwiftRequestHandle {
         }
     }
 
-    // Where the additional parameters will be injected
+    /// Where the additional parameters will be injected
     @objc public enum ParamsLocation: Int {
         case authorizationHeader, /*FormEncodedBody,*/ requestURIQuery
     }
@@ -56,7 +56,7 @@ open class OAuthSwiftHTTPRequest: NSObject, OAuthSwiftRequestHandle {
         self.config = config
     }
 
-    // MARK: START request
+    /// START request
     func start(success: SuccessHandler?, failure: FailureHandler?) {
         guard request == nil else { return } // Don't start the same request twice!
 
@@ -277,10 +277,10 @@ open class OAuthSwiftHTTPRequest: NSObject, OAuthSwiftRequestHandle {
 // MARK: - Request configuraiton
 extension OAuthSwiftHTTPRequest {
 
-    // Configuration for request
+    /// Configuration for request
     public struct Config {
 
-        // URLRequest (url, method, ...)
+        /// URLRequest (url, method, ...)
         public var urlRequest: URLRequest
         /// These parameters are either added to the query string for GET, HEAD and DELETE requests or
         /// used as the http body in case of POST, PUT or PATCH requests.
@@ -291,7 +291,7 @@ extension OAuthSwiftHTTPRequest {
         public let dataEncoding: String.Encoding
         public let sessionFactory: URLSessionFactory
 
-        // Shortcut
+        /// Shortcut
         public var httpMethod: Method {
             if let requestMethod = urlRequest.httpMethod {
                 return Method(rawValue: requestMethod) ?? .GET
@@ -322,7 +322,7 @@ extension OAuthSwiftHTTPRequest {
             self.sessionFactory = sessionFactory
         }
 
-        // Modify request with authentification
+        /// Modify request with authentification
         public mutating func updateRequest(credential: OAuthSwiftCredential) {
             let method = self.httpMethod
             let url = self.urlRequest.url!
@@ -395,20 +395,20 @@ extension OAuthSwiftHTTPRequest {
 
 // MARK: - session configuration
 
-// configure how URLSession is initialized
+/// configure how URLSession is initialized
 public struct URLSessionFactory {
 
     public static let `default` = URLSessionFactory()
 
     public var configuration = URLSessionConfiguration.default
     public var queue = OperationQueue.main
-    // An optional delegate for the URLSession
+    /// An optional delegate for the URLSession
     public weak var delegate: URLSessionDelegate?
 
-    // Monitor session: see UIApplication.shared.isNetworkActivityIndicatorVisible
+    /// Monitor session: see UIApplication.shared.isNetworkActivityIndicatorVisible
     public var isNetworkActivityIndicatorVisible = true
 
-    // Create a new URLSession
+    /// Create a new URLSession
     func build() -> URLSession {
         return URLSession(configuration: self.configuration, delegate: self.delegate, delegateQueue: self.queue)
     }
