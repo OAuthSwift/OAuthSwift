@@ -71,8 +71,8 @@ open class OAuthSwiftCredential: NSObject, NSCoding {
     }
 
     // MARK: attributes
-    var consumerKey = ""
-    var consumerSecret = ""
+    open internal(set) var consumerKey = ""
+    open internal(set) var consumerSecret = ""
     open var oauthToken = ""
     open var oauthRefreshToken = ""
     open var oauthTokenSecret = ""
