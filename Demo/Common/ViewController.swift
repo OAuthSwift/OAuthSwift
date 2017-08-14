@@ -100,6 +100,8 @@ extension ViewController {
         parameters["name"] = service
 
         switch service {
+        case "Imgur" :
+            doOAuthImgur(parameters)
         case "500px" :
             doOAuth500px(parameters)
         case "Spotify" :
@@ -221,7 +223,33 @@ extension ViewController {
             }
         )
     }
-    
+
+    // MARK: Imgur
+    func doOAuthImgur(_ serviceParameters: [String:String]){
+        let oauthswift = OAuth2Swift(
+            consumerKey:    serviceParameters["consumerKey"]!,
+            consumerSecret: serviceParameters["consumerSecret"]!,
+            authorizeUrl:   "https://api.imgur.com/oauth2/authorize",
+            accessTokenUrl: "https://api.imgur.com/oauth2/token",
+            responseType:   "token"
+        )
+        self.oauthswift = oauthswift
+        oauthswift.authorizeURLHandler = getURLHandler()
+        let state = generateState(withLength: 20)
+
+        let _ = oauthswift.authorize(
+            withCallbackURL: URL(string: "oauth-swift://oauth-callback/imgur")!,
+            scope: "",
+            state: state,
+            success: { credential, response, parameters in
+                self.showTokenAlert(name: serviceParameters["name"], credential: credential)
+            },
+            failure: { error in
+                print(error.description)
+            }
+        )
+    }
+
     // MARK: Twitter
     func doOAuthTwitter(_ serviceParameters: [String:String]){
         let oauthswift = OAuth1Swift(
