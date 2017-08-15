@@ -234,6 +234,8 @@ extension ViewController {
             responseType:   "token"
         )
         self.oauthswift = oauthswift
+        oauthswift.encodeCallbackURL = true
+        oauthswift.encodeCallbackURLQuery = false
         oauthswift.authorizeURLHandler = getURLHandler()
         let state = generateState(withLength: 20)
 

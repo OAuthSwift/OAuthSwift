@@ -10,26 +10,41 @@ import Foundation
 
 extension String {
 
-    var urlEncodedString: String {
-        let customAllowedSet =  CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~")
-        let escapedString = self.addingPercentEncoding(withAllowedCharacters: customAllowedSet)
-        return escapedString!
-    }
-
     var parametersFromQueryString: [String: String] {
         return dictionaryBySplitting("&", keyValueSeparator: "=")
+    }
+
+    var urlEncodedString: String {
+        let customAllowedSet = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~")
+        return self.addingPercentEncoding(withAllowedCharacters: customAllowedSet)!
     }
 
     var urlQueryEncoded: String? {
         return self.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)
     }
 
-    fileprivate func dictionaryBySplitting(_ elementSeparator: String, keyValueSeparator: String) -> [String: String] {
+    /// Returns new url query string by appending query parameter encoding it first, if specified.
+    func urlQueryByAppending(parameter name: String, value: String, encode: Bool = true) -> String? {
+        if value.isEmpty {
+            return self
+        } else if let value: String = encode ? value.urlQueryEncoded : value {
+            return "\(self)\(self.isEmpty ? "" : "&")\(name)=\(value)"
+        } else {
+            return nil
+        }
+    }
 
-		var string = self
-		if hasPrefix(elementSeparator) {
-			string = String(characters.dropFirst(1))
-		}
+    /// Returns new url string by appending query string at the end.
+    func urlByAppending(query: String) -> String {
+        return "\(self)\(self.contains("?") ? "&" : "?")\(query)"
+    }
+
+    fileprivate func dictionaryBySplitting(_ elementSeparator: String, keyValueSeparator: String) -> [String: String] {
+        var string = self
+
+        if hasPrefix(elementSeparator) {
+            string = String(characters.dropFirst(1))
+        }
 
         var parameters = [String: String]()
 
@@ -64,7 +79,7 @@ extension String {
     }
 
     var droppedLast: String {
-       return self.substring(to: self.index(before: self.endIndex))
+        return self.substring(to: self.index(before: self.endIndex))
     }
 
     mutating func dropLast() {
@@ -78,7 +93,6 @@ extension String {
     func substring(from offset: String.IndexDistance) -> String {
         return self.substring(from: self.index(self.startIndex, offsetBy: offset))
     }
-
 }
 
 extension String.Encoding {

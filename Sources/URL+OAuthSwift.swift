@@ -18,7 +18,7 @@ extension URL {
         var absoluteURLString = absoluteString
 
         if absoluteURLString.hasSuffix("?") {
-             absoluteURLString.dropLast()
+            absoluteURLString.dropLast()
         }
 
         let string = absoluteURLString + (absoluteURLString.range(of: "?") != nil ? "&" : "?") + queryString
