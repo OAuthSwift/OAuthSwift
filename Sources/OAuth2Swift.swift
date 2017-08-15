@@ -111,7 +111,7 @@ open class OAuth2Swift: OAuthSwift {
                 }
                 if let handle = this.postOAuthAccessTokenWithRequestToken(
                     byCode: code.safeStringByRemovingPercentEncoding,
-                    callbackURL: URL(string: callbackURL.absoluteString.urlEncodedString)!, headers: headers, success: success, failure: failure) {
+                    callbackURL: URL(string: callbackURL.absoluteString.urlEncoded)!, headers: headers, success: success, failure: failure) {
                     this.putHandle(handle, withKey: UUID().uuidString)
                 }
             } else if let error = responseParameters["error"] {
@@ -127,7 +127,7 @@ open class OAuth2Swift: OAuthSwift {
         var queryString: String? = ""
 
         queryString = queryString?.urlQueryByAppending(parameter: "client_id", value: self.consumerKey)
-        queryString = queryString?.urlQueryByAppending(parameter: "redirect_uri", value: self.encodeCallbackURL ? callbackURL.absoluteString.urlEncodedString : callbackURL.absoluteString, encode: self.encodeCallbackURLQuery)
+        queryString = queryString?.urlQueryByAppending(parameter: "redirect_uri", value: self.encodeCallbackURL ? callbackURL.absoluteString.urlEncoded : callbackURL.absoluteString, encode: self.encodeCallbackURLQuery)
         queryString = queryString?.urlQueryByAppending(parameter: "response_type", value: self.responseType)
         queryString = queryString?.urlQueryByAppending(parameter: "scope", value: scope)
         queryString = queryString?.urlQueryByAppending(parameter: "state", value: state)
