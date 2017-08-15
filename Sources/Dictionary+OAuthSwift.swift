@@ -40,8 +40,8 @@ extension Dictionary {
         var parts = [String]()
 
         for (key, value) in self {
-            let keyString = "\(key)".urlEncodedString
-            let valueString = "\(value)".urlEncodedString
+            let keyString = "\(key)".urlEncoded
+            let valueString = "\(value)".urlEncoded
             let query = "\(keyString)=\(valueString)"
             parts.append(query)
         }

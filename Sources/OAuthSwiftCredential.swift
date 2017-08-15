@@ -217,8 +217,8 @@ open class OAuthSwiftCredential: NSObject, NSCoding {
     }
 
     open func signature(method: OAuthSwiftHTTPRequest.Method, url: URL, parameters: OAuthSwift.Parameters) -> String {
-        let encodedTokenSecret = self.oauthTokenSecret.urlEncodedString
-        let encodedConsumerSecret = self.consumerSecret.urlEncodedString
+        let encodedTokenSecret = self.oauthTokenSecret.urlEncoded
+        let encodedConsumerSecret = self.consumerSecret.urlEncoded
 
         let signingKey = "\(encodedConsumerSecret)&\(encodedTokenSecret)"
 
@@ -231,9 +231,9 @@ open class OAuthSwiftCredential: NSObject, NSCoding {
         }
 
         let parameterString = parameterComponents.joined(separator: "&")
-        let encodedParameterString = parameterString.urlEncodedString
+        let encodedParameterString = parameterString.urlEncoded
 
-        let encodedURL = url.absoluteString.urlEncodedString
+        let encodedURL = url.absoluteString.urlEncoded
 
         let signatureBaseString = "\(method)&\(encodedURL)&\(encodedParameterString)"
 
