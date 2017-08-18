@@ -103,7 +103,7 @@ open class OAuth2Swift: OAuthSwift {
                         return
                     }
                 }
-                if let handle = this.postOAuthAccessTokenWithRequestToken(
+                if let handle = this.exchangeCodeForAccessToken(
                     byCode: code.safeStringByRemovingPercentEncoding,
                     callbackURL: callbackURL, headers: headers, success: success, failure: failure) {
                     this.putHandle(handle, withKey: UUID().uuidString)
@@ -157,7 +157,7 @@ open class OAuth2Swift: OAuthSwift {
         return authorize(withCallbackURL: url, scope: scope, state: state, parameters: parameters, headers: headers, success: success, failure: failure)
     }
 
-    func postOAuthAccessTokenWithRequestToken(byCode code: String, callbackURL: URL, headers: OAuthSwift.Headers? = nil, success: @escaping TokenSuccessHandler, failure: FailureHandler?) -> OAuthSwiftRequestHandle? {
+    open func exchangeCodeForAccessToken(byCode code: String, callbackURL: URL, headers: OAuthSwift.Headers? = nil, success: @escaping TokenSuccessHandler, failure: FailureHandler?) -> OAuthSwiftRequestHandle? {
         var parameters = OAuthSwift.Parameters()
         parameters["client_id"] = self.consumerKey
         parameters["client_secret"] = self.consumerSecret
