@@ -156,10 +156,9 @@ class OAuth2SwiftTests: XCTestCase {
                     expectation.fulfill()
                     
                     // additional check about origin error
-                    let nserror = error as! NSError
-                    print(nserror.code)
-                    if nserror.code == 401 {
-                        if let reponseHeaders = nserror.userInfo["Response-Headers"] as? [String:String],
+                    let nserror = error as NSError?
+                    if nserror?.code == 401 {
+                        if let reponseHeaders = nserror?.userInfo["Response-Headers"] as? [String:String],
                             let authenticateHeader = reponseHeaders["WWW-Authenticate"] ?? reponseHeaders["Www-Authenticate"] {
                             print(authenticateHeader)
                             
@@ -169,7 +168,7 @@ class OAuth2SwiftTests: XCTestCase {
                             print(headerDictionary["error_description"] ?? "no error description")
                         }
                         else {
-                            XCTFail("\(error).")
+                            XCTFail("\(String(describing: error)).")
                         }
                     }
                 default:

@@ -26,12 +26,13 @@ extension String {
     }
 
     /// Returns new url query string by appending query parameter encoding it first, if specified.
-    func urlQueryByAppending(parameter name: String, value: String, encode: Bool = true) -> String? {
+    func urlQueryByAppending(parameter name: String, value: String, encode: Bool = true, _ encodeError: ((String, String) -> Void)? = nil) -> String? {
         if value.isEmpty {
             return self
-        } else if let value: String = encode ? value.urlQueryEncoded : value {
+        } else if let value = encode ? value.urlQueryEncoded : value {
             return "\(self)\(self.isEmpty ? "" : "&")\(name)=\(value)"
         } else {
+            encodeError?(name, value)
             return nil
         }
     }

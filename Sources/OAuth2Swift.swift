@@ -124,26 +124,38 @@ open class OAuth2Swift: OAuthSwift {
             }
         }
 
-        var queryString: String? = ""
+        var queryErrorString = ""
+        let encodeError: (String, String) -> Void = { name, value in
+            if let newQuery = queryErrorString.urlQueryByAppending(parameter: name, value: value, encode: false) {
+                queryErrorString = newQuery
+            }
+        }
 
-        queryString = queryString?.urlQueryByAppending(parameter: "client_id", value: self.consumerKey)
-        queryString = queryString?.urlQueryByAppending(parameter: "redirect_uri", value: self.encodeCallbackURL ? callbackURL.absoluteString.urlEncoded : callbackURL.absoluteString, encode: self.encodeCallbackURLQuery)
-        queryString = queryString?.urlQueryByAppending(parameter: "response_type", value: self.responseType)
-        queryString = queryString?.urlQueryByAppending(parameter: "scope", value: scope)
-        queryString = queryString?.urlQueryByAppending(parameter: "state", value: state)
+        var queryString: String? = ""
+        queryString = queryString?.urlQueryByAppending(parameter: "client_id", value: self.consumerKey, encodeError)
+        queryString = queryString?.urlQueryByAppending(parameter: "redirect_uri", value: self.encodeCallbackURL ? callbackURL.absoluteString.urlEncoded : callbackURL.absoluteString, encode: self.encodeCallbackURLQuery, encodeError)
+        queryString = queryString?.urlQueryByAppending(parameter: "response_type", value: self.responseType, encodeError)
+        queryString = queryString?.urlQueryByAppending(parameter: "scope", value: scope, encodeError)
+        queryString = queryString?.urlQueryByAppending(parameter: "state", value: state, encodeError)
 
         for (name, value) in parameters {
-            queryString = queryString?.urlQueryByAppending(parameter: name, value: "\(value)")
+            queryString = queryString?.urlQueryByAppending(parameter: name, value: "\(value)", encodeError)
         }
 
-        if let queryString: String = queryString, let url: URL = URL(string: self.authorizeUrl.urlByAppending(query: queryString)) {
-            self.authorizeURLHandler.handle(url)
-            return self
+        if let queryString = queryString {
+            let urlString = self.authorizeUrl.urlByAppending(query: queryString)
+            if let url: URL = URL(string: urlString) {
+                self.authorizeURLHandler.handle(url)
+                return self
+            } else {
+                failure?(OAuthSwiftError.encodingError(urlString: urlString))
+            }
         } else {
-            self.cancel() // ie. remove the observer.
-            failure?(OAuthSwiftError.encodingError(urlString: self.authorizeUrl))
-            return nil
+            let urlString = self.authorizeUrl.urlByAppending(query: queryErrorString)
+            failure?(OAuthSwiftError.encodingError(urlString: urlString))
         }
+        self.cancel() // ie. remove the observer.
+        return nil
     }
 
     @discardableResult
