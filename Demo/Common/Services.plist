@@ -114,6 +114,13 @@
 		<key>consumerSecret</key>
 		<string></string>
 	</dict>
+	<key>Jira</key>
+	<dict>
+		<key>consumerKey</key>
+		<string></string>
+		<key>consumerSecret</key>
+		<string></string>
+	</dict>
 	<key>GoogleDrive</key>
 	<dict>
 		<key>consumerKey</key>

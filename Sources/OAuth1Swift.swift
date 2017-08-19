@@ -48,7 +48,18 @@ open class OAuth1Swift: OAuthSwift {
           authorizeUrl: authorizeUrl,
           accessTokenUrl: accessTokenUrl)
     }
-
+    
+    public static func initWithRSA(consumerKey:String, requestTokenUrl: String, authorizeUrl: String, accessTokenUrl: String) -> OAuth1Swift {
+        // assert that a private.pem file exists in main bundle
+        assert(Bundle.main.path(forResource: "private", ofType: "pem") != nil, "could not find 'privat.pem' file in main bundle. Using OAuth1Swift with RSA requires a private key file named exactly 'privat.pem' to be located in main bundle")
+        let oauth1Swift = OAuth1Swift(consumerKey:consumerKey, consumerSecret: "secret not needed for RSA",
+                  requestTokenUrl: requestTokenUrl,
+                  authorizeUrl: authorizeUrl,
+                  accessTokenUrl: accessTokenUrl)
+        oauth1Swift.client.credential.version = .oauth1RSA
+        return oauth1Swift
+    }
+    
     open var parameters: ConfigParameters {
         return [
             "consumerKey": consumerKey,

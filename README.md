@@ -118,6 +118,38 @@ oauthswift.client.get("https://api.example.com/foo/bar",
     }
 )
 ```
+### OAuth1 with SHA1-RSA
+SHA1-RSA uses a public/private key pair instead of the HMAC's consumer and secret keys.
+
+Use ssh-keygen to generate a new PEM public and private key pair.
+```
+$ ssh-keygen -t rsa -f ~/mykey -N ''
+$ cat ~/mykey > ~/private.pem
+$ ssh-keygen -f ~/mykey.pub -e -m pem > ~/public.pem
+```
+Your keys are now in `~/public.pem` and `~/private.pem`. Don't forget to move `~/mykey` and `~/mykey.pub` to a secure place.
+
+Now copy `private.pem` file to your app's main bundle. 
+(Yes, it is counter-intuitive for a "private" key to be shiped with your app's code, but that's OAuth1 on mobile)
+
+```swift
+// create an instance and retain it
+oauthswift = OAuth1Swift.initWithRSA(
+    consumerKey:    "********",
+            requestTokenUrl: "https://yourinstance.atlassian.net/plugins/servlet/oauth/request-token",
+            authorizeUrl:    "https://yourinstance.atlassian.net/plugins/servlet/oauth/authorize",
+            accessTokenUrl:  "https://yourinstance.atlassian.net/plugins/servlet/oauth/access-token"
+)
+// do your HTTP request without authorize
+oauthswift.client.get("https://api.example.com/foo/bar",
+    success: { response in
+        //....
+    },
+    failure: { error in
+        //...
+    }
+)
+```
 
 ### Authorize with OAuth2.0
 ```swift
@@ -205,6 +237,7 @@ See more examples in the demo application: [ViewController.swift](/Demo/Common/V
 * [Dropbox](https://www.dropbox.com/developers/core/docs)  
 * [Dribbble](http://developer.dribbble.com/v1/oauth/)
 * [Salesforce](https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/)
+* [Jira](https://developer.atlassian.com/cloud/jira/platform/jira-rest-api-oauth-authentication/)
 * [BitBucket](https://confluence.atlassian.com/bitbucket/oauth-on-bitbucket-cloud-238027431.html)
 * [GoogleDrive](https://developers.google.com/drive/v2/reference/)
 * [Smugmug](https://smugmug.atlassian.net/wiki/display/API/OAuth)

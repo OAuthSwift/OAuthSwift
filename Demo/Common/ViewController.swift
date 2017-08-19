@@ -134,6 +134,8 @@ extension ViewController {
             doOAuthSalesforce(parameters)
         case "BitBucket":
             doOAuthBitBucket(parameters)
+        case "Jira":
+            doOAuthJira(parameters)
         case "GoogleDrive":
             doOAuthGoogle(parameters)
         case "Smugmug":
@@ -716,7 +718,7 @@ extension ViewController {
             success: { credential, response, parameters in
                 self.showTokenAlert(name: serviceParameters["name"], credential: credential)
                 self.testBitBucket(oauthswift)
-            },
+        },
             failure: { error in
                 print(error.description)
             }
@@ -725,6 +727,42 @@ extension ViewController {
     func testBitBucket(_ oauthswift: OAuth1Swift) {
         let _ = oauthswift.client.get(
             "https://bitbucket.org/api/1.0/user", parameters: [:],
+            success: { response in
+                let dataString = response.string!
+                print(dataString)
+            },
+            failure: { error in
+                print(error)
+            }
+        )
+    }
+    
+    // MARK: Jira
+    func doOAuthJira(_ serviceParameters: [String:String]){
+        assert(Bundle.main.path(forResource: "private", ofType: "pem") != nil, "Jira authentication uses RSA-SHA1 which requires a stighlty different setup - see README.md for details.")
+        let oauthswift = OAuth1Swift.initWithRSA(
+            consumerKey:    serviceParameters["consumerKey"]!,
+            requestTokenUrl: "https://yourinstance.atlassian.net/plugins/servlet/oauth/request-token",
+            authorizeUrl:    "https://yourinstance.atlassian.net/plugins/servlet/oauth/authorize",
+            accessTokenUrl:  "https://yourinstance.atlassian.net/plugins/servlet/oauth/access-token"
+        )
+        self.oauthswift = oauthswift
+        oauthswift.authorizeURLHandler = getURLHandler()
+        let _ = oauthswift.authorize(
+            withCallbackURL: URL(string: "https://oauth-swift://oauth-callback/zaim")!,
+            success: { credential, response, parameters in
+                self.showTokenAlert(name: serviceParameters["name"], credential: credential)
+                self.testJira(oauthswift)
+        },
+            failure: { error in
+                print(error.description)
+            }
+        )
+    }
+    
+    func testJira(_ oauthswift: OAuth1Swift) {
+        let _ = oauthswift.client.get(
+            "https://yourinstance.atlassian.net/rest/api/2//userProperties", parameters: [:],
             success: { response in
                 let dataString = response.string!
                 print(dataString)
@@ -1390,6 +1428,7 @@ extension ViewController {
         services["Dropbox"] = Dropbox
         services["Dribbble"] = Dribbble
         services["BitBucket"] = BitBucket
+        services["Jira"] = Jira
         services["GoogleDrive"] = GoogleDrive
         services["Smugmug "] =  Smugmug
         services["Intuit"] = Intuit

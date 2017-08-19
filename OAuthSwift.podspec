@@ -10,6 +10,7 @@ Pod::Spec.new do |s|
     'Eric Marchand' => 'eric.marchand.n7@gmail.com'
   }
   s.source = { git: 'https://github.com/OAuthSwift/OAuthSwift.git', tag: s.version }
+  s.dependency 'SwiftyRSA', '~> 1.2.0'
   s.source_files = 'Sources/*.swift'
   s.ios.deployment_target = '8.0'
   s.osx.deployment_target = '10.10'
