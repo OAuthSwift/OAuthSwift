@@ -82,7 +82,7 @@ open class OAuth2Swift: OAuthSwift {
 
         self.observeCallback { [weak self] url in
             guard let this = self else {
-                OAuthSwift.retainError(failure);
+                OAuthSwift.retainError(failure)
                 return
             }
             var responseParameters = [String: String]()

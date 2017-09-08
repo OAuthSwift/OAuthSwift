@@ -13,6 +13,7 @@ disabled_rules:
     - empty_count
 
 shorthand_operator: warning
+superfluous_disable_command: warning
 
 # some rules are only opt-in
 opt_in_rules:

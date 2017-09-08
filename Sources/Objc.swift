@@ -9,7 +9,7 @@
 import Foundation
 
 extension OAuthSwift {
-    // swiftlint:disable type_name
+    // swiftlint:disable:next type_name
     public typealias Obj_FailureHandler = (_ error: Error) -> Void
 }
 
@@ -42,7 +42,7 @@ extension OAuth2Swift {
 }
 
 extension OAuthSwiftHTTPRequest {
-    // swiftlint:disable type_name
+    // swiftlint:disable:next type_name
     public typealias Obj_FailureHandler = (_ error: Error) -> Void
 }
 

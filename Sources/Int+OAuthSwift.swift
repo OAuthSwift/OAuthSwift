@@ -14,7 +14,7 @@ extension Int {
     }
 }
 
-fileprivate func arrayOfBytes<T>(_ value: T, length: Int? = nil) -> [UInt8] {
+private func arrayOfBytes<T>(_ value: T, length: Int? = nil) -> [UInt8] {
     let totalBytes = length ?? MemoryLayout<T>.size
 
     let valuePointer = UnsafeMutablePointer<T>.allocate(capacity: 1)

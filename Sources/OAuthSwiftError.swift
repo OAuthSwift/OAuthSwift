@@ -120,7 +120,7 @@ extension OAuthSwift {
 
 }
 
-// MARK NSError
+// MARK: NSError
 extension OAuthSwiftError: CustomNSError {
 
     public static var errorDomain: String { return OAuthSwiftError.Domain }
