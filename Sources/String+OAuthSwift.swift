@@ -102,7 +102,6 @@ extension String.Encoding {
 
     var charset: String {
         let charset = CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(self.rawValue))
-        // swiftlint:disable force_cast
         return charset! as String
     }
 
