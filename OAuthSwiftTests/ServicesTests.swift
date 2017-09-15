@@ -199,7 +199,6 @@ class ServicesURLHandlerType: LayoutEngineNavigationDelegate, OAuthSwiftURLHandl
         browser = Erik(webView: webView)
         super.init()
         webView.navigationDelegate = self
-        (browser.layoutEngine as? WebKitLayoutEngine)?.navigable = self
         
         guard let _ = self.serviceParameters["form_username_selector"],
             let _ = self.serviceParameters["form_password_selector"],

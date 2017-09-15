@@ -33,7 +33,7 @@ open class OAuthSwiftOpenURLExternally: OAuthSwiftURLHandlerType {
         #elseif os(watchOS)
         // WATCHOS: not implemented
         #elseif os(OSX)
-            NSWorkspace.shared().open(url)
+            NSWorkspace.shared.open(url)
         #endif
     }
 }

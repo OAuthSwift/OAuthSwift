@@ -8,7 +8,7 @@
 
 import Foundation
 
-var OAuthSwiftDataEncoding: String.Encoding = .utf8
+public var OAuthSwiftDataEncoding: String.Encoding = .utf8
 
 @objc public protocol OAuthSwiftRequestHandle {
     func cancel()

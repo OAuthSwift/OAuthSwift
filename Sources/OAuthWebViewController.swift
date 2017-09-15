@@ -62,8 +62,8 @@ open class OAuthWebViewController: OAuthViewController, OAuthSwiftURLHandlerType
     public enum Present {
         case asModalWindow
         case asSheet
-        case asPopover(relativeToRect: NSRect, ofView : NSView, preferredEdge: NSRectEdge, behavior: NSPopoverBehavior)
-        case transitionFrom(fromViewController: NSViewController, options: NSViewControllerTransitionOptions)
+        case asPopover(relativeToRect: NSRect, ofView : NSView, preferredEdge: NSRectEdge, behavior: NSPopover.Behavior)
+        case transitionFrom(fromViewController: NSViewController, options: NSViewController.TransitionOptions)
         case animator(animator: NSViewControllerPresentationAnimator)
         case segue(segueIdentifier: String)
     }
@@ -122,7 +122,7 @@ open class OAuthWebViewController: OAuthViewController, OAuthSwiftURLHandlerType
                 case .animator(let animator):
                     p.presentViewController(self, animator: animator)
                 case .segue(let segueIdentifier):
-                    p.performSegue(withIdentifier: segueIdentifier, sender: self) // The segue must display self.view
+                    p.performSegue(withIdentifier: NSStoryboardSegue.Identifier(rawValue: segueIdentifier), sender: self) // The segue must display self.view
                     break
                 }
             } else if let window = self.view.window {

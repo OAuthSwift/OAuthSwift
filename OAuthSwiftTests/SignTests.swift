@@ -162,7 +162,7 @@ class SignTests: XCTestCase {
             dico[nonce] = ""
         }
 
-        XCTAssertEqualWithAccuracy(Double(tolerance), Double(dico.count), accuracy: 10)
+        XCTAssertEqual(Double(tolerance), Double(dico.count), accuracy: 10)
     }
 
 }
