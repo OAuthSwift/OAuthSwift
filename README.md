@@ -51,7 +51,7 @@ In info tab of your target
 Replace oauth-swift by your application name
 
 ### Handle URL in AppDelegate
-- On iOS9 implement `UIApplicationDelegate` method
+- On iOS implement `UIApplicationDelegate` method
 ```swift
 func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
   if (url.host == "oauth-callback") {
@@ -65,10 +65,6 @@ func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpe
 if (options[.sourceApplication] as? String == "com.apple.SafariViewService") {
 ```
 
-- On previous iOS version
-```swift
-func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
-```
 - On macOS you must register an handler on `NSAppleEventManager` for event type `kAEGetURL` (see demo code)
 ```swift
 func applicationDidFinishLaunching(_ aNotification: NSNotification) {
