@@ -122,6 +122,7 @@ oauthswift.client.get("https://api.example.com/foo/bar",
 
 ### Authorize with OAuth2.0
 ```swift
+// create an instance and retain it
 oauthswift = OAuth2Swift(
     consumerKey:    "********",
     consumerSecret: "********",
