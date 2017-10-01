@@ -26,8 +26,8 @@
     }
     extension NSButton {
         var isOn: Bool {
-            get { return  self.state == NSOnState }
-            set { self.state = newValue ? NSOnState : NSOffState}
+            get { return  self.state == .on }
+            set { self.state = newValue ? .on : .off}
         }
         func setOn(_ value: Bool, animated: Bool) {
             isOn = value

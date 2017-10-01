@@ -77,7 +77,7 @@ extension ViewController {
         // Ask to user by showing form from storyboards
         self.formData.data = nil
         Queue.main.async { [unowned self] in
-            self.performSegue(withIdentifier: Storyboards.Main.FormSegue, sender: self)
+            self.performSegue(withIdentifier: Storyboards.Main.formSegue, sender: self)
             // see prepare for segue
         }
         // Wait for result
@@ -170,6 +170,8 @@ extension ViewController {
             doOAuthDigu(parameters)
         case "Noun":
             doOAuthNoun(parameters)
+        case "Lyft":
+            doOAuthLyft(parameters)
         default:
             print("\(service) not implemented")
         }
@@ -1317,6 +1319,29 @@ extension ViewController {
         })
     }
 
+    // MARK: Lyft
+    func doOAuthLyft(_ serviceParameters: [String:String]){
+        let oauthswift = OAuth2Swift(
+            consumerKey:    serviceParameters["consumerKey"]!,
+            consumerSecret: serviceParameters["consumerSecret"]!,
+            authorizeUrl:   "https://api.lyft.com/oauth/authorize",
+            accessTokenUrl: "https://api.lyft.com/oauth/token",
+            responseType:   "code",
+            contentType:    "application/json"
+        )
+        self.oauthswift = oauthswift
+        oauthswift.authorizeURLHandler = getURLHandler()
+        let state = generateState(withLength: 20)
+        let _ = oauthswift.authorize(
+            withCallbackURL: URL(string: "oauth-swift://oauth-callback/lift")!, scope: "rides.read", state: state,
+            success: { credential, response, parameters in
+                self.showTokenAlert(name: serviceParameters["name"], credential: credential)
+        },
+            failure: { error in
+                print(error.description)
+        }
+        )
+    }
 }
 
 let services = Services()
@@ -1501,7 +1526,7 @@ extension ViewController {
     
     
     override func prepare(for segue: OAuthStoryboardSegue, sender: Any?) {
-        if segue.identifier == Storyboards.Main.FormSegue {
+        if segue.identifier == Storyboards.Main.formSegue {
             #if os(OSX)
                 let controller = segue.destinationController as? FormViewController
             #else

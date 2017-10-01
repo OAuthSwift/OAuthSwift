@@ -61,14 +61,14 @@ extension AppDelegate: NSApplicationDelegate {
         NSAppleEventManager.shared().setEventHandler(self, andSelector:#selector(AppDelegate.handleGetURL(event:withReplyEvent:)), forEventClass: AEEventClass(kInternetEventClass), andEventID: AEEventID(kAEGetURL))
     }
 
-    func handleGetURL(event: NSAppleEventDescriptor!, withReplyEvent: NSAppleEventDescriptor!) {
+    @objc func handleGetURL(event: NSAppleEventDescriptor!, withReplyEvent: NSAppleEventDescriptor!) {
         if let urlString = event.paramDescriptor(forKeyword: AEKeyword(keyDirectObject))?.stringValue, let url = URL(string: urlString) {
             applicationHandle(url: url)
         }
     }
 
     class var sharedInstance: AppDelegate {
-        return NSApplication.shared().delegate as! AppDelegate
+        return NSApplication.shared.delegate as! AppDelegate
     }
     
 }
