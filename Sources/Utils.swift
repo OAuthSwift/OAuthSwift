@@ -10,13 +10,13 @@ import Foundation
 
 public func generateState(withLength len: Int) -> String {
     let letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-    let length = UInt32(letters.characters.count)
+    let length = UInt32(letters.count)
 
     var randomString = ""
     for _ in 0..<len {
         let rand = arc4random_uniform(length)
         let idx = letters.index(letters.startIndex, offsetBy: Int(rand))
-        let letter = letters.characters[idx]
+        let letter = letters[idx]
         randomString += String(letter)
     }
     return randomString

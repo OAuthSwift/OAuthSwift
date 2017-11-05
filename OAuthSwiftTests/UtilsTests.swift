@@ -44,7 +44,7 @@ class UtilsTest: XCTestCase {
     func testGenerateState() {
         for l  in 0 ..< 20 {
             let str = generateState(withLength: l)
-            XCTAssertEqual(str.characters.count, l)
+            XCTAssertEqual(str.count, l)
         }
     }
     
