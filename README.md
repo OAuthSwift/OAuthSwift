@@ -10,6 +10,9 @@ Swift based OAuth library for iOS and macOS.
 
 Twitter, Flickr, Github, Instagram, Foursquare. Fitbit, Withings, Linkedin, Dropbox, Dribbble, Salesforce, BitBucket, GoogleDrive, Smugmug, Intuit, Zaim, Tumblr, Slack, Uber, Gitter, Facebook, Spotify, Typetalk, SoundCloud, etc
 
+## Sponsored by Auth0 <span><img src="https://user-images.githubusercontent.com/1801923/31792116-d4fca9ec-b512-11e7-92eb-56e8d3df8e70.png" height="28" align="top"></span>
+If you want to easily add authentication to Swift apps, feel free to check out Auth0's Swift SDK and free plan at [auth0.com/overview](https://auth0.com/overview?utm_source=GHsponsor&utm_medium=GHsponsor&utm_campaign=oauthswift&utm_content=auth)
+
 ## Installation
 
 OAuthSwift is packaged as a Swift framework. Currently this is the simplest way to add it to your app:
@@ -34,7 +37,7 @@ github "OAuthSwift/OAuthSwift" ~> 1.2.0
 * Podfile
 
 ```
-platform :ios, '9.0'
+platform :ios, '10.0'
 use_frameworks!
 
 pod 'OAuthSwift', '~> 1.2.0'
@@ -252,7 +255,6 @@ To achieve great asynchronous code you can use one of these integration framewor
 
 OAuthSwift is available under the MIT license. See the LICENSE file for more info.
 
-[![Join the chat at https://gitter.im/OAuthSwift/OAuthSwift](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/OAuthSwift/OAuthSwift?utm_campaign=pr-badge&utm_content=badge&utm_medium=badge&utm_source=badge)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat
             )](http://mit-license.org) [![Platform](https://img.shields.io/badge/platform-iOS_OSX_TVOS-lightgrey.svg?style=flat
              )](https://developer.apple.com/resources/) [![Language](https://img.shields.io/badge/language-swift-orange.svg?style=flat
