@@ -107,7 +107,7 @@ open class OAuthSwiftHTTPRequest: NSObject, OAuthSwiftRequestHandle {
                 guard let response = resp as? HTTPURLResponse, let responseData = data else {
                     let badRequestCode = 400
                     let localizedDescription = OAuthSwiftHTTPRequest.descriptionForHTTPStatus(badRequestCode, responseString: "")
-                    var userInfo: [String : Any] = [
+                    var userInfo: [String: Any] = [
                         NSLocalizedDescriptionKey: localizedDescription
                     ]
                     if let response = resp { // there is only no data
@@ -141,7 +141,7 @@ open class OAuthSwiftHTTPRequest: NSObject, OAuthSwiftRequestHandle {
                         localizedDescription = OAuthSwiftHTTPRequest.descriptionForHTTPStatus(response.statusCode, responseString: String(data: responseData, encoding: OAuthSwiftDataEncoding)!)
                     }
 
-                    var userInfo: [String : Any] = [
+                    var userInfo: [String: Any] = [
                         NSLocalizedDescriptionKey: localizedDescription,
                         "Response-Headers": response.allHeaderFields,
                         OAuthSwiftError.ResponseKey: response,

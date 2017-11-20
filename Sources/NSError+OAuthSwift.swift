@@ -20,7 +20,7 @@ public extension NSError {
     /// different manner. See https://developers.facebook.com/docs/graph-api/using-graph-api#errors
 	public var isExpiredToken: Bool {
 		if self.domain == NSURLErrorDomain && self.code == 401 {
-			if let reponseHeaders = self.userInfo["Response-Headers"] as? [String:String],
+			if let reponseHeaders = self.userInfo["Response-Headers"] as? [String: String],
 				let authenticateHeader = reponseHeaders["WWW-Authenticate"] ?? reponseHeaders["Www-Authenticate"] {
 				let headerDictionary = authenticateHeader.headerDictionary
 				if let error = headerDictionary["error"], error == "invalid_token" || error == "\"invalid_token\"" {

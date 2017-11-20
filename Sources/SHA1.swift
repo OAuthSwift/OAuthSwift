@@ -66,11 +66,8 @@ class SHA1 {
                     let end = start + memorySize
                     let le = chunk[start..<end].toUInt32
                     M[x] = le.bigEndian
-
-                    break
                 default:
                     M[x] = rotateLeft(M[x-3] ^ M[x-8] ^ M[x-14] ^ M[x-16], n: 1)
-                    break
                 }
             }
 
@@ -89,19 +86,15 @@ class SHA1 {
                 case 0...19:
                     f = (B & C) | ((~B) & D)
                     k = 0x5A827999
-                    break
                 case 20...39:
                     f = B ^ C ^ D
                     k = 0x6ED9EBA1
-                    break
                 case 40...59:
                     f = (B & C) | (B & D) | (C & D)
                     k = 0x8F1BBCDC
-                    break
                 case 60...79:
                     f = B ^ C ^ D
                     k = 0xCA62C1D6
-                    break
                 default:
                     break
                 }

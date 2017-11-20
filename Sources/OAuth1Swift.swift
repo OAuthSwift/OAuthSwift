@@ -43,7 +43,7 @@ open class OAuth1Swift: OAuthSwift {
             let requestTokenUrl = parameters["requestTokenUrl"], let authorizeUrl = parameters["authorizeUrl"], let accessTokenUrl = parameters["accessTokenUrl"] else {
             return nil
         }
-        self.init(consumerKey:consumerKey, consumerSecret: consumerSecret,
+        self.init(consumerKey: consumerKey, consumerSecret: consumerSecret,
           requestTokenUrl: requestTokenUrl,
           authorizeUrl: authorizeUrl,
           accessTokenUrl: accessTokenUrl)

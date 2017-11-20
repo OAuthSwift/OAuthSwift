@@ -128,7 +128,7 @@ extension OAuthSwiftError: CustomNSError {
     public var errorCode: Int { return self.code.rawValue }
 
     /// The user-info dictionary.
-    public var errorUserInfo: [String : Any] {
+    public var errorUserInfo: [String: Any] {
         switch self {
         case .configurationError(let m): return ["message": m]
         case .serverError(let m): return ["message": m]
