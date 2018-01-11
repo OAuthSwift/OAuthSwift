@@ -1,3 +1,4 @@
+// swift-tools-version:4.0
 // Package.swift
 /*
  The MIT License (MIT)
@@ -22,5 +23,12 @@
 import PackageDescription
 
 let package = Package(
-  name: "OAuthSwift"
+    name: "OAuthSwift",
+    products: [
+        .library(name: "OAuthSwift", targets: ["OAuthSwift"]),
+    ],
+    targets: [
+        .target(name: "OAuthSwift", dependencies: [], path: "Sources"),
+        .testTarget(name: "OAuthSwiftTests", dependencies: ["OAuthSwift"], path: "OAuthSwiftTests"),
+    ]
 )
