@@ -74,7 +74,7 @@ open class OAuthSwiftCredential: NSObject, NSCoding {
         case RSA_SHA1 = "RSA-SHA1"
         case PLAINTEXT = "PLAINTEXT"
 
-        public static let delegates: [SignatureMethod: OAuthSwiftSignatureDelegate.Type] =
+        public static var delegates: [SignatureMethod: OAuthSwiftSignatureDelegate.Type] =
             [HMAC_SHA1: HMAC.self]
 
         var hashMethod: OAuthSwiftHashMethod {
