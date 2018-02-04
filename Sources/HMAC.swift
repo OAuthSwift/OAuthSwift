@@ -41,3 +41,15 @@ open class HMAC {
     }
 
 }
+
+extension HMAC: OAuthSwiftSignatureDelegate {
+    open static func sign(hashMethod: OAuthSwiftHashMethod, key: Data, message: Data) -> Data? {
+        switch hashMethod {
+        case .sha1:
+            return sha1(key: key, message: message)
+        case .none:
+            assertionFailure("Must no sign with none")
+            return nil
+        }
+    }
+}

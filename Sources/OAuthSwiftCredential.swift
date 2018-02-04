@@ -12,6 +12,28 @@ public protocol OAuthSwiftCredentialHeadersFactory {
     func make(_ url: URL, method: OAuthSwiftHTTPRequest.Method, parameters: OAuthSwift.Parameters, body: Data?) -> [String: String]
 }
 
+/// Allow to sign
+// swiftlint:disable:next class_delegate_protocol
+public protocol OAuthSwiftSignatureDelegate {
+    static func sign(hashMethod: OAuthSwiftHashMethod, key: Data, message: Data) -> Data?
+}
+
+// The hash method used.
+public enum OAuthSwiftHashMethod: String {
+    case sha1
+    case none
+
+    func hash(data: Data) -> Data? {
+        switch self {
+        case .sha1:
+            let mac = SHA1(data).calculate()
+            return Data(bytes: UnsafePointer<UInt8>(mac), count: mac.count)
+        case .none:
+            return data
+        }
+    }
+}
+
 /// The credential for authentification
 open class OAuthSwiftCredential: NSObject, NSCoding {
 
@@ -25,10 +47,6 @@ open class OAuthSwiftCredential: NSObject, NSCoding {
             case .oauth2:
                 return "2.0"
             }
-        }
-
-        public var signatureMethod: SignatureMethod {
-            return .HMAC_SHA1
         }
 
         var toInt32: Int32 {
@@ -52,22 +70,30 @@ open class OAuthSwiftCredential: NSObject, NSCoding {
     }
 
     public enum SignatureMethod: String {
-        case HMAC_SHA1 = "HMAC-SHA1"//, RSA_SHA1 = "RSA-SHA1", PLAINTEXT = "PLAINTEXT"
+        case HMAC_SHA1 = "HMAC-SHA1"
+        case RSA_SHA1 = "RSA-SHA1"
+        case PLAINTEXT = "PLAINTEXT"
+
+        public static let delegates: [SignatureMethod: OAuthSwiftSignatureDelegate.Type] =
+            [HMAC_SHA1: HMAC.self]
+
+        var hashMethod: OAuthSwiftHashMethod {
+            switch self {
+            case .HMAC_SHA1, .RSA_SHA1:
+                return .sha1
+            case .PLAINTEXT:
+                return .none
+            }
+        }
 
         func sign(key: Data, message: Data) -> Data? {
-            switch self {
-            case .HMAC_SHA1:
-                return HMAC.sha1(key: key, message: message)
+            if let delegate = SignatureMethod.delegates[self] {
+                return delegate.sign(hashMethod: self.hashMethod, key: key, message: message)
             }
+            assert(self == .PLAINTEXT, "No signature method installed for \(self)")
+            return message
         }
 
-        func sign(data: Data) -> Data? {
-            switch self {
-            case .HMAC_SHA1:
-                let mac = SHA1(data).calculate()
-                return Data(bytes: UnsafePointer<UInt8>(mac), count: mac.count)
-            }
-        }
     }
 
     // MARK: attributes
@@ -79,6 +105,7 @@ open class OAuthSwiftCredential: NSObject, NSCoding {
     open var oauthTokenExpiresAt: Date?
     open internal(set) var oauthVerifier = ""
     open var version: Version = .oauth1
+    open var signatureMethod: SignatureMethod = .HMAC_SHA1
 
     /// hook to replace headers creation
     open var headersFactory: OAuthSwiftCredentialHeadersFactory?
@@ -106,6 +133,7 @@ open class OAuthSwiftCredential: NSObject, NSCoding {
         static let oauthTokenSecret = base + "oauth_token_secret"
         static let oauthVerifier = base + "oauth_verifier"
         static let version = base + "version"
+        static let signatureMethod = base + "signatureMethod"
     }
 
     /// Cannot declare a required initializer within an extension.
@@ -120,6 +148,9 @@ open class OAuthSwiftCredential: NSObject, NSCoding {
         self.oauthVerifier = (decoder.decodeObject(forKey: CodingKeys.oauthVerifier) as? String) ?? String()
         self.oauthTokenExpiresAt = (decoder.decodeObject(forKey: CodingKeys.oauthTokenExpiresAt) as? Date)
         self.version = Version(decoder.decodeInt32(forKey: CodingKeys.version))
+        if case .oauth1 = version {
+            self.signatureMethod = SignatureMethod(rawValue: decoder.decodeObject(forKey: CodingKeys.signatureMethod) as? String ?? "HMAC_SHA1") ?? .HMAC_SHA1
+        }
     }
 
     open func encode(with coder: NSCoder) {
@@ -131,6 +162,9 @@ open class OAuthSwiftCredential: NSObject, NSCoding {
         coder.encode(self.oauthVerifier, forKey: CodingKeys.oauthVerifier)
         coder.encode(self.oauthTokenExpiresAt, forKey: CodingKeys.oauthTokenExpiresAt)
         coder.encode(self.version.toInt32, forKey: CodingKeys.version)
+        if case .oauth1 = version {
+            coder.encode(self.signatureMethod.rawValue, forKey: CodingKeys.version)
+        }
     }
     // } // End NSCoding extension
 
@@ -202,11 +236,11 @@ open class OAuthSwiftCredential: NSObject, NSCoding {
     open func authorizationParameters(_ body: Data?, timestamp: String, nonce: String) -> OAuthSwift.Parameters {
         var authorizationParameters = OAuthSwift.Parameters()
         authorizationParameters["oauth_version"] = self.version.shortVersion
-        authorizationParameters["oauth_signature_method"] =  self.version.signatureMethod.rawValue
+        authorizationParameters["oauth_signature_method"] =  self.signatureMethod.rawValue
         authorizationParameters["oauth_consumer_key"] = self.consumerKey
         authorizationParameters["oauth_timestamp"] = timestamp
         authorizationParameters["oauth_nonce"] = nonce
-        if let b = body, let hash = self.version.signatureMethod.sign(data: b) {
+        if let b = body, let hash = self.signatureMethod.hashMethod.hash(data: b) {
             authorizationParameters["oauth_body_hash"] = hash.base64EncodedString(options: [])
         }
 
@@ -240,7 +274,7 @@ open class OAuthSwiftCredential: NSObject, NSCoding {
         let key = signingKey.data(using: .utf8)!
         let msg = signatureBaseString.data(using: .utf8)!
 
-        let sha1 = self.version.signatureMethod.sign(key: key, message: msg)!
+        let sha1 = self.signatureMethod.sign(key: key, message: msg)!
         return sha1.base64EncodedString(options: [])
     }
 
