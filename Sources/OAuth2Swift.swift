@@ -190,7 +190,11 @@ open class OAuth2Swift: OAuthSwift {
     }
 
     fileprivate func requestOAuthAccessToken(withParameters parameters: OAuthSwift.Parameters, headers: OAuthSwift.Headers? = nil, success: @escaping TokenSuccessHandler, failure: FailureHandler?) -> OAuthSwiftRequestHandle? {
-        let successHandler: OAuthSwiftHTTPRequest.SuccessHandler = { [unowned self] response in
+        let successHandler: OAuthSwiftHTTPRequest.SuccessHandler = { [weak self] response in
+            guard let this = self else {
+                OAuthSwift.retainError(failure)
+                return
+            }
             let responseJSON: Any? = try? response.jsonObject(options: .mutableContainers)
 
             let responseParameters: OAuthSwift.Parameters
@@ -208,17 +212,17 @@ open class OAuth2Swift: OAuthSwift {
             }
 
             if let refreshToken = responseParameters["refresh_token"] as? String {
-                self.client.credential.oauthRefreshToken = refreshToken.safeStringByRemovingPercentEncoding
+                this.client.credential.oauthRefreshToken = refreshToken.safeStringByRemovingPercentEncoding
             }
 
             if let expiresIn = responseParameters["expires_in"] as? String, let offset = Double(expiresIn) {
-                self.client.credential.oauthTokenExpiresAt = Date(timeInterval: offset, since: Date())
+                this.client.credential.oauthTokenExpiresAt = Date(timeInterval: offset, since: Date())
             } else if let expiresIn = responseParameters["expires_in"] as? Double {
-                self.client.credential.oauthTokenExpiresAt = Date(timeInterval: expiresIn, since: Date())
+                this.client.credential.oauthTokenExpiresAt = Date(timeInterval: expiresIn, since: Date())
             }
 
-            self.client.credential.oauthToken = accessToken.safeStringByRemovingPercentEncoding
-            success(self.client.credential, response, responseParameters)
+            this.client.credential.oauthToken = accessToken.safeStringByRemovingPercentEncoding
+            success(this.client.credential, response, responseParameters)
         }
 
         guard let accessTokenUrl = accessTokenUrl else {
