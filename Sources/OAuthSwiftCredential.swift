@@ -35,9 +35,9 @@ public enum OAuthSwiftHashMethod: String {
 }
 
 /// The credential for authentification
-open class OAuthSwiftCredential: NSObject, NSCoding {
+open class OAuthSwiftCredential: NSObject, NSCoding, Codable {
 
-    public enum Version {
+    public enum Version : Codable {
         case oauth1, oauth2
 
         public var shortVersion: String {
@@ -57,6 +57,7 @@ open class OAuthSwiftCredential: NSObject, NSCoding {
                 return 2
             }
         }
+
         init(_ value: Int32) {
             switch value {
             case 1:
@@ -66,6 +67,15 @@ open class OAuthSwiftCredential: NSObject, NSCoding {
             default:
                 self = .oauth1
             }
+        }
+
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.singleValueContainer()
+            try container.encode(self.toInt32)
+        }
+
+        public init(from decoder: Decoder) throws {
+            self.init(try decoder.singleValueContainer().decode(Int32.self))
         }
     }
 
@@ -120,7 +130,7 @@ open class OAuthSwiftCredential: NSObject, NSCoding {
     }
 
     // MARK: NSCoding protocol
-    fileprivate struct CodingKeys {
+    fileprivate struct NSCodingKeys {
         static let bundleId = Bundle.main.bundleIdentifier
             ?? Bundle(for: OAuthSwiftCredential.self).bundleIdentifier
             ?? ""
@@ -140,33 +150,80 @@ open class OAuthSwiftCredential: NSObject, NSCoding {
     /// extension OAuthSwiftCredential: NSCoding {
     public required convenience init?(coder decoder: NSCoder) {
         self.init()
-        self.consumerKey = (decoder.decodeObject(forKey: CodingKeys.consumerKey) as? String) ?? String()
-        self.consumerSecret = (decoder.decodeObject(forKey: CodingKeys.consumerSecret) as? String) ?? String()
-        self.oauthToken = (decoder.decodeObject(forKey: CodingKeys.oauthToken) as? String) ?? String()
-        self.oauthRefreshToken = (decoder.decodeObject(forKey: CodingKeys.oauthRefreshToken) as? String) ?? String()
-        self.oauthTokenSecret = (decoder.decodeObject(forKey: CodingKeys.oauthTokenSecret) as? String) ?? String()
-        self.oauthVerifier = (decoder.decodeObject(forKey: CodingKeys.oauthVerifier) as? String) ?? String()
-        self.oauthTokenExpiresAt = (decoder.decodeObject(forKey: CodingKeys.oauthTokenExpiresAt) as? Date)
-        self.version = Version(decoder.decodeInt32(forKey: CodingKeys.version))
+        self.consumerKey = (decoder.decodeObject(forKey: NSCodingKeys.consumerKey) as? String) ?? String()
+        self.consumerSecret = (decoder.decodeObject(forKey: NSCodingKeys.consumerSecret) as? String) ?? String()
+        self.oauthToken = (decoder.decodeObject(forKey: NSCodingKeys.oauthToken) as? String) ?? String()
+        self.oauthRefreshToken = (decoder.decodeObject(forKey: NSCodingKeys.oauthRefreshToken) as? String) ?? String()
+        self.oauthTokenSecret = (decoder.decodeObject(forKey: NSCodingKeys.oauthTokenSecret) as? String) ?? String()
+        self.oauthVerifier = (decoder.decodeObject(forKey: NSCodingKeys.oauthVerifier) as? String) ?? String()
+        self.oauthTokenExpiresAt = (decoder.decodeObject(forKey: NSCodingKeys.oauthTokenExpiresAt) as? Date)
+        self.version = Version(decoder.decodeInt32(forKey: NSCodingKeys.version))
         if case .oauth1 = version {
-            self.signatureMethod = SignatureMethod(rawValue: decoder.decodeObject(forKey: CodingKeys.signatureMethod) as? String ?? "HMAC_SHA1") ?? .HMAC_SHA1
+            self.signatureMethod = SignatureMethod(rawValue: decoder.decodeObject(forKey: NSCodingKeys.signatureMethod) as? String ?? "HMAC_SHA1") ?? .HMAC_SHA1
         }
     }
 
     open func encode(with coder: NSCoder) {
-        coder.encode(self.consumerKey, forKey: CodingKeys.consumerKey)
-        coder.encode(self.consumerSecret, forKey: CodingKeys.consumerSecret)
-        coder.encode(self.oauthToken, forKey: CodingKeys.oauthToken)
-        coder.encode(self.oauthRefreshToken, forKey: CodingKeys.oauthRefreshToken)
-        coder.encode(self.oauthTokenSecret, forKey: CodingKeys.oauthTokenSecret)
-        coder.encode(self.oauthVerifier, forKey: CodingKeys.oauthVerifier)
-        coder.encode(self.oauthTokenExpiresAt, forKey: CodingKeys.oauthTokenExpiresAt)
-        coder.encode(self.version.toInt32, forKey: CodingKeys.version)
+        coder.encode(self.consumerKey, forKey: NSCodingKeys.consumerKey)
+        coder.encode(self.consumerSecret, forKey: NSCodingKeys.consumerSecret)
+        coder.encode(self.oauthToken, forKey: NSCodingKeys.oauthToken)
+        coder.encode(self.oauthRefreshToken, forKey: NSCodingKeys.oauthRefreshToken)
+        coder.encode(self.oauthTokenSecret, forKey: NSCodingKeys.oauthTokenSecret)
+        coder.encode(self.oauthVerifier, forKey: NSCodingKeys.oauthVerifier)
+        coder.encode(self.oauthTokenExpiresAt, forKey: NSCodingKeys.oauthTokenExpiresAt)
+        coder.encode(self.version.toInt32, forKey: NSCodingKeys.version)
         if case .oauth1 = version {
-            coder.encode(self.signatureMethod.rawValue, forKey: CodingKeys.version)
+            coder.encode(self.signatureMethod.rawValue, forKey: NSCodingKeys.version)
         }
     }
     // } // End NSCoding extension
+
+    // MARK: Codable protocol
+    enum CodingKeys : String, CodingKey {
+        case consumerKey
+        case consumerSecret
+        case oauthToken
+        case oauthRefreshToken
+        case oauthTokenSecret
+        case oauthVerifier
+        case oauthTokenExpiresAt
+        case version
+        case signatureMethodRawValue
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(self.consumerKey, forKey: .consumerKey)
+        try container.encode(self.consumerSecret, forKey: .consumerSecret)
+        try container.encode(self.oauthToken, forKey: .oauthToken)
+        try container.encode(self.oauthRefreshToken, forKey: .oauthRefreshToken)
+        try container.encode(self.oauthTokenSecret, forKey: .oauthTokenSecret)
+        try container.encode(self.oauthVerifier, forKey: .oauthVerifier)
+        try container.encodeIfPresent(self.oauthTokenExpiresAt, forKey: .oauthTokenExpiresAt)
+        try container.encode(self.version, forKey: .version)
+        if case .oauth1 = version {
+            try container.encode(self.signatureMethod.rawValue, forKey: .signatureMethodRawValue)
+        }
+    }
+
+    public required convenience init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        self.init()
+
+        self.consumerKey = try container.decode(type(of: self.consumerKey), forKey: .consumerKey)
+        self.consumerSecret = try container.decode(type(of: self.consumerSecret), forKey: .consumerSecret)
+        self.oauthToken = try container.decode(type(of: self.oauthToken), forKey: .oauthToken)
+        self.oauthRefreshToken = try container.decode(type(of: self.oauthRefreshToken), forKey: .oauthRefreshToken)
+        self.oauthTokenSecret = try container.decode(type(of: self.oauthTokenSecret), forKey: .oauthTokenSecret)
+        self.oauthVerifier = try container.decode(type(of: self.oauthVerifier), forKey: .oauthVerifier)
+        self.oauthTokenExpiresAt = try container.decodeIfPresent(Date.self, forKey: .oauthTokenExpiresAt)
+        self.version = try container.decode(type(of: self.version), forKey: .version)
+
+        if case .oauth1 = version {
+            self.signatureMethod = SignatureMethod(rawValue: try container.decode(type(of: self.signatureMethod.rawValue), forKey: .signatureMethodRawValue))!
+        }
+    }
 
     // MARK: functions
     /// for OAuth1 parameters must contains sorted query parameters and url must not contains query parameters
