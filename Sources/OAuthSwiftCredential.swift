@@ -163,7 +163,7 @@ open class OAuthSwiftCredential: NSObject, NSCoding {
         coder.encode(self.oauthTokenExpiresAt, forKey: CodingKeys.oauthTokenExpiresAt)
         coder.encode(self.version.toInt32, forKey: CodingKeys.version)
         if case .oauth1 = version {
-            coder.encode(self.signatureMethod.rawValue, forKey: CodingKeys.version)
+            coder.encode(self.signatureMethod.rawValue, forKey: CodingKeys.signatureMethod)
         }
     }
     // } // End NSCoding extension
