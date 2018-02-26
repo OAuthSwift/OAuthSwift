@@ -37,7 +37,7 @@ public enum OAuthSwiftHashMethod: String {
 /// The credential for authentification
 open class OAuthSwiftCredential: NSObject, NSCoding, Codable {
 
-    public enum Version : Codable {
+    public enum Version: Codable {
         case oauth1, oauth2
 
         public var shortVersion: String {
@@ -173,13 +173,13 @@ open class OAuthSwiftCredential: NSObject, NSCoding, Codable {
         coder.encode(self.oauthTokenExpiresAt, forKey: NSCodingKeys.oauthTokenExpiresAt)
         coder.encode(self.version.toInt32, forKey: NSCodingKeys.version)
         if case .oauth1 = version {
-            coder.encode(self.signatureMethod.rawValue, forKey: CodingKeys.signatureMethod)
+            coder.encode(self.signatureMethod.rawValue, forKey: NSCodingKeys.signatureMethod)
         }
     }
     // } // End NSCoding extension
 
     // MARK: Codable protocol
-    enum CodingKeys : String, CodingKey {
+    enum CodingKeys: String, CodingKey {
         case consumerKey
         case consumerSecret
         case oauthToken
