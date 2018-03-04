@@ -59,6 +59,19 @@ extension Dictionary {
     }
 }
 
+extension Dictionary {
+    @available(swift, introduced: 3.2, obsoleted: 4.0)
+    public func filter(_ isIncluded: (Key, Value) throws -> Bool) rethrows -> [Key: Value] {
+        var resultDictionary = [Key: Value](minimumCapacity: count)
+        for (key, value) in self {
+            if try isIncluded(key, value) {
+                resultDictionary[key] = value
+            }
+        }
+        return resultDictionary
+    }
+}
+
 func +=<K, V> (left: inout [K: V], right: [K: V]) { left.merge(right) }
 func +<K, V> (left: [K: V], right: [K: V]) -> [K: V] { return left.join(right) }
 func +=<K, V> (left: inout [K: V]?, right: [K: V]) {
