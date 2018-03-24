@@ -25,7 +25,7 @@ class SignTests: XCTestCase {
         let string = "Hello World!"
         let data = string.data(using: String.Encoding.utf8)!
         
-        guard let hash = OAuthSwiftCredential.SignatureMethod.HMAC_SHA1.sign(data: data) else {
+        guard let hash = OAuthSwiftHashMethod.sha1.hash(data: data) else {
             XCTFail("Failed to hash")
             return
         }
