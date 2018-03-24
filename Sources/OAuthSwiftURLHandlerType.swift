@@ -68,9 +68,10 @@ import SafariServices
         open var delay: UInt32? = 1
 
         /// init
-        public init(viewController: UIViewController, oauthSwift: OAuthSwift) {
+        public init(viewController: UIViewController, oauthSwift: OAuthSwift, modalPresentationStyle: UIModalPresentationStyle = .fullScreen) {
             self.oauthSwift = oauthSwift
             self.present = { [weak viewController] controller, handler in
+                controller.modalPresentationStyle = modalPresentationStyle
                 viewController?.present(controller, animated: handler.animated, completion: handler.presentCompletion)
             }
             self.dismiss = { [weak viewController] _, handler in
