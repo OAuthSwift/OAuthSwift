@@ -31,7 +31,7 @@ open class OAuthSwiftOpenURLExternally: OAuthSwiftURLHandlerType {
                 UIApplication.shared.openURL(url)
             #endif
         #elseif os(watchOS)
-        // WATCHOS: not implemented
+            // WATCHOS: not implemented
         #elseif os(OSX)
             NSWorkspace.shared.open(url)
         #endif
@@ -40,10 +40,12 @@ open class OAuthSwiftOpenURLExternally: OAuthSwiftURLHandlerType {
 
 // MARK: Open SFSafariViewController
 #if os(iOS)
-import SafariServices
+    import SafariServices
 
     @available(iOS 9.0, *)
     open class SafariURLHandler: NSObject, OAuthSwiftURLHandlerType, SFSafariViewControllerDelegate {
+
+        static let kSafariViewControllerDidCancel = "safariViewControllerDidCancel"
 
         public typealias UITransion = (_ controller: SFSafariViewController, _ handler: SafariURLHandler) -> Void
 
@@ -65,7 +67,7 @@ import SafariServices
         open var animated: Bool = true
         open var presentCompletion: (() -> Void)?
         open var dismissCompletion: (() -> Void)?
-        open var delay: UInt32? = 1
+        open var delay: UInt32? = 0
 
         /// init
         public init(viewController: UIViewController, oauthSwift: OAuthSwift) {
@@ -140,6 +142,7 @@ import SafariServices
 
         public func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
             // "Done" pressed
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: SafariURLHandler.kSafariViewControllerDidCancel), object: nil)
             self.clearObservers()
             self.delegate?.safariViewControllerDidFinish?(controller)
         }
@@ -165,3 +168,4 @@ open class ExtensionContextURLHandler: OAuthSwiftURLHandlerType {
         extensionContext.open(url, completionHandler: nil)
     }
 }
+
