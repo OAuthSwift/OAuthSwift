@@ -107,4 +107,5 @@ extension OAuthSwift {
     public typealias TokenSuccessHandler = (_ credential: OAuthSwiftCredential, _ response: OAuthSwiftResponse?, _ parameters: Parameters) -> Void
     public typealias FailureHandler = (_ error: OAuthSwiftError) -> Void
     public typealias TokenRenewedHandler = (_ credential: OAuthSwiftCredential) -> Void
+    public typealias RequestSuccessHandler = (_ responseURL: URL) -> Void
 }
