@@ -141,6 +141,10 @@ open class OAuth1Swift: OAuthSwift {
                 if let oauthTokenSecret=parameters["oauth_token_secret"] {
                     this.client.credential.oauthTokenSecret = oauthTokenSecret.safeStringByRemovingPercentEncoding
                 }
+                if let callbackConfirmed = parameters["oath_callback_confirmed"], callbackConfirmed == "false" {
+                    failure?(OAuthSwiftError.callbackConfirmed)
+                    return
+                }
                 success(this.client.credential, response, parameters)
             }, failure: failure
             ) {
