@@ -150,7 +150,7 @@ extension OAuthSwiftError: CustomNSError {
         case .encodingError(let urlString): return ["url": urlString]
 
         case .stateNotEqual(let s, let e): return ["state": s, "expected": e]
-        case .callbackConfirmed: return ["message": description]
+        case .callbackConfirmed: return [NSLocalizedDescriptionKey: description]
         default: return [:]
         }
     }
