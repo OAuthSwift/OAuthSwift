@@ -183,6 +183,7 @@ open class OAuth1Swift: OAuthSwift {
 extension OAuth1Swift {
 
     // 1. - Request token
+    @discardableResult
     open func requestToken(withCallbackURL callbackURL: URL, success: @escaping RequestSuccessHandler, failure: FailureHandler?) -> OAuthSwiftRequestHandle? {
 
         self.postOAuthRequestToken(callbackURL: callbackURL, success: { (credential, _, _) in
