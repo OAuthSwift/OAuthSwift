@@ -65,8 +65,22 @@ extension String {
             scanner.scanUpTo(elementSeparator, into: &value)
             scanner.scanString(elementSeparator, into: nil)
 
-            if let key = key as String?, let value = value as String? {
-                parameters.updateValue(value, forKey: key)
+            if let key = key as String? {
+                if let value = value as String? {
+                    if key.contains(elementSeparator) {
+                        var keys = key.components(separatedBy: elementSeparator)
+                        if let key = keys.popLast() {
+                            parameters.updateValue(value, forKey: String(key))
+                        }
+                        for flag in keys {
+                            parameters.updateValue("", forKey: flag)
+                        }
+                    } else {
+                        parameters.updateValue(value, forKey: key)
+                    }
+                } else {
+                    parameters.updateValue("", forKey: key)
+                }
             }
         }
 
@@ -81,23 +95,20 @@ extension String {
         return self.removingPercentEncoding ?? self
     }
 
-    var droppedLast: String {
-        let to = self.index(before: self.endIndex)
-        return String(self[..<to])
-    }
-
     mutating func dropLast() {
         self.remove(at: self.index(before: self.endIndex))
     }
 
-    func substring(to offset: String.IndexDistance) -> String {
-        let to = self.index(self.startIndex, offsetBy: offset)
-        return String(self[..<to])
+    subscript (bounds: CountableClosedRange<Int>) -> String {
+        let start = index(startIndex, offsetBy: bounds.lowerBound)
+        let end = index(startIndex, offsetBy: bounds.upperBound)
+        return String(self[start...end])
     }
 
-    func substring(from offset: String.IndexDistance) -> String {
-        let from = self.index(self.startIndex, offsetBy: offset)
-        return String(self[from...])
+    subscript (bounds: CountableRange<Int>) -> String {
+        let start = index(startIndex, offsetBy: bounds.lowerBound)
+        let end = index(startIndex, offsetBy: bounds.upperBound)
+        return String(self[start..<end])
     }
 }
 

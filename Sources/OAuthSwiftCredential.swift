@@ -246,8 +246,8 @@ open class OAuthSwiftCredential: NSObject, NSCoding, Codable {
     }
 
     open class func generateNonce() -> String {
-        let uuidString = UUID().uuidString
-        return uuidString.substring(to: 8)
+        let uuidString: String = UUID().uuidString
+        return uuidString[0..<8]
     }
 
     open func authorizationHeader(method: OAuthSwiftHTTPRequest.Method, url: URL, parameters: OAuthSwift.Parameters, body: Data? = nil, timestamp: String, nonce: String) -> String {
