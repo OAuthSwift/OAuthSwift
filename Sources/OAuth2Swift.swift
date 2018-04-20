@@ -287,6 +287,25 @@ open class OAuth2Swift: OAuthSwift {
             }
         }
     }
+	
+	@discardableResult
+    open func authorize(username: String, password:String, success: @escaping TokenRenewedHandler, failure: @escaping OAuthSwiftHTTPRequest.FailureHandler) -> OAuthSwiftRequestHandle? {
+        var parameters = OAuthSwift.Parameters()
+        parameters["client_id"] = self.consumerKey
+        parameters["client_secret"] = self.consumerSecret
+        parameters["username"] = username
+        parameters["password"] = password
+        parameters["grant_type"] = "password"
+    
+        print(parameters)
+    
+        return requestOAuthAccessToken(
+            withParameters: parameters,
+            success: { (credential, _, _) in
+                success(credential)
+        	}, failure: failure
+        )
+    }
 
     @discardableResult
     open func authorize(deviceToken deviceCode: String, grantType: String = "http://oauth.net/grant_type/device/1.0", success: @escaping TokenRenewedHandler, failure: @escaping OAuthSwiftHTTPRequest.FailureHandler) -> OAuthSwiftRequestHandle? {
