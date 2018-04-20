@@ -289,14 +289,19 @@ open class OAuth2Swift: OAuthSwift {
     }
 	
 	// OAuth 2.0 Specification: https://tools.ietf.org/html/draft-ietf-oauth-v2-13#section-4.3
-	@discardableResult
+    @discardableResult
     open func authorize(username: String, password:String, scope:String?, headers: OAuthSwift.Headers? = nil, success: @escaping TokenSuccessHandler, failure: @escaping OAuthSwiftHTTPRequest.FailureHandler) -> OAuthSwiftRequestHandle? {
+    
         var parameters = OAuthSwift.Parameters()
         parameters["client_id"] = self.consumerKey
         parameters["client_secret"] = self.consumerSecret
         parameters["username"] = username
         parameters["password"] = password
         parameters["grant_type"] = "password"
+    
+        if let scope = scope {
+            parameters["scope"] = scope
+        }
     
         return requestOAuthAccessToken(
             withParameters: parameters,
