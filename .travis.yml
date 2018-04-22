@@ -1,5 +1,5 @@
 language: objective-c
-osx_image: xcode9
+osx_image: xcode9.3
 env:
   global:
     - LC_CTYPE=en_US.UTF-8
@@ -13,12 +13,22 @@ env:
     - DESTINATION="OS=11.0,name=iPhone 8" SCHEME="$IOS_FRAMEWORK_SCHEME" SDK="$IOS_SDK"
     - DESTINATION="arch=x86_64" SCHEME="$MACOS_FRAMEWORK_SCHEME" SDK="$MACOS_SDK"
 before_install:
+  - bundle install
+  - brew update
   - gem install xcpretty --no-rdoc --no-ri --no-document --quiet
+  - brew outdated swiftlint || brew upgrade swiftlint
 script:
   - set -o pipefail
   - xcodebuild -version
   - xcodebuild -showsdks
+
   - xcodebuild -project "$PROJECT" -scheme "$SCHEME" -sdk "$SDK" -destination "$DESTINATION" -configuration Release ONLY_ACTIVE_ARCH=NO build | xcpretty;
+
+   - bundle exec danger
+
+after_success:
+   - sleep 10 # Workaround for https://github.com/travis-ci/travis-ci/issues/4725
+   - bash <(curl -s https://codecov.io/bash) -J 'OAuthSwift'
 
 branches:
   only:
