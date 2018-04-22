@@ -343,4 +343,23 @@ open class OAuthSwiftCredential: NSObject, NSCoding, Codable {
         // If no expires date is available we assume the token is still valid since it doesn't have an expiration date to check with.
         return false
     }
+
+    // MARK: Equatable
+
+    override open func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? OAuthSwiftCredential else {
+            return false
+        }
+        let lhs = self
+        return lhs.consumerKey == rhs.consumerKey
+            && lhs.consumerSecret == rhs.consumerSecret
+            && lhs.oauthToken == rhs.oauthToken
+            && lhs.oauthRefreshToken == rhs.oauthRefreshToken
+            && lhs.oauthTokenSecret == rhs.oauthTokenSecret
+            && lhs.oauthTokenExpiresAt == rhs.oauthTokenExpiresAt
+            && lhs.oauthVerifier == rhs.oauthVerifier
+            && lhs.version == rhs.version
+            && lhs.signatureMethod == rhs.signatureMethod
+    }
+
 }
