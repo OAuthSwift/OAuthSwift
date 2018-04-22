@@ -287,22 +287,22 @@ open class OAuth2Swift: OAuthSwift {
             }
         }
     }
-	
+
 	// OAuth 2.0 Specification: https://tools.ietf.org/html/draft-ietf-oauth-v2-13#section-4.3
     @discardableResult
-    open func authorize(username: String, password:String, scope:String?, headers: OAuthSwift.Headers? = nil, success: @escaping TokenSuccessHandler, failure: @escaping OAuthSwiftHTTPRequest.FailureHandler) -> OAuthSwiftRequestHandle? {
-    
+    open func authorize(username: String, password: String, scope: String?, headers: OAuthSwift.Headers? = nil, success: @escaping TokenSuccessHandler, failure: @escaping OAuthSwiftHTTPRequest.FailureHandler) -> OAuthSwiftRequestHandle? {
+
         var parameters = OAuthSwift.Parameters()
         parameters["client_id"] = self.consumerKey
         parameters["client_secret"] = self.consumerSecret
         parameters["username"] = username
         parameters["password"] = password
         parameters["grant_type"] = "password"
-    
+
         if let scope = scope {
             parameters["scope"] = scope
         }
-    
+
         return requestOAuthAccessToken(
             withParameters: parameters,
             headers: headers,
@@ -310,9 +310,9 @@ open class OAuth2Swift: OAuthSwift {
             failure: failure
         )
     }
-	
+
     @discardableResult
-    open func authorize(deviceToken deviceCode: String, grantType: String = "http://oauth.net/grant_type/device/1.0", success: @escaping TokenRenewedHandler, failure: @escaping OAuthSwiftHTTPRequest.FailureHandler) -> OAuthSwiftRequestHandle? {
+    open func authorize(deviceToken deviceCode: String, grantType: String = "http://oauth.net/grant_type/device/1.0", success: @escaping TokenSuccessHandler, failure: @escaping OAuthSwiftHTTPRequest.FailureHandler) -> OAuthSwiftRequestHandle? {
         var parameters = OAuthSwift.Parameters()
         parameters["client_id"] = self.consumerKey
         parameters["client_secret"] = self.consumerSecret
@@ -321,9 +321,8 @@ open class OAuth2Swift: OAuthSwift {
 
         return requestOAuthAccessToken(
             withParameters: parameters,
-            success: { (credential, _, _) in
-                success(credential)
-            }, failure: failure
+            success: success,
+            failure: failure
         )
     }
 
