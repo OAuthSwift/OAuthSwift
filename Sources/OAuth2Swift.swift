@@ -78,7 +78,7 @@ open class OAuth2Swift: OAuthSwift {
 
     // MARK: functions
     @discardableResult
-    open func authorize(withCallbackURL callbackURL: URL, scope: String, state: String, parameters: Parameters = [:], headers: OAuthSwift.Headers? = nil, success: @escaping TokenSuccessHandler, failure: FailureHandler?) -> OAuthSwiftRequestHandle? {
+    open func authorize(withCallbackURL callbackURL: URL?, scope: String, state: String, parameters: Parameters = [:], headers: OAuthSwift.Headers? = nil, success: @escaping TokenSuccessHandler, failure: FailureHandler?) -> OAuthSwiftRequestHandle? {
 
         self.observeCallback { [weak self] url in
             guard let this = self else {
@@ -109,9 +109,15 @@ open class OAuth2Swift: OAuthSwift {
                         return
                     }
                 }
+                let callbackURLEncoded: URL?
+                if let callbackURL = callbackURL {
+                    callbackURLEncoded = URL(string: callbackURL.absoluteString.urlEncoded)!
+                } else {
+                    callbackURLEncoded = nil
+                }
                 if let handle = this.postOAuthAccessTokenWithRequestToken(
                     byCode: code.safeStringByRemovingPercentEncoding,
-                    callbackURL: URL(string: callbackURL.absoluteString.urlEncoded)!, headers: headers, success: success, failure: failure) {
+                    callbackURL: callbackURLEncoded, headers: headers, success: success, failure: failure) {
                     this.putHandle(handle, withKey: UUID().uuidString)
                 }
             } else if let error = responseParameters["error"] {
@@ -133,7 +139,9 @@ open class OAuth2Swift: OAuthSwift {
 
         var queryString: String? = ""
         queryString = queryString?.urlQueryByAppending(parameter: "client_id", value: self.consumerKey, encodeError)
-        queryString = queryString?.urlQueryByAppending(parameter: "redirect_uri", value: self.encodeCallbackURL ? callbackURL.absoluteString.urlEncoded : callbackURL.absoluteString, encode: self.encodeCallbackURLQuery, encodeError)
+        if let callbackURL = callbackURL {
+            queryString = queryString?.urlQueryByAppending(parameter: "redirect_uri", value: self.encodeCallbackURL ? callbackURL.absoluteString.urlEncoded : callbackURL.absoluteString, encode: self.encodeCallbackURLQuery, encodeError)
+        }
         queryString = queryString?.urlQueryByAppending(parameter: "response_type", value: self.responseType, encodeError)
         queryString = queryString?.urlQueryByAppending(parameter: "scope", value: scope, encodeError)
         queryString = queryString?.urlQueryByAppending(parameter: "state", value: state, encodeError)
@@ -167,13 +175,15 @@ open class OAuth2Swift: OAuthSwift {
         return authorize(withCallbackURL: url, scope: scope, state: state, parameters: parameters, headers: headers, success: success, failure: failure)
     }
 
-    open func postOAuthAccessTokenWithRequestToken(byCode code: String, callbackURL: URL, headers: OAuthSwift.Headers? = nil, success: @escaping TokenSuccessHandler, failure: FailureHandler?) -> OAuthSwiftRequestHandle? {
+    open func postOAuthAccessTokenWithRequestToken(byCode code: String, callbackURL: URL?, headers: OAuthSwift.Headers? = nil, success: @escaping TokenSuccessHandler, failure: FailureHandler?) -> OAuthSwiftRequestHandle? {
         var parameters = OAuthSwift.Parameters()
         parameters["client_id"] = self.consumerKey
         parameters["client_secret"] = self.consumerSecret
         parameters["code"] = code
         parameters["grant_type"] = "authorization_code"
-        parameters["redirect_uri"] = callbackURL.absoluteString.safeStringByRemovingPercentEncoding
+        if let callbackURL = callbackURL {
+            parameters["redirect_uri"] = callbackURL.absoluteString.safeStringByRemovingPercentEncoding
+        }
 
         return requestOAuthAccessToken(withParameters: parameters, headers: headers, success: success, failure: failure)
     }
