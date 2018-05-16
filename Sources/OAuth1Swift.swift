@@ -79,7 +79,7 @@ open class OAuth1Swift: OAuthSwift {
                     responseParameters["oauth_token"] = token
                 }
 
-                if let token = responseParameters["oauth_token"] {
+                if let token = responseParameters["oauth_token"], !token.isEmpty {
                     this.client.credential.oauthToken = token.safeStringByRemovingPercentEncoding
                     if let oauth_verifier = responseParameters["oauth_verifier"] {
                         this.client.credential.oauthVerifier = oauth_verifier.safeStringByRemovingPercentEncoding
