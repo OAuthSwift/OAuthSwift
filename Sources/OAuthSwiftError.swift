@@ -34,6 +34,8 @@ public enum OAuthSwiftError: Error {
     case requestError(error: Error, request: URLRequest)
     /// Request cancelled
     case cancelled
+    /// request/token response oath_callback_confirmed is false
+    case callbackConfirmed
 
     public static let Domain = "OAuthSwiftError"
     public static let ResponseDataKey = "OAuthSwiftError.response.data"
@@ -52,6 +54,7 @@ public enum OAuthSwiftError: Error {
         case retain = -10
         case requestError = -11
         case cancelled = -12
+        case callbackConfirmed = -13
     }
 
     fileprivate var code: Code {
@@ -68,6 +71,7 @@ public enum OAuthSwiftError: Error {
         case .retain: return Code.retain
         case .requestError: return Code.requestError
         case .cancelled : return Code.cancelled
+        case .callbackConfirmed: return Code.callbackConfirmed
         }
     }
 
@@ -75,6 +79,11 @@ public enum OAuthSwiftError: Error {
         switch self {
         case .tokenExpired(let e): return e
         case .requestError(let e, _): return e
+        case .callbackConfirmed:
+            let error = NSError(domain: OAuthSwiftError.Domain,
+                                code: Code.callbackConfirmed.rawValue,
+                                userInfo: self.errorUserInfo)
+            return error
         default: return nil
         }
     }
@@ -106,6 +115,7 @@ extension OAuthSwiftError: CustomStringConvertible {
         case .retain: return "retain"
         case .requestError(let e, _): return "requestError[\(e)]"
         case .cancelled : return "cancelled"
+        case .callbackConfirmed: return "ログインに失敗しました。"
         }
     }
 }
@@ -140,6 +150,7 @@ extension OAuthSwiftError: CustomNSError {
         case .encodingError(let urlString): return ["url": urlString]
 
         case .stateNotEqual(let s, let e): return ["state": s, "expected": e]
+        case .callbackConfirmed: return [NSLocalizedDescriptionKey: description]
         default: return [:]
         }
     }

@@ -141,6 +141,10 @@ open class OAuth1Swift: OAuthSwift {
                 if let oauthTokenSecret=parameters["oauth_token_secret"] {
                     this.client.credential.oauthTokenSecret = oauthTokenSecret.safeStringByRemovingPercentEncoding
                 }
+                if let callbackConfirmed = parameters["oauth_callback_confirmed"], callbackConfirmed == "false" {
+                    failure?(OAuthSwiftError.callbackConfirmed)
+                    return
+                }
                 success(this.client.credential, response, parameters)
             }, failure: failure
             ) {
@@ -149,7 +153,7 @@ open class OAuth1Swift: OAuthSwift {
     }
 
     // 3. Get Access token
-    func postOAuthAccessTokenWithRequestToken(success: @escaping TokenSuccessHandler, failure: FailureHandler?) {
+    open func postOAuthAccessTokenWithRequestToken(success: @escaping TokenSuccessHandler, failure: FailureHandler?) {
         var parameters = [String: Any]()
         parameters["oauth_token"] = self.client.credential.oauthToken
         if !self.allowMissingOAuthVerifier {
@@ -174,4 +178,68 @@ open class OAuth1Swift: OAuthSwift {
         }
     }
 
+}
+// MARK: - Custom
+extension OAuth1Swift {
+
+    // 1. - Request token
+    @discardableResult
+    open func requestToken(withCallbackURL callbackURL: URL, success: @escaping RequestSuccessHandler, failure: FailureHandler?) -> OAuthSwiftRequestHandle? {
+
+        self.postOAuthRequestToken(callbackURL: callbackURL, success: { (credential, _, _) in
+
+            if let token = credential.oauthToken.urlQueryEncoded {
+                var urlString = self.authorizeUrl + (self.authorizeUrl.contains("?") ? "&" : "?")
+                urlString += "oauth_token=\(token)"
+                if self.addCallbackURLToAuthorizeURL {
+                    urlString += "&oauth_callback=\(callbackURL.absoluteString)"
+                }
+                if let queryURL = URL(string: urlString) {
+                    success(queryURL)
+                } else {
+                    failure?(OAuthSwiftError.encodingError(urlString: urlString))
+                }
+            } else {
+                failure?(OAuthSwiftError.encodingError(urlString: credential.oauthToken)) //TODO specific error
+            }
+        }, failure: failure)
+
+        return self
+    }
+
+    // 2. - Redirecting the user
+    open func redirectingCallBack(success: @escaping TokenSuccessHandler, failure: FailureHandler?){
+        self.observeCallback { [weak self] url in
+            guard let this = self else {
+                OAuthSwift.retainError(failure)
+                return
+            }
+            var responseParameters = [String: String]()
+            if let query = url.query {
+                responseParameters += query.parametersFromQueryString
+            }
+            if let fragment = url.fragment, !fragment.isEmpty {
+                responseParameters += fragment.parametersFromQueryString
+            }
+            if let token = responseParameters["token"] {
+                responseParameters["oauth_token"] = token
+            }
+
+            if let token = responseParameters["oauth_token"] {
+                this.client.credential.oauthToken = token.safeStringByRemovingPercentEncoding
+                if let oauth_verifier = responseParameters["oauth_verifier"] {
+                    this.client.credential.oauthVerifier = oauth_verifier.safeStringByRemovingPercentEncoding
+                } else {
+                    if !this.allowMissingOAuthVerifier {
+                        failure?(OAuthSwiftError.configurationError(message: "Missing oauth_verifier. Maybe use allowMissingOAuthVerifier=true"))
+                        return
+                    }
+                }
+                this.postOAuthAccessTokenWithRequestToken(success: success, failure: failure)
+            } else {
+                failure?(OAuthSwiftError.missingToken)
+                return
+            }
+        }
+    }
 }
