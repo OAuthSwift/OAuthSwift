@@ -35,7 +35,9 @@ public enum OAuthSwiftHashMethod: String {
 }
 
 /// The credential for authentification
-open class OAuthSwiftCredential: NSObject, NSCoding, Codable {
+open class OAuthSwiftCredential: NSObject, NSSecureCoding, Codable {
+
+    public static let supportsSecureCoding = true
 
     public enum Version: Codable {
         case oauth1, oauth2
@@ -150,16 +152,65 @@ open class OAuthSwiftCredential: NSObject, NSCoding, Codable {
     /// extension OAuthSwiftCredential: NSCoding {
     public required convenience init?(coder decoder: NSCoder) {
         self.init()
-        self.consumerKey = (decoder.decodeObject(forKey: NSCodingKeys.consumerKey) as? String) ?? String()
-        self.consumerSecret = (decoder.decodeObject(forKey: NSCodingKeys.consumerSecret) as? String) ?? String()
-        self.oauthToken = (decoder.decodeObject(forKey: NSCodingKeys.oauthToken) as? String) ?? String()
-        self.oauthRefreshToken = (decoder.decodeObject(forKey: NSCodingKeys.oauthRefreshToken) as? String) ?? String()
-        self.oauthTokenSecret = (decoder.decodeObject(forKey: NSCodingKeys.oauthTokenSecret) as? String) ?? String()
-        self.oauthVerifier = (decoder.decodeObject(forKey: NSCodingKeys.oauthVerifier) as? String) ?? String()
-        self.oauthTokenExpiresAt = (decoder.decodeObject(forKey: NSCodingKeys.oauthTokenExpiresAt) as? Date)
+        guard let consumerKey = decoder
+            .decodeObject(of: NSString.self,
+                          forKey: NSCodingKeys.consumerKey) as String? else {
+            let error = CocoaError.error(.coderValueNotFound)
+            decoder.failWithError(error)
+            return nil
+        }
+        self.consumerKey = consumerKey
+
+        guard let consumerSecret = decoder
+            .decodeObject(of: NSString.self,
+                          forKey: NSCodingKeys.consumerSecret) as String? else {
+            let error = CocoaError.error(.coderValueNotFound)
+            decoder.failWithError(error)
+            return nil
+        }
+        self.consumerSecret = consumerSecret
+
+        guard let oauthToken = decoder
+            .decodeObject(of: NSString.self,
+                          forKey: NSCodingKeys.oauthToken) as String? else {
+            let error = CocoaError.error(.coderValueNotFound)
+            decoder.failWithError(error)
+            return nil
+        }
+        self.oauthToken = oauthToken
+
+        guard let oauthRefreshToken = decoder
+            .decodeObject(of: NSString.self,
+                          forKey: NSCodingKeys.oauthRefreshToken) as String? else {
+            let error = CocoaError.error(.coderValueNotFound)
+            decoder.failWithError(error)
+            return nil
+        }
+        self.oauthRefreshToken = oauthRefreshToken
+
+        guard let oauthTokenSecret = decoder
+            .decodeObject(of: NSString.self,
+                          forKey: NSCodingKeys.oauthTokenSecret) as String? else {
+            let error = CocoaError.error(.coderValueNotFound)
+            decoder.failWithError(error)
+            return nil
+        }
+        self.oauthTokenSecret = oauthTokenSecret
+
+        guard let oauthVerifier = decoder
+            .decodeObject(of: NSString.self,
+                          forKey: NSCodingKeys.oauthVerifier) as String? else {
+            let error = CocoaError.error(.coderValueNotFound)
+            decoder.failWithError(error)
+            return nil
+        }
+        self.oauthVerifier = oauthVerifier
+
+        self.oauthTokenExpiresAt = decoder
+            .decodeObject(of: NSDate.self, forKey: NSCodingKeys.oauthTokenExpiresAt) as Date?
         self.version = Version(decoder.decodeInt32(forKey: NSCodingKeys.version))
         if case .oauth1 = version {
-            self.signatureMethod = SignatureMethod(rawValue: decoder.decodeObject(forKey: NSCodingKeys.signatureMethod) as? String ?? "HMAC_SHA1") ?? .HMAC_SHA1
+            self.signatureMethod = SignatureMethod(rawValue: (decoder.decodeObject(of: NSString.self, forKey: NSCodingKeys.signatureMethod) as String?) ?? "HMAC_SHA1") ?? .HMAC_SHA1
         }
     }
 
