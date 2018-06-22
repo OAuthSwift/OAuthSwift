@@ -147,20 +147,24 @@ open class OAuthSwiftCredential: NSObject, NSSecureCoding, Codable {
     /// Cannot declare a required initializer within an extension.
     /// extension OAuthSwiftCredential: NSCoding {
     public required convenience init?(coder decoder: NSCoder) {
-        
+
         guard let consumerKey = decoder
             .decodeObject(of: NSString.self,
                           forKey: NSCodingKeys.consumerKey) as String? else {
-            let error = CocoaError.error(.coderValueNotFound)
-            decoder.failWithError(error)
+            if #available(iOS 9, *) {
+                let error = CocoaError.error(.coderValueNotFound)
+                decoder.failWithError(error)
+            }
             return nil
         }
 
         guard let consumerSecret = decoder
             .decodeObject(of: NSString.self,
                           forKey: NSCodingKeys.consumerSecret) as String? else {
-            let error = CocoaError.error(.coderValueNotFound)
-            decoder.failWithError(error)
+            if #available(iOS 9, *) {
+                let error = CocoaError.error(.coderValueNotFound)
+                decoder.failWithError(error)
+            }
             return nil
         }
         self.init(consumerKey: consumerKey, consumerSecret: consumerSecret)
@@ -168,8 +172,10 @@ open class OAuthSwiftCredential: NSObject, NSSecureCoding, Codable {
         guard let oauthToken = decoder
             .decodeObject(of: NSString.self,
                           forKey: NSCodingKeys.oauthToken) as String? else {
-            let error = CocoaError.error(.coderValueNotFound)
-            decoder.failWithError(error)
+            if #available(iOS 9, *) {
+                let error = CocoaError.error(.coderValueNotFound)
+                decoder.failWithError(error)
+            }
             return nil
         }
         self.oauthToken = oauthToken
@@ -177,8 +183,10 @@ open class OAuthSwiftCredential: NSObject, NSSecureCoding, Codable {
         guard let oauthRefreshToken = decoder
             .decodeObject(of: NSString.self,
                           forKey: NSCodingKeys.oauthRefreshToken) as String? else {
-            let error = CocoaError.error(.coderValueNotFound)
-            decoder.failWithError(error)
+            if #available(iOS 9, *) {
+                let error = CocoaError.error(.coderValueNotFound)
+                decoder.failWithError(error)
+            }
             return nil
         }
         self.oauthRefreshToken = oauthRefreshToken
@@ -186,8 +194,10 @@ open class OAuthSwiftCredential: NSObject, NSSecureCoding, Codable {
         guard let oauthTokenSecret = decoder
             .decodeObject(of: NSString.self,
                           forKey: NSCodingKeys.oauthTokenSecret) as String? else {
-            let error = CocoaError.error(.coderValueNotFound)
-            decoder.failWithError(error)
+            if #available(iOS 9, *) {
+                let error = CocoaError.error(.coderValueNotFound)
+                decoder.failWithError(error)
+            }
             return nil
         }
         self.oauthTokenSecret = oauthTokenSecret
@@ -195,8 +205,10 @@ open class OAuthSwiftCredential: NSObject, NSSecureCoding, Codable {
         guard let oauthVerifier = decoder
             .decodeObject(of: NSString.self,
                           forKey: NSCodingKeys.oauthVerifier) as String? else {
-            let error = CocoaError.error(.coderValueNotFound)
-            decoder.failWithError(error)
+            if #available(iOS 9, *) {
+                    let error = CocoaError.error(.coderValueNotFound)
+                    decoder.failWithError(error)
+            }
             return nil
         }
         self.oauthVerifier = oauthVerifier
