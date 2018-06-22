@@ -109,8 +109,8 @@ open class OAuthSwiftCredential: NSObject, NSSecureCoding, Codable {
     }
 
     // MARK: attributes
-    open internal(set) var consumerKey = ""
-    open internal(set) var consumerSecret = ""
+    public let consumerKey: String
+    public let consumerSecret: String
     open var oauthToken = ""
     open var oauthRefreshToken = ""
     open var oauthTokenSecret = ""
@@ -121,10 +121,6 @@ open class OAuthSwiftCredential: NSObject, NSSecureCoding, Codable {
 
     /// hook to replace headers creation
     open var headersFactory: OAuthSwiftCredentialHeadersFactory?
-
-    // MARK: init
-    override init() {
-    }
 
     public init(consumerKey: String, consumerSecret: String) {
         self.consumerKey = consumerKey
@@ -151,7 +147,7 @@ open class OAuthSwiftCredential: NSObject, NSSecureCoding, Codable {
     /// Cannot declare a required initializer within an extension.
     /// extension OAuthSwiftCredential: NSCoding {
     public required convenience init?(coder decoder: NSCoder) {
-        self.init()
+        
         guard let consumerKey = decoder
             .decodeObject(of: NSString.self,
                           forKey: NSCodingKeys.consumerKey) as String? else {
@@ -159,7 +155,6 @@ open class OAuthSwiftCredential: NSObject, NSSecureCoding, Codable {
             decoder.failWithError(error)
             return nil
         }
-        self.consumerKey = consumerKey
 
         guard let consumerSecret = decoder
             .decodeObject(of: NSString.self,
@@ -168,7 +163,7 @@ open class OAuthSwiftCredential: NSObject, NSSecureCoding, Codable {
             decoder.failWithError(error)
             return nil
         }
-        self.consumerSecret = consumerSecret
+        self.init(consumerKey: consumerKey, consumerSecret: consumerSecret)
 
         guard let oauthToken = decoder
             .decodeObject(of: NSString.self,
@@ -260,10 +255,11 @@ open class OAuthSwiftCredential: NSObject, NSSecureCoding, Codable {
     public required convenience init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        self.init()
+        let consumerKey = try container.decode(String.self, forKey: .consumerKey)
+        let consumerSecret = try container.decode(String.self, forKey: .consumerSecret)
 
-        self.consumerKey = try container.decode(type(of: self.consumerKey), forKey: .consumerKey)
-        self.consumerSecret = try container.decode(type(of: self.consumerSecret), forKey: .consumerSecret)
+        self.init(consumerKey: consumerKey, consumerSecret: consumerSecret)
+
         self.oauthToken = try container.decode(type(of: self.oauthToken), forKey: .oauthToken)
         self.oauthRefreshToken = try container.decode(type(of: self.oauthRefreshToken), forKey: .oauthRefreshToken)
         self.oauthTokenSecret = try container.decode(type(of: self.oauthTokenSecret), forKey: .oauthTokenSecret)
