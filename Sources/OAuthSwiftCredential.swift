@@ -151,7 +151,7 @@ open class OAuthSwiftCredential: NSObject, NSSecureCoding, Codable {
         guard let consumerKey = decoder
             .decodeObject(of: NSString.self,
                           forKey: NSCodingKeys.consumerKey) as String? else {
-            if #available(iOS 9, *) {
+            if #available(iOS 9, OSX 10.11, *) {
                 let error = CocoaError.error(.coderValueNotFound)
                 decoder.failWithError(error)
             }
@@ -161,7 +161,7 @@ open class OAuthSwiftCredential: NSObject, NSSecureCoding, Codable {
         guard let consumerSecret = decoder
             .decodeObject(of: NSString.self,
                           forKey: NSCodingKeys.consumerSecret) as String? else {
-            if #available(iOS 9, *) {
+            if #available(iOS 9, OSX 10.11, *) {
                 let error = CocoaError.error(.coderValueNotFound)
                 decoder.failWithError(error)
             }
@@ -172,7 +172,7 @@ open class OAuthSwiftCredential: NSObject, NSSecureCoding, Codable {
         guard let oauthToken = decoder
             .decodeObject(of: NSString.self,
                           forKey: NSCodingKeys.oauthToken) as String? else {
-            if #available(iOS 9, *) {
+            if #available(iOS 9, OSX 10.11, *) {
                 let error = CocoaError.error(.coderValueNotFound)
                 decoder.failWithError(error)
             }
@@ -183,7 +183,7 @@ open class OAuthSwiftCredential: NSObject, NSSecureCoding, Codable {
         guard let oauthRefreshToken = decoder
             .decodeObject(of: NSString.self,
                           forKey: NSCodingKeys.oauthRefreshToken) as String? else {
-            if #available(iOS 9, *) {
+            if #available(iOS 9, OSX 10.11, *) {
                 let error = CocoaError.error(.coderValueNotFound)
                 decoder.failWithError(error)
             }
@@ -194,7 +194,7 @@ open class OAuthSwiftCredential: NSObject, NSSecureCoding, Codable {
         guard let oauthTokenSecret = decoder
             .decodeObject(of: NSString.self,
                           forKey: NSCodingKeys.oauthTokenSecret) as String? else {
-            if #available(iOS 9, *) {
+            if #available(iOS 9, OSX 10.11, *) {
                 let error = CocoaError.error(.coderValueNotFound)
                 decoder.failWithError(error)
             }
@@ -205,7 +205,7 @@ open class OAuthSwiftCredential: NSObject, NSSecureCoding, Codable {
         guard let oauthVerifier = decoder
             .decodeObject(of: NSString.self,
                           forKey: NSCodingKeys.oauthVerifier) as String? else {
-            if #available(iOS 9, *) {
+            if #available(iOS 9, OSX 10.11, *) {
                     let error = CocoaError.error(.coderValueNotFound)
                     decoder.failWithError(error)
             }
