@@ -6,7 +6,7 @@ env:
     - LANG=en_US.UTF-8
     - PROJECT=OAuthSwift.xcodeproj
     - IOS_FRAMEWORK_SCHEME="OAuthSwift"
-    - MACOS_FRAMEWORK_SCHEME="OAuthSwiftOSX"
+    - MACOS_FRAMEWORK_SCHEME="OAuthSwiftMacOS"
     - IOS_SDK=iphonesimulator11.3
     - MACOS_SDK=macosx10.13
   matrix:
