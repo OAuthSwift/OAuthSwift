@@ -271,10 +271,10 @@ open class OAuthSwiftCredential: NSObject, NSSecureCoding, Codable {
     public required convenience init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        let consumerKey = try container.decode(String.self, forKey: .consumerKey)
-        let consumerSecret = try container.decode(String.self, forKey: .consumerSecret)
+        self.init()
 
-        self.init(consumerKey: consumerKey, consumerSecret: consumerSecret)
+        self.consumerKey = try container.decode(String.self, forKey: .consumerKey)
+        self.consumerSecret = try container.decode(String.self, forKey: .consumerSecret)
 
         self.oauthToken = try container.decode(type(of: self.oauthToken), forKey: .oauthToken)
         self.oauthRefreshToken = try container.decode(type(of: self.oauthRefreshToken), forKey: .oauthRefreshToken)
