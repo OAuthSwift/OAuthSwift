@@ -269,19 +269,20 @@ open class OAuth2Swift: OAuthSwift {
      - parameter method:         The HTTP method to use.
      - parameter parameters:     The request's parameters.
      - parameter headers:        The request's headers.
+     - parameter renewHeaders:   The request's headers if renewing. If nil, the `headers`` are used when renewing.
      - parameter body:           The request's HTTP body.
      - parameter onTokenRenewal: Optional callback triggered in case the access token renewal was required in order to properly authorize the request.
      - parameter success:        The success block. Takes the successfull response and data as parameter.
      - parameter failure:        The failure block. Takes the error as parameter.
      */
     @discardableResult
-    open func startAuthorizedRequest(_ url: String, method: OAuthSwiftHTTPRequest.Method, parameters: OAuthSwift.Parameters, headers: OAuthSwift.Headers? = nil, body: Data? = nil, onTokenRenewal: TokenRenewedHandler? = nil, success: @escaping OAuthSwiftHTTPRequest.SuccessHandler, failure: @escaping OAuthSwiftHTTPRequest.FailureHandler) -> OAuthSwiftRequestHandle? {
+    open func startAuthorizedRequest(_ url: String, method: OAuthSwiftHTTPRequest.Method, parameters: OAuthSwift.Parameters, headers: OAuthSwift.Headers? = nil, renewHeaders: OAuthSwift.Headers? = nil, body: Data? = nil, onTokenRenewal: TokenRenewedHandler? = nil, success: @escaping OAuthSwiftHTTPRequest.SuccessHandler, failure: @escaping OAuthSwiftHTTPRequest.FailureHandler) -> OAuthSwiftRequestHandle? {
         // build request
         return self.client.request(url, method: method, parameters: parameters, headers: headers, body: body, success: success) { (error) in
             switch error {
 
             case OAuthSwiftError.tokenExpired:
-                _ = self.renewAccessToken(withRefreshToken: self.client.credential.oauthRefreshToken, headers: headers, success: { (credential, _, _) in
+                _ = self.renewAccessToken(withRefreshToken: self.client.credential.oauthRefreshToken, headers: renewHeaders ?? headers, success: { (credential, _, _) in
                     // Ommit response parameters so they don't override the original ones
                     // We have successfully renewed the access token.
 
