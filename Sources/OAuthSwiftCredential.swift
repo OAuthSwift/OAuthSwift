@@ -109,8 +109,8 @@ open class OAuthSwiftCredential: NSObject, NSSecureCoding, Codable {
     }
 
     // MARK: attributes
-    public let consumerKey: String
-    public let consumerSecret: String
+    open internal(set) var consumerKey = ""
+    open internal(set) var consumerSecret = ""
     open var oauthToken = ""
     open var oauthRefreshToken = ""
     open var oauthTokenSecret = ""
@@ -121,6 +121,10 @@ open class OAuthSwiftCredential: NSObject, NSSecureCoding, Codable {
 
     /// hook to replace headers creation
     open var headersFactory: OAuthSwiftCredentialHeadersFactory?
+
+    // MARK: init
+    override init() {
+    }
 
     public init(consumerKey: String, consumerSecret: String) {
         self.consumerKey = consumerKey
