@@ -265,16 +265,11 @@ extension ViewController {
         )
         self.oauthswift = oauthswift
         oauthswift.authorizeURLHandler = getURLHandler()
-        let _ = oauthswift.authorize(
-            withCallbackURL: URL(string: "http://oauthswift.herokuapp.com/callback/twitter")!,
-            success: { credential, response, parameters in
-                self.showTokenAlert(name: serviceParameters["name"], credential: credential)
-                self.testTwitter(oauthswift)
-            },
-            failure: { error in
-                print(error.description)
-            }
-        )
+		let _ = oauthswift.authorize(withCallbackURL: URL.init(string: "oauth-swift://oauth-callback/twitter")!, success: { (credential, response, parameters) in
+			self.showTokenAlert(name: serviceParameters["name"], credential: credential)
+		}) { (error) in
+			print(error.description)
+		}
     }
     func testTwitter(_ oauthswift: OAuth1Swift) {
         let _ = oauthswift.client.get(
