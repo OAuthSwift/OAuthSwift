@@ -10,7 +10,7 @@
     import UIKit
 
     extension UIApplication {
-        static var topViewController: UIViewController? {
+        @nonobjc static var topViewController: UIViewController? {
             #if !OAUTH_APP_EXTENSIONS
                 return UIApplication.shared.topViewController
             #else
