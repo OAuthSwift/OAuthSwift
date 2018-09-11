@@ -38,7 +38,7 @@ open class OAuthSwiftHTTPRequest: NSObject, OAuthSwiftRequestHandle {
 
     fileprivate var cancelRequested = false
 
-    open static var executionContext: (@escaping () -> Void) -> Void = { block in
+    public static var executionContext: (@escaping () -> Void) -> Void = { block in
         return DispatchQueue.main.async(execute: block)
     }
 
