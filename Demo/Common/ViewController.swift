@@ -1432,7 +1432,7 @@ extension ViewController {
             let fullScreenshot = UIGraphicsGetImageFromCurrentImageContext()
             UIGraphicsEndImageContext()
             UIImageWriteToSavedPhotosAlbum(fullScreenshot!, nil, nil, nil)
-            return UIImageJPEGRepresentation(fullScreenshot!, 0.5)!
+            return fullScreenshot!.jpegData(compressionQuality: 0.5)!
         #elseif os(OSX)
             let rep: NSBitmapImageRep = self.view.bitmapImageRepForCachingDisplay(in: self.view.bounds)!
             self.view.cacheDisplay(in: self.view.bounds, to:rep)
@@ -1442,8 +1442,8 @@ extension ViewController {
     
     func showAlertView(title: String, message: String) {
         #if os(iOS)
-            let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.alert)
-            alert.addAction(UIAlertAction(title: "Close", style: UIAlertActionStyle.default, handler: nil))
+            let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertController.Style.alert)
+            alert.addAction(UIAlertAction(title: "Close", style: UIAlertAction.Style.default, handler: nil))
             self.present(alert, animated: true, completion: nil)
         #elseif os(OSX)
             let alert = NSAlert()
@@ -1478,7 +1478,7 @@ extension ViewController {
             return OAuthSwiftOpenURLExternally.sharedInstance
         case .`internal`:
             if internalWebViewController.parent == nil {
-                self.addChildViewController(internalWebViewController)
+                self.addChild(internalWebViewController)
             }
             return internalWebViewController
         case .safari:
@@ -1554,7 +1554,7 @@ public typealias Queue = DispatchQueue
             return services.keys.count
         }
         func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-            let cell: UITableViewCell = UITableViewCell(style: UITableViewCellStyle.subtitle, reuseIdentifier: "Cell")
+            let cell: UITableViewCell = UITableViewCell(style: UITableViewCell.CellStyle.subtitle, reuseIdentifier: "Cell")
             let service = services.keys[indexPath.row]
             cell.textLabel?.text = service
             

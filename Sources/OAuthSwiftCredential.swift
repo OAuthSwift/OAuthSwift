@@ -35,7 +35,9 @@ public enum OAuthSwiftHashMethod: String {
 }
 
 /// The credential for authentification
-open class OAuthSwiftCredential: NSObject, NSCoding, Codable {
+open class OAuthSwiftCredential: NSObject, NSSecureCoding, Codable {
+
+    public static let supportsSecureCoding = true
 
     public enum Version: Codable {
         case oauth1, oauth2
@@ -149,17 +151,77 @@ open class OAuthSwiftCredential: NSObject, NSCoding, Codable {
     /// Cannot declare a required initializer within an extension.
     /// extension OAuthSwiftCredential: NSCoding {
     public required convenience init?(coder decoder: NSCoder) {
-        self.init()
-        self.consumerKey = (decoder.decodeObject(forKey: NSCodingKeys.consumerKey) as? String) ?? String()
-        self.consumerSecret = (decoder.decodeObject(forKey: NSCodingKeys.consumerSecret) as? String) ?? String()
-        self.oauthToken = (decoder.decodeObject(forKey: NSCodingKeys.oauthToken) as? String) ?? String()
-        self.oauthRefreshToken = (decoder.decodeObject(forKey: NSCodingKeys.oauthRefreshToken) as? String) ?? String()
-        self.oauthTokenSecret = (decoder.decodeObject(forKey: NSCodingKeys.oauthTokenSecret) as? String) ?? String()
-        self.oauthVerifier = (decoder.decodeObject(forKey: NSCodingKeys.oauthVerifier) as? String) ?? String()
-        self.oauthTokenExpiresAt = (decoder.decodeObject(forKey: NSCodingKeys.oauthTokenExpiresAt) as? Date)
+
+        guard let consumerKey = decoder
+            .decodeObject(of: NSString.self,
+                          forKey: NSCodingKeys.consumerKey) as String? else {
+            if #available(iOS 9, OSX 10.11, *) {
+                let error = CocoaError.error(.coderValueNotFound)
+                decoder.failWithError(error)
+            }
+            return nil
+        }
+
+        guard let consumerSecret = decoder
+            .decodeObject(of: NSString.self,
+                          forKey: NSCodingKeys.consumerSecret) as String? else {
+            if #available(iOS 9, OSX 10.11, *) {
+                let error = CocoaError.error(.coderValueNotFound)
+                decoder.failWithError(error)
+            }
+            return nil
+        }
+        self.init(consumerKey: consumerKey, consumerSecret: consumerSecret)
+
+        guard let oauthToken = decoder
+            .decodeObject(of: NSString.self,
+                          forKey: NSCodingKeys.oauthToken) as String? else {
+            if #available(iOS 9, OSX 10.11, *) {
+                let error = CocoaError.error(.coderValueNotFound)
+                decoder.failWithError(error)
+            }
+            return nil
+        }
+        self.oauthToken = oauthToken
+
+        guard let oauthRefreshToken = decoder
+            .decodeObject(of: NSString.self,
+                          forKey: NSCodingKeys.oauthRefreshToken) as String? else {
+            if #available(iOS 9, OSX 10.11, *) {
+                let error = CocoaError.error(.coderValueNotFound)
+                decoder.failWithError(error)
+            }
+            return nil
+        }
+        self.oauthRefreshToken = oauthRefreshToken
+
+        guard let oauthTokenSecret = decoder
+            .decodeObject(of: NSString.self,
+                          forKey: NSCodingKeys.oauthTokenSecret) as String? else {
+            if #available(iOS 9, OSX 10.11, *) {
+                let error = CocoaError.error(.coderValueNotFound)
+                decoder.failWithError(error)
+            }
+            return nil
+        }
+        self.oauthTokenSecret = oauthTokenSecret
+
+        guard let oauthVerifier = decoder
+            .decodeObject(of: NSString.self,
+                          forKey: NSCodingKeys.oauthVerifier) as String? else {
+            if #available(iOS 9, OSX 10.11, *) {
+                    let error = CocoaError.error(.coderValueNotFound)
+                    decoder.failWithError(error)
+            }
+            return nil
+        }
+        self.oauthVerifier = oauthVerifier
+
+        self.oauthTokenExpiresAt = decoder
+            .decodeObject(of: NSDate.self, forKey: NSCodingKeys.oauthTokenExpiresAt) as Date?
         self.version = Version(decoder.decodeInt32(forKey: NSCodingKeys.version))
         if case .oauth1 = version {
-            self.signatureMethod = SignatureMethod(rawValue: decoder.decodeObject(forKey: NSCodingKeys.signatureMethod) as? String ?? "HMAC_SHA1") ?? .HMAC_SHA1
+            self.signatureMethod = SignatureMethod(rawValue: (decoder.decodeObject(of: NSString.self, forKey: NSCodingKeys.signatureMethod) as String?) ?? "HMAC_SHA1") ?? .HMAC_SHA1
         }
     }
 
@@ -211,8 +273,9 @@ open class OAuthSwiftCredential: NSObject, NSCoding, Codable {
 
         self.init()
 
-        self.consumerKey = try container.decode(type(of: self.consumerKey), forKey: .consumerKey)
-        self.consumerSecret = try container.decode(type(of: self.consumerSecret), forKey: .consumerSecret)
+        self.consumerKey = try container.decode(String.self, forKey: .consumerKey)
+        self.consumerSecret = try container.decode(String.self, forKey: .consumerSecret)
+
         self.oauthToken = try container.decode(type(of: self.oauthToken), forKey: .oauthToken)
         self.oauthRefreshToken = try container.decode(type(of: self.oauthRefreshToken), forKey: .oauthRefreshToken)
         self.oauthTokenSecret = try container.decode(type(of: self.oauthTokenSecret), forKey: .oauthTokenSecret)
@@ -246,8 +309,8 @@ open class OAuthSwiftCredential: NSObject, NSCoding, Codable {
     }
 
     open class func generateNonce() -> String {
-        let uuidString = UUID().uuidString
-        return uuidString.substring(to: 8)
+        let uuidString: String = UUID().uuidString
+        return uuidString[0..<8]
     }
 
     open func authorizationHeader(method: OAuthSwiftHTTPRequest.Method, url: URL, parameters: OAuthSwift.Parameters, body: Data? = nil, timestamp: String, nonce: String) -> String {
@@ -343,4 +406,23 @@ open class OAuthSwiftCredential: NSObject, NSCoding, Codable {
         // If no expires date is available we assume the token is still valid since it doesn't have an expiration date to check with.
         return false
     }
+
+    // MARK: Equatable
+
+    override open func isEqual(_ object: Any?) -> Bool {
+        guard let rhs = object as? OAuthSwiftCredential else {
+            return false
+        }
+        let lhs = self
+        return lhs.consumerKey == rhs.consumerKey
+            && lhs.consumerSecret == rhs.consumerSecret
+            && lhs.oauthToken == rhs.oauthToken
+            && lhs.oauthRefreshToken == rhs.oauthRefreshToken
+            && lhs.oauthTokenSecret == rhs.oauthTokenSecret
+            && lhs.oauthTokenExpiresAt == rhs.oauthTokenExpiresAt
+            && lhs.oauthVerifier == rhs.oauthVerifier
+            && lhs.version == rhs.version
+            && lhs.signatureMethod == rhs.signatureMethod
+    }
+
 }

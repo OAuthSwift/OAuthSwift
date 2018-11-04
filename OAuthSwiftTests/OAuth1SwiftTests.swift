@@ -30,8 +30,7 @@ class OAuth1SwiftTests: XCTestCase {
         server.stop()
         super.tearDown()
     }
-    
-    
+
     let callbackURL = "test://callback"
     
     func testSuccess() {
@@ -65,14 +64,18 @@ class OAuth1SwiftTests: XCTestCase {
         XCTAssertEqual(oauth.client.credential.oauthTokenSecret, server.oauth_token_secret)
     }
 
-    func testOAuthbinSuccess() {
+    
+    // MARK: OAuthBin: not respoding anymore, TODO new test on fake server must be implemented
+    let requestTokenUrl = "http://www.oauthbin.com/v1/request-token"
+    let accessTokenUrl = "http://www.oauthbin.com/v1/access-token"
+    func _testOAuthbinSuccess() {
         let fakeAuthorizeURL = "automatic://host/autorize"
         let oauth = OAuth1Swift(
             consumerKey: "key",
             consumerSecret: "secret",
-            requestTokenUrl: "http://oauthbin.com/v1/request-token",
+            requestTokenUrl: requestTokenUrl,
             authorizeUrl: fakeAuthorizeURL,
-            accessTokenUrl: "http://oauthbin.com/v1/access-token"
+            accessTokenUrl: accessTokenUrl
         )
         oauth.allowMissingOAuthVerifier = true
         oauth.authorizeURLHandler = TestOAuthSwiftURLHandler(
@@ -101,14 +104,14 @@ class OAuth1SwiftTests: XCTestCase {
         XCTAssertEqual(oauth.client.credential.oauthTokenSecret, oauth_token_secret)
     }
     
-    func testOAuthbinBadConsumerKey() {
+    func _testOAuthbinBadConsumerKey() {
         let fakeAuthorizeURL = "automatic://host/autorize"
         let oauth = OAuth1Swift(
             consumerKey: "badkey",
             consumerSecret: "secret",
-            requestTokenUrl: "http://oauthbin.com/v1/request-token",
+            requestTokenUrl: requestTokenUrl,
             authorizeUrl: fakeAuthorizeURL,
-            accessTokenUrl: "http://oauthbin.com/v1/access-token"
+            accessTokenUrl: accessTokenUrl
         )
         oauth.allowMissingOAuthVerifier = true
         oauth.authorizeURLHandler = TestOAuthSwiftURLHandler(
@@ -133,14 +136,14 @@ class OAuth1SwiftTests: XCTestCase {
         waitForExpectations(timeout: DefaultTimeout, handler: nil)
     }
     
-    func testOAuthbinBadConsumerSecret() {
+    func _testOAuthbinBadConsumerSecret() {
         let fakeAuthorizeURL = "automatic://host/autorize"
         let oauth = OAuth1Swift(
             consumerKey: "key",
             consumerSecret: "badsecret",
-            requestTokenUrl: "http://oauthbin.com/v1/request-token",
+            requestTokenUrl: requestTokenUrl,
             authorizeUrl: fakeAuthorizeURL,
-            accessTokenUrl: "http://oauthbin.com/v1/access-token"
+            accessTokenUrl: accessTokenUrl
         )
         oauth.allowMissingOAuthVerifier = true
         oauth.authorizeURLHandler = TestOAuthSwiftURLHandler(

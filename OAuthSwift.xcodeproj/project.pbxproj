@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0738BC6B1EBA755C000FA2F2 /* OAuthSwiftCredentialTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0738BC6A1EBA755C000FA2F2 /* OAuthSwiftCredentialTests.swift */; };
+		48942B5B2085DB5F00376BFA /* URLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48942B5A2085DB5F00376BFA /* URLTests.swift */; };
 		6053EF6F1E93821400EB28B3 /* NotificationCenter+OAuthSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6053EF6E1E93821400EB28B3 /* NotificationCenter+OAuthSwift.swift */; };
 		6053EF701E93832400EB28B3 /* NotificationCenter+OAuthSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6053EF6E1E93821400EB28B3 /* NotificationCenter+OAuthSwift.swift */; };
 		6053EF711E93832500EB28B3 /* NotificationCenter+OAuthSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6053EF6E1E93821400EB28B3 /* NotificationCenter+OAuthSwift.swift */; };
@@ -200,6 +201,7 @@
 /* Begin PBXFileReference section */
 		0738BC6A1EBA755C000FA2F2 /* OAuthSwiftCredentialTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OAuthSwiftCredentialTests.swift; sourceTree = "<group>"; };
 		0ED45F76F07F16FB6FF639B7 /* Pods_OAuthSwiftTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_OAuthSwiftTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		48942B5A2085DB5F00376BFA /* URLTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLTests.swift; sourceTree = "<group>"; };
 		6053EF6E1E93821400EB28B3 /* NotificationCenter+OAuthSwift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NotificationCenter+OAuthSwift.swift"; sourceTree = "<group>"; };
 		674EB2AA3430160EBBAC72A1 /* Pods-OAuthSwiftTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OAuthSwiftTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-OAuthSwiftTests/Pods-OAuthSwiftTests.debug.xcconfig"; sourceTree = "<group>"; };
 		C40890C01C11B37000E3146A /* OAuthSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OAuthSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -222,7 +224,7 @@
 		C48B28061AFA598D00C7DEF6 /* OAuthSwiftOSX.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OAuthSwiftOSX.h; sourceTree = "<group>"; };
 		C496246E1B00D6C30010BD09 /* OAuthWebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OAuthWebViewController.swift; sourceTree = "<group>"; };
 		C49624711B00F54A0010BD09 /* OAuthSwiftURLHandlerType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OAuthSwiftURLHandlerType.swift; sourceTree = "<group>"; };
-		C49FD5241AFB5DF500791E1A /* OAuthSwiftOSXDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OAuthSwiftOSXDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C49FD5241AFB5DF500791E1A /* OAuthSwiftMacOSDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OAuthSwiftMacOSDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C49FD5271AFB5DF500791E1A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C49FD52F1AFB5DF500791E1A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		C4B6EE1E1BF74CE300443596 /* OAuthSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OAuthSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -479,6 +481,7 @@
 				C4FAE4351C061660000CE669 /* SignTests.swift */,
 				C40C96D81DA639B700197628 /* UtilsTests.swift */,
 				C44244DA1C06316100880DAB /* ServicesTests.swift */,
+				48942B5A2085DB5F00376BFA /* URLTests.swift */,
 				C4D50DFB1BFB693F0053B624 /* Info.plist */,
 				C4472DE51C07235800B95B4B /* ServicesTest.plist */,
 				C4D50E021BFB6A340053B624 /* TestServer.swift */,
@@ -548,7 +551,7 @@
 				F451E3C5195B8CD80051434C /* OAuthSwiftDemo.app */,
 				F435027A1A6791B200038A29 /* OAuthSwift.framework */,
 				C48B28021AFA598D00C7DEF6 /* OAuthSwift.framework */,
-				C49FD5241AFB5DF500791E1A /* OAuthSwiftOSXDemo.app */,
+				C49FD5241AFB5DF500791E1A /* OAuthSwiftMacOSDemo.app */,
 				C4B6EE1E1BF74CE300443596 /* OAuthSwift.framework */,
 				C4D50DF71BFB693F0053B624 /* OAuthSwiftTests.xctest */,
 				C40890C01C11B37000E3146A /* OAuthSwift.framework */,
@@ -627,9 +630,9 @@
 			productReference = C40890C01C11B37000E3146A /* OAuthSwift.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		C48B28011AFA598D00C7DEF6 /* OAuthSwiftOSX */ = {
+		C48B28011AFA598D00C7DEF6 /* OAuthSwiftMacOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C48B281F1AFA598D00C7DEF6 /* Build configuration list for PBXNativeTarget "OAuthSwiftOSX" */;
+			buildConfigurationList = C48B281F1AFA598D00C7DEF6 /* Build configuration list for PBXNativeTarget "OAuthSwiftMacOS" */;
 			buildPhases = (
 				C48B27FD1AFA598D00C7DEF6 /* Sources */,
 				C48B27FE1AFA598D00C7DEF6 /* Frameworks */,
@@ -641,14 +644,14 @@
 			);
 			dependencies = (
 			);
-			name = OAuthSwiftOSX;
+			name = OAuthSwiftMacOS;
 			productName = OAuthSwiftOSX;
 			productReference = C48B28021AFA598D00C7DEF6 /* OAuthSwift.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		C49FD5231AFB5DF500791E1A /* OAuthSwiftOSXDemo */ = {
+		C49FD5231AFB5DF500791E1A /* OAuthSwiftMacOSDemo */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C49FD5411AFB5DF500791E1A /* Build configuration list for PBXNativeTarget "OAuthSwiftOSXDemo" */;
+			buildConfigurationList = C49FD5411AFB5DF500791E1A /* Build configuration list for PBXNativeTarget "OAuthSwiftMacOSDemo" */;
 			buildPhases = (
 				C49FD5201AFB5DF500791E1A /* Sources */,
 				C49FD5211AFB5DF500791E1A /* Frameworks */,
@@ -659,9 +662,9 @@
 			dependencies = (
 				C49FD5441AFB60F100791E1A /* PBXTargetDependency */,
 			);
-			name = OAuthSwiftOSXDemo;
+			name = OAuthSwiftMacOSDemo;
 			productName = OAuthSwiftOSXDemo;
-			productReference = C49FD5241AFB5DF500791E1A /* OAuthSwiftOSXDemo.app */;
+			productReference = C49FD5241AFB5DF500791E1A /* OAuthSwiftMacOSDemo.app */;
 			productType = "com.apple.product-type.application";
 		};
 		C4B6EE1D1BF74CE300443596 /* OAuthSwiftTVOS */ = {
@@ -691,7 +694,6 @@
 				C4D50DF41BFB693F0053B624 /* Frameworks */,
 				C4D50DF51BFB693F0053B624 /* Resources */,
 				221471EBA2041EAA27E22C54 /* [CP] Embed Pods Frameworks */,
-				ADE3622295A62F21781F7313 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -750,7 +752,7 @@
 			attributes = {
 				LastSwiftMigration = 0700;
 				LastSwiftUpdateCheck = 0710;
-				LastUpgradeCheck = 0900;
+				LastUpgradeCheck = 0930;
 				ORGANIZATIONNAME = "Dongri Jin";
 				TargetAttributes = {
 					C40890BF1C11B37000E3146A = {
@@ -774,10 +776,11 @@
 					};
 					F43502791A6791B200038A29 = {
 						CreatedOnToolsVersion = 6.1.1;
-						LastSwiftMigration = 0800;
+						LastSwiftMigration = 1000;
 					};
 					F451E3C4195B8CD80051434C = {
 						CreatedOnToolsVersion = 6.0;
+						LastSwiftMigration = 1000;
 					};
 				};
 			};
@@ -796,11 +799,11 @@
 			projectRoot = "";
 			targets = (
 				F43502791A6791B200038A29 /* OAuthSwift */,
-				C48B28011AFA598D00C7DEF6 /* OAuthSwiftOSX */,
+				C48B28011AFA598D00C7DEF6 /* OAuthSwiftMacOS */,
 				C4B6EE1D1BF74CE300443596 /* OAuthSwiftTVOS */,
 				C40890BF1C11B37000E3146A /* OAuthSwiftWatchOS */,
 				F451E3C4195B8CD80051434C /* OAuthSwiftDemo */,
-				C49FD5231AFB5DF500791E1A /* OAuthSwiftOSXDemo */,
+				C49FD5231AFB5DF500791E1A /* OAuthSwiftMacOSDemo */,
 				C4D50DF61BFB693F0053B624 /* OAuthSwiftTests */,
 			);
 		};
@@ -889,21 +892,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-OAuthSwiftTests/Pods-OAuthSwiftTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		ADE3622295A62F21781F7313 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-OAuthSwiftTests/Pods-OAuthSwiftTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		C41824251EE4079C00C5D0A3 /* swiftlint */ = {
@@ -1067,6 +1055,7 @@
 				C4E46C511D462ED300BFCEF4 /* OAuthSwiftErrorTest.swift in Sources */,
 				C4D50E031BFB6A340053B624 /* TestServer.swift in Sources */,
 				C44244DB1C06316100880DAB /* ServicesTests.swift in Sources */,
+				48942B5B2085DB5F00376BFA /* URLTests.swift in Sources */,
 				C4D50E0D1BFB79D00053B624 /* OAuth2SwiftTests.swift in Sources */,
 				C40C96D91DA639B700197628 /* UtilsTests.swift in Sources */,
 				C4FAE4361C061660000CE669 /* SignTests.swift in Sources */,
@@ -1127,12 +1116,12 @@
 /* Begin PBXTargetDependency section */
 		C49FD5441AFB60F100791E1A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = C48B28011AFA598D00C7DEF6 /* OAuthSwiftOSX */;
+			target = C48B28011AFA598D00C7DEF6 /* OAuthSwiftMacOS */;
 			targetProxy = C49FD5431AFB60F100791E1A /* PBXContainerItemProxy */;
 		};
 		C4D50DFE1BFB693F0053B624 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = C48B28011AFA598D00C7DEF6 /* OAuthSwiftOSX */;
+			target = C48B28011AFA598D00C7DEF6 /* OAuthSwiftMacOS */;
 			targetProxy = C4D50DFD1BFB693F0053B624 /* PBXContainerItemProxy */;
 		};
 		F42F57DB1A67F2040064249F /* PBXTargetDependency */ = {
@@ -1179,7 +1168,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = tv.phimage.OAuthSwiftWatchOS;
+				PRODUCT_BUNDLE_IDENTIFIER = at.dongri.ios.OAuthSwift;
 				PRODUCT_NAME = OAuthSwift;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
@@ -1208,7 +1197,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = tv.phimage.OAuthSwiftWatchOS;
+				PRODUCT_BUNDLE_IDENTIFIER = at.dongri.ios.OAuthSwift;
 				PRODUCT_NAME = OAuthSwift;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
@@ -1242,7 +1231,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "tv.phimage.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = at.dongri.ios.OAuthSwift;
 				PRODUCT_NAME = OAuthSwift;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
@@ -1270,7 +1259,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = "tv.phimage.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = at.dongri.ios.OAuthSwift;
 				PRODUCT_NAME = OAuthSwift;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
@@ -1296,7 +1285,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "at.dongri.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = at.dongri.mac.OAuthSwiftDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SWIFT_VERSION = 4.0;
@@ -1315,7 +1304,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = "at.dongri.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = at.dongri.mac.OAuthSwiftDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
@@ -1338,7 +1327,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = tv.phimage.OAuthSwiftTVOS;
+				PRODUCT_BUNDLE_IDENTIFIER = at.dongri.ios.OAuthSwift;
 				PRODUCT_NAME = OAuthSwift;
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
@@ -1366,7 +1355,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = tv.phimage.OAuthSwiftTVOS;
+				PRODUCT_BUNDLE_IDENTIFIER = at.dongri.ios.OAuthSwift;
 				PRODUCT_NAME = OAuthSwift;
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
@@ -1446,7 +1435,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_INCLUDE_PATHS = "";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -1472,7 +1461,7 @@
 				SKIP_INSTALL = YES;
 				SWIFT_INCLUDE_PATHS = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -1491,12 +1480,14 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -1545,12 +1536,14 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -1595,7 +1588,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_INCLUDE_PATHS = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -1618,7 +1611,7 @@
 				SWIFT_INCLUDE_PATHS = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -1635,7 +1628,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C48B281F1AFA598D00C7DEF6 /* Build configuration list for PBXNativeTarget "OAuthSwiftOSX" */ = {
+		C48B281F1AFA598D00C7DEF6 /* Build configuration list for PBXNativeTarget "OAuthSwiftMacOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C48B281B1AFA598D00C7DEF6 /* Debug */,
@@ -1644,7 +1637,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C49FD5411AFB5DF500791E1A /* Build configuration list for PBXNativeTarget "OAuthSwiftOSXDemo" */ = {
+		C49FD5411AFB5DF500791E1A /* Build configuration list for PBXNativeTarget "OAuthSwiftMacOSDemo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C49FD53D1AFB5DF500791E1A /* Debug */,

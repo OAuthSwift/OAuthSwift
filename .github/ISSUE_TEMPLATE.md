@@ -2,7 +2,7 @@
 
 ### Description:
 
-### OAuth Provider (Twitter, Github, ..):
+### OAuth Provider? (Twitter, Github, ..):
 
 
 ### OAuth Version:
@@ -22,12 +22,14 @@
 
 ### Library version:
 - [ ] head
+- [ ] v1.2.1
 - [ ] v1.2 (Swift 4.0)
 - [ ] v1.0.0
 - [ ] v0.6
 - [ ] other: (Please fill in the version you are using.)
 
 ### Xcode version:
+- [ ] 9.3 (Swift 4.1)
 - [ ] 9.0 (Swift 4.0)
 - [ ] 9.0 (Swift 3.2)
 - [ ] 8.x (Swift 3.x)

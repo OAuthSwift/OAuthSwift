@@ -10,9 +10,6 @@ Swift based OAuth library for iOS and macOS.
 
 Twitter, Flickr, Github, Instagram, Foursquare, Fitbit, Withings, Linkedin, Dropbox, Dribbble, Salesforce, BitBucket, GoogleDrive, Smugmug, Intuit, Zaim, Tumblr, Slack, Uber, Gitter, Facebook, Spotify, Typetalk, SoundCloud, etc
 
-## Sponsored by Auth0 <span><img src="https://user-images.githubusercontent.com/1801923/31792116-d4fca9ec-b512-11e7-92eb-56e8d3df8e70.png" height="28" align="top"></span>
-If you want to easily add authentication to Swift apps, feel free to check out Auth0's Swift SDK and free plan at [auth0.com/overview](https://auth0.com/overview?utm_source=GHsponsor&utm_medium=GHsponsor&utm_campaign=oauthswift&utm_content=auth)
-
 ## Installation
 
 OAuthSwift is packaged as a Swift framework. Currently this is the simplest way to add it to your app:

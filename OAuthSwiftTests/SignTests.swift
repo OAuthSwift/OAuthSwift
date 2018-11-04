@@ -160,6 +160,7 @@ class SignTests: XCTestCase {
         for _ in 0..<tolerance {
             let nonce = OAuthSwiftCredential.generateNonce()
             dico[nonce] = ""
+            XCTAssertEqual(nonce.count, 8)
         }
 
         XCTAssertEqual(Double(tolerance), Double(dico.count), accuracy: 10)
