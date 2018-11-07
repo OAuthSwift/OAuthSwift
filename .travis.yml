@@ -7,7 +7,7 @@ env:
     - PROJECT=OAuthSwift.xcodeproj
     - IOS_FRAMEWORK_SCHEME="OAuthSwift"
     - MACOS_FRAMEWORK_SCHEME="OAuthSwiftMacOS"
-    - IOS_SDK=iphonesimulator13.0
+    - IOS_SDK=iphonesimulator12.0
     - MACOS_SDK=macosx10.14
   matrix:
     - DESTINATION="OS=12.0,name=iPhone 8" SCHEME="$IOS_FRAMEWORK_SCHEME" SDK="$IOS_SDK"
