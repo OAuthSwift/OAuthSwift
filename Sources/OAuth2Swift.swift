@@ -6,6 +6,49 @@
 //  Copyright (c) 2014 Dongri Jin. All rights reserved.
 //
 
+//  modification for RFC7636 - PKCE
+//  example:
+
+/*
+ 
+let codeChallenge = CodeChallenge()
+let state = state()
+
+let parameters: OAuth2Swift.Parameters = [
+    "code_challenge": codeChallenge.challenge,
+    "code_challenge_method": "S256",
+]
+
+oauthswift = OAuth2Swift(
+    consumerKey:    "abcdefg",
+    consumerSecret: "12345678",
+    authorizeUrl:    "https://oauth-test/oauth/authorize",
+    accessTokenUrl:  "https://oauth-test/oauth/token",
+    responseType: "code",
+    codeVerifier: codeChallenge.verifier    // new!
+)
+
+oauthswift?.accessTokenBasicAuthentification = true
+
+let _ = oauthswift?.authorize(
+    withCallbackURL: "com.example://callback/",
+    scope: "https://mock/publicAPI",
+    state: state,
+    parameters: parameters,     // required for PKCE code_challenge and code_challenge_method
+    headers: nil,
+    success: { (credential, response, parameters) in
+            print("Authorize: success!")
+        }, failure: { (error) in
+            print(error)
+        })
+    },
+    failure: { (error) in
+        print("Authorize: error: \(error.localizedDescription)")
+    })
+
+ */
+
+
 import Foundation
 
 open class OAuth2Swift: OAuthSwift {
@@ -30,8 +73,19 @@ open class OAuth2Swift: OAuthSwift {
     var accessTokenUrl: String?
     var responseType: String
     var contentType: String?
+    
+    // RFC7636 4.5 - extra parameter to be sent on second authorization step
+    var codeVerifier: String?
 
     // MARK: init
+    
+    // RFC7636 4.5 - new initializer for PKCE support (parameter: codeVerifier)
+    public convenience init(consumerKey: String, consumerSecret: String, authorizeUrl: String, accessTokenUrl: String, responseType: String, codeVerifier: String) {
+        self.init(consumerKey: consumerKey, consumerSecret: consumerSecret, authorizeUrl: authorizeUrl, accessTokenUrl: accessTokenUrl, responseType: responseType)
+        // remember code_verifier
+        self.codeVerifier = codeVerifier
+    }
+    
     public convenience init(consumerKey: String, consumerSecret: String, authorizeUrl: String, accessTokenUrl: String, responseType: String) {
         self.init(consumerKey: consumerKey, consumerSecret: consumerSecret, authorizeUrl: authorizeUrl, responseType: responseType)
         self.accessTokenUrl = accessTokenUrl
@@ -181,6 +235,10 @@ open class OAuth2Swift: OAuthSwift {
         parameters["client_secret"] = self.consumerSecret
         parameters["code"] = code
         parameters["grant_type"] = "authorization_code"
+        
+        // RFC7636 4.5 - optional extra parameter for PKCE
+        parameters["code_verifier"] = self.codeVerifier
+        
         if let callbackURL = callbackURL {
             parameters["redirect_uri"] = callbackURL.absoluteString.safeStringByRemovingPercentEncoding
         }
