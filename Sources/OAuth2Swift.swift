@@ -6,47 +6,39 @@
 //  Copyright (c) 2014 Dongri Jin. All rights reserved.
 //
 
-//  modification for RFC7636 - PKCE
-//  example:
-
-/*
- 
-let codeChallenge = CodeChallenge()
-let state = state()
-
-let parameters: OAuth2Swift.Parameters = [
-    "code_challenge": codeChallenge.challenge,
-    "code_challenge_method": "S256",
-]
-
-oauthswift = OAuth2Swift(
-    consumerKey:    "abcdefg",
-    consumerSecret: "12345678",
-    authorizeUrl:    "https://oauth-test/oauth/authorize",
-    accessTokenUrl:  "https://oauth-test/oauth/token",
-    responseType: "code",
-    codeVerifier: codeChallenge.verifier    // new!
-)
-
-oauthswift?.accessTokenBasicAuthentification = true
-
-let _ = oauthswift?.authorize(
-    withCallbackURL: "com.example://callback/",
-    scope: "https://mock/publicAPI",
-    state: state,
-    parameters: parameters,     // required for PKCE code_challenge and code_challenge_method
-    headers: nil,
-    success: { (credential, response, parameters) in
-            print("Authorize: success!")
-        }, failure: { (error) in
-            print(error)
-        })
-    },
-    failure: { (error) in
-        print("Authorize: error: \(error.localizedDescription)")
-    })
-
- */
+ // Changes for RFC7636 - PKCE - Proof Key for Code Exchange by OAuth Public Clients
+ //
+ //         Example:
+ //
+ //        oauthswift = OAuth2Swift(
+ //            consumerKey:    "key",
+ //            consumerSecret: "secret",
+ //            authorizeUrl:    "https://.../oauth/authorize",
+ //            accessTokenUrl:  "https://.../oauth/token",
+ //            responseType: "code",
+ //            codeChallenge: codeChallenge.challenge,
+ //            codeChallengeMethod: "S256",
+ //            codeVerifier: codeChallenge.verifier
+ //        )
+ //
+ //        oauthswift?.accessTokenBasicAuthentification = true
+ //
+ //        let _ = oauthswift?.authorize(
+ //            withCallbackURL: "com.app://callback/",
+ //            scope: "https://...",
+ //            state: state,
+ //            success: { (credential, response, parameters) in
+ //                print("Authorize: success!")
+ //                let _ = self.oauthswift?.client.get(request, success: { (resp) in
+ //                    // use data
+ //                }, failure: { (error) in
+ //                    print(error)
+ //                })
+ //            },
+ //            failure: { (error) in
+ //                print("Authorize: error: \(error.localizedDescription)")
+ //            }
+ //        )
 
 
 import Foundation
@@ -74,15 +66,20 @@ open class OAuth2Swift: OAuthSwift {
     var responseType: String
     var contentType: String?
     
-    // RFC7636 4.5 - extra parameter to be sent on second authorization step
+    // TODO: PKCE - parameter
+    var isPKCE = false
+    var codeChallenge: String?
+    var codeChallengeMethod: String?
     var codeVerifier: String?
 
     // MARK: init
     
-    // RFC7636 4.5 - new initializer for PKCE support (parameter: codeVerifier)
-    public convenience init(consumerKey: String, consumerSecret: String, authorizeUrl: String, accessTokenUrl: String, responseType: String, codeVerifier: String) {
+    // TODO: PKCE - new initializer
+    public convenience init(consumerKey: String, consumerSecret: String, authorizeUrl: String, accessTokenUrl: String, responseType: String, codeChallenge: String, codeChallengeMethod: String, codeVerifier: String) {
         self.init(consumerKey: consumerKey, consumerSecret: consumerSecret, authorizeUrl: authorizeUrl, accessTokenUrl: accessTokenUrl, responseType: responseType)
-        // remember code_verifier
+        self.isPKCE = true
+        self.codeChallenge = codeChallenge
+        self.codeChallengeMethod = codeChallengeMethod
         self.codeVerifier = codeVerifier
     }
     
@@ -226,7 +223,16 @@ open class OAuth2Swift: OAuthSwift {
             failure?(OAuthSwiftError.encodingError(urlString: urlString))
             return nil
         }
-        return authorize(withCallbackURL: url, scope: scope, state: state, parameters: parameters, headers: headers, success: success, failure: failure)
+        
+        // TODO: PKCE - extra parameter
+        var pkceParameters = Parameters()
+        if isPKCE {
+            pkceParameters["code_challenge"] = self.codeChallenge
+            pkceParameters["code_challenge_method"] = self.codeChallengeMethod
+        }
+        
+        // TODO: PKCE - inject extra pkce parameters
+        return authorize(withCallbackURL: url, scope: scope, state: state, parameters: parameters + pkceParameters, headers: headers, success: success, failure: failure)
     }
 
     open func postOAuthAccessTokenWithRequestToken(byCode code: String, callbackURL: URL?, headers: OAuthSwift.Headers? = nil, success: @escaping TokenSuccessHandler, failure: FailureHandler?) -> OAuthSwiftRequestHandle? {
@@ -236,8 +242,10 @@ open class OAuth2Swift: OAuthSwift {
         parameters["code"] = code
         parameters["grant_type"] = "authorization_code"
         
-        // RFC7636 4.5 - optional extra parameter for PKCE
-        parameters["code_verifier"] = self.codeVerifier
+        // TODO: PKCE - extra parameter
+        if isPKCE {
+            parameters["code_verifier"] = self.codeVerifier // codeVerifier is an optional. Setting a dictionary entry with nil will remove that dictionary entry. I.e. setting a dictionary entry with an unset optional has no effect.
+        }
         
         if let callbackURL = callbackURL {
             parameters["redirect_uri"] = callbackURL.absoluteString.safeStringByRemovingPercentEncoding
