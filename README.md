@@ -143,6 +143,39 @@ let handle = oauthswift.authorize(
 
 ```
 
+### Authorize with OAuth2.0 and proof key flow (PKCE)
+```swift
+// create an instance and retain it
+oauthswift = OAuth2Swift(
+    consumerKey:    "********",
+    consumerSecret: "********",
+    authorizeUrl: "https://server.com/oauth/authorize",
+    responseType: "code"
+)
+oauthswift.accessTokenBasicAuthentification = true
+
+let codeVerifier = base64url("abcd...")
+let codeChallenge = codeChallenge(for: codeVerifier)
+
+let handle = oauthswift.authorize(
+    withCallbackURL: URL(string: "myApp://callback/")!,
+    scope: "requestedScope", 
+    state:"State01",
+    codeChallenge: codeChallenge,
+    codeChallengeMethod: "S256",
+    codeVerifier: codeVerifier,
+    success: { credential, response, parameters in
+      print(credential.oauthToken)
+      // Do your request
+    },
+    failure: { error in
+      print(error.localizedDescription)
+    }
+)
+
+```
+
+
 See demo for more examples
 
 ### Handle authorize URL
