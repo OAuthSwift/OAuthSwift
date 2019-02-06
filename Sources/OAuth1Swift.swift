@@ -24,6 +24,10 @@ open class OAuth1Swift: OAuthSwift {
     var accessTokenUrl: String
 
     // MARK: init
+	public convenience init(consumerKey: String, consumerSecret: String, requestTokenUrl: URL, authorizeUrl: URL, accessTokenUrl: URL) {
+		self.init(consumerKey: consumerKey, consumerSecret: consumerSecret, requestTokenUrl: requestTokenUrl.absoluteString, authorizeUrl: authorizeUrl.absoluteString, accessTokenUrl: accessTokenUrl.absoluteString)
+	}
+	
     public init(consumerKey: String, consumerSecret: String, requestTokenUrl: String, authorizeUrl: String, accessTokenUrl: String) {
         self.consumerKey = consumerKey
         self.consumerSecret = consumerSecret
