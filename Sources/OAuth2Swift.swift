@@ -34,18 +34,6 @@ open class OAuth2Swift: OAuthSwift {
     var codeVerifier: String?
 
     // MARK: init
-	public convenience init(consumerKey: String, consumerSecret: String, authorizeUrl: URL, accessTokenUrl: URL, responseType: String) {
-		self.init(consumerKey: consumerKey, consumerSecret: consumerSecret, authorizeUrl: authorizeUrl.absoluteString, accessTokenUrl: accessTokenUrl.absoluteString, responseType: responseType)
-	}
-	
-	public convenience init(consumerKey: String, consumerSecret: String, authorizeUrl: URL, accessTokenUrl: URL, responseType: String, contentType: String) {
-		self.init(consumerKey: consumerKey, consumerSecret: consumerSecret, authorizeUrl: authorizeUrl.absoluteString, accessTokenUrl: accessTokenUrl.absoluteString, responseType: responseType, contentType: contentType)
-	}
-	
-	public convenience init(consumerKey: String, consumerSecret: String, authorizeUrl: URL, responseType: String) {
-		self.init(consumerKey: consumerKey, consumerSecret: consumerSecret, authorizeUrl: authorizeUrl.absoluteString, responseType: responseType)
-	}
-	
     public convenience init(consumerKey: String, consumerSecret: String, authorizeUrl: String, accessTokenUrl: String, responseType: String) {
         self.init(consumerKey: consumerKey, consumerSecret: consumerSecret, authorizeUrl: authorizeUrl, responseType: responseType)
         self.accessTokenUrl = accessTokenUrl
@@ -179,11 +167,6 @@ open class OAuth2Swift: OAuthSwift {
         self.cancel() // ie. remove the observer.
         return nil
     }
-	
-	@discardableResult
-	open func authorize(withCallbackURL url: URL, scope: String, state: String, parameters: Parameters = [:], headers: OAuthSwift.Headers? = nil, success: @escaping TokenSuccessHandler, failure: FailureHandler?) -> OAuthSwiftRequestHandle? {
-		return authorize(withCallbackURL: url.absoluteString, scope: scope, state: state, parameters: parameters, headers: headers, success: success, failure: failure)
-	}
 
     @discardableResult
     open func authorize(withCallbackURL urlString: String, scope: String, state: String, parameters: Parameters = [:], headers: OAuthSwift.Headers? = nil, success: @escaping TokenSuccessHandler, failure: FailureHandler?) -> OAuthSwiftRequestHandle? {
@@ -284,33 +267,13 @@ open class OAuth2Swift: OAuthSwift {
             return self.client.request(accessTokenUrl, method: .POST, parameters: parameters, headers: finalHeaders, checkTokenExpiration: false, success: successHandler, failure: failure)
         }
     }
-	
-	/**
-	Convenience method to start a request that must be authorized with the previously retrieved access token.
-	Since OAuth 2 requires support for the access token refresh mechanism, this method will take care to automatically
-	refresh the token if needed such that the developer only has to be concerned about the outcome of the request.
-	
-	- parameter url:            The url for the request.
-	- parameter method:         The HTTP method to use.
-	- parameter parameters:     The request's parameters.
-	- parameter headers:        The request's headers.
-	- parameter renewHeaders:   The request's headers if renewing. If nil, the `headers`` are used when renewing.
-	- parameter body:           The request's HTTP body.
-	- parameter onTokenRenewal: Optional callback triggered in case the access token renewal was required in order to properly authorize the request.
-	- parameter success:        The success block. Takes the successfull response and data as parameter.
-	- parameter failure:        The failure block. Takes the error as parameter.
-	*/
-	@discardableResult
-	open func startAuthorizedRequest(_ url: URL, method: OAuthSwiftHTTPRequest.Method, parameters: OAuthSwift.Parameters, headers: OAuthSwift.Headers? = nil, renewHeaders: OAuthSwift.Headers? = nil, body: Data? = nil, onTokenRenewal: TokenRenewedHandler? = nil, success: @escaping OAuthSwiftHTTPRequest.SuccessHandler, failure: @escaping OAuthSwiftHTTPRequest.FailureHandler) -> OAuthSwiftRequestHandle? {
-		return startAuthorizedRequest(url.absoluteString, method: method, parameters: parameters, headers: headers, renewHeaders: renewHeaders, body: body, onTokenRenewal: onTokenRenewal, success: success, failure: failure)
-	}
 
     /**
      Convenience method to start a request that must be authorized with the previously retrieved access token.
      Since OAuth 2 requires support for the access token refresh mechanism, this method will take care to automatically
      refresh the token if needed such that the developer only has to be concerned about the outcome of the request.
      
-     - parameter url:            The url string for the request.
+     - parameter url:            The url for the request.
      - parameter method:         The HTTP method to use.
      - parameter parameters:     The request's parameters.
      - parameter headers:        The request's headers.
