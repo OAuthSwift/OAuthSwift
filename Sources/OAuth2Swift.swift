@@ -34,21 +34,21 @@ open class OAuth2Swift: OAuthSwift {
     var codeVerifier: String?
 
     // MARK: init
-    public convenience init(consumerKey: String, consumerSecret: String, authorizeUrl: String, accessTokenUrl: String, responseType: String) {
+    public convenience init(consumerKey: String, consumerSecret: String, authorizeUrl: URLConvertible, accessTokenUrl: URLConvertible, responseType: String) {
         self.init(consumerKey: consumerKey, consumerSecret: consumerSecret, authorizeUrl: authorizeUrl, responseType: responseType)
-        self.accessTokenUrl = accessTokenUrl
+        self.accessTokenUrl = accessTokenUrl.string
     }
 
-    public convenience init(consumerKey: String, consumerSecret: String, authorizeUrl: String, accessTokenUrl: String, responseType: String, contentType: String) {
+    public convenience init(consumerKey: String, consumerSecret: String, authorizeUrl: URLConvertible, accessTokenUrl: URLConvertible, responseType: String, contentType: String) {
         self.init(consumerKey: consumerKey, consumerSecret: consumerSecret, authorizeUrl: authorizeUrl, responseType: responseType)
-        self.accessTokenUrl = accessTokenUrl
+        self.accessTokenUrl = accessTokenUrl.string
         self.contentType = contentType
     }
 
-    public init(consumerKey: String, consumerSecret: String, authorizeUrl: String, responseType: String) {
+    public init(consumerKey: String, consumerSecret: String, authorizeUrl: URLConvertible, responseType: String) {
         self.consumerKey = consumerKey
         self.consumerSecret = consumerSecret
-        self.authorizeUrl = authorizeUrl
+        self.authorizeUrl = authorizeUrl.string
         self.responseType = responseType
         super.init(consumerKey: consumerKey, consumerSecret: consumerSecret)
         self.client.credential.version = .oauth2
@@ -169,9 +169,9 @@ open class OAuth2Swift: OAuthSwift {
     }
 
     @discardableResult
-    open func authorize(withCallbackURL urlString: String, scope: String, state: String, parameters: Parameters = [:], headers: OAuthSwift.Headers? = nil, success: @escaping TokenSuccessHandler, failure: FailureHandler?) -> OAuthSwiftRequestHandle? {
-        guard let url = URL(string: urlString) else {
-            failure?(OAuthSwiftError.encodingError(urlString: urlString))
+    open func authorize(withCallbackURL URL: URLConvertible, scope: String, state: String, parameters: Parameters = [:], headers: OAuthSwift.Headers? = nil, success: @escaping TokenSuccessHandler, failure: FailureHandler?) -> OAuthSwiftRequestHandle? {
+        guard let url = URL.url else {
+            failure?(OAuthSwiftError.encodingError(urlString: URL.string))
             return nil
         }
         return authorize(withCallbackURL: url, scope: scope, state: state, parameters: parameters, headers: headers, success: success, failure: failure)
@@ -284,7 +284,7 @@ open class OAuth2Swift: OAuthSwift {
      - parameter failure:        The failure block. Takes the error as parameter.
      */
     @discardableResult
-    open func startAuthorizedRequest(_ url: String, method: OAuthSwiftHTTPRequest.Method, parameters: OAuthSwift.Parameters, headers: OAuthSwift.Headers? = nil, renewHeaders: OAuthSwift.Headers? = nil, body: Data? = nil, onTokenRenewal: TokenRenewedHandler? = nil, success: @escaping OAuthSwiftHTTPRequest.SuccessHandler, failure: @escaping OAuthSwiftHTTPRequest.FailureHandler) -> OAuthSwiftRequestHandle? {
+    open func startAuthorizedRequest(_ url: URLConvertible, method: OAuthSwiftHTTPRequest.Method, parameters: OAuthSwift.Parameters, headers: OAuthSwift.Headers? = nil, renewHeaders: OAuthSwift.Headers? = nil, body: Data? = nil, onTokenRenewal: TokenRenewedHandler? = nil, success: @escaping OAuthSwiftHTTPRequest.SuccessHandler, failure: @escaping OAuthSwiftHTTPRequest.FailureHandler) -> OAuthSwiftRequestHandle? {
         // build request
         return self.client.request(url, method: method, parameters: parameters, headers: headers, body: body, success: success) { (error) in
             switch error {
@@ -348,9 +348,9 @@ open class OAuth2Swift: OAuthSwift {
     
     /// use RFC7636 PKCE credentials - convenience method
     @discardableResult
-    open func authorize(withCallbackURL urlString: String, scope: String, state: String, codeChallenge: String, codeChallengeMethod: String = "S256", codeVerifier: String, parameters: Parameters = [:], headers: OAuthSwift.Headers? = nil, success: @escaping TokenSuccessHandler, failure: FailureHandler?) -> OAuthSwiftRequestHandle? {
-        guard let url = URL(string: urlString) else {
-            failure?(OAuthSwiftError.encodingError(urlString: urlString))
+    open func authorize(withCallbackURL URL: URLConvertible, scope: String, state: String, codeChallenge: String, codeChallengeMethod: String = "S256", codeVerifier: String, parameters: Parameters = [:], headers: OAuthSwift.Headers? = nil, success: @escaping TokenSuccessHandler, failure: FailureHandler?) -> OAuthSwiftRequestHandle? {
+        guard let url = URL.url else {
+            failure?(OAuthSwiftError.encodingError(urlString: URL.string))
             return nil
         }
         
