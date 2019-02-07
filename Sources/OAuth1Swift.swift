@@ -24,12 +24,12 @@ open class OAuth1Swift: OAuthSwift {
     var accessTokenUrl: String
 
     // MARK: init
-    public init(consumerKey: String, consumerSecret: String, requestTokenUrl: String, authorizeUrl: String, accessTokenUrl: String) {
+    public init(consumerKey: String, consumerSecret: String, requestTokenUrl: URLConvertible, authorizeUrl: URLConvertible, accessTokenUrl: URLConvertible) {
         self.consumerKey = consumerKey
         self.consumerSecret = consumerSecret
-        self.requestTokenUrl = requestTokenUrl
-        self.authorizeUrl = authorizeUrl
-        self.accessTokenUrl = accessTokenUrl
+        self.requestTokenUrl = requestTokenUrl.string
+        self.authorizeUrl = authorizeUrl.string
+        self.accessTokenUrl = accessTokenUrl.string
         super.init(consumerKey: consumerKey, consumerSecret: consumerSecret)
         self.client.credential.version = .oauth1
     }
@@ -117,9 +117,9 @@ open class OAuth1Swift: OAuthSwift {
     }
 
     @discardableResult
-    open func authorize(withCallbackURL urlString: String, success: @escaping TokenSuccessHandler, failure: FailureHandler?) -> OAuthSwiftRequestHandle? {
-        guard let url = URL(string: urlString) else {
-              failure?(OAuthSwiftError.encodingError(urlString: urlString))
+    open func authorize(withCallbackURL URL: URLConvertible, success: @escaping TokenSuccessHandler, failure: FailureHandler?) -> OAuthSwiftRequestHandle? {
+        guard let url = URL.url else {
+              failure?(OAuthSwiftError.encodingError(urlString: URL.string))
             return nil
         }
         return authorize(withCallbackURL: url, success: success, failure: failure)
