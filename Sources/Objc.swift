@@ -15,12 +15,12 @@ extension OAuthSwift {
 
 extension OAuth1Swift {
 
-    open func objc_authorize(withCallbackURL URL: URLConvertible, success: @escaping TokenSuccessHandler, failure: Obj_FailureHandler?) -> OAuthSwiftRequestHandle? {
-        guard let url = URL.url else {
-            failure?(OAuthSwiftError.encodingError(urlString: URL.string))
+    open func objc_authorize(withCallbackURL url: URLConvertible, success: @escaping TokenSuccessHandler, failure: Obj_FailureHandler?) -> OAuthSwiftRequestHandle? {
+        guard let callbackURL = url.url else {
+            failure?(OAuthSwiftError.encodingError(urlString: url.string))
             return nil
         }
-        return authorize(withCallbackURL: url, success: success, failure: failure)
+        return authorize(withCallbackURL: callbackURL, success: success, failure: failure)
     }
 
 }

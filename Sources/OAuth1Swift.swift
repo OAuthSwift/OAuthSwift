@@ -117,12 +117,12 @@ open class OAuth1Swift: OAuthSwift {
     }
 
     @discardableResult
-    open func authorize(withCallbackURL URL: URLConvertible, success: @escaping TokenSuccessHandler, failure: FailureHandler?) -> OAuthSwiftRequestHandle? {
-        guard let url = URL.url else {
-              failure?(OAuthSwiftError.encodingError(urlString: URL.string))
+    open func authorize(withCallbackURL url: URLConvertible, success: @escaping TokenSuccessHandler, failure: FailureHandler?) -> OAuthSwiftRequestHandle? {
+        guard let callbackURL = url.url else {
+              failure?(OAuthSwiftError.encodingError(urlString: url.string))
             return nil
         }
-        return authorize(withCallbackURL: url, success: success, failure: failure)
+        return authorize(withCallbackURL: callbackURL, success: success, failure: failure)
     }
 
     // 1. Request token
