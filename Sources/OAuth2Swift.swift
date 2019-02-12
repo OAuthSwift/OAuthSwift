@@ -169,12 +169,12 @@ open class OAuth2Swift: OAuthSwift {
     }
 
     @discardableResult
-    open func authorize(withCallbackURL URL: URLConvertible, scope: String, state: String, parameters: Parameters = [:], headers: OAuthSwift.Headers? = nil, success: @escaping TokenSuccessHandler, failure: FailureHandler?) -> OAuthSwiftRequestHandle? {
-        guard let url = URL.url else {
-            failure?(OAuthSwiftError.encodingError(urlString: URL.string))
+    open func authorize(withCallbackURL url: URLConvertible, scope: String, state: String, parameters: Parameters = [:], headers: OAuthSwift.Headers? = nil, success: @escaping TokenSuccessHandler, failure: FailureHandler?) -> OAuthSwiftRequestHandle? {
+        guard let callbackURL = url.url else {
+            failure?(OAuthSwiftError.encodingError(urlString: url.string))
             return nil
         }
-        return authorize(withCallbackURL: url, scope: scope, state: state, parameters: parameters, headers: headers, success: success, failure: failure)
+        return authorize(withCallbackURL: callbackURL, scope: scope, state: state, parameters: parameters, headers: headers, success: success, failure: failure)
     }
 
     open func postOAuthAccessTokenWithRequestToken(byCode code: String, callbackURL: URL?, headers: OAuthSwift.Headers? = nil, success: @escaping TokenSuccessHandler, failure: FailureHandler?) -> OAuthSwiftRequestHandle? {
@@ -348,13 +348,13 @@ open class OAuth2Swift: OAuthSwift {
     
     /// use RFC7636 PKCE credentials - convenience method
     @discardableResult
-    open func authorize(withCallbackURL URL: URLConvertible, scope: String, state: String, codeChallenge: String, codeChallengeMethod: String = "S256", codeVerifier: String, parameters: Parameters = [:], headers: OAuthSwift.Headers? = nil, success: @escaping TokenSuccessHandler, failure: FailureHandler?) -> OAuthSwiftRequestHandle? {
-        guard let url = URL.url else {
-            failure?(OAuthSwiftError.encodingError(urlString: URL.string))
+    open func authorize(withCallbackURL url: URLConvertible, scope: String, state: String, codeChallenge: String, codeChallengeMethod: String = "S256", codeVerifier: String, parameters: Parameters = [:], headers: OAuthSwift.Headers? = nil, success: @escaping TokenSuccessHandler, failure: FailureHandler?) -> OAuthSwiftRequestHandle? {
+        guard let callbackURL = url.url else {
+            failure?(OAuthSwiftError.encodingError(urlString: url.string))
             return nil
         }
         
-        return authorize(withCallbackURL: url, scope: scope, state: state, codeChallenge: codeChallenge, codeChallengeMethod: codeChallengeMethod, codeVerifier: codeVerifier, parameters: parameters, headers: headers, success: success, failure: failure)
+        return authorize(withCallbackURL: callbackURL, scope: scope, state: state, codeChallenge: codeChallenge, codeChallengeMethod: codeChallengeMethod, codeVerifier: codeVerifier, parameters: parameters, headers: headers, success: success, failure: failure)
     }
     
     /// use RFC7636 PKCE credentials
