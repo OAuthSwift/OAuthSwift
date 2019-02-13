@@ -345,7 +345,7 @@ open class OAuth2Swift: OAuthSwift {
             failure: failure
         )
     }
-    
+
     /// use RFC7636 PKCE credentials - convenience method
     @discardableResult
     open func authorize(withCallbackURL url: URLConvertible, scope: String, state: String, codeChallenge: String, codeChallengeMethod: String = "S256", codeVerifier: String, parameters: Parameters = [:], headers: OAuthSwift.Headers? = nil, success: @escaping TokenSuccessHandler, failure: FailureHandler?) -> OAuthSwiftRequestHandle? {
@@ -353,22 +353,14 @@ open class OAuth2Swift: OAuthSwift {
             failure?(OAuthSwiftError.encodingError(urlString: url.string))
             return nil
         }
-        
-        return authorize(withCallbackURL: callbackURL, scope: scope, state: state, codeChallenge: codeChallenge, codeChallengeMethod: codeChallengeMethod, codeVerifier: codeVerifier, parameters: parameters, headers: headers, success: success, failure: failure)
-    }
-    
-    /// use RFC7636 PKCE credentials
-    @discardableResult
-    open func authorize(withCallbackURL callbackURL: URL?, scope: String, state: String, codeChallenge: String, codeChallengeMethod: String = "S256", codeVerifier: String, parameters: Parameters = [:], headers: OAuthSwift.Headers? = nil, success: @escaping TokenSuccessHandler, failure: FailureHandler?) -> OAuthSwiftRequestHandle? {
-        
+
         // remember code_verifier
         self.codeVerifier = codeVerifier
         // PKCE - extra parameter
         var pkceParameters = Parameters()
         pkceParameters["code_challenge"] = codeChallenge
         pkceParameters["code_challenge_method"] = codeChallengeMethod
-        
+
         return authorize(withCallbackURL: callbackURL, scope: scope, state: state, parameters: parameters + pkceParameters, headers: headers, success: success, failure: failure)
     }
-
 }
