@@ -18,7 +18,7 @@ extension String: URLConvertible {
 	public var string: String {
 		return self
 	}
-	
+
 	public var url: URL? {
 		return URL(string: self)
 	}
@@ -28,8 +28,14 @@ extension URL: URLConvertible {
 	public var string: String {
 		return absoluteString
 	}
-	
+
 	public var url: URL? {
 		return self
 	}
+}
+
+extension URLConvertible {
+    public var encodedURL: URL {
+        return URL(string: self.string.urlEncoded)!
+    }
 }

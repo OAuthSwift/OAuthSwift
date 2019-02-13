@@ -62,8 +62,11 @@ open class OAuth1Swift: OAuthSwift {
     // MARK: functions
     // 0. Start
     @discardableResult
-    open func authorize(withCallbackURL callbackURL: URL, success: @escaping TokenSuccessHandler, failure: FailureHandler?) -> OAuthSwiftRequestHandle? {
-
+    open func authorize(withCallbackURL url: URL, success: @escaping TokenSuccessHandler, failure: FailureHandler?) -> OAuthSwiftRequestHandle? {
+        guard let callbackURL = url.url else {
+            failure?(OAuthSwiftError.encodingError(urlString: url.string))
+            return nil
+        }
         self.postOAuthRequestToken(callbackURL: callbackURL, success: { [unowned self] credential, _, _ in
 
             self.observeCallback { [weak self] url in
@@ -114,15 +117,6 @@ open class OAuth1Swift: OAuthSwift {
         }, failure: failure)
 
         return self
-    }
-
-    @discardableResult
-    open func authorize(withCallbackURL url: URLConvertible, success: @escaping TokenSuccessHandler, failure: FailureHandler?) -> OAuthSwiftRequestHandle? {
-        guard let callbackURL = url.url else {
-              failure?(OAuthSwiftError.encodingError(urlString: url.string))
-            return nil
-        }
-        return authorize(withCallbackURL: callbackURL, success: success, failure: failure)
     }
 
     // 1. Request token

@@ -97,7 +97,7 @@ open class OAuthSwiftClient: NSObject {
 
     open func makeRequest(_ url: URLConvertible, method: OAuthSwiftHTTPRequest.Method, parameters: OAuthSwift.Parameters = [:], headers: OAuthSwift.Headers? = nil, body: Data? = nil) -> OAuthSwiftHTTPRequest? {
         guard let url = url.url else {
-            return nil
+            return nil // XXX failure not thrown here
         }
 
         let request = OAuthSwiftHTTPRequest(url: url, method: method, parameters: parameters, paramsLocation: self.paramsLocation, httpBody: body, headers: headers ?? [:], sessionFactory: self.sessionFactory)
@@ -123,13 +123,11 @@ open class OAuthSwiftClient: NSObject {
 
     func multiPartRequest(url: URLConvertible, method: OAuthSwiftHTTPRequest.Method, parameters: OAuthSwift.Parameters, image: Data, success: OAuthSwiftHTTPRequest.SuccessHandler?, failure: OAuthSwiftHTTPRequest.FailureHandler?) -> OAuthSwiftRequestHandle? {
         let multiparts = [ OAuthSwiftMultipartData(name: "media", data: image, fileName: "file", mimeType: "image/jpeg") ]
-
-        if let request = makeMultiPartRequest(url, method: method, parameters: parameters, multiparts: multiparts) {
-            request.start(success: success, failure: failure)
-            return request
+        guard let request = makeMultiPartRequest(url, method: method, parameters: parameters, multiparts: multiparts) else {
+            return nil
         }
-
-        return nil
+        request.start(success: success, failure: failure)
+        return request
     }
 
     open func multiPartBody(from inputParameters: OAuthSwift.Parameters, boundary: String) -> Data {
