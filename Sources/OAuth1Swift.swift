@@ -92,7 +92,7 @@ open class OAuth1Swift: OAuthSwift {
                             return
                         }
                     }
-                    this.postOAuthAccessTokenWithRequestToken(success: success, failure: failure)
+                    this.postOAuthAccessTokenWithRequestToken(headers: headers, success: success, failure: failure)
                 } else {
                     failure?(OAuthSwiftError.missingToken)
                     return
@@ -143,7 +143,7 @@ open class OAuth1Swift: OAuthSwift {
     }
 
     // 3. Get Access token
-    func postOAuthAccessTokenWithRequestToken(success: @escaping TokenSuccessHandler, failure: FailureHandler?) {
+    func postOAuthAccessTokenWithRequestToken(headers: OAuthSwift.Headers? = nil, success: @escaping TokenSuccessHandler, failure: FailureHandler?) {
         var parameters = [String: Any]()
         parameters["oauth_token"] = self.client.credential.oauthToken
         if !self.allowMissingOAuthVerifier {
@@ -151,7 +151,7 @@ open class OAuth1Swift: OAuthSwift {
         }
 
         if let handle = self.client.post(
-            self.accessTokenUrl, parameters: parameters,
+            self.accessTokenUrl, parameters: parameters, headers: headers,
             success: { [weak self] response in
                 guard let this = self else { OAuthSwift.retainError(failure); return }
                 let parameters = response.string?.parametersFromQueryString ?? [:]
