@@ -26,7 +26,7 @@ public extension NSError {
 			if let reponseHeaders = self.userInfo["Response-Headers"] as? [String: String],
 				let authenticateHeader = reponseHeaders["WWW-Authenticate"] ?? reponseHeaders["Www-Authenticate"] {
 				let headerDictionary = authenticateHeader.headerDictionary
-				if let error = headerDictionary["error"], error == "invalid_token" || error == "\"invalid_token\"" {
+				if let error = headerDictionary["error"], error == "invalid_token" || error == "expired_token" || error == "\"invalid_token\"" {
 					return true
 				}
 			}
@@ -34,7 +34,7 @@ public extension NSError {
                 let bodyData = body.data(using: OAuthSwiftDataEncoding),
                 let json = try? JSONSerialization.jsonObject(with: bodyData, options: []),
                 let jsonDic = json as? [String: AnyObject] {
-                if let error = jsonDic["error"] as? String, error == "invalid_token" || error == "\"invalid_token\"" {
+                if let error = jsonDic["error"] as? String, error == "invalid_token" || error == "expired_token" || error == "\"invalid_token\"" {
                     return true
                 }
                 if let errors = jsonDic["errors"] as? [[String: AnyObject]] {
