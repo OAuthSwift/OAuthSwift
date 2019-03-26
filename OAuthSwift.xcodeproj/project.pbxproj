@@ -792,10 +792,9 @@
 			};
 			buildConfigurationList = F451E3C0195B8CD80051434C /* Build configuration list for PBXProject "OAuthSwift" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				English,
 				en,
 				ja,
 				Base,
