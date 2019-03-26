@@ -1,5 +1,5 @@
 language: objective-c
-osx_image: xcode10
+osx_image: xcode10.2
 env:
   global:
     - LC_CTYPE=en_US.UTF-8
@@ -7,15 +7,15 @@ env:
     - PROJECT=OAuthSwift.xcodeproj
     - IOS_FRAMEWORK_SCHEME="OAuthSwift"
     - MACOS_FRAMEWORK_SCHEME="OAuthSwiftMacOS"
-    - IOS_SDK=iphonesimulator12.0
+    - IOS_SDK=iphonesimulator12.2
     - MACOS_SDK=macosx10.14
   matrix:
-    - DESTINATION="OS=12.0,name=iPhone 8" SCHEME="$IOS_FRAMEWORK_SCHEME" SDK="$IOS_SDK"
+    - DESTINATION="OS=12.2,name=iPhone 8" SCHEME="$IOS_FRAMEWORK_SCHEME" SDK="$IOS_SDK"
     - DESTINATION="arch=x86_64" SCHEME="$MACOS_FRAMEWORK_SCHEME" SDK="$MACOS_SDK"
 before_install:
   - bundle install
   - brew update
-  - gem install xcpretty --no-rdoc --no-ri --no-document --quiet
+  - gem install xcpretty --no-document --quiet
   - brew outdated swiftlint || brew upgrade swiftlint
 script:
   - set -o pipefail
