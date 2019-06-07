@@ -640,8 +640,8 @@ extension ViewController {
         let oauthswift = OAuth2Swift(
             consumerKey:    serviceParameters["consumerKey"]!,
             consumerSecret: serviceParameters["consumerSecret"]!,
-            authorizeUrl:   "https://www.dropbox.com/1/oauth2/authorize",
-            accessTokenUrl: "https://api.dropbox.com/1/oauth2/token",
+            authorizeUrl:   "https://www.dropbox.com/oauth2/authorize",
+            accessTokenUrl: "https://api.dropbox.com/oauth2/token",
             responseType:   "token"
         )
         self.oauthswift = oauthswift
@@ -653,7 +653,7 @@ extension ViewController {
                 // Get Dropbox Account Info
                 let parameters =  Dictionary<String, AnyObject>()
                 let _ = oauthswift.client.get(
-                    "https://api.dropbox.com/1/account/info", parameters: parameters,
+                    "https://api.dropbox.com/2/users/get_account", parameters: parameters,
                     success: { response in
                         let jsonDict = try? response.jsonObject()
                         print(jsonDict as Any)

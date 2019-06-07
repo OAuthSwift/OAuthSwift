@@ -80,7 +80,7 @@ class OAuthSwiftClientTests: XCTestCase {
             let urlRequest = try request.makeRequest()
             if let expectedJSON = expectedBodyJSONDictionary {
                 if let body = urlRequest.httpBody {
-                    if let json = try? JSONSerialization.jsonObject(with: body, options: []) as? [String:String] {
+                    if let json = ((try? JSONSerialization.jsonObject(with: body, options: []) as? [String:String]) as [String : String]??) {
                         XCTAssertEqualDictionaries(json!, expectedJSON)
                     } else {
                         if let string = String(data: body, encoding: request.config.dataEncoding) {
