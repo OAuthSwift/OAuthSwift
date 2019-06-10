@@ -74,14 +74,14 @@ class OAuth2SwiftTests: XCTestCase {
 			state = extractedState ?? ""
 		}
         let _ = oauth.authorize(
-            withCallbackURL: URL(string:callbackURL)!, scope: "all", state: state, parameters: [:],
-            success: { credential, response, parameters in
+            withCallbackURL: URL(string:callbackURL)!, scope: "all", state: state, parameters: [:]) { result in
+            switch result {
+            case .success:
                 expectation.fulfill()
-            },
-            failure: { error in
+            case .failure(let error):
                 XCTFail("The failure handler should not be called.\(error)")
             }
-        )
+        }
         
         waitForExpectations(timeout: DefaultTimeout, handler: nil)
         
@@ -122,22 +122,21 @@ class OAuth2SwiftTests: XCTestCase {
         
         let state = generateState(withLength: 20)
         let _ = oauth.authorize(
-            withCallbackURL: URL(string:callbackURL)!, scope: "all", state: state, parameters: [:],
-            success: { credential, response, parameters in
+        withCallbackURL: URL(string:callbackURL)!, scope: "all", state: state, parameters: [:]) { result in
+            switch result {
+            case .success:
                 XCTFail("The success handler should not be called.")
-            },
-            failure: { error in
+            case .failure:
                 expectation.fulfill()
             }
-        )
+        }
         
         waitForExpectations(timeout: DefaultTimeout, handler: nil)
     }
     
     func testExpire() {
         let expectation = self.expectation(description: "request should failed")
-        
-        
+
         let oauth = OAuth2Swift(
             consumerKey: server.valid_key,
             consumerSecret: server.valid_secret,
@@ -145,12 +144,11 @@ class OAuth2SwiftTests: XCTestCase {
             accessTokenUrl: server.accessTokenURLV2,
             responseType: "code"
         )
-        let _ = oauth.client.get(
-            server.expireURLV2, parameters: [:],
-            success: { response in
+        let _ = oauth.client.get(server.expireURLV2, parameters: [:]) { result in
+            switch result {
+            case .success(let response):
                 XCTFail("data receive \(response.data).")
-            },
-            failure: { error in
+            case .failure(let error):
                 switch error {
                 case .tokenExpired(let error):
                     expectation.fulfill()
@@ -175,9 +173,7 @@ class OAuth2SwiftTests: XCTestCase {
                     XCTFail("Wrong exception type \(error)")
                 }
             }
-        )
+        }
         waitForExpectations(timeout: DefaultTimeout, handler: nil)
     }
-    
-
 }
