@@ -222,3 +222,14 @@ open class ExtensionContextURLHandler: OAuthSwiftURLHandlerType {
         extensionContext.open(url, completionHandler: nil)
     }
 }
+
+// MARK: Proxy
+class OAuthSwiftURLHandlerProxy: OAuthSwiftURLHandlerType {
+    weak var proxiable: OAuthSwiftURLHandlerType?
+    init(_ proxiable: OAuthSwiftURLHandlerType) {
+        self.proxiable = proxiable
+    }
+    func handle(_ url: URL) {
+        proxiable?.handle(url)
+    }
+}
