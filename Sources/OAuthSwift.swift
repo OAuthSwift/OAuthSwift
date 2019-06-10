@@ -18,19 +18,7 @@ open class OAuthSwift: NSObject, OAuthSwiftRequestHandle {
     open var version: OAuthSwiftCredential.Version { return self.client.credential.version }
 
     /// Handle the authorize url into a web view or browser
-    open var authorizeURLHandler: OAuthSwiftURLHandlerType {
-        get {
-            if let proxy = _authorizeURLHandler as? OAuthSwiftURLHandlerProxy {
-                return proxy.proxiable ?? _authorizeURLHandler
-            }
-            return _authorizeURLHandler
-        }
-        set {
-            _authorizeURLHandler = OAuthSwiftURLHandlerProxy(newValue)
-        }
-    }
-
-    var _authorizeURLHandler: OAuthSwiftURLHandlerType = OAuthSwiftOpenURLExternally.sharedInstance
+    open var authorizeURLHandler: OAuthSwiftURLHandlerType = OAuthSwiftOpenURLExternally.sharedInstance
 
     fileprivate var currentRequests: [String: OAuthSwiftRequestHandle] = [:]
 
@@ -117,7 +105,6 @@ extension OAuthSwift {
     public typealias ConfigParameters = [String: String]
     /// MARK: callback alias
     public typealias TokenSuccess = (credential: OAuthSwiftCredential, response: OAuthSwiftResponse?, parameters: Parameters)
-    public typealias TokenSuccessHandler = (_ credential: OAuthSwiftCredential, _ response: OAuthSwiftResponse?, _ parameters: Parameters) -> Void
-    public typealias FailureHandler = (_ error: OAuthSwiftError) -> Void
-    public typealias TokenRenewedHandler = (_ credential: OAuthSwiftCredential) -> Void
+    public typealias TokenCompletionHandler = (Result<TokenSuccess, OAuthSwiftError>) -> Void
+    public typealias TokenRenewedHandler = (Result<OAuthSwiftCredential, Never>) -> Void
 }

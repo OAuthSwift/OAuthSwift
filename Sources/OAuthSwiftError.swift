@@ -126,13 +126,16 @@ extension OAuthSwiftError: CustomStringConvertible {
 }
 
 extension OAuthSwift {
-
-    static func retainError(_ failureHandler: FailureHandler?) {
+    static func retainError(_ completionHandler: OAuthSwiftHTTPRequest.CompletionHandler?) {
         #if !OAUTH_NO_RETAIN_ERROR
-            failureHandler?(OAuthSwiftError.retain)
+            completionHandler?(.failure(OAuthSwiftError.retain))
         #endif
     }
-
+    static func retainError(_ completionHandler: TokenCompletionHandler?) {
+        #if !OAUTH_NO_RETAIN_ERROR
+        completionHandler?(.failure(OAuthSwiftError.retain))
+        #endif
+    }
 }
 
 // MARK: NSError

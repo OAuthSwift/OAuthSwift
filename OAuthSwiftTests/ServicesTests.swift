@@ -121,15 +121,15 @@ class ServicesTests: XCTestCase {
 
         let expectation = self.expectation(description: service)
         
-        let _ = oauthswift.authorize(withCallbackURL: URL(string: callbackURL)!, success: {
-            credential, response, parameters in
-               expectation.fulfill()
-            
-               print("\(service) token ok")
-            }, failure: { error in
+        let _ = oauthswift.authorize(withCallbackURL: URL(string: callbackURL)!) { result in
+            switch result {
+            case .success:
+                expectation.fulfill()
+                print("\(service) token ok")
+            case .failure(let error):
                 print(error.localizedDescription)
             }
-        )
+        }
 
         self.waitForExpectations(timeout: 20) { (error) -> Void in
             if let e = error {
@@ -161,15 +161,16 @@ class ServicesTests: XCTestCase {
         let expectation = self.expectation(description: service)
         
         let state = generateState(withLength: 20)
-        let _ = oauthswift.authorize(withCallbackURL: URL(string: callbackURL)!, scope: scope, state: state, success: {
-            credential, response, parameters in
-            expectation.fulfill()
-            
-            print("\(service) token ok")
-            }, failure: { error in
+        let _ = oauthswift.authorize(withCallbackURL: URL(string: callbackURL)!, scope: scope, state: state) { result in
+            switch result {
+            case .success:
+                expectation.fulfill()
+                
+                print("\(service) token ok")
+            case .failure(let error):
                 print(error.localizedDescription)
             }
-        )
+        }
         
         self.waitForExpectations(timeout: 20) { (error) -> Void in
             if let e = error {
