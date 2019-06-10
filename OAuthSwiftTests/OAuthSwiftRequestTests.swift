@@ -34,7 +34,7 @@ class OAuth1SwiftRequestTests: XCTestCase {
             }
         }
         
-        oAuthSwiftHTTPRequest.start(completion: completionHandler)
+        oAuthSwiftHTTPRequest.start(completionHandler: completionHandler)
         waitForExpectations(timeout: DefaultTimeout, handler: nil)
     }
 
@@ -67,7 +67,7 @@ class OAuth1SwiftRequestTests: XCTestCase {
             }
         }
         
-        oAuthSwiftHTTPRequest.start(completion: completionHandler)
+        oAuthSwiftHTTPRequest.start(completionHandler: completionHandler)
         waitForExpectations(timeout: DefaultTimeout, handler: nil)
     }
 
@@ -110,7 +110,7 @@ class OAuth1SwiftRequestTests: XCTestCase {
             }
 		}
 
-		oAuthSwiftHTTPRequest.start(completion: completionHandler)
+		oAuthSwiftHTTPRequest.start(completionHandler: completionHandler)
 		oAuthSwiftHTTPRequest.cancel()
 		waitForExpectations(timeout: DefaultTimeout, handler: nil)
 	}

@@ -56,7 +56,7 @@ open class OAuthSwiftHTTPRequest: NSObject, OAuthSwiftRequestHandle {
     }
 
     /// START request
-    func start(completion: CompletionHandler?) {
+    func start(completionHandler completion: CompletionHandler?) {
         guard request == nil else { return } // Don't start the same request twice!
 
         do {
@@ -103,7 +103,7 @@ open class OAuthSwiftHTTPRequest: NSObject, OAuthSwiftRequestHandle {
     }
 
     /// Function called when receiving data from server.
-    public static func completionHandler(completionHandler: CompletionHandler?, request: URLRequest, data: Data?, resp: URLResponse?, error: Error?) {
+    public static func completionHandler(completionHandler completion: CompletionHandler?, request: URLRequest, data: Data?, resp: URLResponse?, error: Error?) {
         #if os(iOS)
         #if !OAUTH_APP_EXTENSIONS
         UIApplication.shared.isNetworkActivityIndicatorVisible = false
@@ -120,7 +120,7 @@ open class OAuthSwiftHTTPRequest: NSObject, OAuthSwiftRequestHandle {
                 oauthError = .tokenExpired(error: error)
             }
 
-            completionHandler?(.failure(oauthError))
+            completion?(.failure(oauthError))
             return
         }
 
@@ -138,7 +138,7 @@ open class OAuthSwiftHTTPRequest: NSObject, OAuthSwiftRequestHandle {
                 userInfo["Response-Headers"] = response.allHeaderFields
             }
             let error = NSError(domain: OAuthSwiftError.Domain, code: badRequestCode, userInfo: userInfo)
-             completionHandler?(.failure(.requestError(error:error, request: request)))
+            completion?(.failure(.requestError(error:error, request: request)))
             return
         }
 
@@ -178,21 +178,21 @@ open class OAuthSwiftHTTPRequest: NSObject, OAuthSwiftRequestHandle {
 
             let error = NSError(domain: OAuthSwiftError.Domain, code: response.statusCode, userInfo: userInfo)
             if error.isExpiredToken {
-                completionHandler?(.failure(.tokenExpired(error: error)))
+                completion?(.failure(.tokenExpired(error: error)))
             } else if errorCode == "authorization_pending" {
-                completionHandler?(.failure(.authorizationPending(error: error, request: request)))
+                completion?(.failure(.authorizationPending(error: error, request: request)))
             } else if errorCode == "slow_down" {
-                completionHandler?(.failure(.slowDown(error: error, request: request)))
+                completion?(.failure(.slowDown(error: error, request: request)))
             } else if errorCode == "access_denied" {
-                completionHandler?(.failure(.accessDenied(error: error, request: request)))
+                completion?(.failure(.accessDenied(error: error, request: request)))
             } else {
-                completionHandler?(.failure(.requestError(error: error, request: request)))
+                completion?(.failure(.requestError(error: error, request: request)))
             }
             return
         }
 
         // MARK: success
-        completionHandler?(.success(OAuthSwiftResponse(data: responseData, response: response, request: request)))
+        completion?(.success(OAuthSwiftResponse(data: responseData, response: response, request: request)))
     }
 
     open func cancel() {
