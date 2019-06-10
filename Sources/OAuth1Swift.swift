@@ -17,6 +17,9 @@ open class OAuth1Swift: OAuthSwift {
     /// Optionally add callback URL to authorize Url (default: false)
     open var addCallbackURLToAuthorizeURL: Bool = false
 
+    /// Encode token using RFC3986
+    open var useRFC3986ToEncodeToken: Bool = false
+
     var consumerKey: String
     var consumerSecret: String
     var requestTokenUrl: String
@@ -99,7 +102,7 @@ open class OAuth1Swift: OAuthSwift {
                 }
             }
             // 2. Authorize
-            if let token = credential.oauthToken.urlQueryEncoded {
+            if let token = self.encode(token: credential.oauthToken) {
                 var urlString = self.authorizeUrl + (self.authorizeUrl.contains("?") ? "&" : "?")
                 urlString += "oauth_token=\(token)"
                 if self.addCallbackURLToAuthorizeURL {
@@ -117,6 +120,13 @@ open class OAuth1Swift: OAuthSwift {
         }, failure: failure)
 
         return self
+    }
+
+    private func encode(token: String) -> String? {
+        if useRFC3986ToEncodeToken {
+            return token.urlEncoded
+        }
+        return token.urlQueryEncoded
     }
 
     // 1. Request token
