@@ -24,7 +24,7 @@ OAuthSwift is packaged as a Swift framework. Currently this is the simplest way 
 * Install Carthage (https://github.com/Carthage/Carthage)
 * Create Cartfile file
 ```
-github "OAuthSwift/OAuthSwift" ~> 1.2.0
+github "OAuthSwift/OAuthSwift" ~> 2.0.0
 ```
 * Run `carthage update`.
 * On your application targets’ “General” settings tab, in the “Embedded Binaries” section, drag and drop OAuthSwift.framework from the Carthage/Build/iOS folder on disk.
@@ -37,12 +37,22 @@ github "OAuthSwift/OAuthSwift" ~> 1.2.0
 platform :ios, '10.0'
 use_frameworks!
 
-pod 'OAuthSwift', '~> 1.2.0'
+pod 'OAuthSwift', '~> 2.0.0'
 ```
 
-### swift 3
+### Old versions
+
+#### swift 3
 
 Use the `swift3` branch, or the tag `1.1.2` on main branch
+
+#### swift 4
+
+Use the tag `1.2.0` on main branch
+
+#### objective c
+
+Use the tag `1.4.1` on main branch
 
 ## How to
 ### Setting URL Schemes
@@ -89,17 +99,17 @@ oauthswift = OAuth1Swift(
 )
 // authorize
 let handle = oauthswift.authorize(
-    withCallbackURL: URL(string: "oauth-swift://oauth-callback/twitter")!,
-    success: { credential, response, parameters in
+    withCallbackURL: URL(string: "oauth-swift://oauth-callback/twitter")!) { result in
+    switch result {
+    case .success(let (credential, response, parameters)):
       print(credential.oauthToken)
       print(credential.oauthTokenSecret)
       print(parameters["user_id"])
       // Do your request
-    },
-    failure: { error in
+    case .failure(let error):
       print(error.localizedDescription)
     }             
-)
+}
 ```
 ### OAuth1 without authorization
 No urls to specify here
@@ -110,14 +120,14 @@ oauthswift = OAuth1Swift(
     consumerSecret: "********"
 )
 // do your HTTP request without authorize
-oauthswift.client.get("https://api.example.com/foo/bar",
-    success: { response in
+oauthswift.client.get("https://api.example.com/foo/bar") { result in
+    switch result {
+    case .success(let response):
         //....
-    },
-    failure: { error in
+    case .failure(let error):
         //...
     }
-)
+}
 ```
 
 ### Authorize with OAuth2.0
@@ -131,15 +141,15 @@ oauthswift = OAuth2Swift(
 )
 let handle = oauthswift.authorize(
     withCallbackURL: URL(string: "oauth-swift://oauth-callback/instagram")!,
-    scope: "likes+comments", state:"INSTAGRAM",
-    success: { credential, response, parameters in
+    scope: "likes+comments", state:"INSTAGRAM") { result in
+    switch result {
+    case .success(let (credential, response, parameters)):
       print(credential.oauthToken)
       // Do your request
-    },
-    failure: { error in
+    case .failure(let error):
       print(error.localizedDescription)
     }
-)
+}
 
 ```
 
@@ -163,15 +173,15 @@ let handle = oauthswift.authorize(
     state:"State01",
     codeChallenge: codeChallenge,
     codeChallengeMethod: "S256",
-    codeVerifier: codeVerifier,
-    success: { credential, response, parameters in
+    codeVerifier: codeVerifier) { result in
+    switch result {
+    case .success(let (credential, response, parameters)):
       print(credential.oauthToken)
       // Do your request
-    },
-    failure: { error in
+    case .failure(let error):
       print(error.localizedDescription)
     }
-)
+}
 
 ```
 
@@ -210,19 +220,19 @@ Of course you can create your own class or customize the controller by setting t
 Just call HTTP functions of `oauthswift.client`
 
 ```swift
-oauthswift.client.get("https://api.linkedin.com/v1/people/~",
-      success: { response in
+oauthswift.client.get("https://api.linkedin.com/v1/people/~") { result in
+    switch result {
+    case .success(let response):
         let dataString = response.string
         print(dataString)
-      },
-      failure: { error in
+    case .failure(let error):
         print(error)
-      }
-)
+    }
+}
 // same with request method
 oauthswift.client.request("https://api.linkedin.com/v1/people/~", .GET,
       parameters: [:], headers: [:],
-      success: { ...
+      completionHandler: { ...
 ```
 
 See more examples in the demo application: [ViewController.swift](/Demo/Common/ViewController.swift)
