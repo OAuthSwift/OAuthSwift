@@ -181,7 +181,7 @@ open class OAuthSwiftHTTPRequest: NSObject, OAuthSwiftRequestHandle {
                 userInfo[NSURLErrorFailingURLErrorKey] = urlString
             }
 
-            let error = NSError(domain: NSURLErrorDomain, code: response.statusCode, userInfo: userInfo)
+            let error = NSError(domain: OAuthSwiftError.Domain, code: response.statusCode, userInfo: userInfo)
             if error.isExpiredToken {
                 failureHandler?(.tokenExpired(error: error))
             } else if errorCode == "authorization_pending" {
