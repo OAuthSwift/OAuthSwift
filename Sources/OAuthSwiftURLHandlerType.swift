@@ -45,7 +45,7 @@ import SafariServices
 import AuthenticationServices
 #endif
 
-    @available(iOS 12.0, *)
+    @available(iOS 12.0, UIKitForMac 13.0, *)
     open class ASWebAuthenticationURLHandler: OAuthSwiftURLHandlerType {
         var webAuthSession: ASWebAuthenticationSession!
         let callbackUrlScheme: String
@@ -76,7 +76,8 @@ import AuthenticationServices
         }
     }
 
-    @available(iOS 11.0, *)
+    #if !targetEnvironment(UIKitForMac)
+    @available(iOS, introduced: 11.0, deprecated: 12.0)
     open class SFAuthenticationURLHandler: OAuthSwiftURLHandlerType {
         var webAuthSession: SFAuthenticationSession!
         let callbackUrlScheme: String
@@ -106,6 +107,7 @@ import AuthenticationServices
             _ = webAuthSession.start()
         }
     }
+    #endif
 
     @available(iOS 9.0, *)
     open class SafariURLHandler: NSObject, OAuthSwiftURLHandlerType, SFSafariViewControllerDelegate {
