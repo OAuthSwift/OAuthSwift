@@ -50,7 +50,7 @@ import AuthenticationServices
         var webAuthSession: ASWebAuthenticationSession!
         let callbackUrlScheme: String
 
-        init(callbackUrlScheme: String) {
+        public init(callbackUrlScheme: String) {
             self.callbackUrlScheme = callbackUrlScheme
         }
 
@@ -82,7 +82,7 @@ import AuthenticationServices
         var webAuthSession: SFAuthenticationSession!
         let callbackUrlScheme: String
 
-        init(callbackUrlScheme: String) {
+        public init(callbackUrlScheme: String) {
             self.callbackUrlScheme = callbackUrlScheme
         }
 
