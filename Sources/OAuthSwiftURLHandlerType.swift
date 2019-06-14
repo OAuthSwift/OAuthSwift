@@ -45,13 +45,16 @@ import SafariServices
 import AuthenticationServices
 #endif
 
-    @available(iOS 12.0, UIKitForMac 13.0, *)
+    @available(iOS 13.0, UIKitForMac 13.0, *)
     open class ASWebAuthenticationURLHandler: OAuthSwiftURLHandlerType {
         var webAuthSession: ASWebAuthenticationSession!
         let callbackUrlScheme: String
 
-        public init(callbackUrlScheme: String) {
+        weak var presentationContextProvider: ASWebAuthenticationPresentationContextProviding?
+
+        public init(callbackUrlScheme: String, presentationContextProvider: ASWebAuthenticationPresentationContextProviding?) {
             self.callbackUrlScheme = callbackUrlScheme
+            self.presentationContextProvider = presentationContextProvider
         }
 
         public func handle(_ url: URL) {
@@ -71,6 +74,7 @@ import AuthenticationServices
                                                                 UIApplication.shared.open(successURL, options: [:], completionHandler: nil)
                                                             #endif
             })
+            webAuthSession.presentationContextProvider = presentationContextProvider
 
             _ = webAuthSession.start()
         }
