@@ -53,11 +53,13 @@ class WebViewController: OAuthWebViewController {
             return
         }
         let req = URLRequest(url: url)
-        #if os(iOS)
+        DispatchQueue.main.async {
+            #if os(iOS)
             self.webView.loadRequest(req)
-        #elseif os(OSX)
+            #elseif os(OSX)
             self.webView.load(req)
-        #endif
+            #endif
+        }
     }
 }
 

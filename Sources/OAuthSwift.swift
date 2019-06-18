@@ -29,14 +29,12 @@ open class OAuthSwift: NSObject, OAuthSwiftRequestHandle {
 
     // MARK: callback notification
     struct CallbackNotification {
-        @available(*, deprecated: 0.5, message: "Use Notification.Name.OAuthSwiftHandleCallbackURL")
-        static let notificationName = Notification.Name(rawValue: "OAuthSwiftCallbackNotificationName")
         static let optionsURLKey = "OAuthSwiftCallbackNotificationOptionsURLKey"
     }
 
     /// Handle callback url which contains now token information
     open class func handle(url: URL) {
-        let notification = Notification(name: NSNotification.Name.OAuthSwiftHandleCallbackURL, object: nil,
+        let notification = Notification(name: OAuthSwift.didHandleCallbackURL, object: nil,
             userInfo: [CallbackNotification.optionsURLKey: url])
         notificationCenter.post(notification)
     }
@@ -50,8 +48,11 @@ open class OAuthSwift: NSObject, OAuthSwiftRequestHandle {
     }
 
     func observeCallback(_ block: @escaping (_ url: URL) -> Void) {
-        self.observer = OAuthSwift.notificationCenter.addObserver(forName: NSNotification.Name.OAuthSwiftHandleCallbackURL, object: nil, queue: OperationQueue.main) { [weak self] notification in
-            self?.removeCallbackNotificationObserver()
+        self.observer = OAuthSwift.notificationCenter.addObserver(
+            forName: OAuthSwift.didHandleCallbackURL,
+            object: nil,
+            queue: OperationQueue.main) { [weak self] notification in
+                self?.removeCallbackNotificationObserver()
 
             if let urlFromUserInfo = notification.userInfo?[CallbackNotification.optionsURLKey] as? URL {
                 block(urlFromUserInfo)
@@ -104,7 +105,6 @@ extension OAuthSwift {
     public typealias ConfigParameters = [String: String]
     /// MARK: callback alias
     public typealias TokenSuccess = (credential: OAuthSwiftCredential, response: OAuthSwiftResponse?, parameters: Parameters)
-    public typealias TokenSuccessHandler = (_ credential: OAuthSwiftCredential, _ response: OAuthSwiftResponse?, _ parameters: Parameters) -> Void
-    public typealias FailureHandler = (_ error: OAuthSwiftError) -> Void
-    public typealias TokenRenewedHandler = (_ credential: OAuthSwiftCredential) -> Void
+    public typealias TokenCompletionHandler = (Result<TokenSuccess, OAuthSwiftError>) -> Void
+    public typealias TokenRenewedHandler = (Result<OAuthSwiftCredential, Never>) -> Void
 }

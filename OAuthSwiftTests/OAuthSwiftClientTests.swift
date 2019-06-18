@@ -80,7 +80,7 @@ class OAuthSwiftClientTests: XCTestCase {
             let urlRequest = try request.makeRequest()
             if let expectedJSON = expectedBodyJSONDictionary {
                 if let body = urlRequest.httpBody {
-                    if let json = try? JSONSerialization.jsonObject(with: body, options: []) as? [String:String] {
+                    if let json = ((try? JSONSerialization.jsonObject(with: body, options: []) as? [String:String]) as [String : String]??) {
                         XCTAssertEqualDictionaries(json!, expectedJSON)
                     } else {
                         if let string = String(data: body, encoding: request.config.dataEncoding) {
@@ -135,7 +135,7 @@ class OAuthSwiftClientTests: XCTestCase {
         let data = client.multiPartBody(from: parameters, boundary: "boundary")
         let result = String(data: data, encoding: OAuthSwiftDataEncoding)!
 
-        let expectedString = "--boundary\r\nContent-Disposition: form-data; name=\"a\";\r\n\r\nb\r\n--boundary\r\nContent-Disposition: form-data; name=\"media\"; filename=\"file\"\r\nContent-Type: image/jpeg\r\n\r\nbinary\r\n--boundary--\r\n"
+        let expectedString = "--boundary\r\nContent-Disposition: form-data; name=\"a\"\r\n\r\nb\r\n--boundary\r\nContent-Disposition: form-data; name=\"media\"; filename=\"file\"\r\nContent-Type: image/jpeg\r\n\r\nbinary\r\n--boundary--\r\n"
         XCTAssertEqual(result, expectedString)
     }
 
@@ -160,7 +160,7 @@ class OAuthSwiftClientTests: XCTestCase {
 
         let bodyString = String(data: request.config.urlRequest.httpBody!, encoding: OAuthSwiftDataEncoding)
         XCTAssertTrue(bodyString?.contains("image/jpeg\r\n\r\nbinary\r\n") == true)
-        XCTAssertTrue(bodyString?.contains("form-data; name=\"a\";\r\n\r\nb") == true)
+        XCTAssertTrue(bodyString?.contains("form-data; name=\"a\"\r\n\r\nb") == true)
     }
 
 }

@@ -41,6 +41,63 @@ open class OAuthSwiftOpenURLExternally: OAuthSwiftURLHandlerType {
 // MARK: Open SFSafariViewController
 #if os(iOS)
 import SafariServices
+#if canImport(AuthenticationServices)
+import AuthenticationServices
+#endif
+
+    @available(iOS 12.0, *)
+    open class ASWebAuthenticationURLHandler: OAuthSwiftURLHandlerType {
+        var webAuthSession: ASWebAuthenticationSession!
+        let callbackUrlScheme: String
+
+        init(callbackUrlScheme: String) {
+            self.callbackUrlScheme = callbackUrlScheme
+        }
+
+        public func handle(_ url: URL) {
+            webAuthSession = ASWebAuthenticationSession(url: url,
+                                                        callbackURLScheme: callbackUrlScheme,
+                                                        completionHandler: { callback, error in
+                                                            guard error == nil, let successURL = callback else {
+                                                                let msg = error?.localizedDescription.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)
+                                                                let urlString = "\(self.callbackUrlScheme)?error=\(msg ?? "UNKNOWN")"
+                                                                let url = URL(string: urlString)!
+                                                                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                                                                return
+                                                            }
+                                                            UIApplication.shared.open(successURL, options: [:], completionHandler: nil)
+            })
+
+            _ = webAuthSession.start()
+        }
+    }
+
+    @available(iOS 11.0, *)
+    open class SFAuthenticationURLHandler: OAuthSwiftURLHandlerType {
+        var webAuthSession: SFAuthenticationSession!
+        let callbackUrlScheme: String
+
+        init(callbackUrlScheme: String) {
+            self.callbackUrlScheme = callbackUrlScheme
+        }
+
+        public func handle(_ url: URL) {
+            webAuthSession = SFAuthenticationSession(url: url,
+                                                     callbackURLScheme: callbackUrlScheme,
+                                                     completionHandler: { callback, error in
+                                                        guard error == nil, let successURL = callback else {
+                                                            let msg = error?.localizedDescription.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)
+                                                            let urlString = "\(self.callbackUrlScheme)?error=\(msg ?? "UNKNOWN")"
+                                                            let url = URL(string: urlString)!
+                                                            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                                                            return
+                                                        }
+                                                        UIApplication.shared.open(successURL, options: [:], completionHandler: nil)
+            })
+
+            _ = webAuthSession.start()
+        }
+    }
 
     @available(iOS 9.0, *)
     open class SafariURLHandler: NSObject, OAuthSwiftURLHandlerType, SFSafariViewControllerDelegate {
@@ -103,7 +160,7 @@ import SafariServices
             let key = UUID().uuidString
 
             observers[key] = OAuthSwift.notificationCenter.addObserver(
-                forName: NSNotification.Name.OAuthSwiftHandleCallbackURL,
+                forName: OAuthSwift.didHandleCallbackURL,
                 object: nil,
                 queue: OperationQueue.main,
                 using: { [weak self] _ in
@@ -164,5 +221,23 @@ open class ExtensionContextURLHandler: OAuthSwiftURLHandlerType {
 
     @objc open func handle(_ url: URL) {
         extensionContext.open(url, completionHandler: nil)
+    }
+}
+
+// MARK: Proxy
+open class OAuthSwiftURLHandlerProxy: OAuthSwiftURLHandlerType {
+    weak var proxiable: OAuthSwiftURLHandlerType?
+    public init(_ proxiable: OAuthSwiftURLHandlerType) {
+        self.proxiable = proxiable
+    }
+    open func handle(_ url: URL) {
+        proxiable?.handle(url)
+    }
+}
+
+extension OAuthSwiftURLHandlerType {
+
+    public func weak() -> OAuthSwiftURLHandlerType {
+        return OAuthSwiftURLHandlerProxy(self)
     }
 }

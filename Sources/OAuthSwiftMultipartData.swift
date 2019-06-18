@@ -29,9 +29,9 @@ extension Data {
     public mutating func append(_ multipartData: OAuthSwiftMultipartData, encoding: String.Encoding, separatorData: Data) {
         var filenameClause = ""
         if let filename = multipartData.fileName {
-            filenameClause = " filename=\"\(filename)\""
+            filenameClause = "; filename=\"\(filename)\""
         }
-        let contentDispositionString = "Content-Disposition: form-data; name=\"\(multipartData.name)\";\(filenameClause)\r\n"
+        let contentDispositionString = "Content-Disposition: form-data; name=\"\(multipartData.name)\"\(filenameClause)\r\n"
         let contentDispositionData = contentDispositionString.data(using: encoding)!
         self.append(contentDispositionData)
 

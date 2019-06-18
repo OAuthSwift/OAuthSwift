@@ -24,14 +24,17 @@ class OAuth1SwiftRequestTests: XCTestCase {
         let oAuthSwiftHTTPRequest = OAuthSwiftHTTPRequest(url: URL(string: "http://127.0.0.1:\(8765)")!)
         
         let failureExpectation = expectation(description: "Expected `failure` to be called")
-        let failureHandler: OAuthSwiftHTTPRequest.FailureHandler = { _ in
-            failureExpectation.fulfill()
-        }
-        let successHandler: OAuthSwiftHTTPRequest.SuccessHandler = { _ in
-            XCTFail("The success handler should not be called. This can happen if you have a\nlocal server running on :\(8765)")
+
+        let completionHandler: OAuthSwiftHTTPRequest.CompletionHandler = { result in
+            switch result {
+            case .success:
+                XCTFail("The success handler should not be called. This can happen if you have a\nlocal server running on :\(8765)")
+            case .failure:
+                 failureExpectation.fulfill()
+            }
         }
         
-        oAuthSwiftHTTPRequest.start(success: successHandler, failure: failureHandler)
+        oAuthSwiftHTTPRequest.start(completionHandler: completionHandler)
         waitForExpectations(timeout: DefaultTimeout, handler: nil)
     }
 
@@ -53,17 +56,18 @@ class OAuth1SwiftRequestTests: XCTestCase {
         let oAuthSwiftHTTPRequest = OAuthSwiftHTTPRequest(url: URL(string: "http://127.0.0.1:\(port)")!)
         let successExpectation = expectation(description: "Expected `failure` to be called")
         
-        let failureHandler: OAuthSwiftHTTPRequest.FailureHandler  = { error in
-            XCTFail("The failure handler should not be called.\(error)")
-        }
-        
-          let successHandler: OAuthSwiftHTTPRequest.SuccessHandler = { response in
-            if response.string == "Success!" {
-                successExpectation.fulfill()
+        let completionHandler: OAuthSwiftHTTPRequest.CompletionHandler = { result in
+            switch result {
+            case .success(let response):
+                if response.string == "Success!" {
+                    successExpectation.fulfill()
+                }
+            case .failure(let error):
+                XCTFail("The failure handler should not be called.\(error)")
             }
         }
         
-        oAuthSwiftHTTPRequest.start(success: successHandler, failure: failureHandler)
+        oAuthSwiftHTTPRequest.start(completionHandler: completionHandler)
         waitForExpectations(timeout: DefaultTimeout, handler: nil)
     }
 
@@ -88,22 +92,25 @@ class OAuth1SwiftRequestTests: XCTestCase {
 		let oAuthSwiftHTTPRequest = OAuthSwiftHTTPRequest(url: URL(string: "http://127.0.0.1:\(port)")!)
 
 		let failureExpectation = expectation(description: "Expected `failure` to be called because of canceling the request")
-        
-        let failureHandler: OAuthSwiftHTTPRequest.FailureHandler = { error in
-            switch error {
-            case .cancelled:
-                failureExpectation.fulfill()
-            case .requestError(let error, _):
-                XCTAssertEqual(error._code, NSURLErrorCancelled) // old ways
-            default:
-                XCTFail("Wrong error type: \(error)")
+
+		let completionHandler: OAuthSwiftHTTPRequest.CompletionHandler  = { result in
+            
+            switch result {
+            case .success:
+                XCTFail("The success handler should not be called. This can happen if you have a\nlocal server running on :\(port)")
+            case .failure(let error):
+                switch error {
+                case .cancelled:
+                    failureExpectation.fulfill()
+                case .requestError(let error, _):
+                    XCTAssertEqual(error._code, NSURLErrorCancelled) // old ways
+                default:
+                    XCTFail("Wrong error type: \(error)")
+                }
             }
 		}
-		let successHandler: OAuthSwiftHTTPRequest.SuccessHandler  = { _ in
-			XCTFail("The success handler should not be called. This can happen if you have a\nlocal server running on :\(port)")
-		}
 
-		oAuthSwiftHTTPRequest.start(success: successHandler, failure: failureHandler)
+		oAuthSwiftHTTPRequest.start(completionHandler: completionHandler)
 		oAuthSwiftHTTPRequest.cancel()
 		waitForExpectations(timeout: DefaultTimeout, handler: nil)
 	}
