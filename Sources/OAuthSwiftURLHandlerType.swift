@@ -62,10 +62,14 @@ import AuthenticationServices
                                                                 let msg = error?.localizedDescription.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)
                                                                 let urlString = "\(self.callbackUrlScheme)?error=\(msg ?? "UNKNOWN")"
                                                                 let url = URL(string: urlString)!
-                                                                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                                                                #if !OAUTH_APP_EXTENSIONS
+                                                                    UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                                                                #endif
                                                                 return
                                                             }
-                                                            UIApplication.shared.open(successURL, options: [:], completionHandler: nil)
+                                                            #if !OAUTH_APP_EXTENSIONS
+                                                                UIApplication.shared.open(successURL, options: [:], completionHandler: nil)
+                                                            #endif
             })
 
             _ = webAuthSession.start()
@@ -89,10 +93,14 @@ import AuthenticationServices
                                                             let msg = error?.localizedDescription.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)
                                                             let urlString = "\(self.callbackUrlScheme)?error=\(msg ?? "UNKNOWN")"
                                                             let url = URL(string: urlString)!
-                                                            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                                                            #if !OAUTH_APP_EXTENSIONS
+                                                                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                                                            #endif
                                                             return
                                                         }
-                                                        UIApplication.shared.open(successURL, options: [:], completionHandler: nil)
+                                                        #if !OAUTH_APP_EXTENSIONS
+                                                            UIApplication.shared.open(successURL, options: [:], completionHandler: nil)
+                                                        #endif
             })
 
             _ = webAuthSession.start()
