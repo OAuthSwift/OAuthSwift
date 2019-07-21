@@ -12,6 +12,10 @@ import XCTest
 class OAuth2SwiftTests: XCTestCase {
     
     static let server = TestServer()
+    
+    //Using NSLock for Linux compatible locking
+    let serverLock = NSLock()
+    
     var server: TestServer { return OAuth2SwiftTests.server }
 
     override class func setUp() {
@@ -32,21 +36,21 @@ class OAuth2SwiftTests: XCTestCase {
     let callbackURL = "test://callback"
 
     func testDataSuccess() {
-        objc_sync_enter(server)
+       serverLock.lock()
         let state = generateState(withLength: 20)
         testSuccess(.data, response: .code("code", state:state))
-        objc_sync_exit(server)
+        serverLock.unlock()
     }
     func testJSON_Code_Success() {
-        objc_sync_enter(server)
+       serverLock.lock()
         let state = generateState(withLength: 20)
         testSuccess(.json, response: .code("code", state:state))
-        objc_sync_exit(server)
+        serverLock.unlock()
     }
     func testJSON_AccessToken_Success() {
-        objc_sync_enter(server)
+       serverLock.lock()
         testSuccess(.json, response: .accessToken(server.oauth_token))
-        objc_sync_exit(server)
+        serverLock.unlock()
     }
 
     func testSuccess(_ accessReturnType: TestServer.AccessReturnType, response: AccessTokenResponse) {
@@ -89,15 +93,15 @@ class OAuth2SwiftTests: XCTestCase {
     }
     
     func testJSON_Error_Failure() {
-        objc_sync_enter(server)
+       serverLock.lock()
         testFailure(.json, response: .error("bad", "very bad"))
-        objc_sync_exit(server)
+        serverLock.unlock()
     }
 
     func testJSON_None_Failure() {
-        objc_sync_enter(server)
+       serverLock.lock()
         testFailure(.json, response: .none)
-        objc_sync_exit(server)
+        serverLock.unlock()
     }
     
     func testFailure(_ accessReturnType: TestServer.AccessReturnType, response: AccessTokenResponse) {
