@@ -29,6 +29,3 @@ after_success:
    - sleep 10 # Workaround for https://github.com/travis-ci/travis-ci/issues/4725
    - bash <(curl -s https://codecov.io/bash) -J 'OAuthSwift'
 
-branches:
-  only:
-    - master
