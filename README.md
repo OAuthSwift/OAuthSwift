@@ -70,6 +70,19 @@ func application(_ app: UIApplication, open url: URL, options: [UIApplication.Op
   return true
 }
 ```
+- On iOS 13, UIKit will notify `UISceneDelegate` instead of `UIApplicationDelegate`.
+- Implement `UISceneDelegate` method
+```swift
+func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        guard let url = URLContexts.first?.url else {
+            return
+        }
+        if (url.host == "oauth-callback") {
+            OAuthSwift.handle(url: url)
+        }
+}
+```
+
 :warning: Any other application may try to open a URL with your url scheme. So you can check the source application, for instance for safari controller :
 ```
 if (options[.sourceApplication] as? String == "com.apple.SafariViewService") {
