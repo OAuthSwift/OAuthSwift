@@ -39,7 +39,7 @@ public extension NSError {
                 }
                 if let errors = jsonDic["errors"] as? [[String: AnyObject]] {
                     for error in errors {
-                        if let errorType = error["errorType"] as? String, errorType == "invalid_token" {
+                        if let errorType = error["errorType"] as? String, errorType == "invalid_token" || errorType == "expired_token" {
                             return true
                         }
                     }
