@@ -23,12 +23,10 @@
 
 ### Library version:
 - [ ] head
+- [ ] v2.1.0
 - [ ] v2.0.0
 - [ ] v1.4.1
-- [ ] v1.2.1
 - [ ] v1.2 (Swift 4.0)
-- [ ] v1.0.0
-- [ ] v0.6
 - [ ] other: (Please fill in the version you are using.)
 
 ### Xcode version:
