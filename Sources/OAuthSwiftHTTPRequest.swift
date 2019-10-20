@@ -19,7 +19,7 @@ open class OAuthSwiftHTTPRequest: NSObject, OAuthSwiftRequestHandle {
 
     // Using NSLock for Linux compatible locking 
     let requestLock = NSLock()
-    
+
     public typealias CompletionHandler = (_ result: Result<OAuthSwiftResponse, OAuthSwiftError>) -> Void
 
     /// HTTP request method
