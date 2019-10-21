@@ -1380,7 +1380,7 @@ extension ViewController {
     
     func testTwitch(_ oauthswift: OAuth2Swift, _ oauthToken: String) {
         let _ = oauthswift.client.get(
-        "https://api.twitch.tv/helix/user") { result in
+        "https://api.twitch.tv/kraken/user?oauth_token=\(oauthToken)", headers: ["Accept":"application/vnd.twitchtv.v5+json"]) { result in
             switch result {
             case .success(let response):
                 let dataString = response.string!
