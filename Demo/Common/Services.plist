@@ -240,5 +240,12 @@
 		<key>consumerKey</key>
 		<string></string>
 	</dict>
+	<key>Twitch</key>
+	<dict>
+		<key>consumerSecret</key>
+		<string></string>
+		<key>consumerKey</key>
+		<string></string>
+	</dict>
 </dict>
 </plist>
