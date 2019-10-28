@@ -27,8 +27,13 @@ let package = Package(
     products: [
         .library(name: "OAuthSwift", targets: ["OAuthSwift"]),
     ],
+    dependencies: [
+        .package(url: "https://github.com/phimage/Erik.git", .upToNextMajor(from: "5.0.0")),
+        .package(url: "https://github.com/tid-kijyun/Kanna.git", .upToNextMajor(from: "5.0.0")),
+        .package(url: "https://github.com/httpswift/swifter.git", .upToNextMajor(from: "1.4.7"))
+    ],
     targets: [
         .target(name: "OAuthSwift", dependencies: [], path: "Sources"),
-        .testTarget(name: "OAuthSwiftTests", dependencies: ["OAuthSwift"], path: "OAuthSwiftTests"),
+        .testTarget(name: "OAuthSwiftTests", dependencies: ["OAuthSwift", "Erik", "Kanna", "Swifter"], path: "OAuthSwiftTests"),
     ]
 )
