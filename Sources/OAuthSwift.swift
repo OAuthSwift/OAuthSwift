@@ -18,7 +18,7 @@ open class OAuthSwift: NSObject, OAuthSwiftRequestHandle {
     open var version: OAuthSwiftCredential.Version { return self.client.credential.version }
 
     /// Handle the authorize url into a web view or browser
-    open var authorizeURLHandler: OAuthSwiftURLHandlerType = OAuthSwiftOpenURLExternally.sharedInstance
+    open var authorizeURLHandler: OAuthSwiftURLHandlerType = OAuthSwiftURLHandlerTypeFactory.default
 
     fileprivate var currentRequests: [String: OAuthSwiftRequestHandle] = [:]
 

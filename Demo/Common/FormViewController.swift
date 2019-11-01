@@ -39,6 +39,7 @@ enum URLHandlerType {
     case `internal`
     case external
     case safari
+    case asWeb
 }
 
 
@@ -82,6 +83,7 @@ class FormViewController: FormViewControllerType {
     #if os(iOS)
     @IBOutlet weak var safariURLHandler: UISwitch!
     @IBOutlet weak var safariURLHandlerView: UITableViewCell!
+    @IBOutlet weak var asWebURLHandler: UISwitch!
     #endif
 
     @IBAction func ok(_ sender: AnyObject?) {
@@ -115,9 +117,12 @@ class FormViewController: FormViewControllerType {
                 urlHandlerType = .`internal`
             }
             #if os(iOS)
-                if safariURLHandler == sender  {
-                    urlHandlerType = .safari
-                }
+            if safariURLHandler == sender  {
+                urlHandlerType = .safari
+            }
+            if asWebURLHandler == sender  {
+                urlHandlerType = .asWeb
+            }
             #endif
         } else {
             // set another...
@@ -128,9 +133,12 @@ class FormViewController: FormViewControllerType {
                 urlHandlerType = .external
             }
             #if os(iOS)
-                if safariURLHandler == sender  {
-                    urlHandlerType = .`internal`
-                }
+            if safariURLHandler == sender  {
+                urlHandlerType = .`internal`
+            }
+            if asWebURLHandler == sender  {
+                urlHandlerType = .`internal`
+            }
             #endif
         }
     }
@@ -144,32 +152,46 @@ class FormViewController: FormViewControllerType {
                 return .`internal`
             }
             #if os(iOS)
-                if safariURLHandler.isOn {
-                    return .safari
-                }
+            if safariURLHandler.isOn {
+                return .safari
+            }
+            if asWebURLHandler.isOn {
+                return .asWeb
+            }
             #endif
             return .`internal`
         }
         set {
             switch newValue {
             case .external:
-                externalURLHandler.setOn(true, animated: false)
+                externalURLHandler.setOn(true, animated: true)
                 internalURLHandler.setOn(false, animated: true)
                 #if os(iOS)
-                    safariURLHandler.setOn(false, animated: true)
+                safariURLHandler.setOn(false, animated: true)
+                asWebURLHandler.setOn(false, animated: true)
                 #endif
                 break
             case .`internal`:
-                internalURLHandler.setOn(true, animated: false)
+                internalURLHandler.setOn(true, animated: true)
                 externalURLHandler.setOn(false, animated: true)
                 #if os(iOS)
-                    safariURLHandler.setOn(false, animated: true)
+                safariURLHandler.setOn(false, animated: true)
+                asWebURLHandler.setOn(false, animated: true)
                 #endif
                 break
             case .safari:
                 #if os(iOS)
-                    safariURLHandler.setOn(true, animated: false)
-                 #endif
+                safariURLHandler.setOn(true, animated: true)
+                asWebURLHandler.setOn(false, animated: true)
+                #endif
+                externalURLHandler.setOn(false, animated: true)
+                internalURLHandler.setOn(false, animated: true)
+                break
+            case .asWeb:
+                #if os(iOS)
+                safariURLHandler.setOn(false, animated: true)
+                asWebURLHandler.setOn(true, animated: true)
+                #endif
                 externalURLHandler.setOn(false, animated: true)
                 internalURLHandler.setOn(false, animated: true)
                 break

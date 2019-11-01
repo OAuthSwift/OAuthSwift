@@ -1552,8 +1552,15 @@ extension ViewController {
             }
             #endif
             return OAuthSwiftOpenURLExternally.sharedInstance
+        case .asWeb:
+            #if os(iOS)
+            if #available(iOS 13.0, *) {
+                return ASWebAuthenticationURLHandler(callbackUrlScheme: "oauth-swift://oauth-callback/", presentationContextProvider: self)
+            }
+            #endif
+            return OAuthSwiftOpenURLExternally.sharedInstance
         }
-        
+
         #if os(OSX)
         // a better way is
         // - to make this ViewController implement OAuthSwiftURLHandlerType and assigned in oauthswift object
@@ -1662,6 +1669,19 @@ extension ViewController: NSTableViewDataSource, NSTableViewDelegate {
                 tableView.deselectRow(row)
             }
         }
+    }
+}
+#endif
+
+#if os(iOS)
+import SafariServices
+#if canImport(AuthenticationServices)
+import AuthenticationServices
+#endif
+@available(iOS 13.0, macCatalyst 13.0, *)
+extension ViewController: ASWebAuthenticationPresentationContextProviding {
+    func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
+        return UIApplication.shared.topWindow ?? ASPresentationAnchor()
     }
 }
 #endif
