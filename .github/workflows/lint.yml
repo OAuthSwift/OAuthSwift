@@ -1,0 +1,19 @@
+name: Lint
+on: push
+jobs:
+  lint:
+    name: Lint
+    runs-on: macOS-10.14
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+        with:
+          fetch-depth: 1
+      - name: Install swiftlint
+        run: |
+          brew install swiftlint
+        env:
+          HOMEBREW_NO_INSTALL_CLEANUP: 1
+      - name: Code Lint
+        run: |
+          swiftlint --strict
