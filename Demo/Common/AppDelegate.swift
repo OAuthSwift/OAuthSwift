@@ -51,6 +51,11 @@ extension AppDelegate: UIApplicationDelegate {
         applicationHandle(url: url)
         return true
     }
+    
+    class var sharedInstance: AppDelegate {
+        return UIApplication.shared.delegate as! AppDelegate
+    }
+
 }
     
 #elseif os(OSX)
