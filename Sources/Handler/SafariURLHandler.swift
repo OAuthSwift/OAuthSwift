@@ -114,6 +114,7 @@ open class SafariURLHandler: NSObject, OAuthSwiftURLHandlerType, SFSafariViewCon
     public func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
         // "Done" pressed
         self.clearObservers()
+        self.dismiss(controller, self)
         self.delegate?.safariViewControllerDidFinish?(controller)
     }
 
