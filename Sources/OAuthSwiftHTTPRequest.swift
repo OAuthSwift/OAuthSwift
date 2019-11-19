@@ -80,6 +80,7 @@ open class OAuthSwiftHTTPRequest: NSObject, OAuthSwiftRequestHandle {
             self.requestLock.lock()
             defer { self.requestLock.unlock() }
             if self.cancelRequested {
+                completion?(.failure(.cancelled))
                 return
             }
 
