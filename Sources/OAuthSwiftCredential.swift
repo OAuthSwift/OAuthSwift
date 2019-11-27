@@ -346,9 +346,7 @@ open class OAuthSwiftCredential: NSObject, NSSecureCoding, Codable {
             }
         }
 
-        let combinedParameters = authorizationParameters.join(parameters)
-
-        authorizationParameters["oauth_signature"] = self.signature(method: method, url: url, parameters: combinedParameters)
+        authorizationParameters["oauth_signature"] = self.signature(method: method, url: url, parameters: authorizationParameters)
 
         return authorizationParameters
     }
