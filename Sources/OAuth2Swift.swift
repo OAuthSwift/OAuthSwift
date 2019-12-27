@@ -175,13 +175,15 @@ open class OAuth2Swift: OAuthSwift {
     open func postOAuthAccessTokenWithRequestToken(byCode code: String, callbackURL: URL?, headers: OAuthSwift.Headers? = nil, completionHandler completion: @escaping TokenCompletionHandler) -> OAuthSwiftRequestHandle? {
         var parameters = OAuthSwift.Parameters()
         parameters["client_id"] = self.consumerKey
-        parameters["client_secret"] = self.consumerSecret
         parameters["code"] = code
         parameters["grant_type"] = "authorization_code"
 
         // PKCE - extra parameter
         if let codeVerifier = self.codeVerifier {
             parameters["code_verifier"] = codeVerifier
+        // Don't send client secret when using PKCE, some services complain
+        } else {
+            parameters["client_secret"] = self.consumerSecret
         }
 
         if let callbackURL = callbackURL {
