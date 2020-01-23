@@ -25,6 +25,20 @@ class OAuthSwiftErrorTest: XCTestCase {
         XCTAssertTrue(((error as Error) as NSError).isExpiredToken)
 	}
 
+    func testDetectInvalidTokenFromTwitter() {
+        // given
+        let userInfo = [
+            NSURLErrorFailingURLErrorKey: "https://api.twitter.com/1.1/account/verify_credentials.json",
+            "Response-Body": "{\"errors\":[{\"code\":89,\"message\":\"Invalid or expired token.\"}]}"
+        ]
+        // Twitter error details are here: https://developer.twitter.com/en/docs/basics/response-codes
+        let error = NSError(domain: OAuthSwiftError.Domain, code: 401, userInfo: userInfo)
+
+        // assert
+        XCTAssertTrue(error.isExpiredToken)
+        XCTAssertTrue(((error as Error) as NSError).isExpiredToken)
+    }
+
     func testDetectInvalidTokensFromFacebook() {
         // given
         let createUserInfo = { (errorCode: Int, errorSubCode: Int?) -> [String:Any] in
