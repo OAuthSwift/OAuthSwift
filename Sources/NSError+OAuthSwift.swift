@@ -41,6 +41,10 @@ public extension NSError {
                     for error in errors {
                         if let errorType = error["errorType"] as? String, errorType == "invalid_token" || errorType == "expired_token" {
                             return true
+                        } else if let urlString = self.userInfo[NSURLErrorFailingURLErrorKey] as? String, urlString.contains("api.twitter.com"), let errorCode = error["code"] as? Int, errorCode == 89 {
+                            // This is the code for expired or invalid twitter token
+                            // see: https://developer.twitter.com/en/docs/basics/response-codes
+                            return true
                         }
                     }
                 }
