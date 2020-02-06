@@ -296,7 +296,7 @@ open class OAuth2Swift: OAuthSwift {
                 case OAuthSwiftError.tokenExpired:
                     let renewCompletionHandler: TokenCompletionHandler = { result in
                         switch result {
-                        case .success(let credential, _, _):
+                        case .success(let (credential, _, _)):
                             // Ommit response parameters so they don't override the original ones
                             // We have successfully renewed the access token.
 
