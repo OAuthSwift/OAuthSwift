@@ -181,11 +181,14 @@ open class OAuth2Swift: OAuthSwift {
         // PKCE - extra parameter
         if let codeVerifier = self.codeVerifier {
             parameters["code_verifier"] = codeVerifier
-        // Don't send client secret when using PKCE, some services complain
-        } else {
+        }
+        
+        // client secrets should only be used for web style apps where they can't be decompiled (use pkce instead), so if it's empty, don't post it as some servers will reject it
+        // https://www.oauth.com/oauth2-servers/client-registration/client-id-secret/
+        if !self.consumerSecret.isEmpty {
             parameters["client_secret"] = self.consumerSecret
         }
-
+        
         if let callbackURL = callbackURL {
             parameters["redirect_uri"] = callbackURL.absoluteString.safeStringByRemovingPercentEncoding
         }
@@ -197,7 +200,12 @@ open class OAuth2Swift: OAuthSwift {
     open func renewAccessToken(withRefreshToken refreshToken: String, parameters: OAuthSwift.Parameters? = nil, headers: OAuthSwift.Headers? = nil, completionHandler completion: @escaping TokenCompletionHandler) -> OAuthSwiftRequestHandle? {
         var parameters = parameters ?? OAuthSwift.Parameters()
         parameters["client_id"] = self.consumerKey
-        parameters["client_secret"] = self.consumerSecret
+        
+        // client secrets should only be used for web style apps where they can't be decompiled (use pkce instead), so if it's empty, don't post it as some servers will reject it
+        // https://www.oauth.com/oauth2-servers/client-registration/client-id-secret/
+        if !self.consumerSecret.isEmpty {
+            parameters["client_secret"] = self.consumerSecret
+        }
         parameters["refresh_token"] = refreshToken
         parameters["grant_type"] = "refresh_token"
 
