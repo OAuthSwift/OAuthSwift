@@ -257,15 +257,18 @@ open class OAuth2Swift: OAuthSwift {
             return self.client.postMultiPartRequest(accessTokenUrl, method: .POST, parameters: parameters, headers: headers, checkTokenExpiration: false, completionHandler: completionHandler)
         } else {
             // special headers
+            var finalParameters = parameters
             var finalHeaders: OAuthSwift.Headers? = headers
             if accessTokenBasicAuthentification {
+                finalParameters.removeValue(forKey: "client_id")
+                finalParameters.removeValue(forKey: "client_secret")
                 let authentification = "\(self.consumerKey):\(self.consumerSecret)".data(using: String.Encoding.utf8)
                 if let base64Encoded = authentification?.base64EncodedString(options: Data.Base64EncodingOptions(rawValue: 0)) {
                     finalHeaders += ["Authorization": "Basic \(base64Encoded)"] as OAuthSwift.Headers
                 }
             }
             // Request new access token by disabling check on current token expiration. This is safe because the implementation wants the user to retrieve a new token.
-            return self.client.request(accessTokenUrl, method: .POST, parameters: parameters, headers: finalHeaders, checkTokenExpiration: false, completionHandler: completionHandler)
+            return self.client.request(accessTokenUrl, method: .POST, parameters: finalParameters, headers: finalHeaders, checkTokenExpiration: false, completionHandler: completionHandler)
         }
     }
 
