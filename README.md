@@ -64,7 +64,7 @@ Replace oauth-swift by your application name
 - On iOS implement `UIApplicationDelegate` method
 ```swift
 func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey  : Any] = [:]) -> Bool {
-  if (url.host == "oauth-callback") {
+  if url.host == "oauth-callback" {
     OAuthSwift.handle(url: url)
   }
   return true
@@ -77,7 +77,7 @@ func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>)
         guard let url = URLContexts.first?.url else {
             return
         }
-        if (url.host == "oauth-callback") {
+        if url.host == "oauth-callback" {
             OAuthSwift.handle(url: url)
         }
 }
@@ -85,7 +85,7 @@ func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>)
 
 :warning: Any other application may try to open a URL with your url scheme. So you can check the source application, for instance for safari controller :
 ```
-if (options[.sourceApplication] as? String == "com.apple.SafariViewService") {
+if options[.sourceApplication] as? String == "com.apple.SafariViewService" {
 ```
 
 - On macOS you must register a handler on `NSAppleEventManager` for event type `kAEGetURL` (see demo code)
