@@ -15,7 +15,7 @@ import AuthenticationServices
 
 @available(iOS 13.0, macCatalyst 13.0, *)
 open class ASWebAuthenticationURLHandler: OAuthSwiftURLHandlerType {
-    var webAuthSession: ASWebAuthenticationSession!
+    open var webAuthSession: ASWebAuthenticationSession!
     let callbackUrlScheme: String
 
     weak var presentationContextProvider: ASWebAuthenticationPresentationContextProviding?
