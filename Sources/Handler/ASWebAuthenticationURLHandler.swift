@@ -21,7 +21,7 @@ open class ASWebAuthenticationURLHandler: OAuthSwiftURLHandlerType {
 
     weak var presentationContextProvider: ASWebAuthenticationPresentationContextProviding?
 
-    public init(callbackUrlScheme: String, presentationContextProvider: ASWebAuthenticationPresentationContextProviding?, prefersEphemeralWebBrowserSession: Bool) {
+    public init(callbackUrlScheme: String, presentationContextProvider: ASWebAuthenticationPresentationContextProviding?, prefersEphemeralWebBrowserSession: Bool = false) {
         self.callbackUrlScheme = callbackUrlScheme
         self.presentationContextProvider = presentationContextProvider
         self.prefersEphemeralWebBrowserSession = prefersEphemeralWebBrowserSession
