@@ -24,6 +24,7 @@ open class SFAuthenticationURLHandler: OAuthSwiftURLHandlerType {
     }
 
     public func handle(_ url: URL) {
+      OAuthSwift.log?.trace("SFAuthenticationURLHandler: init session with url: \(url.absoluteString)")
         webAuthSession = SFAuthenticationSession(url: url,
                                                  callbackURLScheme: callbackUrlScheme,
                                                  completionHandler: { callback, error in

@@ -60,6 +60,7 @@ open class SafariURLHandler: NSObject, OAuthSwiftURLHandlerType, SFSafariViewCon
     @objc open func handle(_ url: URL) {
         let controller = factory(url)
         controller.delegate = self
+        OAuthSwift.log?.trace("SFSafariViewController: present view controller")
 
         // present controller in main thread
         OAuthSwift.main { [weak self] in
@@ -69,7 +70,6 @@ open class SafariURLHandler: NSObject, OAuthSwiftURLHandlerType, SFSafariViewCon
             if let delay = this.delay { // sometimes safari show a blank view..
                 sleep(delay)
             }
-            OAuthSwift.log?.trace("SFSafariViewController is being presented")
             this.present(controller, this)
         }
 
@@ -88,7 +88,7 @@ open class SafariURLHandler: NSObject, OAuthSwiftURLHandlerType, SFSafariViewCon
                     this.observers.removeValue(forKey: key)
                 }
                 OAuthSwift.main {
-                    OAuthSwift.log?.trace("SFSafariViewController is being dismissed")
+                    OAuthSwift.log?.trace("SFSafariViewController: dismiss view controller")
                     this.dismiss(controller, this)
                 }
             }
@@ -97,6 +97,7 @@ open class SafariURLHandler: NSObject, OAuthSwiftURLHandlerType, SFSafariViewCon
 
     /// Clear internal observers on authentification flow
     open func clearObservers() {
+        OAuthSwift.log?.trace("SFSafariViewController: clear observers")
         clearLocalObservers()
         self.oauthSwift?.removeCallbackNotificationObserver()
     }

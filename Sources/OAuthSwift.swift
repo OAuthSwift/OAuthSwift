@@ -119,5 +119,6 @@ extension OAuthSwift {
    /// And instantiates the log object
    public static func setLogLevel(_ level: OAuthLogLevel){
       Self.log = OAuthDebugLogger(level)
+      OAuthSwift.log?.trace("Logging enabled with level: \(level)")
    }
 }
