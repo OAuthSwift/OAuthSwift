@@ -107,4 +107,17 @@ extension OAuthSwift {
     public typealias TokenSuccess = (credential: OAuthSwiftCredential, response: OAuthSwiftResponse?, parameters: Parameters)
     public typealias TokenCompletionHandler = (Result<TokenSuccess, OAuthSwiftError>) -> Void
     public typealias TokenRenewedHandler = (Result<OAuthSwiftCredential, Never>) -> Void
+
+}
+
+// MARK: - Logging
+extension OAuthSwift {
+   
+   static var log:OAuthLogProtocol?
+
+   /// Enables the log level
+   /// And instantiates the log object
+   public static func setLogLevel(_ level: OAuthLogLevel){
+      Self.log = OAuthDebugLogger(level)
+   }
 }
