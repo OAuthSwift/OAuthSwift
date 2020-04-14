@@ -69,6 +69,7 @@ open class SafariURLHandler: NSObject, OAuthSwiftURLHandlerType, SFSafariViewCon
             if let delay = this.delay { // sometimes safari show a blank view..
                 sleep(delay)
             }
+            OAuthSwift.log?.trace("SFSafariViewController is being presented")
             this.present(controller, this)
         }
 
@@ -87,6 +88,7 @@ open class SafariURLHandler: NSObject, OAuthSwiftURLHandlerType, SFSafariViewCon
                     this.observers.removeValue(forKey: key)
                 }
                 OAuthSwift.main {
+                    OAuthSwift.log?.trace("SFSafariViewController is being dismissed")
                     this.dismiss(controller, this)
                 }
             }

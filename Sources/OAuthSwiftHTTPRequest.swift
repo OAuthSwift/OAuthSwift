@@ -247,6 +247,7 @@ open class OAuthSwiftHTTPRequest: NSObject, OAuthSwiftRequestHandle {
         for (key, value) in headers {
             request.setValue(value, forHTTPHeaderField: key)
         }
+        OAuthSwift.log?.trace("URLRequest is created")
 
         return try setupRequestForOAuth(
             request: &request,
@@ -300,6 +301,7 @@ open class OAuthSwiftHTTPRequest: NSObject, OAuthSwiftRequestHandle {
                 }
             }
         }
+        OAuthSwift.log?.trace("URLRequest is setup")
         return request
     }
 

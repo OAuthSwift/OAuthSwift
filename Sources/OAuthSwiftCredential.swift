@@ -228,6 +228,8 @@ open class OAuthSwiftCredential: NSObject, NSSecureCoding, Codable {
         if case .oauth1 = version {
             self.signatureMethod = SignatureMethod(rawValue: (decoder.decodeObject(of: NSString.self, forKey: NSCodingKeys.signatureMethod) as String?) ?? "HMAC_SHA1") ?? .HMAC_SHA1
         }
+      
+        OAuthSwift.log?.trace("Credential object is decoded")
     }
 
     open func encode(with coder: NSCoder) {
@@ -242,6 +244,8 @@ open class OAuthSwiftCredential: NSObject, NSSecureCoding, Codable {
         if case .oauth1 = version {
             coder.encode(self.signatureMethod.rawValue, forKey: NSCodingKeys.signatureMethod)
         }
+        OAuthSwift.log?.trace("Credential object is encoded")
+
     }
     // } // End NSCoding extension
 
@@ -271,6 +275,8 @@ open class OAuthSwiftCredential: NSObject, NSSecureCoding, Codable {
         if case .oauth1 = version {
             try container.encode(self.signatureMethod.rawValue, forKey: .signatureMethodRawValue)
         }
+        OAuthSwift.log?.trace("Credential object is encoded")
+
     }
 
     public required convenience init(from decoder: Decoder) throws {
@@ -333,6 +339,7 @@ open class OAuthSwiftCredential: NSObject, NSSecureCoding, Codable {
             }
         }
 
+        OAuthSwift.log?.trace("Authorization header: \(headerComponents.joined(separator: ", "))")
         return "OAuth " + headerComponents.joined(separator: ", ")
     }
 
