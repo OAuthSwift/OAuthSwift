@@ -101,7 +101,7 @@ open class OAuth2Swift: OAuthSwift {
             if let fragment = url.fragment, !fragment.isEmpty {
                 responseParameters += fragment.parametersFromQueryString
             }
-            OAuthSwift.log?.trace("Resource url parameters: \(responseParameters.count), \(responseParameters.keys)")
+            OAuthSwift.log?.trace("Parsed url parameters: \(responseParameters)")
 
             if let accessToken = responseParameters["access_token"] {
                 this.client.credential.oauthToken = accessToken.safeStringByRemovingPercentEncoding
@@ -203,7 +203,7 @@ open class OAuth2Swift: OAuthSwift {
             parameters["redirect_uri"] = callbackURL.absoluteString.safeStringByRemovingPercentEncoding
         }
 
-        OAuthSwift.log?.trace("Add security parameters: \(parameters.count) = \(parameters)")
+        OAuthSwift.log?.trace("Add security parameters: \(parameters)")
         return requestOAuthAccessToken(withParameters: parameters, headers: headers, completionHandler: completion)
     }
 
@@ -214,7 +214,7 @@ open class OAuth2Swift: OAuthSwift {
         parameters["client_secret"] = self.consumerSecret
         parameters["refresh_token"] = refreshToken
         parameters["grant_type"] = "refresh_token"
-        OAuthSwift.log?.trace("Renewing access token, parameters: \(parameters.count) = \(parameters)")
+        OAuthSwift.log?.trace("Renew access token, parameters: \(parameters)")
         return requestOAuthAccessToken(withParameters: parameters, headers: headers, completionHandler: completion)
     }
 
@@ -241,7 +241,7 @@ open class OAuth2Swift: OAuthSwift {
 
                 guard let accessToken = responseParameters["access_token"] as? String else {
                     let message = NSLocalizedString("Could not get Access Token", comment: "Due to an error in the OAuth2 process, we couldn't get a valid token.")
-                    OAuthSwift.log?.error("Could not get Access Token")
+                    OAuthSwift.log?.error("Could not get access token")
                     completion(.failure(.serverError(message: message)))
                     return
                 }
@@ -306,6 +306,7 @@ open class OAuth2Swift: OAuthSwift {
     @discardableResult
     open func startAuthorizedRequest(_ url: URLConvertible, method: OAuthSwiftHTTPRequest.Method, parameters: OAuthSwift.Parameters, headers: OAuthSwift.Headers? = nil, renewHeaders: OAuthSwift.Headers? = nil, body: Data? = nil, onTokenRenewal: TokenRenewedHandler? = nil, completionHandler completion: @escaping OAuthSwiftHTTPRequest.CompletionHandler) -> OAuthSwiftRequestHandle? {
 
+        OAuthSwift.log?.trace("Start authorized request, url: \(url.url?.absoluteString) ...")
         let completionHandler: OAuthSwiftHTTPRequest.CompletionHandler = { result in
             switch result {
             case .success:

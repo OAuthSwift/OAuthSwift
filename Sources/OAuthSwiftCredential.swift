@@ -339,7 +339,7 @@ open class OAuthSwiftCredential: NSObject, NSSecureCoding, Codable {
             }
         }
 
-        OAuthSwift.log?.trace("Authorization header: \(headerComponents.joined(separator: ", "))")
+        OAuthSwift.log?.trace("Authorization headers: \(headerComponents.joined(separator: ", "))")
         return "OAuth " + headerComponents.joined(separator: ", ")
     }
 

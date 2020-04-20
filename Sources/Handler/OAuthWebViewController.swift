@@ -84,7 +84,7 @@ open class OAuthWebViewController: OAuthViewController, OAuthSwiftURLHandlerType
     #endif
 
     open func doHandle(_ url: URL) {
-        OAuthSwift.log?.trace("OAuthWebViewController: present view controller, url: \(url)")
+        OAuthSwift.log?.trace("OAuthWebViewController: present Safari view controller, url: \(url)")
         #if os(iOS) || os(tvOS)
             let completion: () -> Void = { [unowned self] in
                 self.delegate?.oauthWebViewControllerDidPresent()

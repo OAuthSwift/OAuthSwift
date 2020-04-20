@@ -60,7 +60,7 @@ open class SafariURLHandler: NSObject, OAuthSwiftURLHandlerType, SFSafariViewCon
     @objc open func handle(_ url: URL) {
         let controller = factory(url)
         controller.delegate = self
-        OAuthSwift.log?.trace("SFSafariViewController: present view controller")
+        OAuthSwift.log?.trace("SFSafariViewController: present Safari view controller")
 
         // present controller in main thread
         OAuthSwift.main { [weak self] in
