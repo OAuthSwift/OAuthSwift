@@ -48,7 +48,7 @@ open class ASWebAuthenticationURLHandler: OAuthSwiftURLHandlerType {
         })
         webAuthSession.presentationContextProvider = presentationContextProvider
         webAuthSession.prefersEphemeralWebBrowserSession = prefersEphemeralWebBrowserSession
-        
+
         _ = webAuthSession.start()
     }
 }
