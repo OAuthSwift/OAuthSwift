@@ -13,7 +13,7 @@ import SafariServices
 import AuthenticationServices
 #endif
 
-@available(iOS 13.0, macCatalyst 13.0, *)
+@available(iOS 13.0, tvOS 13.0, macCatalyst 13.0, *)
 open class ASWebAuthenticationURLHandler: OAuthSwiftURLHandlerType {
     var webAuthSession: ASWebAuthenticationSession!
     let prefersEphemeralWebBrowserSession: Bool

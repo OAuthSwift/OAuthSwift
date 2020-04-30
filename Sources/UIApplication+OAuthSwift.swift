@@ -18,19 +18,19 @@
             #endif
         }
 
-        @available(iOS 13.0, *)
+        @available(iOS 13.0, tvOS 13.0, *)
         public var connectedWindowScenes: [UIWindowScene] {
             return self.connectedScenes.compactMap { $0 as? UIWindowScene }
         }
 
-        @available(iOS 13.0, *)
+        @available(iOS 13.0, tvOS 13.0, *)
         public var topWindowScene: UIWindowScene? {
             let scenes = connectedWindowScenes
             return scenes.filter { $0.activationState == .foregroundActive }.first ?? scenes.first
         }
 
         public var topWindow: UIWindow? {
-            if #available(iOS 13.0, *) {
+            if #available(iOS 13.0, tvOS 13.0, *) {
                 return self.topWindowScene?.windows.first
             } else {
                 return self.keyWindow

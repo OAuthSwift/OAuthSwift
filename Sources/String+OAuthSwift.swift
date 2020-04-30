@@ -54,7 +54,7 @@ extension String {
         let scanner = Scanner(string: string)
 
         while !scanner.isAtEnd {
-            if #available(iOS 13.0, OSX 10.15, watchOS 6.0, *) {
+            if #available(iOS 13.0, tvOS 13.0, OSX 10.15, watchOS 6.0, *) {
                 let key = scanner.scanUpToString(keyValueSeparator)
                 _ = scanner.scanString(keyValueSeparator)
 
