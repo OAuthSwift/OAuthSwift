@@ -39,7 +39,7 @@ use_frameworks!
 
 pod 'OAuthSwift', '~> 2.0.0'
 ```
-### Support Swift Package Manager
+### Swift Package Manager Support
 
 ```swift
 import PackageDescription
@@ -52,20 +52,17 @@ let package = Package(
 )
 ```
 
-
-.package(name: "OAuthSwift", url: "https://github.com/OAuthSwift/OAuthSwift.git", .upToNextMajor(from: "2.1.0"))
-
 ### Old versions
 
-#### swift 3
+#### Swift 3
 
 Use the `swift3` branch, or the tag `1.1.2` on main branch
 
-#### swift 4
+#### Swift 4
 
 Use the tag `1.2.0` on main branch
 
-#### objective c
+#### Objective-C
 
 Use the tag `1.4.1` on main branch
 
