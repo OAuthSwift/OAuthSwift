@@ -127,7 +127,7 @@ oauthswift = OAuth1Swift(
 )
 // authorize
 let handle = oauthswift.authorize(
-    withCallbackURL: URL(string: "oauth-swift://oauth-callback/twitter")!) { result in
+    withCallbackURL: "oauth-swift://oauth-callback/twitter") { result in
     switch result {
     case .success(let (credential, response, parameters)):
       print(credential.oauthToken)
@@ -168,7 +168,7 @@ oauthswift = OAuth2Swift(
     responseType:   "token"
 )
 let handle = oauthswift.authorize(
-    withCallbackURL: URL(string: "oauth-swift://oauth-callback/instagram")!,
+    withCallbackURL: "oauth-swift://oauth-callback/instagram",
     scope: "likes+comments", state:"INSTAGRAM") { result in
     switch result {
     case .success(let (credential, response, parameters)):
@@ -196,7 +196,7 @@ let codeVerifier = base64url("abcd...")
 let codeChallenge = codeChallenge(for: codeVerifier)
 
 let handle = oauthswift.authorize(
-    withCallbackURL: URL(string: "myApp://callback/")!,
+    withCallbackURL: "myApp://callback/",
     scope: "requestedScope", 
     state:"State01",
     codeChallenge: codeChallenge,
