@@ -39,6 +39,21 @@ use_frameworks!
 
 pod 'OAuthSwift', '~> 2.0.0'
 ```
+### Support Swift Package Manager
+
+```swift
+import PackageDescription
+
+let package = Package(
+    name: "MyApp",
+    dependencies: [
+        .package(name: "OAuthSwift", url: "https://github.com/OAuthSwift/OAuthSwift.git", .upToNextMajor(from: "2.1.0"))
+    ]
+)
+```
+
+
+.package(name: "OAuthSwift", url: "https://github.com/OAuthSwift/OAuthSwift.git", .upToNextMajor(from: "2.1.0"))
 
 ### Old versions
 
