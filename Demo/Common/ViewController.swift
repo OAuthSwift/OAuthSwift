@@ -1447,6 +1447,9 @@ extension ViewController {
             }
         }
         services.loadFromFile(confPath)
+      
+        // Configure log level, if desired
+        OAuthSwift.setLogLevel(.trace)
     }
     
     func initConfOld() { // TODO Must be removed later

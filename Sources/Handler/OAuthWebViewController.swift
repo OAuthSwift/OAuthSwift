@@ -84,6 +84,7 @@ open class OAuthWebViewController: OAuthViewController, OAuthSwiftURLHandlerType
     #endif
 
     open func doHandle(_ url: URL) {
+        OAuthSwift.log?.trace("OAuthWebViewController: present Safari view controller, url: \(url)")
         #if os(iOS) || os(tvOS)
             let completion: () -> Void = { [unowned self] in
                 self.delegate?.oauthWebViewControllerDidPresent()
@@ -132,6 +133,8 @@ open class OAuthWebViewController: OAuthViewController, OAuthSwiftURLHandlerType
     }
 
     open func dismissWebViewController() {
+        OAuthSwift.log?.trace("OAuthWebViewController: dismiss view controller")
+
         #if os(iOS) || os(tvOS)
             let completion: () -> Void = { [unowned self] in
                 self.delegate?.oauthWebViewControllerDidDismiss()

@@ -50,6 +50,8 @@ open class ASWebAuthenticationURLHandler: OAuthSwiftURLHandlerType {
         webAuthSession.prefersEphemeralWebBrowserSession = prefersEphemeralWebBrowserSession
 
         _ = webAuthSession.start()
+        OAuthSwift.log?.trace("ASWebAuthenticationSession is started")
+
     }
 }
 
