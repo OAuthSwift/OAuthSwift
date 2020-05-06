@@ -29,15 +29,12 @@ labels: bug
 - [ ] v2.1.0
 - [ ] v2.0.0
 - [ ] v1.4.1
-- [ ] v1.2 (Swift 4.0)
 - [ ] other: (Please fill in the version you are using.)
 
 ### Xcode version:
+- [ ] 11.4 (Swift 5.2)
 - [ ] 11.x (Swift 5.1)
 - [ ] 10.x (Swift 5.0)
-- [ ] 10.x (Swift 4.1)
-- [ ] 9.3 (Swift 4.1)
-- [ ] 9.0 (Swift 4.0)
 - [ ] other: (Please fill in the version you are using.)
 
 - [ ] objective c
