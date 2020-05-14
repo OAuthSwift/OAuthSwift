@@ -228,7 +228,7 @@ open class OAuthSwiftCredential: NSObject, NSSecureCoding, Codable {
         if case .oauth1 = version {
             self.signatureMethod = SignatureMethod(rawValue: (decoder.decodeObject(of: NSString.self, forKey: NSCodingKeys.signatureMethod) as String?) ?? "HMAC_SHA1") ?? .HMAC_SHA1
         }
-      
+
         OAuthSwift.log?.trace("Credential object is decoded")
     }
 

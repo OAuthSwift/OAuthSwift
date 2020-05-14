@@ -72,14 +72,14 @@ open class OAuth2Swift: OAuthSwift {
     // MARK: functions
     @discardableResult
     open func authorize(withCallbackURL callbackURL: URLConvertible?, scope: String, state: String, parameters: Parameters = [:], headers: OAuthSwift.Headers? = nil, completionHandler completion: @escaping TokenCompletionHandler) -> OAuthSwiftRequestHandle? {
-      
+
         OAuthSwift.log?.trace("Start authorization ...")
         if let url = callbackURL, url.url == nil {
             completion(.failure(.encodingError(urlString: url.string)))
             return nil
         }
         self.observeCallback { [weak self] url in
-         
+
             OAuthSwift.log?.trace("Open application resource url: \(url.absoluteString)")
             guard let this = self else {
                 OAuthSwift.retainError(completion)
@@ -176,7 +176,7 @@ open class OAuth2Swift: OAuthSwift {
     }
 
     open func postOAuthAccessTokenWithRequestToken(byCode code: String, callbackURL: URL?, headers: OAuthSwift.Headers? = nil, completionHandler completion: @escaping TokenCompletionHandler) -> OAuthSwiftRequestHandle? {
-      
+
         var parameters = OAuthSwift.Parameters()
         parameters["client_id"] = self.consumerKey
         parameters["code"] = code
