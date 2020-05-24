@@ -125,10 +125,30 @@ open class OAuth2Swift: OAuthSwift {
                     this.putHandle(handle, withKey: UUID().uuidString)
                 }
             } else if let error = responseParameters["error"] {
-                let description = responseParameters["error_description"] ?? ""
-                let message = NSLocalizedString(error, comment: description)
-                OAuthSwift.log?.error("Authorization failed with: \(description)")
-                completion(.failure(.serverError(message: message)))
+                let otherErrorBlock = {
+                    let description = responseParameters["error_description"] ?? ""
+                    let message = NSLocalizedString(error, comment: description)
+                    OAuthSwift.log?.error("Authorization failed with: \(description)")
+                    completion(.failure(.serverError(message: message)))
+                }
+                
+                // handling SFAuthenticationSession/ASWebAuthenticationSession canceledLogin errors
+                if let domain = responseParameters["error_domain"],
+                    let codeString = responseParameters["error_code"],
+                    let code = Int(codeString) {
+                    
+                    if #available(iOS 13.0, tvOS 13.0, macCatalyst 13.0, *),
+                        ASWebAuthenticationURLHandler.isCancelledError(domain: domain, code: code) {
+                        completion(.failure(.cancelled))
+                    } else if #available(iOS 11, *),
+                        SFAuthenticationURLHandler.isCancelledError(domain: domain, code: code) {
+                        completion(.failure(.cancelled))
+                    } else {
+                        otherErrorBlock()
+                    }
+                } else {
+                    otherErrorBlock()
+                }
             } else {
                 let message = "No access_token, no code and no error provided by server"
                 OAuthSwift.log?.error("Authorization failed with: \(message)")
