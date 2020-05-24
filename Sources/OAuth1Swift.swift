@@ -44,12 +44,12 @@ open class OAuth1Swift: OAuthSwift {
     public convenience init?(parameters: ConfigParameters) {
         guard let consumerKey = parameters["consumerKey"], let consumerSecret = parameters["consumerSecret"],
             let requestTokenUrl = parameters["requestTokenUrl"], let authorizeUrl = parameters["authorizeUrl"], let accessTokenUrl = parameters["accessTokenUrl"] else {
-            return nil
+                return nil
         }
         self.init(consumerKey: consumerKey, consumerSecret: consumerSecret,
-          requestTokenUrl: requestTokenUrl,
-          authorizeUrl: authorizeUrl,
-          accessTokenUrl: accessTokenUrl)
+                  requestTokenUrl: requestTokenUrl,
+                  authorizeUrl: authorizeUrl,
+                  accessTokenUrl: accessTokenUrl)
     }
 
     open var parameters: ConfigParameters {

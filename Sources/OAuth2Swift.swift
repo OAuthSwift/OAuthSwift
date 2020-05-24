@@ -131,12 +131,12 @@ open class OAuth2Swift: OAuthSwift {
                     OAuthSwift.log?.error("Authorization failed with: \(description)")
                     completion(.failure(.serverError(message: message)))
                 }
-                
+
                 // handling SFAuthenticationSession/ASWebAuthenticationSession canceledLogin errors
                 if let domain = responseParameters["error_domain"],
                     let codeString = responseParameters["error_code"],
                     let code = Int(codeString) {
-                    
+
                     if #available(iOS 13.0, tvOS 13.0, macCatalyst 13.0, *),
                         ASWebAuthenticationURLHandler.isCancelledError(domain: domain, code: code) {
                         completion(.failure(.cancelled))
@@ -205,9 +205,13 @@ open class OAuth2Swift: OAuthSwift {
         // PKCE - extra parameter
         if let codeVerifier = self.codeVerifier {
             parameters["code_verifier"] = codeVerifier
-        // Don't send client secret when using PKCE, some services complain
+            // Don't send client secret when using PKCE, some services complain
         } else {
-            parameters["client_secret"] = self.consumerSecret
+            // client secrets should only be used for web style apps where they can't be decompiled (use pkce instead), so if it's empty, don't post it as some servers will reject it
+            // https://www.oauth.com/oauth2-servers/client-registration/client-id-secret/
+            if !self.consumerSecret.isEmpty {
+                parameters["client_secret"] = self.consumerSecret
+            }
         }
 
         if let callbackURL = callbackURL {
@@ -224,7 +228,7 @@ open class OAuth2Swift: OAuthSwift {
     }
 
     fileprivate func requestOAuthAccessToken(withParameters parameters: OAuthSwift.Parameters, headers: OAuthSwift.Headers? = nil, completionHandler completion: @escaping TokenCompletionHandler) -> OAuthSwiftRequestHandle? {
-		return self.client.requestOAuthAccessToken(accessTokenUrl: self.accessTokenUrl, withParameters: parameters, headers: headers, contentType: self.contentType, accessTokenBasicAuthentification: self.accessTokenBasicAuthentification, completionHandler: completion)
+        return self.client.requestOAuthAccessToken(accessTokenUrl: self.accessTokenUrl, withParameters: parameters, headers: headers, contentType: self.contentType, accessTokenBasicAuthentification: self.accessTokenBasicAuthentification, completionHandler: completion)
     }
 
     /**
@@ -288,7 +292,9 @@ open class OAuth2Swift: OAuthSwift {
 
         var parameters = OAuthSwift.Parameters()
         parameters["client_id"] = self.consumerKey
-        parameters["client_secret"] = self.consumerSecret
+        if !self.consumerSecret.isEmpty {
+            parameters["client_secret"] = self.consumerSecret
+        }
         parameters["username"] = username
         parameters["password"] = password
         parameters["grant_type"] = "password"
