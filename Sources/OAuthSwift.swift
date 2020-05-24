@@ -112,12 +112,12 @@ extension OAuthSwift {
 
 // MARK: - Logging
 extension OAuthSwift {
-   
-   static var log:OAuthLogProtocol?
+
+   static var log: OAuthLogProtocol?
 
    /// Enables the log level
    /// And instantiates the log object
-   public static func setLogLevel(_ level: OAuthLogLevel){
+   public static func setLogLevel(_ level: OAuthLogLevel) {
       Self.log = OAuthDebugLogger(level)
       OAuthSwift.log?.trace("Logging enabled with level: \(level)")
    }
