@@ -67,6 +67,7 @@ open class OAuthSwift: NSObject, OAuthSwiftRequestHandle {
     public func removeCallbackNotificationObserver() {
         if let observer = self.observer {
             OAuthSwift.notificationCenter.removeObserver(observer)
+            self.observer = nil
         }
     }
 
