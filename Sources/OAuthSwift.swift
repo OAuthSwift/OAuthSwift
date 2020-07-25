@@ -23,7 +23,7 @@ open class OAuthSwift: NSObject, OAuthSwiftRequestHandle {
     fileprivate var currentRequests: [String: OAuthSwiftRequestHandle] = [:]
 
     // MARK: init
-    init(consumerKey: String, consumerSecret: String) {
+    public init(consumerKey: String, consumerSecret: String) {
         self.client = OAuthSwiftClient(consumerKey: consumerKey, consumerSecret: consumerSecret)
     }
 
