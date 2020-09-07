@@ -400,6 +400,10 @@ open class OAuthSwiftCredential: NSObject, NSSecureCoding, Codable {
         let encodedParameterString = parameterString.urlEncoded
 
         let encodedURL = url.absoluteString.urlEncoded
+        
+        guard self.signatureMethod != .PLAINTEXT else {
+            return "\(consumerSecret)&\(oauthTokenSecret)"
+        }
 
         let signatureBaseString = "\(method)&\(encodedURL)&\(encodedParameterString)"
 
