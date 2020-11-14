@@ -200,8 +200,8 @@ open class OAuthSwiftClient: NSObject {
         parameters["refresh_token"] = refreshToken
         parameters["grant_type"] = "refresh_token"
 
-		// Omit the consumer secret if it's empty; this makes token renewal consistent with PKCE authorization.
-		if !self.credential.consumerSecret.isEmpty {
+        // Omit the consumer secret if it's empty; this makes token renewal consistent with PKCE authorization.
+        if !self.credential.consumerSecret.isEmpty {
             parameters["client_secret"] = self.credential.consumerSecret
         }
 
