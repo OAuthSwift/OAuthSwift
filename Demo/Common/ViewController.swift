@@ -174,6 +174,8 @@ extension ViewController {
             doOAuthLyft(parameters)
         case "Twitch":
             doOAuthTwitch(parameters)
+        case "Reddit":
+            doOauthReddit(parameters)
         default:
             print("\(service) not implemented")
         }
@@ -1381,6 +1383,48 @@ extension ViewController {
     func testTwitch(_ oauthswift: OAuth2Swift, _ oauthToken: String) {
         let _ = oauthswift.client.get(
         "https://api.twitch.tv/kraken/user?oauth_token=\(oauthToken)", headers: ["Accept":"application/vnd.twitchtv.v5+json"]) { result in
+            switch result {
+            case .success(let response):
+                let dataString = response.string!
+                print(dataString)
+            case .failure(let error):
+                print(error)
+            }
+        }
+    }
+    
+    func doOauthReddit(_ serviceParameters: [String:String]) {
+        let oauthswift = OAuth2Swift(
+            consumerKey:    serviceParameters["consumerKey"]!,
+            consumerSecret: serviceParameters["consumerSecret"]!,
+            authorizeUrl:   "https://www.reddit.com/api/v1/authorize.compact",
+            accessTokenUrl: "https://www.reddit.com/api/v1/access_token",
+            responseType:   "code",
+            contentType:    "application/json"
+        )
+        self.oauthswift = oauthswift
+        oauthswift.accessTokenBasicAuthentification = true
+        oauthswift.authorizeURLHandler = getURLHandler()
+        let state = generateState(withLength: 20)
+        let _ = oauthswift.authorize(
+        withCallbackURL: URL(string: "oauth-swift://oauth-callback/reddit")!, scope: "read", state: state) { result in
+            switch result {
+            case .success(let (credential, _, _)):
+                self.showTokenAlert(name: serviceParameters["name"], credential: credential)
+                self.testReddit(oauthswift, credential.oauthToken)
+            case .failure(let error):
+                print(error.description)
+            }
+        }
+    }
+    
+    func testReddit(_ oauthswift: OAuth2Swift, _ oauthToken: String) {
+        let applicationName = ""    // Provided by developer
+        let username = ""           // Provided by developer
+        let userAgent = "ios:\(applicationName):1.0 (by /u/\(username)"
+        let headers = ["Authorization": "Bearer \(oauthToken)", "User-Agent": userAgent]
+        let _ = oauthswift.client.get(
+        "https://oauth.reddit.com/r/all", headers: headers) { result in
             switch result {
             case .success(let response):
                 let dataString = response.string!
