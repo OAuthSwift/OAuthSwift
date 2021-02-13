@@ -61,6 +61,15 @@ open class OAuth1Swift: OAuthSwift {
             "accessTokenUrl": accessTokenUrl
         ]
     }
+  
+    open func getAuthorizeURLString(authorizeURL: String, requestToken: String, consumerKey: String, callbackURL: String) -> String {
+        var urlString = self.authorizeUrl + (self.authorizeUrl.contains("?") ? "&" : "?")
+        urlString += "oauth_token=\(requestToken)"
+        if self.addCallbackURLToAuthorizeURL {
+            urlString += "&oauth_callback=\(callbackURL)"
+        }
+        return urlString;
+    }
 
     // MARK: functions
     // 0. Start
@@ -104,11 +113,7 @@ open class OAuth1Swift: OAuthSwift {
                 }
                 // 2. Authorize
                 if let token = self.encode(token: credential.oauthToken) {
-                    var urlString = self.authorizeUrl + (self.authorizeUrl.contains("?") ? "&" : "?")
-                    urlString += "oauth_token=\(token)"
-                    if self.addCallbackURLToAuthorizeURL {
-                        urlString += "&oauth_callback=\(callbackURL.absoluteString)"
-                    }
+                    let urlString = self.getAuthorizeURLString(authorizeURL: self.authorizeUrl, requestToken: token, consumerKey: self.consumerKey, callbackURL: callbackURL.absoluteString);
                     if let queryURL = URL(string: urlString) {
                         self.authorizeURLHandler.handle(queryURL)
                     } else {
