@@ -7,7 +7,10 @@
 //
 
 import Foundation
+
+#if !os(Linux)
 import CommonCrypto
+#endif
 
 public func generateState(withLength len: Int) -> String {
     let letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
@@ -23,6 +26,7 @@ public func generateState(withLength len: Int) -> String {
     return randomString
 }
 
+#if !os(Linux)
 /// Generating a code verifier for PKCE
 public func generateCodeVerifier() -> String? {
     var buffer = [UInt8](repeating: 0, count: 32)
@@ -52,3 +56,4 @@ public func generateCodeChallenge(codeVerifier: String?) -> String? {
    
     return challenge
 }
+#endif

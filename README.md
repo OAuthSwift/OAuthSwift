@@ -179,6 +179,8 @@ let handle = oauthswift.authorize(
 ```
 
 ### Authorize with OAuth2.0 and proof key flow (PKCE)
+
+*The code verifier generation and code challenge generation methods are ***not compatible*** with ```Linux```*
 ```swift
 // create an instance and retain it
 oauthswift = OAuth2Swift(
@@ -209,7 +211,6 @@ let handle = oauthswift.authorize(
 }
 
 ```
-
 
 See demo for more examples
 
