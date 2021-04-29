@@ -10,6 +10,8 @@ import Foundation
 
 #if !os(Linux)
 import CommonCrypto
+#else
+import Crypto
 #endif
 
 public func generateState(withLength len: Int) -> String {
