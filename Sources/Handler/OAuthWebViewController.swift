@@ -20,7 +20,7 @@ import Foundation
 #endif
 
 /// Delegate for OAuthWebViewController
-public protocol OAuthWebViewControllerDelegate: class {
+public protocol OAuthWebViewControllerDelegate: AnyObject {
 
     #if os(iOS) || os(tvOS)
     /// Did web view presented (work only without navigation controller)
