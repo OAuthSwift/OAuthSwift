@@ -28,7 +28,6 @@ public func generateState(withLength len: Int) -> String {
     return randomString
 }
 
-
 /// Generating a code verifier for PKCE
 public func generateCodeVerifier() -> String? {
     var buffer = [UInt8](repeating: 0, count: 32)
