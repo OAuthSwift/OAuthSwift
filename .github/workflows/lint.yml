@@ -3,7 +3,7 @@ on: push
 jobs:
   lint:
     name: Lint
-    runs-on: macOS-latest
+    runs-on: macos-latest
     steps:
       - name: Checkout
         uses: actions/checkout@master
