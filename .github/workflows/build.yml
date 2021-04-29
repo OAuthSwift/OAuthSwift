@@ -25,3 +25,11 @@ jobs:
       - name: Xcode build iOS
         run: |
           xcodebuild -scheme "OAuthSwift"
+      - name: Swift build tvOS
+        run: |
+          sdk=`xcrun -sdk appletvsimulator -show-sdk-path`
+          sdkVersion=`echo $sdk | sed -E 's/.*AppleTVSimulator(.*)\.sdk/\1/'`
+          swift build  -Xswiftc "-sdk" -Xswiftc "$sdk" -Xswiftc "-target" -Xswiftc "x86_64-apple-tvos$sdkVersion-simulator"
+      - name: Xcode build tvOS
+        run: |
+          xcodebuild -scheme "OAuthSwiftTVOS"
