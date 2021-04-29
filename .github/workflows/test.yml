@@ -13,6 +13,9 @@ jobs:
         run: brew install libxml2
       - name: Swift test
         run: |
-          sdk=`xcrun -sdk iphonesimulator -show-sdk-path`
-          sdkVersion=`echo $sdk | sed -E 's/.*iPhoneSimulator(.*)\.sdk/\1/'`
-          swift test  -Xswiftc "-sdk" -Xswiftc "$sdk" -Xswiftc "-target" -Xswiftc "x86_64-apple-ios$sdkVersion-simulator"
+          # on mac os
+          swift test 
+          # on iOS (deactivate until resolve issue with XCText)
+          #sdk=`xcrun -sdk iphonesimulator -show-sdk-path`
+          #sdkVersion=`echo $sdk | sed -E 's/.*iPhoneSimulator(.*)\.sdk/\1/'`
+          #swift test -Xswiftc "-sdk" -Xswiftc "$sdk" -Xswiftc "-target" -Xswiftc "x86_64-apple-ios$sdkVersion-simulator"
