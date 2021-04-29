@@ -37,3 +37,8 @@ let package = Package(
         .testTarget(name: "OAuthSwiftTests", dependencies: ["OAuthSwift", "Erik", "Kanna", "Swifter"], path: "OAuthSwiftTests"),
     ]
 )
+
+#if os(Linux)
+package.dependencies.append(.package(url: "https://github.com/apple/swift-crypto.git", from: "1.0.0"))
+package.targets[0].dependencies.append("Crypto")
+#endif

@@ -8,7 +8,9 @@
 
 import Foundation
 
-#if !os(Linux)
+#if os(Linux)
+import Crypto
+#else
 import CommonCrypto
 #endif
 
@@ -26,7 +28,7 @@ public func generateState(withLength len: Int) -> String {
     return randomString
 }
 
-#if !os(Linux)
+
 /// Generating a code verifier for PKCE
 public func generateCodeVerifier() -> String? {
     var buffer = [UInt8](repeating: 0, count: 32)
@@ -43,11 +45,19 @@ public func generateCodeVerifier() -> String? {
 /// Generating a code challenge for PKCE
 public func generateCodeChallenge(codeVerifier: String?) -> String? {
     guard let verifier = codeVerifier, let data = verifier.data(using: .utf8) else { return nil }
+    
+    #if !os(Linux)
     var buffer = [UInt8](repeating: 0,  count: Int(CC_SHA256_DIGEST_LENGTH))
     data.withUnsafeBytes {
         _ = CC_SHA256($0.baseAddress, CC_LONG(data.count), &buffer)
     }
     let hash = Data(buffer)
+    #else
+    let buffer = [UInt8](repeating: 0,  count: SHA256.byteCount)
+    let sha = Array(HMAC<SHA256>.authenticationCode(for: buffer, using: SymmetricKey(size: .bits256)))
+    let hash = Data(sha)
+    #endif
+   
     let challenge = hash.base64EncodedString()
         .replacingOccurrences(of: "+", with: "-")
         .replacingOccurrences(of: "/", with: "_")
@@ -56,4 +66,3 @@ public func generateCodeChallenge(codeVerifier: String?) -> String? {
    
     return challenge
 }
-#endif
