@@ -14,8 +14,13 @@ jobs:
       - name: Swift test
         run: |
           # on mac os
+          swift --version
           swift test 
           # on iOS (deactivate until resolve issue with XCText)
           #sdk=`xcrun -sdk iphonesimulator -show-sdk-path`
           #sdkVersion=`echo $sdk | sed -E 's/.*iPhoneSimulator(.*)\.sdk/\1/'`
           #swift test -Xswiftc "-sdk" -Xswiftc "$sdk" -Xswiftc "-target" -Xswiftc "x86_64-apple-ios$sdkVersion-simulator"
+      - name: Xcode test
+        run: |
+          pod update
+          xcodebuild -workspace OAuthSwift.xcworkspace  -scheme OAuthSwiftMacOS test
