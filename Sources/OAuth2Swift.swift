@@ -145,7 +145,7 @@ open class OAuth2Swift: OAuthSwift {
                         otherErrorBlock()
                     }
 #else
-                    
+
 #if os(macOS)
                     otherErrorBlock()
 #else

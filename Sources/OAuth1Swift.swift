@@ -115,7 +115,7 @@ open class OAuth1Swift: OAuthSwift {
                         completion(.failure(.encodingError(urlString: urlString)))
                     }
                 } else {
-                    completion(.failure(.encodingError(urlString: credential.oauthToken))) //TODO specific error
+                    completion(.failure(.encodingError(urlString: credential.oauthToken))) // TODO specific error
                 }
             case .failure(let error):
                 completion(.failure(error))
