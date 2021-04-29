@@ -11,7 +11,11 @@ jobs:
           fetch-depth: 1
       - name: Install swiftlint
         run: |
-          brew install swiftlint
+          if [ -z "$(which swiftlint)" ]; then
+            brew install swiftlint
+          else
+            swiftlint version  
+          fi
         env:
           HOMEBREW_NO_INSTALL_CLEANUP: 1
       - name: Code Lint
