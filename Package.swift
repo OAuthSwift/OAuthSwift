@@ -29,8 +29,8 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/phimage/Erik.git", .upToNextMajor(from: "5.0.0")),
-        .package(url: "https://github.com/tid-kijyun/Kanna.git", .upToNextMajor(from: "5.0.0")),
-        .package(url: "https://github.com/httpswift/swifter.git", .upToNextMajor(from: "1.4.7"))
+        .package(url: "https://github.com/tid-kijyun/Kanna.git", .upToNextMajor(from: "5.2.4")),
+        .package(url: "https://github.com/httpswift/swifter.git", .upToNextMajor(from: "1.5.0"))
     ],
     targets: [
         .target(name: "OAuthSwift", dependencies: [], path: "Sources"),
