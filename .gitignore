@@ -27,3 +27,7 @@ Podfile.lock
 
 # Carthage
 Carthage/
+
+# SwiftPM
+.build/
+.swiftpm/
