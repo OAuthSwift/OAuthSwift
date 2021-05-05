@@ -192,11 +192,19 @@ open class OAuthSwiftClient: NSObject {
     // MARK: Refresh Token
     @discardableResult
     open func renewAccessToken(accessTokenUrl: URLConvertible?, withRefreshToken refreshToken: String, parameters: OAuthSwift.Parameters? = nil, headers: OAuthSwift.Headers? = nil, contentType: String? = nil, accessTokenBasicAuthentification: Bool = false, completionHandler completion: @escaping OAuthSwift.TokenCompletionHandler) -> OAuthSwiftRequestHandle? {
+        // The current access token isn't needed anymore.
+        self.credential.oauthToken = ""
+
         var parameters = parameters ?? OAuthSwift.Parameters()
         parameters["client_id"] = self.credential.consumerKey
-        parameters["client_secret"] = self.credential.consumerSecret
         parameters["refresh_token"] = refreshToken
         parameters["grant_type"] = "refresh_token"
+
+        // Omit the consumer secret if it's empty; this makes token renewal consistent with PKCE authorization.
+        if !self.credential.consumerSecret.isEmpty {
+            parameters["client_secret"] = self.credential.consumerSecret
+        }
+
         OAuthSwift.log?.trace("Renew access token, parameters: \(parameters)")
         return requestOAuthAccessToken(accessTokenUrl: accessTokenUrl, withParameters: parameters, headers: headers, contentType: contentType, accessTokenBasicAuthentification: accessTokenBasicAuthentification, completionHandler: completion)
     }
