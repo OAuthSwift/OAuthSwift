@@ -36,7 +36,7 @@ open class ASWebAuthenticationURLHandler: OAuthSwiftURLHandlerType {
                     let msg = error.localizedDescription.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)
                     let errorDomain = (error as NSError).domain
                     let errorCode = (error as NSError).code
-                    let urlString = "\(self.callbackUrlScheme)?error=\(msg ?? "UNKNOWN")&error_domain=\(errorDomain)&error_code=\(errorCode)"
+                    let urlString = "\(self.callbackUrlScheme):?error=\(msg ?? "UNKNOWN")&error_domain=\(errorDomain)&error_code=\(errorCode)"
                     let url = URL(string: urlString)!
                     #if !OAUTH_APP_EXTENSIONS
                     UIApplication.shared.open(url, options: [:], completionHandler: nil)
