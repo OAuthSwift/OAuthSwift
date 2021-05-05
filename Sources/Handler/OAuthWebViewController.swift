@@ -20,7 +20,7 @@ import Foundation
 #endif
 
 /// Delegate for OAuthWebViewController
-public protocol OAuthWebViewControllerDelegate: class {
+public protocol OAuthWebViewControllerDelegate: AnyObject {
 
     #if os(iOS) || os(tvOS)
     /// Did web view presented (work only without navigation controller)
@@ -115,7 +115,7 @@ open class OAuthWebViewController: OAuthViewController, OAuthSwiftURLHandlerType
                     p.present(self, asPopoverRelativeTo: positioningRect, of: positioningView, preferredEdge: preferredEdge, behavior: behavior)
                 case .transitionFrom(let fromViewController, let options):
                     let completion: () -> Void = { /*[unowned self] in*/
-                        //self.delegate?.oauthWebViewControllerDidPresent()
+                        // self.delegate?.oauthWebViewControllerDidPresent()
                     }
                     p.transition(from: fromViewController, to: self, options: options, completionHandler: completion)
                 case .animator(let animator):

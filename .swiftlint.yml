@@ -5,7 +5,7 @@ included:
 disabled_rules:
     - file_length
     - cyclomatic_complexity
-    - variable_name
+    - identifier_name
     - todo
     - line_length
     - type_body_length

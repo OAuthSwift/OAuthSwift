@@ -189,8 +189,8 @@ oauthswift = OAuth2Swift(
 )
 oauthswift.accessTokenBasicAuthentification = true
 
-let codeVerifier = base64url("abcd...")
-let codeChallenge = codeChallenge(for: codeVerifier)
+guard let codeVerifier = generateCodeVerifier() else {return}
+guard let codeChallenge = generateCodeChallenge(codeVerifier: codeVerifier) else {return}
 
 let handle = oauthswift.authorize(
     withCallbackURL: "myApp://callback/",
@@ -209,7 +209,6 @@ let handle = oauthswift.authorize(
 }
 
 ```
-
 
 See demo for more examples
 

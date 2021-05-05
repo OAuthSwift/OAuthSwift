@@ -24,7 +24,7 @@ extension Collection where Self.Iterator.Element == UInt8, Self.Index == Int {
             val |= self.count > 3 ? UInt32(self[idx.advanced(by: 3)]) << 24 : 0
             val |= self.count > 2 ? UInt32(self[idx.advanced(by: 2)]) << 16 : 0
             val |= self.count > 1 ? UInt32(self[idx.advanced(by: 1)]) << 8  : 0
-            //swiftlint:disable:next empty_count
+            // swiftlint:disable:next empty_count
             val |= self.count > 0 ? UInt32(self[idx]) : 0
             result.append(val)
         }

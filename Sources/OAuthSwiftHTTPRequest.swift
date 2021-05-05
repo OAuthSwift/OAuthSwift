@@ -25,7 +25,7 @@ open class OAuthSwiftHTTPRequest: NSObject, OAuthSwiftRequestHandle {
     /// HTTP request method
     /// https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods
     public enum Method: String {
-        case GET, POST, PUT, DELETE, PATCH, HEAD //, OPTIONS, TRACE, CONNECT
+        case GET, POST, PUT, DELETE, PATCH, HEAD // , OPTIONS, TRACE, CONNECT
 
         var isBody: Bool {
             return self == .POST || self == .PUT || self == .PATCH
@@ -413,10 +413,10 @@ extension OAuthSwiftHTTPRequest {
             var requestHeaders = OAuthSwift.Headers()
             switch paramsLocation {
             case .authorizationHeader:
-                //Add oauth parameters in the Authorization header
+                // Add oauth parameters in the Authorization header
                 requestHeaders += credential.makeHeaders(signatureUrl, method: method, parameters: signatureParameters, body: body)
             case .requestURIQuery:
-                //Add oauth parameters as request parameters
+                // Add oauth parameters as request parameters
                 self.parameters += credential.authorizationParametersWithSignature(method: method, url: signatureUrl, parameters: signatureParameters, body: body)
             }
 
