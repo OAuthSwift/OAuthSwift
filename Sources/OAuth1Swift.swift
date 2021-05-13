@@ -19,6 +19,12 @@ open class OAuth1Swift: OAuthSwift {
 
     /// Optionally add consumer key to authorize Url (default: false)
     open var addConsumerKeyToAuthorizeURL: Bool = false
+    
+    /// Optionally change the standard `oauth_token` param name of the authorize Url
+    open var authorizeURLOAuthTokenParam: String = "oauth_token"
+    
+    /// Optionally change the standard `oauth_consumer_key` param name of the authorize Url
+    open var authorizeURLConsumerKeyParam: String = "oauth_consumer_key"
 
     /// Encode token using RFC3986
     open var useRFC3986ToEncodeToken: Bool = false
@@ -108,9 +114,9 @@ open class OAuth1Swift: OAuthSwift {
                 // 2. Authorize
                 if let token = self.encode(token: credential.oauthToken) {
                     var urlString = self.authorizeUrl + (self.authorizeUrl.contains("?") ? "&" : "?")
-                    urlString += "oauth_token=\(token)"
+                    urlString += "\(self.authorizeURLOAuthTokenParam)=\(token)"
                     if self.addConsumerKeyToAuthorizeURL {
-                        urlString += "&oauth_consumer_key=\(self.consumerKey)"
+                        urlString += "&\(self.authorizeURLConsumerKeyParam)=\(self.consumerKey)"
                     }
                     if self.addCallbackURLToAuthorizeURL {
                         urlString += "&oauth_callback=\(callbackURL.absoluteString)"
