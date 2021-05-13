@@ -9,6 +9,9 @@ Pod::Spec.new do |s|
     'Dongri Jin' => 'dongrify@gmail.com',
     'Eric Marchand' => 'eric.marchand.n7@gmail.com'
   }
+  s.weak_frameworks = 'AuthenticationServices'
+  s.ios.frameworks = 'SafariServices'
+  s.osx.frameworks = 'SafariServices'
   s.source = { git: 'https://github.com/OAuthSwift/OAuthSwift.git', tag: s.version }
   s.source_files = 'Sources/**/*.swift'
   s.swift_versions = ['5.0', '5.1']
