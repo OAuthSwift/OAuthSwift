@@ -402,7 +402,7 @@ open class OAuthSwiftCredential: NSObject, NSSecureCoding, Codable {
         let encodedURL = url.absoluteString.urlEncoded
 
         guard self.signatureMethod != .PLAINTEXT else {
-            return "\(consumerSecret)&\(oauthTokenSecret)"
+            return "\(encodedConsumerSecret)&\(encodedTokenSecret)"
         }
 
         let signatureBaseString = "\(method)&\(encodedURL)&\(encodedParameterString)"

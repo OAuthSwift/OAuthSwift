@@ -11,7 +11,6 @@
 import AuthenticationServices
 import Foundation
 
-
 @available(iOS 13.0, macCatalyst 13.0, *)
 open class ASWebAuthenticationURLHandler: OAuthSwiftURLHandlerType {
     var webAuthSession: ASWebAuthenticationSession!

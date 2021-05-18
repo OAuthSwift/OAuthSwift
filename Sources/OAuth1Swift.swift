@@ -19,10 +19,10 @@ open class OAuth1Swift: OAuthSwift {
 
     /// Optionally add consumer key to authorize Url (default: false)
     open var addConsumerKeyToAuthorizeURL: Bool = false
-    
+
     /// Optionally change the standard `oauth_token` param name of the authorize Url
     open var authorizeURLOAuthTokenParam: String = "oauth_token"
-    
+
     /// Optionally change the standard `oauth_consumer_key` param name of the authorize Url
     open var authorizeURLConsumerKeyParam: String = "oauth_consumer_key"
 
