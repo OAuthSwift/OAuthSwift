@@ -22,23 +22,27 @@ OAuthSwift is packaged as a Swift framework. Currently this is the simplest way 
 ### Support Carthage
 
 * Install Carthage (https://github.com/Carthage/Carthage)
-* Create Cartfile file
+* Create `Cartfile` file
+
+```text
+github "OAuthSwift/OAuthSwift" ~> 2.2.0
 ```
-github "OAuthSwift/OAuthSwift" ~> 2.0.0
-```
+
 * Run `carthage update`.
-* On your application targets’ “General” settings tab, in the “Embedded Binaries” section, drag and drop OAuthSwift.framework from the Carthage/Build/iOS folder on disk.
+* On your application targets’ “General” settings tab, in the “Embedded Binaries”
+section, drag and drop OAuthSwift.framework from the Carthage/Build/iOS folder on disk.
 
 ### Support CocoaPods
 
 * Podfile
 
-```
+```ruby
 platform :ios, '10.0'
 use_frameworks!
 
-pod 'OAuthSwift', '~> 2.0.0'
+pod 'OAuthSwift', '~> 2.2.0'
 ```
+
 ### Swift Package Manager Support
 
 ```swift
@@ -47,7 +51,9 @@ import PackageDescription
 let package = Package(
     name: "MyApp",
     dependencies: [
-        .package(name: "OAuthSwift", url: "https://github.com/OAuthSwift/OAuthSwift.git", .upToNextMajor(from: "2.1.0"))
+        .package(name: "OAuthSwift",
+            url: "https://github.com/OAuthSwift/OAuthSwift.git",
+            .upToNextMajor(from: "2.2.0"))
     ]
 )
 ```
@@ -67,13 +73,17 @@ Use the tag `1.2.0` on main branch
 Use the tag `1.4.1` on main branch
 
 ## How to
+
 ### Setting URL Schemes
+
 In info tab of your target
 ![Image](Assets/URLSchemes.png "Image")
 Replace oauth-swift by your application name
 
 ### Handle URL in AppDelegate
+
 - On iOS implement `UIApplicationDelegate` method
+
 ```swift
 func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey  : Any] = [:]) -> Bool {
   if url.host == "oauth-callback" {
@@ -82,8 +92,10 @@ func application(_ app: UIApplication, open url: URL, options: [UIApplication.Op
   return true
 }
 ```
+
 - On iOS 13, UIKit will notify `UISceneDelegate` instead of `UIApplicationDelegate`.
 - Implement `UISceneDelegate` method
+
 ```swift
 func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         guard let url = URLContexts.first?.url else {
@@ -96,11 +108,13 @@ func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>)
 ```
 
 :warning: Any other application may try to open a URL with your url scheme. So you can check the source application, for instance for safari controller :
-```
+
+```swift
 if options[.sourceApplication] as? String == "com.apple.SafariViewService" {
 ```
 
 - On macOS you must register a handler on `NSAppleEventManager` for event type `kAEGetURL` (see demo code)
+
 ```swift
 func applicationDidFinishLaunching(_ aNotification: NSNotification) {
     NSAppleEventManager.shared().setEventHandler(self, andSelector:#selector(AppDelegate.handleGetURL(event:withReplyEvent:)), forEventClass: AEEventClass(kInternetEventClass), andEventID: AEEventID(kAEGetURL))
@@ -113,6 +127,7 @@ func handleGetURL(event: NSAppleEventDescriptor!, withReplyEvent: NSAppleEventDe
 ```
 
 ### Authorize with OAuth1.0
+
 ```swift
 // create an instance and retain it
 oauthswift = OAuth1Swift(
@@ -136,8 +151,11 @@ let handle = oauthswift.authorize(
     }             
 }
 ```
+
 ### OAuth1 without authorization
+
 No urls to specify here
+
 ```swift
 // create an instance and retain it
 oauthswift = OAuth1Swift(
@@ -156,6 +174,7 @@ oauthswift.client.get("https://api.example.com/foo/bar") { result in
 ```
 
 ### Authorize with OAuth2.0
+
 ```swift
 // create an instance and retain it
 oauthswift = OAuth2Swift(
@@ -175,10 +194,10 @@ let handle = oauthswift.authorize(
       print(error.localizedDescription)
     }
 }
-
 ```
 
 ### Authorize with OAuth2.0 and proof key flow (PKCE)
+
 ```swift
 // create an instance and retain it
 oauthswift = OAuth2Swift(
@@ -207,7 +226,6 @@ let handle = oauthswift.authorize(
       print(error.localizedDescription)
     }
 }
-
 ```
 
 See demo for more examples
@@ -218,25 +236,32 @@ The authorize URL allows the user to connect to a provider and give access to yo
 By default this URL is opened into the external web browser (ie. safari), but apple does not allow it for app-store iOS applications.
 
 To change this behavior you must set an `OAuthSwiftURLHandlerType`, simple protocol to handle an `URL`
+
 ```swift
 oauthswift.authorizeURLHandler = ..
 ```
+
 For instance you can embed a web view into your application by providing a controller that displays a web view (`UIWebView`, `WKWebView`).
 Then this controller must implement `OAuthSwiftURLHandlerType` to load the URL into the web view
+
 ```swift
 func handle(_ url: NSURL) {
   let req = URLRequest(URL: targetURL)
   self.webView.loadRequest(req)
   ...
 ```
+
 and present the view (`present(viewController`, `performSegue(withIdentifier: `, ...)
 *You can extend `OAuthWebViewController` for a default implementation of view presentation and dismiss*
 
 #### Use the SFSafariViewController (iOS9)
+
 A default implementation of `OAuthSwiftURLHandlerType` is provided using the `SFSafariViewController`, with automatic view dismiss.
+
 ```swift
 oauthswift.authorizeURLHandler = SafariURLHandler(viewController: self, oauthSwift: oauthswift)
 ```
+
 Of course you can create your own class or customize the controller by setting the variable `SafariURLHandler#factory`.
 
 ### Make signed request
@@ -301,20 +326,25 @@ See more examples in the demo application: [ViewController.swift](/Demo/Common/V
 ![Image](Assets/TwitterOAuthTokens.png "Image")
 
 ## Contributing
- See [CONTRIBUTING.md](.github/CONTRIBUTING.md)
+
+See [CONTRIBUTING.md](.github/CONTRIBUTING.md)
 
 [Add a new service in demo app](https://github.com/OAuthSwift/OAuthSwift/wiki/Demo-application#add-a-new-service-in-demo-app)
 
-
 ## Integration
+
 OAuthSwift could be used with others frameworks
 
 You can sign [Alamofire](https://github.com/Alamofire/Alamofire) request with [OAuthSwiftAlamofire](https://github.com/OAuthSwift/OAuthSwiftAlamofire)
 
 To achieve great asynchronous code you can use one of these integration frameworks
-- [OAuthSwiftFutures](https://github.com/OAuthSwift/OAuthSwiftFutures) - [BrightFutures](https://github.com/Thomvis/BrightFutures)
-- [OAuthRxSwift](https://github.com/OAuthSwift/OAuthRxSwift) - [RxSwift](https://github.com/ReactiveX/RxSwift)
-- [OAuthReactiveSwift](https://github.com/OAuthSwift/OAuthReactiveSwift) - [ReactiveSwift](https://github.com/ReactiveCocoa/ReactiveSwift)
+
+- [OAuthSwiftFutures](https://github.com/OAuthSwift/OAuthSwiftFutures)
+- [BrightFutures](https://github.com/Thomvis/BrightFutures)
+- [OAuthRxSwift](https://github.com/OAuthSwift/OAuthRxSwift)
+- [RxSwift](https://github.com/ReactiveX/RxSwift)
+- [OAuthReactiveSwift](https://github.com/OAuthSwift/OAuthReactiveSwift)
+- [ReactiveSwift](https://github.com/ReactiveCocoa/ReactiveSwift)
 
 ## License
 
