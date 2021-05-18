@@ -151,7 +151,7 @@ open class OAuthSwiftHTTPRequest: NSObject, OAuthSwiftRequestHandle {
                 userInfo["Response-Headers"] = response.allHeaderFields
             }
             let error = NSError(domain: OAuthSwiftError.Domain, code: badRequestCode, userInfo: userInfo)
-            completion?(.failure(.requestError(error:error, request: request)))
+            completion?(.failure(.requestError(error: error, request: request)))
             return
         }
 
