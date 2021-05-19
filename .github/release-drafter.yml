@@ -8,12 +8,15 @@ tag-template: '$RESOLVED_VERSION'
 categories:
   - title: '✨ Features'
     labels:
+      - 'enhancement'
+      - 'feature-request'
       - '🆕 feature request'
   - title: '🐛 Bug Fixes'
     labels:
+      - 'bug'
       - '🐛 bug'
   - title: '🧰 Maintenance'
-    label: 'chore'
+    label: 'cocoapod'
 change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
 change-title-escapes: '\<*_&' # You can add # and @ to disable mentions, and add ` to disable code blocks.
 version-resolver:
