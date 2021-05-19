@@ -339,12 +339,9 @@ You can sign [Alamofire](https://github.com/Alamofire/Alamofire) request with [O
 
 To achieve great asynchronous code you can use one of these integration frameworks
 
-- [OAuthSwiftFutures](https://github.com/OAuthSwift/OAuthSwiftFutures)
-- [BrightFutures](https://github.com/Thomvis/BrightFutures)
-- [OAuthRxSwift](https://github.com/OAuthSwift/OAuthRxSwift)
-- [RxSwift](https://github.com/ReactiveX/RxSwift)
-- [OAuthReactiveSwift](https://github.com/OAuthSwift/OAuthReactiveSwift)
-- [ReactiveSwift](https://github.com/ReactiveCocoa/ReactiveSwift)
+- [OAuthSwiftFutures](https://github.com/OAuthSwift/OAuthSwiftFutures) - [BrightFutures](https://github.com/Thomvis/BrightFutures)
+- [OAuthRxSwift](https://github.com/OAuthSwift/OAuthRxSwift) - [RxSwift](https://github.com/ReactiveX/RxSwift)
+- [OAuthReactiveSwift](https://github.com/OAuthSwift/OAuthReactiveSwift) - [ReactiveSwift](https://github.com/ReactiveCocoa/ReactiveSwift)
 
 ## License
 
