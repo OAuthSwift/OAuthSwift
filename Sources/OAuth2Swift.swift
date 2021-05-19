@@ -70,9 +70,9 @@ open class OAuth2Swift: OAuthSwift {
     }
 
     // MARK: functions
-    
+
     /// Handling SFAuthenticationSession/ASWebAuthenticationSession canceledLogin errors
-    fileprivate func isCancelledError(_ responseParameters: [String : String]) -> Bool {
+    fileprivate func isCancelledError(_ responseParameters: [String: String]) -> Bool {
         guard let domain = responseParameters["error_domain"],
               let codeString = responseParameters["error_code"],
               let code = Int(codeString) else {
