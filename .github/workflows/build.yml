@@ -16,7 +16,7 @@ jobs:
           swift build  
       - name: Xcode build macOS
         run: |
-          xcodebuild -scheme "OAuthSwiftMacOS"
+          xcodebuild -scheme "OAuthSwiftMacOS" | xcpretty -c; exit ${PIPESTATUS[0]}
       - name: Swift build iOS
         run: |
           sdk=`xcrun -sdk iphonesimulator -show-sdk-path`
@@ -24,4 +24,7 @@ jobs:
           swift build  -Xswiftc "-sdk" -Xswiftc "$sdk" -Xswiftc "-target" -Xswiftc "x86_64-apple-ios$sdkVersion-simulator"
       - name: Xcode build iOS
         run: |
-          xcodebuild -scheme "OAuthSwift"
+          xcodebuild -scheme "OAuthSwift" -sdk iphonesimulator | xcpretty -c; exit ${PIPESTATUS[0]}
+      - name: Xcode build mac Catalyst
+        run: |
+          xcodebuild -scheme "OAuthSwift" | xcpretty -c; exit ${PIPESTATUS[0]}
