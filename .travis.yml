@@ -22,10 +22,7 @@ script:
   - xcodebuild -version
   - xcodebuild -showsdks
   - xcodebuild -project "$PROJECT" -scheme "$SCHEME" -sdk "$SDK" -destination "$DESTINATION" -configuration Release ONLY_ACTIVE_ARCH=NO build | xcpretty;
-  - export DANGER_GITHUB_API_TOKEN
-  - bundle exec danger
 
 after_success:
    - sleep 10 # Workaround for https://github.com/travis-ci/travis-ci/issues/4725
    - bash <(curl -s https://codecov.io/bash) -J 'OAuthSwift'
-
