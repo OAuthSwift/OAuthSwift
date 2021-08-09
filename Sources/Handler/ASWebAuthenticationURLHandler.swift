@@ -12,6 +12,7 @@ import AuthenticationServices
 import Foundation
 
 @available(iOS 13.0, macCatalyst 13.0, *)
+@available(iOSApplicationExtension, unavailable)
 open class ASWebAuthenticationURLHandler: OAuthSwiftURLHandlerType {
     var webAuthSession: ASWebAuthenticationSession!
     let prefersEphemeralWebBrowserSession: Bool
@@ -55,6 +56,7 @@ open class ASWebAuthenticationURLHandler: OAuthSwiftURLHandlerType {
 }
 
 @available(iOS 13.0, macCatalyst 13.0, *)
+@available(iOSApplicationExtension, unavailable)
 extension ASWebAuthenticationURLHandler {
     static func isCancelledError(domain: String, code: Int) -> Bool {
         return domain == ASWebAuthenticationSessionErrorDomain &&

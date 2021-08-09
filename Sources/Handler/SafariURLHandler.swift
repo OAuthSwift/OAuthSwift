@@ -16,6 +16,7 @@ import AuthenticationServices
 #endif
 
 @available(iOS 9.0, *)
+@available(iOSApplicationExtension, unavailable)
 open class SafariURLHandler: NSObject, OAuthSwiftURLHandlerType, SFSafariViewControllerDelegate {
 
     public typealias UITransion = (_ controller: SFSafariViewController, _ handler: SafariURLHandler) -> Void

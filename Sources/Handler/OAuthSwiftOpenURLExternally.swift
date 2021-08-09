@@ -17,6 +17,7 @@ import AppKit
 #endif
 
 /// Open externally using open url application function.
+@available(iOSApplicationExtension, unavailable)
 open class OAuthSwiftOpenURLExternally: OAuthSwiftURLHandlerType {
 
     public static var sharedInstance: OAuthSwiftOpenURLExternally = OAuthSwiftOpenURLExternally()

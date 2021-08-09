@@ -125,6 +125,7 @@ extension OAuthSwiftError: CustomStringConvertible {
     }
 }
 
+@available(iOSApplicationExtension, unavailable)
 extension OAuthSwift {
     static func retainError(_ completionHandler: OAuthSwiftHTTPRequest.CompletionHandler?) {
         #if !OAUTH_NO_RETAIN_ERROR

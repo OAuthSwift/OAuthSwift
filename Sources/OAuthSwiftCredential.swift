@@ -8,6 +8,7 @@
 import Foundation
 
 /// Allow to customize computed headers
+@available(iOSApplicationExtension, unavailable)
 public protocol OAuthSwiftCredentialHeadersFactory {
     func make(_ url: URL, method: OAuthSwiftHTTPRequest.Method, parameters: OAuthSwift.Parameters, body: Data?) -> [String: String]
 }
@@ -40,6 +41,7 @@ public enum OAuthSwiftHashMethod: String {
 }
 
 /// The credential for authentification
+@available(iOSApplicationExtension, unavailable)
 open class OAuthSwiftCredential: NSObject, NSSecureCoding, Codable {
 
     public static let supportsSecureCoding = true

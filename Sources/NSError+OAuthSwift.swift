@@ -8,6 +8,7 @@
 
 import Foundation
 
+@available(iOSApplicationExtension, unavailable)
 public extension NSError {
 
     /// Checks the headers contained in the userInfo whether this error was caused by an 

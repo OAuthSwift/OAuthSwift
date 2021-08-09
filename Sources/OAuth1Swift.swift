@@ -8,6 +8,7 @@
 
 import Foundation
 
+@available(iOSApplicationExtension, unavailable)
 open class OAuth1Swift: OAuthSwift {
 
     /// If your oauth provider doesn't provide `oauth_verifier`

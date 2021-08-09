@@ -15,6 +15,7 @@ import AuthenticationServices
 
 #if !targetEnvironment(macCatalyst)
 @available(iOS, introduced: 11.0, deprecated: 12.0)
+@available(iOSApplicationExtension, unavailable)
 open class SFAuthenticationURLHandler: OAuthSwiftURLHandlerType {
     var webAuthSession: SFAuthenticationSession!
     let callbackUrlScheme: String
@@ -50,6 +51,7 @@ open class SFAuthenticationURLHandler: OAuthSwiftURLHandlerType {
 }
 
 @available(iOS, introduced: 11.0, deprecated: 12.0)
+@available(iOSApplicationExtension, unavailable)
 extension SFAuthenticationURLHandler {
     static func isCancelledError(domain: String, code: Int) -> Bool {
         return domain == SFAuthenticationErrorDomain &&

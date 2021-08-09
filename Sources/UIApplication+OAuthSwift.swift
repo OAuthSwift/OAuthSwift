@@ -9,6 +9,7 @@
 #if os(iOS) || os(tvOS)
     import UIKit
 
+    @available(iOSApplicationExtension, unavailable)
     extension UIApplication {
         @nonobjc static var topViewController: UIViewController? {
             #if !OAUTH_APP_EXTENSIONS

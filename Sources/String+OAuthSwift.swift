@@ -109,6 +109,7 @@ extension String {
         return parameters
     }
 
+    @available(iOSApplicationExtension, unavailable)
     public var headerDictionary: OAuthSwift.Headers {
         return dictionaryBySplitting(",", keyValueSeparator: "=")
     }

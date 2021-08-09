@@ -14,6 +14,7 @@ public var OAuthSwiftDataEncoding: String.Encoding = .utf8
     func cancel()
 }
 
+@available(iOSApplicationExtension, unavailable)
 open class OAuthSwiftClient: NSObject {
 
     fileprivate(set) open var credential: OAuthSwiftCredential

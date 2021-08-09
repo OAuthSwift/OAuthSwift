@@ -8,6 +8,7 @@
 
 import Foundation
 
+@available(iOSApplicationExtension, unavailable)
 open class OAuthSwift: NSObject, OAuthSwiftRequestHandle {
 
     // MARK: Properties
@@ -18,6 +19,7 @@ open class OAuthSwift: NSObject, OAuthSwiftRequestHandle {
     open var version: OAuthSwiftCredential.Version { return self.client.credential.version }
 
     /// Handle the authorize url into a web view or browser
+    @available(iOSApplicationExtension, unavailable)
     open var authorizeURLHandler: OAuthSwiftURLHandlerType = OAuthSwiftURLHandlerTypeFactory.default
 
     fileprivate var currentRequests: [String: OAuthSwiftRequestHandle] = [:]
@@ -99,6 +101,7 @@ open class OAuthSwift: NSObject, OAuthSwiftRequestHandle {
 }
 
 // MARK: - alias
+@available(iOSApplicationExtension, unavailable)
 extension OAuthSwift {
 
     public typealias Parameters = [String: Any]
@@ -112,6 +115,7 @@ extension OAuthSwift {
 }
 
 // MARK: - Logging
+@available(iOSApplicationExtension, unavailable)
 extension OAuthSwift {
 
    static var log: OAuthLogProtocol?

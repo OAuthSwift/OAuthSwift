@@ -15,6 +15,7 @@ import UIKit
 
 let kHTTPHeaderContentType = "Content-Type"
 
+@available(iOSApplicationExtension, unavailable)
 open class OAuthSwiftHTTPRequest: NSObject, OAuthSwiftRequestHandle {
 
     // Using NSLock for Linux compatible locking 
@@ -308,6 +309,7 @@ open class OAuthSwiftHTTPRequest: NSObject, OAuthSwiftRequestHandle {
 }
 
 // MARK: - Request configuraiton
+@available(iOSApplicationExtension, unavailable)
 extension OAuthSwiftHTTPRequest {
 
     /// Configuration for request
@@ -454,6 +456,7 @@ public struct URLSessionFactory {
 
 // MARK: - status code mapping
 
+@available(iOSApplicationExtension, unavailable)
 extension OAuthSwiftHTTPRequest {
 
     class func descriptionForHTTPStatus(_ status: Int, responseString: String) -> String {

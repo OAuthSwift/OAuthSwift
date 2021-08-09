@@ -8,6 +8,7 @@
 
 import Foundation
 
+@available(iOSApplicationExtension, unavailable)
 open class OAuth2Swift: OAuthSwift {
 
     /// If your oauth provider need to use basic authentification

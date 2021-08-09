@@ -36,6 +36,7 @@ public protocol OAuthWebViewControllerDelegate: AnyObject {
 }
 
 /// A web view controller, which handler OAuthSwift authentification. Must be override to display a web view.
+@available(iOSApplicationExtension, unavailable)
 open class OAuthWebViewController: OAuthViewController, OAuthSwiftURLHandlerType {
 
     #if os(iOS) || os(tvOS) || os(OSX)

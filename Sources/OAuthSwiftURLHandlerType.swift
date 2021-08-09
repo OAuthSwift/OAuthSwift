@@ -24,5 +24,6 @@ import AppKit
 
 public struct OAuthSwiftURLHandlerTypeFactory {
 
+    @available(iOSApplicationExtension, unavailable)
     static var `default`: OAuthSwiftURLHandlerType = OAuthSwiftOpenURLExternally.sharedInstance
 }

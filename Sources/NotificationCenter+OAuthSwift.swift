@@ -8,10 +8,12 @@
 
 import Foundation
 
+@available(iOSApplicationExtension, unavailable)
 public extension Notification.Name {
     @available(*, deprecated, renamed: "OAuthSwift.didHandleCallbackURL")
     static let OAuthSwiftHandleCallbackURL: Notification.Name = OAuthSwift.didHandleCallbackURL
 }
+@available(iOSApplicationExtension, unavailable)
 public extension OAuthSwift {
     static let didHandleCallbackURL: Notification.Name = .init("OAuthSwiftCallbackNotificationName")
 }
