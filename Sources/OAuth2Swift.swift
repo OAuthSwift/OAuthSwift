@@ -95,7 +95,7 @@ open class OAuth2Swift: OAuthSwift {
     }
 
     @discardableResult
-    open func authorize(withCallbackURL callbackURL: URLConvertible?, scope: String, state: String, parameters: Parameters = [:], headers: OAuthSwift.Headers? = nil, completionHandler completion: @escaping TokenCompletionHandler) -> OAuthSwiftRequestHandle? {
+    open func authorize(withCallbackURL callbackURL: URLConvertible?, scope: String, state: String, parameters: Parameters = [:], headers: OAuthSwift.Headers? = nil, timeoutInterval: TimeInterval = 60, completionHandler completion: @escaping TokenCompletionHandler) -> OAuthSwiftRequestHandle? {
 
         OAuthSwift.log?.trace("Start authorization ...")
         if let url = callbackURL, url.url == nil {
@@ -145,7 +145,7 @@ open class OAuth2Swift: OAuthSwift {
                 }
                 if let handle = this.postOAuthAccessTokenWithRequestToken(
                     byCode: code.safeStringByRemovingPercentEncoding,
-                    callbackURL: callbackURLEncoded, headers: headers, completionHandler: completion) {
+                    callbackURL: callbackURLEncoded, headers: headers, timeoutInterval: timeoutInterval, completionHandler: completion) {
                     this.putHandle(handle, withKey: UUID().uuidString)
                 }
             } else if let error = responseParameters["error"] {
@@ -203,7 +203,7 @@ open class OAuth2Swift: OAuthSwift {
         return nil
     }
 
-    open func postOAuthAccessTokenWithRequestToken(byCode code: String, callbackURL: URL?, headers: OAuthSwift.Headers? = nil, completionHandler completion: @escaping TokenCompletionHandler) -> OAuthSwiftRequestHandle? {
+    open func postOAuthAccessTokenWithRequestToken(byCode code: String, callbackURL: URL?, headers: OAuthSwift.Headers? = nil, timeoutInterval: TimeInterval = 60, completionHandler completion: @escaping TokenCompletionHandler) -> OAuthSwiftRequestHandle? {
 
         var parameters = OAuthSwift.Parameters()
         parameters["client_id"] = self.consumerKey
@@ -227,16 +227,16 @@ open class OAuth2Swift: OAuthSwift {
         }
 
         OAuthSwift.log?.trace("Add security parameters: \(parameters)")
-        return requestOAuthAccessToken(withParameters: parameters, headers: headers, completionHandler: completion)
+        return requestOAuthAccessToken(withParameters: parameters, headers: headers, timeoutInterval: timeoutInterval, completionHandler: completion)
     }
 
     @discardableResult
-    open func renewAccessToken(withRefreshToken refreshToken: String, parameters: OAuthSwift.Parameters? = nil, headers: OAuthSwift.Headers? = nil, completionHandler completion: @escaping TokenCompletionHandler) -> OAuthSwiftRequestHandle? {
-        return self.client.renewAccessToken(accessTokenUrl: self.accessTokenUrl, withRefreshToken: refreshToken, parameters: parameters ?? OAuthSwift.Parameters(), headers: headers, completionHandler: completion)
+    open func renewAccessToken(withRefreshToken refreshToken: String, parameters: OAuthSwift.Parameters? = nil, headers: OAuthSwift.Headers? = nil, timeoutInterval: TimeInterval = 60, completionHandler completion: @escaping TokenCompletionHandler) -> OAuthSwiftRequestHandle? {
+        return self.client.renewAccessToken(accessTokenUrl: self.accessTokenUrl, withRefreshToken: refreshToken, parameters: parameters ?? OAuthSwift.Parameters(), headers: headers, timeoutInterval: timeoutInterval, completionHandler: completion)
     }
 
-    fileprivate func requestOAuthAccessToken(withParameters parameters: OAuthSwift.Parameters, headers: OAuthSwift.Headers? = nil, completionHandler completion: @escaping TokenCompletionHandler) -> OAuthSwiftRequestHandle? {
-        return self.client.requestOAuthAccessToken(accessTokenUrl: self.accessTokenUrl, withParameters: parameters, headers: headers, contentType: self.contentType, accessTokenBasicAuthentification: self.accessTokenBasicAuthentification, completionHandler: completion)
+    fileprivate func requestOAuthAccessToken(withParameters parameters: OAuthSwift.Parameters, headers: OAuthSwift.Headers? = nil, timeoutInterval: TimeInterval, completionHandler completion: @escaping TokenCompletionHandler) -> OAuthSwiftRequestHandle? {
+        return self.client.requestOAuthAccessToken(accessTokenUrl: self.accessTokenUrl, withParameters: parameters, headers: headers, timeoutInterval: timeoutInterval, contentType: self.contentType, accessTokenBasicAuthentification: self.accessTokenBasicAuthentification, completionHandler: completion)
     }
 
     /**
@@ -255,7 +255,7 @@ open class OAuth2Swift: OAuthSwift {
      - parameter failure:        The failure block. Takes the error as parameter.
      */
     @discardableResult
-    open func startAuthorizedRequest(_ url: URLConvertible, method: OAuthSwiftHTTPRequest.Method, parameters: OAuthSwift.Parameters, headers: OAuthSwift.Headers? = nil, renewHeaders: OAuthSwift.Headers? = nil, body: Data? = nil, onTokenRenewal: TokenRenewedHandler? = nil, completionHandler completion: @escaping OAuthSwiftHTTPRequest.CompletionHandler) -> OAuthSwiftRequestHandle? {
+    open func startAuthorizedRequest(_ url: URLConvertible, method: OAuthSwiftHTTPRequest.Method, parameters: OAuthSwift.Parameters, headers: OAuthSwift.Headers? = nil, timeoutInterval: TimeInterval = 60, renewHeaders: OAuthSwift.Headers? = nil, body: Data? = nil, onTokenRenewal: TokenRenewedHandler? = nil, completionHandler completion: @escaping OAuthSwiftHTTPRequest.CompletionHandler) -> OAuthSwiftRequestHandle? {
 
         OAuthSwift.log?.trace("Start authorized request, url: \(url.url?.absoluteString ?? "unknown") ...")
         let completionHandler: OAuthSwiftHTTPRequest.CompletionHandler = { result in
@@ -277,13 +277,13 @@ open class OAuth2Swift: OAuthSwift {
                             }
 
                             // Reauthorize the request again, this time with a brand new access token ready to be used.
-                            _ = self.startAuthorizedRequest(url, method: method, parameters: parameters, headers: headers, body: body, onTokenRenewal: onTokenRenewal, completionHandler: completion)
+                            _ = self.startAuthorizedRequest(url, method: method, parameters: parameters, headers: headers, timeoutInterval: timeoutInterval, body: body, onTokenRenewal: onTokenRenewal, completionHandler: completion)
                         case .failure(let error):
                             completion(.failure(error))
                         }
                     }
 
-                    _ = self.renewAccessToken(withRefreshToken: self.client.credential.oauthRefreshToken, headers: renewHeaders ?? headers, completionHandler: renewCompletionHandler)
+                    _ = self.renewAccessToken(withRefreshToken: self.client.credential.oauthRefreshToken, headers: renewHeaders ?? headers, timeoutInterval: timeoutInterval, completionHandler: renewCompletionHandler)
                 default:
                     completion(.failure(error))
                 }
@@ -291,12 +291,12 @@ open class OAuth2Swift: OAuthSwift {
         }
 
         // build request
-        return self.client.request(url, method: method, parameters: parameters, headers: headers, body: body, completionHandler: completionHandler)
+        return self.client.request(url, method: method, parameters: parameters, headers: headers, timeoutInterval: timeoutInterval, body: body, completionHandler: completionHandler)
     }
 
     // OAuth 2.0 Specification: https://tools.ietf.org/html/draft-ietf-oauth-v2-13#section-4.3
     @discardableResult
-    open func authorize(username: String, password: String, scope: String?, headers: OAuthSwift.Headers? = nil, completionHandler completion: @escaping TokenCompletionHandler) -> OAuthSwiftRequestHandle? {
+    open func authorize(username: String, password: String, scope: String?, headers: OAuthSwift.Headers? = nil, timeoutInterval: TimeInterval = 60, completionHandler completion: @escaping TokenCompletionHandler) -> OAuthSwiftRequestHandle? {
 
         var parameters = OAuthSwift.Parameters()
         parameters["client_id"] = self.consumerKey
@@ -314,12 +314,13 @@ open class OAuth2Swift: OAuthSwift {
         return requestOAuthAccessToken(
             withParameters: parameters,
             headers: headers,
+            timeoutInterval: timeoutInterval,
             completionHandler: completion
         )
     }
 
     @discardableResult
-    open func authorize(deviceToken deviceCode: String, grantType: String = "http://oauth.net/grant_type/device/1.0", completionHandler completion: @escaping TokenCompletionHandler) -> OAuthSwiftRequestHandle? {
+    open func authorize(deviceToken deviceCode: String, grantType: String = "http://oauth.net/grant_type/device/1.0", timeoutInterval: TimeInterval = 60, completionHandler completion: @escaping TokenCompletionHandler) -> OAuthSwiftRequestHandle? {
         var parameters = OAuthSwift.Parameters()
         parameters["client_id"] = self.consumerKey
         parameters["client_secret"] = self.consumerSecret
@@ -328,13 +329,14 @@ open class OAuth2Swift: OAuthSwift {
 
         return requestOAuthAccessToken(
             withParameters: parameters,
+            timeoutInterval: timeoutInterval,
             completionHandler: completion
         )
     }
 
     /// use RFC7636 PKCE credentials - convenience method
     @discardableResult
-    open func authorize(withCallbackURL url: URLConvertible, scope: String, state: String, codeChallenge: String, codeChallengeMethod: String = "S256", codeVerifier: String, parameters: Parameters = [:], headers: OAuthSwift.Headers? = nil, completionHandler completion: @escaping TokenCompletionHandler) -> OAuthSwiftRequestHandle? {
+    open func authorize(withCallbackURL url: URLConvertible, scope: String, state: String, codeChallenge: String, codeChallengeMethod: String = "S256", codeVerifier: String, parameters: Parameters = [:], headers: OAuthSwift.Headers? = nil, timeoutInterval: TimeInterval = 60, completionHandler completion: @escaping TokenCompletionHandler) -> OAuthSwiftRequestHandle? {
         guard let callbackURL = url.url else {
             completion(.failure(.encodingError(urlString: url.string)))
             return nil
@@ -347,6 +349,6 @@ open class OAuth2Swift: OAuthSwift {
         pkceParameters["code_challenge"] = codeChallenge
         pkceParameters["code_challenge_method"] = codeChallengeMethod
 
-        return authorize(withCallbackURL: callbackURL, scope: scope, state: state, parameters: parameters + pkceParameters, headers: headers, completionHandler: completion)
+        return authorize(withCallbackURL: callbackURL, scope: scope, state: state, parameters: parameters + pkceParameters, headers: headers, timeoutInterval: timeoutInterval, completionHandler: completion)
     }
 }

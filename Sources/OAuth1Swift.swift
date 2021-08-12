@@ -74,7 +74,7 @@ open class OAuth1Swift: OAuthSwift {
     // MARK: functions
     // 0. Start
     @discardableResult
-    open func authorize(withCallbackURL url: URLConvertible, headers: OAuthSwift.Headers? = nil, completionHandler completion: @escaping TokenCompletionHandler) -> OAuthSwiftRequestHandle? {
+    open func authorize(withCallbackURL url: URLConvertible, headers: OAuthSwift.Headers? = nil, timeoutInterval: TimeInterval = 60, completionHandler completion: @escaping TokenCompletionHandler) -> OAuthSwiftRequestHandle? {
         guard let callbackURL = url.url else {
             completion(.failure(.encodingError(urlString: url.string)))
             return nil
@@ -105,7 +105,7 @@ open class OAuth1Swift: OAuthSwift {
                                 return
                             }
                         }
-                        this.postOAuthAccessTokenWithRequestToken(headers: headers, completionHandler: completion)
+                        this.postOAuthAccessTokenWithRequestToken(headers: headers, timeoutInterval: timeoutInterval, completionHandler: completion)
                     } else {
                         completion(.failure(.missingToken))
                         return
@@ -134,7 +134,7 @@ open class OAuth1Swift: OAuthSwift {
             }
         }
 
-        self.postOAuthRequestToken(callbackURL: callbackURL, headers: headers, completionHandler: completionHandler)
+        self.postOAuthRequestToken(callbackURL: callbackURL, headers: headers, timeoutInterval: timeoutInterval, completionHandler: completionHandler)
         return self
     }
 
@@ -146,7 +146,7 @@ open class OAuth1Swift: OAuthSwift {
     }
 
     // 1. Request token
-    func postOAuthRequestToken(callbackURL: URL, headers: OAuthSwift.Headers? = nil, completionHandler completion: @escaping TokenCompletionHandler) {
+    func postOAuthRequestToken(callbackURL: URL, headers: OAuthSwift.Headers? = nil, timeoutInterval: TimeInterval, completionHandler completion: @escaping TokenCompletionHandler) {
         var parameters = [String: Any]()
         parameters["oauth_callback"] = callbackURL.absoluteString
 
@@ -169,14 +169,14 @@ open class OAuth1Swift: OAuthSwift {
         }
 
         if let handle = self.client.post(
-            self.requestTokenUrl, parameters: parameters, headers: headers,
+            self.requestTokenUrl, parameters: parameters, headers: headers, timeoutInterval: timeoutInterval,
             completionHandler: completionHandler) {
             self.putHandle(handle, withKey: UUID().uuidString)
         }
     }
 
     // 3. Get Access token
-    func postOAuthAccessTokenWithRequestToken(headers: OAuthSwift.Headers? = nil, completionHandler completion: @escaping TokenCompletionHandler) {
+    func postOAuthAccessTokenWithRequestToken(headers: OAuthSwift.Headers? = nil, timeoutInterval: TimeInterval,  completionHandler completion: @escaping TokenCompletionHandler) {
         var parameters = [String: Any]()
         parameters["oauth_token"] = self.client.credential.oauthToken
         if !self.allowMissingOAuthVerifier {
@@ -202,7 +202,7 @@ open class OAuth1Swift: OAuthSwift {
             }
         }
         if let handle = self.client.post(
-            self.accessTokenUrl, parameters: parameters, headers: headers,
+            self.accessTokenUrl, parameters: parameters, headers: headers, timeoutInterval: timeoutInterval,
             completionHandler: completionHandler) {
             self.putHandle(handle, withKey: UUID().uuidString)
         }
