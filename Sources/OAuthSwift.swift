@@ -114,7 +114,7 @@ extension OAuthSwift {
 // MARK: - Logging
 extension OAuthSwift {
 
-   static var log: OAuthLogProtocol?
+   public static var log: OAuthLogProtocol?
 
    /// Enables the log level
    /// And instantiates the log object
