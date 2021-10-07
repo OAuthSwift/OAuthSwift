@@ -74,6 +74,7 @@ class OAuth2SwiftTests: XCTestCase {
         let expectation = self.expectation(description: "request should succeed")
 
 		var state = ""
+
 		if case .code(_, let extractedState) = response {
 			state = extractedState ?? ""
 		}
@@ -90,6 +91,10 @@ class OAuth2SwiftTests: XCTestCase {
         waitForExpectations(timeout: DefaultTimeout, handler: nil)
         
         XCTAssertEqual(oauth.client.credential.oauthToken, server.oauth_token)
+
+        if case .code = response {
+            XCTAssertEqual(oauth.client.credential.idToken, self.server.id_token)
+        }
     }
     
     func testJSON_Error_Failure() {
