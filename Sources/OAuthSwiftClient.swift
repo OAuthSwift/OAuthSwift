@@ -260,6 +260,10 @@ open class OAuthSwiftClient: NSObject {
                     return
                 }
 
+                if let idToken = responseParameters["id_token"] as? String {
+                    this.credential.idToken = idToken.safeStringByRemovingPercentEncoding
+                }
+
                 if let refreshToken = responseParameters["refresh_token"] as? String {
                     this.credential.oauthRefreshToken = refreshToken.safeStringByRemovingPercentEncoding
                 }

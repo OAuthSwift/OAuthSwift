@@ -36,6 +36,7 @@ class TestServer {
 
     let oauth_token = "accesskey"
     let oauth_token_secret = "accesssecret"
+    let id_token = "idtoken"
     let valid_key = "key"
     let valid_secret = "key"
     
@@ -82,9 +83,9 @@ class TestServer {
             
             switch self.accessReturnType {
             case .json:
-                return .ok(.json(["access_token":self.oauth_token] as AnyObject))
+                return .ok(.json(["access_token":self.oauth_token, "id_token":self.id_token] as AnyObject))
             case .data:
-                return .ok(.text("access_token=\(self.oauth_token)" as String))
+                return .ok(.text("access_token=\(self.oauth_token)&id_token=\(self.id_token)" as String))
             }
             
         }

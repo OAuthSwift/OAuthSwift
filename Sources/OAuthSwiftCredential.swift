@@ -120,6 +120,7 @@ open class OAuthSwiftCredential: NSObject, NSSecureCoding, Codable {
     open var oauthRefreshToken = ""
     open var oauthTokenSecret = ""
     open var oauthTokenExpiresAt: Date?
+    open var idToken = ""
     open internal(set) var oauthVerifier = ""
     open var version: Version = .oauth1
     open var signatureMethod: SignatureMethod = .HMAC_SHA1
