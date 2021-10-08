@@ -120,7 +120,7 @@ open class OAuthSwiftCredential: NSObject, NSSecureCoding, Codable {
     open var oauthRefreshToken = ""
     open var oauthTokenSecret = ""
     open var oauthTokenExpiresAt: Date?
-    open var idToken = ""
+    open var idToken: String?
     open internal(set) var oauthVerifier = ""
     open var version: Version = .oauth1
     open var signatureMethod: SignatureMethod = .HMAC_SHA1
@@ -150,6 +150,7 @@ open class OAuthSwiftCredential: NSObject, NSSecureCoding, Codable {
         static let oauthTokenExpiresAt = base + "oauth_token_expires_at"
         static let oauthTokenSecret = base + "oauth_token_secret"
         static let oauthVerifier = base + "oauth_verifier"
+        static let idToken = base + "id_token"
         static let version = base + "version"
         static let signatureMethod = base + "signatureMethod"
     }
@@ -225,6 +226,8 @@ open class OAuthSwiftCredential: NSObject, NSSecureCoding, Codable {
 
         self.oauthTokenExpiresAt = decoder
             .decodeObject(of: NSDate.self, forKey: NSCodingKeys.oauthTokenExpiresAt) as Date?
+        self.idToken = decoder
+            .decodeObject(of: NSString.self, forKey: NSCodingKeys.idToken) as String?
         self.version = Version(decoder.decodeInt32(forKey: NSCodingKeys.version))
         if case .oauth1 = version {
             self.signatureMethod = SignatureMethod(rawValue: (decoder.decodeObject(of: NSString.self, forKey: NSCodingKeys.signatureMethod) as String?) ?? "HMAC_SHA1") ?? .HMAC_SHA1
@@ -241,6 +244,7 @@ open class OAuthSwiftCredential: NSObject, NSSecureCoding, Codable {
         coder.encode(self.oauthTokenSecret, forKey: NSCodingKeys.oauthTokenSecret)
         coder.encode(self.oauthVerifier, forKey: NSCodingKeys.oauthVerifier)
         coder.encode(self.oauthTokenExpiresAt, forKey: NSCodingKeys.oauthTokenExpiresAt)
+        coder.encode(self.idToken, forKey: NSCodingKeys.idToken)
         coder.encode(self.version.toInt32, forKey: NSCodingKeys.version)
         if case .oauth1 = version {
             coder.encode(self.signatureMethod.rawValue, forKey: NSCodingKeys.signatureMethod)
@@ -259,6 +263,7 @@ open class OAuthSwiftCredential: NSObject, NSSecureCoding, Codable {
         case oauthTokenSecret
         case oauthVerifier
         case oauthTokenExpiresAt
+        case idToken
         case version
         case signatureMethodRawValue
     }
@@ -272,6 +277,7 @@ open class OAuthSwiftCredential: NSObject, NSSecureCoding, Codable {
         try container.encode(self.oauthTokenSecret, forKey: .oauthTokenSecret)
         try container.encode(self.oauthVerifier, forKey: .oauthVerifier)
         try container.encodeIfPresent(self.oauthTokenExpiresAt, forKey: .oauthTokenExpiresAt)
+        try container.encodeIfPresent(self.idToken, forKey: .idToken)
         try container.encode(self.version, forKey: .version)
         if case .oauth1 = version {
             try container.encode(self.signatureMethod.rawValue, forKey: .signatureMethodRawValue)
@@ -293,6 +299,7 @@ open class OAuthSwiftCredential: NSObject, NSSecureCoding, Codable {
         self.oauthTokenSecret = try container.decode(type(of: self.oauthTokenSecret), forKey: .oauthTokenSecret)
         self.oauthVerifier = try container.decode(type(of: self.oauthVerifier), forKey: .oauthVerifier)
         self.oauthTokenExpiresAt = try container.decodeIfPresent(Date.self, forKey: .oauthTokenExpiresAt)
+        self.idToken = try container.decodeIfPresent(String.self, forKey: .idToken)
         self.version = try container.decode(type(of: self.version), forKey: .version)
 
         if case .oauth1 = version {
@@ -438,6 +445,7 @@ open class OAuthSwiftCredential: NSObject, NSSecureCoding, Codable {
             && lhs.oauthTokenSecret == rhs.oauthTokenSecret
             && lhs.oauthTokenExpiresAt == rhs.oauthTokenExpiresAt
             && lhs.oauthVerifier == rhs.oauthVerifier
+            && lhs.idToken == rhs.idToken
             && lhs.version == rhs.version
             && lhs.signatureMethod == rhs.signatureMethod
     }

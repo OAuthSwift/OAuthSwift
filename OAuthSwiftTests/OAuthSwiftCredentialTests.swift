@@ -36,10 +36,36 @@ class OAuthSwiftCredentialTests: XCTestCase {
         XCTAssertEqual(credential, object)
     }
 
+    func testNSCodingWithIdToken() {
+        let credential = OAuthSwiftCredential(consumerKey: "foo", consumerSecret: "bar")
+        credential.oauthToken = "token"
+        credential.oauthTokenSecret = "secret"
+        credential.idToken = "idToken"
+        let data = NSKeyedArchiver.archivedData(withRootObject: credential)
+
+        let object = NSKeyedUnarchiver.unarchiveObject(with: data) as? OAuthSwiftCredential
+        XCTAssertEqual(credential, object)
+    }
+
     func testCoding() {
         let credential = OAuthSwiftCredential(consumerKey: "foo", consumerSecret: "bar")
         credential.oauthToken = "token"
         credential.oauthTokenSecret = "secret"
+        do {
+            let data = try JSONEncoder().encode(credential)
+            let object = try JSONDecoder().decode(OAuthSwiftCredential.self, from: data)
+            XCTAssertEqual(credential, object)
+        } catch {
+            XCTFail("Failed to encode or decode credential \(error)")
+        }
+    }
+
+    func testCodingWithIdToken() {
+        let credential = OAuthSwiftCredential(consumerKey: "foo", consumerSecret: "bar")
+        credential.oauthToken = "token"
+        credential.oauthTokenSecret = "secret"
+        credential.idToken = "idToken"
+
         do {
             let data = try JSONEncoder().encode(credential)
             let object = try JSONDecoder().decode(OAuthSwiftCredential.self, from: data)
