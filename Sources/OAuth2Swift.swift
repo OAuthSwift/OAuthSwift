@@ -232,7 +232,7 @@ open class OAuth2Swift: OAuthSwift {
 
     @discardableResult
     open func renewAccessToken(withRefreshToken refreshToken: String, parameters: OAuthSwift.Parameters? = nil, headers: OAuthSwift.Headers? = nil, completionHandler completion: @escaping TokenCompletionHandler) -> OAuthSwiftRequestHandle? {
-        return self.client.renewAccessToken(accessTokenUrl: self.accessTokenUrl, withRefreshToken: refreshToken, parameters: parameters ?? OAuthSwift.Parameters(), headers: headers, completionHandler: completion)
+        return self.client.renewAccessToken(accessTokenUrl: self.accessTokenUrl, withRefreshToken: refreshToken, parameters: parameters ?? OAuthSwift.Parameters(), headers: headers, contentType: self.contentType, accessTokenBasicAuthentification: self.accessTokenBasicAuthentification, completionHandler: completion)
     }
 
     fileprivate func requestOAuthAccessToken(withParameters parameters: OAuthSwift.Parameters, headers: OAuthSwift.Headers? = nil, completionHandler completion: @escaping TokenCompletionHandler) -> OAuthSwiftRequestHandle? {
