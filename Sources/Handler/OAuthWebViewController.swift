@@ -136,8 +136,8 @@ open class OAuthWebViewController: OAuthViewController, OAuthSwiftURLHandlerType
         OAuthSwift.log?.trace("OAuthWebViewController: dismiss view controller")
 
         #if os(iOS) || os(tvOS)
-            let completion: () -> Void = { [unowned self] in
-                self.delegate?.oauthWebViewControllerDidDismiss()
+            let completion: () -> Void = { [weak self] in
+                self?.delegate?.oauthWebViewControllerDidDismiss()
             }
             if let navigationController = self.navigationController, (!useTopViewControlerInsteadOfNavigation || self.topViewController == nil) {
                 navigationController.popViewController(animated: dismissViewControllerAnimated)
