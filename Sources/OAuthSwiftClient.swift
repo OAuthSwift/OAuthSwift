@@ -45,32 +45,32 @@ open class OAuthSwiftClient: NSObject {
 
     // MARK: client methods
     @discardableResult
-    open func get(_ url: URLConvertible, parameters: OAuthSwift.Parameters = [:], headers: OAuthSwift.Headers? = nil, completionHandler completion: OAuthSwiftHTTPRequest.CompletionHandler?) -> OAuthSwiftRequestHandle? {
-        return self.request(url, method: .GET, parameters: parameters, headers: headers, completionHandler: completion)
+    open func get(_ url: URLConvertible, parameters: OAuthSwift.Parameters = [:], headers: OAuthSwift.Headers? = nil, timeoutInterval: TimeInterval = 60, completionHandler completion: OAuthSwiftHTTPRequest.CompletionHandler?) -> OAuthSwiftRequestHandle? {
+        return self.request(url, method: .GET, parameters: parameters, headers: headers, timeoutInterval: timeoutInterval, completionHandler: completion)
     }
 
     @discardableResult
-    open func post(_ url: URLConvertible, parameters: OAuthSwift.Parameters = [:], headers: OAuthSwift.Headers? = nil, body: Data? = nil, completionHandler completion: OAuthSwiftHTTPRequest.CompletionHandler?) -> OAuthSwiftRequestHandle? {
-        return self.request(url, method: .POST, parameters: parameters, headers: headers, body: body, completionHandler: completion)
+    open func post(_ url: URLConvertible, parameters: OAuthSwift.Parameters = [:], headers: OAuthSwift.Headers? = nil, timeoutInterval: TimeInterval = 60, body: Data? = nil, completionHandler completion: OAuthSwiftHTTPRequest.CompletionHandler?) -> OAuthSwiftRequestHandle? {
+        return self.request(url, method: .POST, parameters: parameters, headers: headers, timeoutInterval: timeoutInterval, body: body, completionHandler: completion)
     }
 
     @discardableResult
-    open func put(_ url: URLConvertible, parameters: OAuthSwift.Parameters = [:], headers: OAuthSwift.Headers? = nil, body: Data? = nil, completionHandler completion: OAuthSwiftHTTPRequest.CompletionHandler?) -> OAuthSwiftRequestHandle? {
-        return self.request(url, method: .PUT, parameters: parameters, headers: headers, body: body, completionHandler: completion)
+    open func put(_ url: URLConvertible, parameters: OAuthSwift.Parameters = [:], headers: OAuthSwift.Headers? = nil, timeoutInterval: TimeInterval = 60, body: Data? = nil, completionHandler completion: OAuthSwiftHTTPRequest.CompletionHandler?) -> OAuthSwiftRequestHandle? {
+        return self.request(url, method: .PUT, parameters: parameters, headers: headers, timeoutInterval: timeoutInterval, body: body, completionHandler: completion)
     }
 
     @discardableResult
-    open func delete(_ url: URLConvertible, parameters: OAuthSwift.Parameters = [:], headers: OAuthSwift.Headers? = nil, completionHandler completion: OAuthSwiftHTTPRequest.CompletionHandler?) -> OAuthSwiftRequestHandle? {
-        return self.request(url, method: .DELETE, parameters: parameters, headers: headers, completionHandler: completion)
+    open func delete(_ url: URLConvertible, parameters: OAuthSwift.Parameters = [:], headers: OAuthSwift.Headers? = nil, timeoutInterval: TimeInterval = 60, completionHandler completion: OAuthSwiftHTTPRequest.CompletionHandler?) -> OAuthSwiftRequestHandle? {
+        return self.request(url, method: .DELETE, parameters: parameters, headers: headers, timeoutInterval: timeoutInterval, completionHandler: completion)
     }
 
     @discardableResult
-    open func patch(_ url: URLConvertible, parameters: OAuthSwift.Parameters = [:], headers: OAuthSwift.Headers? = nil, completionHandler completion: OAuthSwiftHTTPRequest.CompletionHandler?) -> OAuthSwiftRequestHandle? {
-        return self.request(url, method: .PATCH, parameters: parameters, headers: headers, completionHandler: completion)
+    open func patch(_ url: URLConvertible, parameters: OAuthSwift.Parameters = [:], headers: OAuthSwift.Headers? = nil, timeoutInterval: TimeInterval = 60, completionHandler completion: OAuthSwiftHTTPRequest.CompletionHandler?) -> OAuthSwiftRequestHandle? {
+        return self.request(url, method: .PATCH, parameters: parameters, headers: headers, timeoutInterval: timeoutInterval, completionHandler: completion)
     }
 
     @discardableResult
-    open func request(_ url: URLConvertible, method: OAuthSwiftHTTPRequest.Method, parameters: OAuthSwift.Parameters = [:], headers: OAuthSwift.Headers? = nil, body: Data? = nil, checkTokenExpiration: Bool = true, completionHandler completion: OAuthSwiftHTTPRequest.CompletionHandler?) -> OAuthSwiftRequestHandle? {
+    open func request(_ url: URLConvertible, method: OAuthSwiftHTTPRequest.Method, parameters: OAuthSwift.Parameters = [:], headers: OAuthSwift.Headers? = nil, timeoutInterval: TimeInterval = 60, body: Data? = nil, checkTokenExpiration: Bool = true, completionHandler completion: OAuthSwiftHTTPRequest.CompletionHandler?) -> OAuthSwiftRequestHandle? {
 
         if checkTokenExpiration && self.credential.isTokenExpired() {
             completion?(.failure(.tokenExpired(error: nil)))
@@ -82,7 +82,7 @@ open class OAuthSwiftClient: NSObject {
             return nil
         }
 
-        if let request = makeRequest(url, method: method, parameters: parameters, headers: headers, body: body) {
+        if let request = makeRequest(url, method: method, parameters: parameters, headers: headers, timeoutInterval: timeoutInterval, body: body) {
             request.start(completionHandler: completion)
             return request
         }
@@ -95,22 +95,22 @@ open class OAuthSwiftClient: NSObject {
         return request
     }
 
-    open func makeRequest(_ url: URLConvertible, method: OAuthSwiftHTTPRequest.Method, parameters: OAuthSwift.Parameters = [:], headers: OAuthSwift.Headers? = nil, body: Data? = nil) -> OAuthSwiftHTTPRequest? {
+    open func makeRequest(_ url: URLConvertible, method: OAuthSwiftHTTPRequest.Method, parameters: OAuthSwift.Parameters = [:], headers: OAuthSwift.Headers? = nil, timeoutInterval: TimeInterval = 60, body: Data? = nil) -> OAuthSwiftHTTPRequest? {
         guard let url = url.url else {
             return nil // XXX failure not thrown here
         }
 
-        let request = OAuthSwiftHTTPRequest(url: url, method: method, parameters: parameters, paramsLocation: self.paramsLocation, httpBody: body, headers: headers ?? [:], sessionFactory: self.sessionFactory)
+        let request = OAuthSwiftHTTPRequest(url: url, method: method, parameters: parameters, paramsLocation: self.paramsLocation, httpBody: body, headers: headers ?? [:], timeoutInterval: timeoutInterval, sessionFactory: self.sessionFactory)
         request.config.updateRequest(credential: self.credential)
         return request
     }
 
     @discardableResult
-    public func postImage(_ url: URLConvertible, parameters: OAuthSwift.Parameters, image: Data, completionHandler completion: OAuthSwiftHTTPRequest.CompletionHandler?) -> OAuthSwiftRequestHandle? {
-        return self.multiPartRequest(url: url, method: .POST, parameters: parameters, image: image, completionHandler: completion)
+    public func postImage(_ url: URLConvertible, parameters: OAuthSwift.Parameters, timeoutInterval: TimeInterval = 60, image: Data, completionHandler completion: OAuthSwiftHTTPRequest.CompletionHandler?) -> OAuthSwiftRequestHandle? {
+        return self.multiPartRequest(url: url, method: .POST, parameters: parameters, timeoutInterval: timeoutInterval, image: image, completionHandler: completion)
     }
 
-    open func makeMultiPartRequest(_ url: URLConvertible, method: OAuthSwiftHTTPRequest.Method, parameters: OAuthSwift.Parameters = [:], multiparts: [OAuthSwiftMultipartData] = [], headers: OAuthSwift.Headers? = nil) -> OAuthSwiftHTTPRequest? {
+    open func makeMultiPartRequest(_ url: URLConvertible, method: OAuthSwiftHTTPRequest.Method, parameters: OAuthSwift.Parameters = [:], multiparts: [OAuthSwiftMultipartData] = [], headers: OAuthSwift.Headers? = nil, timeoutInterval: TimeInterval = 60) -> OAuthSwiftHTTPRequest? {
         let boundary = "AS-boundary-\(arc4random())-\(arc4random())"
         let type = "multipart/form-data; boundary=\(boundary)"
         let body = self.multiDataFromObject(parameters, multiparts: multiparts, boundary: boundary)
@@ -118,12 +118,12 @@ open class OAuthSwiftClient: NSObject {
         var finalHeaders = [kHTTPHeaderContentType: type]
         finalHeaders += headers ?? [:]
 
-        return makeRequest(url, method: method, parameters: parameters, headers: finalHeaders, body: body)
+        return makeRequest(url, method: method, parameters: parameters, headers: finalHeaders, timeoutInterval: timeoutInterval, body: body)
     }
 
-    func multiPartRequest(url: URLConvertible, method: OAuthSwiftHTTPRequest.Method, parameters: OAuthSwift.Parameters, image: Data, completionHandler completion: OAuthSwiftHTTPRequest.CompletionHandler?) -> OAuthSwiftRequestHandle? {
+    func multiPartRequest(url: URLConvertible, method: OAuthSwiftHTTPRequest.Method, parameters: OAuthSwift.Parameters, timeoutInterval: TimeInterval, image: Data, completionHandler completion: OAuthSwiftHTTPRequest.CompletionHandler?) -> OAuthSwiftRequestHandle? {
         let multiparts = [ OAuthSwiftMultipartData(name: "media", data: image, fileName: "file", mimeType: "image/jpeg") ]
-        guard let request = makeMultiPartRequest(url, method: method, parameters: parameters, multiparts: multiparts) else {
+        guard let request = makeMultiPartRequest(url, method: method, parameters: parameters, multiparts: multiparts, timeoutInterval: timeoutInterval) else {
             return nil
         }
         request.start(completionHandler: completion)
@@ -148,14 +148,14 @@ open class OAuthSwiftClient: NSObject {
     }
 
     @discardableResult
-    open func postMultiPartRequest(_ url: URLConvertible, method: OAuthSwiftHTTPRequest.Method, parameters: OAuthSwift.Parameters, headers: OAuthSwift.Headers? = nil, multiparts: [OAuthSwiftMultipartData] = [], checkTokenExpiration: Bool = true, completionHandler completion: OAuthSwiftHTTPRequest.CompletionHandler?) -> OAuthSwiftRequestHandle? {
+    open func postMultiPartRequest(_ url: URLConvertible, method: OAuthSwiftHTTPRequest.Method, parameters: OAuthSwift.Parameters, headers: OAuthSwift.Headers? = nil, timeoutInterval: TimeInterval = 60, multiparts: [OAuthSwiftMultipartData] = [], checkTokenExpiration: Bool = true, completionHandler completion: OAuthSwiftHTTPRequest.CompletionHandler?) -> OAuthSwiftRequestHandle? {
 
         if checkTokenExpiration && self.credential.isTokenExpired() {
             completion?(.failure(.tokenExpired(error: nil)))
             return nil
         }
 
-        if let request = makeMultiPartRequest(url, method: method, parameters: parameters, multiparts: multiparts, headers: headers) {
+        if let request = makeMultiPartRequest(url, method: method, parameters: parameters, multiparts: multiparts, headers: headers, timeoutInterval: timeoutInterval) {
             request.start(completionHandler: completion)
             return request
         }
@@ -191,7 +191,7 @@ open class OAuthSwiftClient: NSObject {
 
     // MARK: Refresh Token
     @discardableResult
-    open func renewAccessToken(accessTokenUrl: URLConvertible?, withRefreshToken refreshToken: String, parameters: OAuthSwift.Parameters? = nil, headers: OAuthSwift.Headers? = nil, contentType: String? = nil, accessTokenBasicAuthentification: Bool = false, completionHandler completion: @escaping OAuthSwift.TokenCompletionHandler) -> OAuthSwiftRequestHandle? {
+    open func renewAccessToken(accessTokenUrl: URLConvertible?, withRefreshToken refreshToken: String, parameters: OAuthSwift.Parameters? = nil, headers: OAuthSwift.Headers? = nil, timeoutInterval: TimeInterval = 60, contentType: String? = nil, accessTokenBasicAuthentification: Bool = false, completionHandler completion: @escaping OAuthSwift.TokenCompletionHandler) -> OAuthSwiftRequestHandle? {
         // The current access token isn't needed anymore.
         self.credential.oauthToken = ""
 
@@ -206,10 +206,10 @@ open class OAuthSwiftClient: NSObject {
         }
 
         OAuthSwift.log?.trace("Renew access token, parameters: \(parameters)")
-        return requestOAuthAccessToken(accessTokenUrl: accessTokenUrl, withParameters: parameters, headers: headers, contentType: contentType, accessTokenBasicAuthentification: accessTokenBasicAuthentification, completionHandler: completion)
+        return requestOAuthAccessToken(accessTokenUrl: accessTokenUrl, withParameters: parameters, headers: headers, timeoutInterval: timeoutInterval, contentType: contentType, accessTokenBasicAuthentification: accessTokenBasicAuthentification, completionHandler: completion)
     }
 
-    func requestOAuthAccessToken(accessTokenUrl: URLConvertible?, withParameters parameters: OAuthSwift.Parameters, headers: OAuthSwift.Headers? = nil, contentType: String? = nil, accessTokenBasicAuthentification: Bool = false, completionHandler completion: @escaping OAuthSwift.TokenCompletionHandler) -> OAuthSwiftRequestHandle? {
+    func requestOAuthAccessToken(accessTokenUrl: URLConvertible?, withParameters parameters: OAuthSwift.Parameters, headers: OAuthSwift.Headers? = nil, timeoutInterval: TimeInterval, contentType: String? = nil, accessTokenBasicAuthentification: Bool = false, completionHandler completion: @escaping OAuthSwift.TokenCompletionHandler) -> OAuthSwiftRequestHandle? {
         OAuthSwift.log?.trace("Request Oauth access token ...")
         let completionHandler: OAuthSwiftHTTPRequest.CompletionHandler = { [weak self] result in
             guard let this = self else {
@@ -263,7 +263,7 @@ open class OAuthSwiftClient: NSObject {
 
         if contentType == "multipart/form-data" {
             // Request new access token by disabling check on current token expiration. This is safe because the implementation wants the user to retrieve a new token.
-            return self.postMultiPartRequest(accessTokenUrl, method: .POST, parameters: parameters, headers: headers, checkTokenExpiration: false, completionHandler: completionHandler)
+            return self.postMultiPartRequest(accessTokenUrl, method: .POST, parameters: parameters, headers: headers, timeoutInterval: timeoutInterval, checkTokenExpiration: false, completionHandler: completionHandler)
         } else {
             // special headers
             var finalHeaders: OAuthSwift.Headers? = headers
@@ -274,12 +274,12 @@ open class OAuthSwiftClient: NSObject {
                 }
             }
             // Request new access token by disabling check on current token expiration. This is safe because the implementation wants the user to retrieve a new token.
-            return self.request(accessTokenUrl, method: .POST, parameters: parameters, headers: finalHeaders, checkTokenExpiration: false, completionHandler: completionHandler)
+            return self.request(accessTokenUrl, method: .POST, parameters: parameters, headers: finalHeaders, timeoutInterval: timeoutInterval, checkTokenExpiration: false, completionHandler: completionHandler)
         }
     }
 
-    open func requestWithAutomaticAccessTokenRenewal(url: URL, method: OAuthSwiftHTTPRequest.Method, parameters: OAuthSwift.Parameters = [:], headers: OAuthSwift.Headers? = nil, contentType: String? = nil, accessTokenBasicAuthentification: Bool = false, accessTokenUrl: URLConvertible, onTokenRenewal: OAuthSwift.TokenRenewedHandler?, completionHandler completion: OAuthSwiftHTTPRequest.CompletionHandler?) {
-        self.request(url, method: method, parameters: parameters, headers: headers) { [weak self] result in
+    open func requestWithAutomaticAccessTokenRenewal(url: URL, method: OAuthSwiftHTTPRequest.Method, parameters: OAuthSwift.Parameters = [:], headers: OAuthSwift.Headers? = nil, timeoutInterval: TimeInterval = 60, contentType: String? = nil, accessTokenBasicAuthentification: Bool = false, accessTokenUrl: URLConvertible, onTokenRenewal: OAuthSwift.TokenRenewedHandler?, completionHandler completion: OAuthSwiftHTTPRequest.CompletionHandler?) {
+        self.request(url, method: method, parameters: parameters, headers: headers, timeoutInterval: timeoutInterval) { [weak self] result in
             guard let this = self else {
                 OAuthSwift.retainError(completion)
                 return
@@ -299,7 +299,7 @@ open class OAuthSwiftClient: NSObject {
                             switch result {
                             case .success(let (credential, _, _)):
                                 onTokenRenewal(.success(credential))
-                                this.requestWithAutomaticAccessTokenRenewal(url: url, method: method, parameters: parameters, headers: headers, contentType: contentType, accessTokenBasicAuthentification: accessTokenBasicAuthentification, accessTokenUrl: accessTokenUrl, onTokenRenewal: nil, completionHandler: completion)
+                                this.requestWithAutomaticAccessTokenRenewal(url: url, method: method, parameters: parameters, headers: headers, timeoutInterval: timeoutInterval, contentType: contentType, accessTokenBasicAuthentification: accessTokenBasicAuthentification, accessTokenUrl: accessTokenUrl, onTokenRenewal: nil, completionHandler: completion)
                             case .failure(let error):
                                 if let completion = completion {
                                     completion(.failure(.tokenExpired(error: error)))
@@ -307,7 +307,7 @@ open class OAuthSwiftClient: NSObject {
                             }
                         }
 
-                        _ = this.renewAccessToken(accessTokenUrl: accessTokenUrl, withRefreshToken: this.credential.oauthRefreshToken, headers: headers, contentType: contentType, accessTokenBasicAuthentification: accessTokenBasicAuthentification, completionHandler: renewCompletionHandler)
+                        _ = this.renewAccessToken(accessTokenUrl: accessTokenUrl, withRefreshToken: this.credential.oauthRefreshToken, headers: headers, timeoutInterval: timeoutInterval, contentType: contentType, accessTokenBasicAuthentification: accessTokenBasicAuthentification, completionHandler: renewCompletionHandler)
                     } else {
                         if let completion = completion {
                             completion(.failure(.tokenExpired(error: nil)))
