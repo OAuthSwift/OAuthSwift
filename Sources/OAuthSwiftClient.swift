@@ -191,7 +191,7 @@ open class OAuthSwiftClient: NSObject {
 
     // MARK: Refresh Token
     @discardableResult
-    open func renewAccessToken(accessTokenUrl: URLConvertible?, withRefreshToken refreshToken: String, parameters: OAuthSwift.Parameters? = nil, headers: OAuthSwift.Headers? = nil, contentType: String? = nil, accessTokenBasicAuthentification: Bool = false, completionHandler completion: @escaping OAuthSwift.TokenCompletionHandler) -> OAuthSwiftRequestHandle? {
+    open func renewAccessToken(accessTokenUrl: URLConvertible?, withRefreshToken refreshToken: String, parameters: OAuthSwift.Parameters? = nil, headers: OAuthSwift.Headers? = nil, contentType: String? = nil, accessTokenBasicAuthentification: Bool = false, customKeypath: String? = nil, customAccessTokenParams: Dictionary<String,String>? = nil, completionHandler completion: @escaping OAuthSwift.TokenCompletionHandler) -> OAuthSwiftRequestHandle? {
         // The current access token isn't needed anymore.
         self.credential.oauthToken = ""
 
@@ -199,6 +199,11 @@ open class OAuthSwiftClient: NSObject {
         parameters["client_id"] = self.credential.consumerKey
         parameters["refresh_token"] = refreshToken
         parameters["grant_type"] = "refresh_token"
+        
+        // if exists, will add custom parameters if needed for the distant OAuth2 server
+        if let customParameters = customAccessTokenParams {
+            parameters += customParameters
+        }
 
         // Omit the consumer secret if it's empty; this makes token renewal consistent with PKCE authorization.
         if !self.credential.consumerSecret.isEmpty {
@@ -206,10 +211,10 @@ open class OAuthSwiftClient: NSObject {
         }
 
         OAuthSwift.log?.trace("Renew access token, parameters: \(parameters)")
-        return requestOAuthAccessToken(accessTokenUrl: accessTokenUrl, withParameters: parameters, headers: headers, contentType: contentType, accessTokenBasicAuthentification: accessTokenBasicAuthentification, completionHandler: completion)
+        return requestOAuthAccessToken(accessTokenUrl: accessTokenUrl, withParameters: parameters, headers: headers, contentType: contentType, accessTokenBasicAuthentification: accessTokenBasicAuthentification,customKeypath: customKeypath, completionHandler: completion)
     }
 
-    func requestOAuthAccessToken(accessTokenUrl: URLConvertible?, withParameters parameters: OAuthSwift.Parameters, headers: OAuthSwift.Headers? = nil, contentType: String? = nil, accessTokenBasicAuthentification: Bool = false, completionHandler completion: @escaping OAuthSwift.TokenCompletionHandler) -> OAuthSwiftRequestHandle? {
+    func requestOAuthAccessToken(accessTokenUrl: URLConvertible?, withParameters parameters: OAuthSwift.Parameters, headers: OAuthSwift.Headers? = nil, contentType: String? = nil, accessTokenBasicAuthentification: Bool = false, customKeypath: String? = nil, customAccessTokenParams: Dictionary<String,String>? = nil, completionHandler completion: @escaping OAuthSwift.TokenCompletionHandler) -> OAuthSwiftRequestHandle? {
         OAuthSwift.log?.trace("Request Oauth access token ...")
         let completionHandler: OAuthSwiftHTTPRequest.CompletionHandler = { [weak self] result in
             guard let this = self else {
@@ -222,12 +227,30 @@ open class OAuthSwiftClient: NSObject {
 
                 let responseJSON: Any? = try? response.jsonObject(options: .mutableContainers)
 
-                let responseParameters: OAuthSwift.Parameters
+                var responseParameters: OAuthSwift.Parameters
 
                 if let jsonDico = responseJSON as? [String: Any] {
                     responseParameters = jsonDico
                 } else {
                     responseParameters = response.string?.parametersFromQueryString ?? [:]
+                }
+                
+                // if response datas are not in the root of the json, ie nested in a keypath
+                // ex:
+                //{
+                //    "status": [{integer} API response status],
+                //    "body": {
+                //        "access_token": [{string} Your new access_token],
+                //        "expires_in": [{integer} Access token expiry delay in seconds],
+                //        "token_type": [{string] HTTP Authorization Header format: Bearer],
+                //        "scope": [{string} Scopes the user accepted],
+                //        "refresh_token": [{string} Your new refresh_token],
+                //        "userid": [{string} The ID of the user]
+                //    }
+                //}
+                // here objects are nested into "body"
+                if let _customKeypath = customKeypath , let nestedResponseParameters = responseParameters[_customKeypath] as? [String: Any]{
+                    responseParameters = nestedResponseParameters
                 }
 
                 guard let accessToken = responseParameters["access_token"] as? String else {
