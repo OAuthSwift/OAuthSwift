@@ -122,6 +122,8 @@ extension ViewController {
             doOAuthFitbit2(parameters)
         case "Withings":
             doOAuthWithings(parameters)
+        case "Withings2":
+            doOAuthWithings2(parameters)
         case "Linkedin":
             doOAuthLinkedin(parameters)
         case "Linkedin2":
@@ -543,6 +545,47 @@ extension ViewController {
                 }
         }
     }
+    func doOAuthWithings2(_ serviceParameters: [String:String]){
+        let oauthswift = OAuth2Swift(
+            consumerKey:    serviceParameters["consumerKey"]!,
+            consumerSecret: serviceParameters["consumerSecret"]!,
+            authorizeUrl:   "https://account.withings.com/oauth2_user/authorize2",
+            accessTokenUrl: "https://wbsapi.withings.net/v2/oauth2",
+            responseType:   "code",
+            customKeypath: "body",
+            customAccessTokenParams: ["action":"requesttoken"]
+        )
+        
+        self.oauthswift = oauthswift
+        oauthswift.authorizeURLHandler = getURLHandler()
+        let _ = oauthswift.authorize(
+        withCallbackURL: URL(string: "oauth-swift://oauth-callback/withings")!,
+        scope: "user.metrics,user.activity,user.sleepevents",
+        state: "TEST") { result in
+            switch result {
+            case .success(let (credential, _, parameters)):
+                self.showTokenAlert(name: serviceParameters["name"], credential: credential)
+                self.testWithings2(oauthswift, userId: parameters["userid"] as! String)
+            case .failure(let error):
+                print(error.description)
+            }
+        }
+    }
+    func testWithings2(_ oauthswift: OAuth2Swift, userId : String) {
+        oauthswift.client.paramsLocation = .requestURIQuery
+        let _ = oauthswift.client.get(
+            "https://wbsapi.withings.net/v2/measure",
+            parameters: ["action": "getactivity", "userid": userId, "date":"2022-01-01"]) { result in
+                switch result {
+                case .success(let response):
+                    let jsonDict = try? response.jsonObject()
+                    print(jsonDict as Any)
+                case .failure(let error):
+                    print(error.description)
+                }
+        }
+    }
+
     
     // MARK: Linkedin
     func doOAuthLinkedin(_ serviceParameters: [String:String]){

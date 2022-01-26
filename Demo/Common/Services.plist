@@ -72,6 +72,13 @@
 		<key>consumerSecret</key>
 		<string></string>
 	</dict>
+	<key>Withings2</key>
+	<dict>
+		<key>consumerKey</key>
+		<string></string>
+		<key>consumerSecret</key>
+		<string></string>
+	</dict>
 	<key>Linkedin</key>
 	<dict>
 		<key>consumerKey</key>
