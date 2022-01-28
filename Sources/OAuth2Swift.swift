@@ -32,15 +32,21 @@ open class OAuth2Swift: OAuthSwift {
     var contentType: String?
     // RFC7636 PKCE
     var codeVerifier: String?
+    /// if exists, will deal with custom 'refresh-token' response, encapsulating data in a supplementary json keypath, ie: "body"
+    var customKeypath: String?
+    /// if exists, will be send into the 'refresh-token' request
+    var customAccessTokenParams: Dictionary<String,String>? = nil
 
     // MARK: init
-    public init(consumerKey: String, consumerSecret: String, authorizeUrl: URLConvertible, accessTokenUrl: URLConvertible? = nil, responseType: String, contentType: String? = nil) {
+    public init(consumerKey: String, consumerSecret: String, authorizeUrl: URLConvertible, accessTokenUrl: URLConvertible? = nil, responseType: String, contentType: String? = nil, customKeypath: String? = nil, customAccessTokenParams: Dictionary<String,String>? = nil) {
         self.accessTokenUrl = accessTokenUrl?.string
         self.contentType = contentType
         self.consumerKey = consumerKey
         self.consumerSecret = consumerSecret
         self.authorizeUrl = authorizeUrl.string
         self.responseType = responseType
+        self.customKeypath = customKeypath
+        self.customAccessTokenParams = customAccessTokenParams
         super.init(consumerKey: consumerKey, consumerSecret: consumerSecret)
         self.client.credential.version = .oauth2
     }
@@ -50,12 +56,16 @@ open class OAuth2Swift: OAuthSwift {
             let responseType = parameters["responseType"], let authorizeUrl = parameters["authorizeUrl"] else {
                 return nil
         }
+        let customKeypath = parameters["customKeypath"]
+        
         if let accessTokenUrl = parameters["accessTokenUrl"] {
             self.init(consumerKey: consumerKey, consumerSecret: consumerSecret,
-                      authorizeUrl: authorizeUrl, accessTokenUrl: accessTokenUrl, responseType: responseType)
+                      authorizeUrl: authorizeUrl, accessTokenUrl: accessTokenUrl,
+                      responseType: responseType, customKeypath: customKeypath)
         } else {
             self.init(consumerKey: consumerKey, consumerSecret: consumerSecret,
-                      authorizeUrl: authorizeUrl, responseType: responseType)
+                      authorizeUrl: authorizeUrl, responseType: responseType,
+                      customKeypath: customKeypath)
         }
     }
 
@@ -209,6 +219,11 @@ open class OAuth2Swift: OAuthSwift {
         parameters["client_id"] = self.consumerKey
         parameters["code"] = code
         parameters["grant_type"] = "authorization_code"
+        
+        // if exists, will add custom parameters if needed for the distant OAuth2 server
+        if let customParameters = self.customAccessTokenParams {
+            parameters += customParameters
+        }
 
         // PKCE - extra parameter
         if let codeVerifier = self.codeVerifier {
@@ -227,16 +242,22 @@ open class OAuth2Swift: OAuthSwift {
         }
 
         OAuthSwift.log?.trace("Add security parameters: \(parameters)")
-        return requestOAuthAccessToken(withParameters: parameters, headers: headers, completionHandler: completion)
+        return requestOAuthAccessToken(withParameters: parameters, headers: headers,customKeypath: self.customKeypath, completionHandler: completion)
     }
 
     @discardableResult
-    open func renewAccessToken(withRefreshToken refreshToken: String, parameters: OAuthSwift.Parameters? = nil, headers: OAuthSwift.Headers? = nil, completionHandler completion: @escaping TokenCompletionHandler) -> OAuthSwiftRequestHandle? {
-        return self.client.renewAccessToken(accessTokenUrl: self.accessTokenUrl, withRefreshToken: refreshToken, parameters: parameters ?? OAuthSwift.Parameters(), headers: headers, completionHandler: completion)
+    open func renewAccessToken(withRefreshToken refreshToken: String, parameters: OAuthSwift.Parameters? = nil, headers: OAuthSwift.Headers? = nil, customKeypath: String? = nil, customAccessTokenParams: Dictionary<String,String>? = nil, completionHandler completion: @escaping TokenCompletionHandler) -> OAuthSwiftRequestHandle? {
+        return self.client.renewAccessToken(accessTokenUrl: self.accessTokenUrl, withRefreshToken: refreshToken,
+                                            parameters: parameters ?? OAuthSwift.Parameters(),
+                                            headers: headers, customKeypath: customKeypath, customAccessTokenParams: customAccessTokenParams,
+                                            completionHandler: completion)
     }
 
-    fileprivate func requestOAuthAccessToken(withParameters parameters: OAuthSwift.Parameters, headers: OAuthSwift.Headers? = nil, completionHandler completion: @escaping TokenCompletionHandler) -> OAuthSwiftRequestHandle? {
-        return self.client.requestOAuthAccessToken(accessTokenUrl: self.accessTokenUrl, withParameters: parameters, headers: headers, contentType: self.contentType, accessTokenBasicAuthentification: self.accessTokenBasicAuthentification, completionHandler: completion)
+    fileprivate func requestOAuthAccessToken(withParameters parameters: OAuthSwift.Parameters, headers: OAuthSwift.Headers? = nil, customKeypath: String? = nil, completionHandler completion: @escaping TokenCompletionHandler) -> OAuthSwiftRequestHandle? {
+        return self.client.requestOAuthAccessToken(accessTokenUrl: self.accessTokenUrl, withParameters: parameters,
+                                                   headers: headers, contentType: self.contentType,
+                                                   accessTokenBasicAuthentification: self.accessTokenBasicAuthentification,
+                                                   customKeypath: customKeypath, completionHandler: completion)
     }
 
     /**
