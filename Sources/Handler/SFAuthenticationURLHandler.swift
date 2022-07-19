@@ -52,8 +52,7 @@ open class SFAuthenticationURLHandler: OAuthSwiftURLHandlerType {
 @available(iOS, introduced: 11.0, deprecated: 12.0)
 extension SFAuthenticationURLHandler {
     static func isCancelledError(domain: String, code: Int) -> Bool {
-        return domain == SFAuthenticationErrorDomain &&
-            code == SFAuthenticationError.canceledLogin.rawValue
+        code == SFAuthenticationError.canceledLogin.rawValue
     }
 }
 #endif
