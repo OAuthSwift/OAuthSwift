@@ -43,7 +43,7 @@ open class OAuthSwiftHTTPRequest: NSObject, OAuthSwiftRequestHandle {
     private var task: URLSessionTask?
     private var session: URLSession!
     
-    var allHTTPHeaderFields: [String : String]? {
+    public var allHTTPHeaderFields: [String : String]? {
         return request?.allHTTPHeaderFields
     }
 
