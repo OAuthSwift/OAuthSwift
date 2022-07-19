@@ -42,6 +42,10 @@ open class OAuthSwiftHTTPRequest: NSObject, OAuthSwiftRequestHandle {
     private var request: URLRequest?
     private var task: URLSessionTask?
     private var session: URLSession!
+    
+    var allHTTPHeaderFields: [String : String]? {
+        return request?.allHTTPHeaderFields
+    }
 
     fileprivate var cancelRequested = false
 
