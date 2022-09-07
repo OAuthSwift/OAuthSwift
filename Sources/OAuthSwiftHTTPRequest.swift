@@ -55,8 +55,8 @@ open class OAuthSwiftHTTPRequest: NSObject, OAuthSwiftRequestHandle {
 
     // MARK: INIT
 
-    convenience init(url: URL, method: Method = .GET, parameters: OAuthSwift.Parameters = [:], paramsLocation: ParamsLocation = .authorizationHeader, httpBody: Data? = nil, headers: OAuthSwift.Headers = [:], sessionFactory: URLSessionFactory = .default) {
-        self.init(config: Config(url: url, httpMethod: method, httpBody: httpBody, headers: headers, parameters: parameters, paramsLocation: paramsLocation, sessionFactory: sessionFactory))
+    convenience init(url: URL, method: Method = .GET, parameters: OAuthSwift.Parameters = [:], paramsLocation: ParamsLocation = .authorizationHeader, httpBody: Data? = nil, headers: OAuthSwift.Headers = [:], timeoutInterval: TimeInterval = 60, sessionFactory: URLSessionFactory = .default) {
+        self.init(config: Config(url: url, httpMethod: method, httpBody: httpBody, headers: headers, timeoutInterval: timeoutInterval, parameters: parameters, paramsLocation: paramsLocation, sessionFactory: sessionFactory))
     }
 
     convenience init(request: URLRequest, paramsLocation: ParamsLocation = .authorizationHeader, sessionFactory: URLSessionFactory = .default) {
