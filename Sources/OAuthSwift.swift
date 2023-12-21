@@ -122,4 +122,14 @@ extension OAuthSwift {
       Self.log = OAuthDebugLogger(level)
       OAuthSwift.log?.trace("Logging enabled with level: \(level)")
    }
+
+   /// Set a custom log action to preform instead of printing to the console
+   /// Used to integrate external logging systems
+   public static func setCustomLogAction(_ action: ((_ message: String) -> Void)?) {
+      if Self.log == nil {
+         self.setLogLevel(.error)
+      }
+      Self.log?.logAction = action
+      OAuthSwift.log?.trace("Custom log action enabled with level: \(Self.log!.level)")
+   }
 }
