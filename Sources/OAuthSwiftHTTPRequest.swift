@@ -164,11 +164,20 @@ open class OAuthSwiftHTTPRequest: NSObject, OAuthSwiftRequestHandle {
                 NSLocalizedDescriptionKey: localizedDescription,
                 "Response-Headers": response.allHeaderFields,
                 OAuthSwiftError.ResponseKey: response,
-                OAuthSwiftError.ResponseDataKey: responseData
+                OAuthSwiftError.ResponseDataKey: responseData,
+                "Request": request,
+                "Request-Method": request.httpMethod ?? "nil",
+                "Request-Headers": request.allHTTPHeaderFields ?? "nil"
+                
             ]
+            
+            if let requestData = request.httpBody, let requestString = String(data: requestData, encoding: .utf8) {
+                userInfo["Request-Body"] = requestString
+            }
             if let string = responseString {
                 userInfo["Response-Body"] = string
             }
+            
             if let urlString = response.url?.absoluteString {
                 userInfo[NSURLErrorFailingURLErrorKey] = urlString
             }
