@@ -8,7 +8,7 @@
 
 import Foundation
 
-#if os(iOS) || os(tvOS)
+#if os(iOS) || os(visionOS) || os(tvOS)
     import UIKit
     public typealias OAuthViewController = UIViewController
 #elseif os(watchOS)
@@ -22,7 +22,7 @@ import Foundation
 /// Delegate for OAuthWebViewController
 public protocol OAuthWebViewControllerDelegate: AnyObject {
 
-    #if os(iOS) || os(tvOS)
+    #if os(iOS) || os(visionOS) || os(tvOS)
     /// Did web view presented (work only without navigation controller)
     func oauthWebViewControllerDidPresent()
     /// Did web view dismiss (work only without navigation controller)
@@ -38,12 +38,12 @@ public protocol OAuthWebViewControllerDelegate: AnyObject {
 /// A web view controller, which handler OAuthSwift authentification. Must be override to display a web view.
 open class OAuthWebViewController: OAuthViewController, OAuthSwiftURLHandlerType {
 
-    #if os(iOS) || os(tvOS) || os(OSX)
+    #if os(iOS) || os(visionOS) || os(tvOS) || os(OSX)
     /// Delegate for this view
     public weak var delegate: OAuthWebViewControllerDelegate?
     #endif
 
-    #if os(iOS) || os(tvOS)
+    #if os(iOS) || os(visionOS) || os(tvOS)
     /// If controller have an navigation controller, application top view controller could be used if true
     public var useTopViewControlerInsteadOfNavigation = false
 
@@ -85,7 +85,7 @@ open class OAuthWebViewController: OAuthViewController, OAuthSwiftURLHandlerType
 
     open func doHandle(_ url: URL) {
         OAuthSwift.log?.trace("OAuthWebViewController: present Safari view controller, url: \(url)")
-        #if os(iOS) || os(tvOS)
+        #if os(iOS) || os(visionOS) || os(tvOS)
             let completion: () -> Void = { [unowned self] in
                 self.delegate?.oauthWebViewControllerDidPresent()
             }
@@ -135,7 +135,7 @@ open class OAuthWebViewController: OAuthViewController, OAuthSwiftURLHandlerType
     open func dismissWebViewController() {
         OAuthSwift.log?.trace("OAuthWebViewController: dismiss view controller")
 
-        #if os(iOS) || os(tvOS)
+        #if os(iOS) || os(visionOS) || os(tvOS)
             let completion: () -> Void = { [weak self] in
                 self?.delegate?.oauthWebViewControllerDidDismiss()
             }
@@ -165,7 +165,7 @@ open class OAuthWebViewController: OAuthViewController, OAuthSwiftURLHandlerType
     }
 
     // MARK: overrides
-    #if os(iOS) || os(tvOS)
+    #if os(iOS) || os(visionOS) || os(tvOS)
     open override func viewWillAppear(_ animated: Bool) {
         self.delegate?.oauthWebViewControllerWillAppear()
     }

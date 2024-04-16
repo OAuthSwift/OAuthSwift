@@ -8,7 +8,7 @@
 
 import Foundation
 
-#if os(iOS) || os(tvOS)
+#if os(iOS) || os(tvOS) || os(visionOS)
 import UIKit
 #elseif os(watchOS)
 import WatchKit
@@ -35,6 +35,8 @@ open class OAuthSwiftOpenURLExternally: OAuthSwiftURLHandlerType {
             // WATCHOS: not implemented
             #elseif os(OSX)
             NSWorkspace.shared.open(url)
+            #elseif os(visionOS)
+            UIApplication.shared.open(url)
             #endif
         }
     }
