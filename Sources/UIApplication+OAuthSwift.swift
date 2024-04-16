@@ -6,7 +6,7 @@
 //  Copyright © 2015 Dongri Jin. All rights reserved.
 //
 
-#if os(iOS) || os(tvOS)
+#if os(iOS) || os(visionOS) || os(tvOS)
     import UIKit
 
     extension UIApplication {
@@ -30,11 +30,15 @@
         }
 
         public var topWindow: UIWindow? {
+            #if os(iOS) || os(tvOS)
             if #available(iOS 13.0, tvOS 13.0, *) {
                 return self.topWindowScene?.windows.first
             } else {
                 return self.keyWindow
             }
+            #elseif os(visionOS)
+            return self.topWindowScene?.windows.first
+            #endif
         }
 
         var topViewController: UIViewController? {

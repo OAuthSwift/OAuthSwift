@@ -7,7 +7,7 @@
 //
 
 import Foundation
-#if os(iOS)
+#if os(iOS) || os(visionOS)
 #if !OAUTH_APP_EXTENSIONS
 import UIKit
 #endif
