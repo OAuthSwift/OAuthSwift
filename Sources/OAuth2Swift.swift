@@ -163,14 +163,13 @@ open class OAuth2Swift: OAuthSwift {
                     completion(.failure(.cancelled))
                 } else {
                     let description = responseParameters["error_description"] ?? ""
-                    let message = NSLocalizedString(error, comment: description)
                     OAuthSwift.log?.error("Authorization failed with: \(description)")
-                    completion(.failure(.serverError(message: message)))
+                    completion(.failure(.serverError(error: error, description: description)))
                 }
             } else {
                 let message = "No access_token, no code and no error provided by server"
                 OAuthSwift.log?.error("Authorization failed with: \(message)")
-                completion(.failure(.serverError(message: message)))
+                completion(.failure(.serverError(error: "", description: message)))
             }
         }
 
