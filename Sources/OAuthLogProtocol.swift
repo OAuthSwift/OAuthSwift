@@ -22,6 +22,8 @@ public enum OAuthLogLevel: Int {
 public protocol OAuthLogProtocol {
 
    var level: OAuthLogLevel { get }
+	
+   var logAction: ((_ message: String) -> Void)? { get set }
 
    /// basic level of print messages
    func trace<T>(_ message: @autoclosure () -> T, filename: String, line: Int, function: String)
@@ -39,21 +41,36 @@ extension OAuthLogProtocol {
       let logLevel = OAuthLogLevel.trace
       // deduce based on the current log level vs. globally set level, to print such log or not
       if level.rawValue >= logLevel.rawValue {
-         print("[TRACE] \((filename as NSString).lastPathComponent) [\(line)]: \(message())")
+         let message = "[TRACE] \((filename as NSString).lastPathComponent) [\(line)]: \(message())"
+		 if let action = logAction {
+		    action(message)
+		 } else {
+		    print(message)
+		 }
       }
    }
 
    public func warn<T>(_ message: @autoclosure () -> T, filename: String = #file, line: Int = #line, function: String = #function) {
       let logLevel = OAuthLogLevel.warn
       if level.rawValue >= logLevel.rawValue {
-         print("[WARN] \(self) = \((filename as NSString).lastPathComponent) [\(line)]: \(message())")
+         let message = "[WARN] \(self) = \((filename as NSString).lastPathComponent) [\(line)]: \(message())"
+		 if let action = logAction {
+			action(message)
+		 } else {
+			print(message)
+		 }
       }
    }
 
    public func error<T>(_ message: @autoclosure () -> T, filename: String = #file, line: Int = #line, function: String = #function) {
       let logLevel = OAuthLogLevel.error
       if level.rawValue >= logLevel.rawValue {
-         print("[ERROR] \((filename as NSString).lastPathComponent) [\(line)]: \(message())")
+         let message = "[ERROR] \((filename as NSString).lastPathComponent) [\(line)]: \(message())"
+		 if let action = logAction {
+			action(message)
+		 } else {
+			print(message)
+		 }
       }
 
    }
@@ -61,6 +78,7 @@ extension OAuthLogProtocol {
 
 public struct OAuthDebugLogger: OAuthLogProtocol {
    public let level: OAuthLogLevel
+   public var logAction: ((_ message: String) -> Void)? = nil
    init(_ level: OAuthLogLevel) {
       self.level = level
    }
