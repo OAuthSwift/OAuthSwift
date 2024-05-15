@@ -230,7 +230,11 @@ open class OAuthSwiftClient: NSObject {
                 var responseParameters: OAuthSwift.Parameters
 
                 if let jsonDico = responseJSON as? [String: Any] {
-                    responseParameters = jsonDico
+                    if let withingsParameters = jsonDico["body"] as? [String: Any] { // withings parameters are nested in `body`
+                        responseParameters = withingsParameters
+                    } else {
+                        responseParameters = jsonDico
+                    }
                 } else {
                     responseParameters = response.string?.parametersFromQueryString ?? [:]
                 }
