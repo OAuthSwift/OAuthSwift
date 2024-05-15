@@ -16,13 +16,21 @@ open class ASWebAuthenticationURLHandler: OAuthSwiftURLHandlerType {
     var webAuthSession: ASWebAuthenticationSession!
     let prefersEphemeralWebBrowserSession: Bool
     let callbackUrlScheme: String
+    var callbackUrlDomain: String?
 
     weak var presentationContextProvider: ASWebAuthenticationPresentationContextProviding?
-
+    
     public init(callbackUrlScheme: String, presentationContextProvider: ASWebAuthenticationPresentationContextProviding?, prefersEphemeralWebBrowserSession: Bool = false) {
         self.callbackUrlScheme = callbackUrlScheme
         self.presentationContextProvider = presentationContextProvider
         self.prefersEphemeralWebBrowserSession = prefersEphemeralWebBrowserSession
+    }
+
+    public init(callbackUrlScheme: String, presentationContextProvider: ASWebAuthenticationPresentationContextProviding?, prefersEphemeralWebBrowserSession: Bool = false, callbackUrlDomain: String?) {
+        self.callbackUrlScheme = callbackUrlScheme
+        self.presentationContextProvider = presentationContextProvider
+        self.prefersEphemeralWebBrowserSession = prefersEphemeralWebBrowserSession
+        self.callbackUrlDomain = callbackUrlDomain
     }
 
     public func handle(_ url: URL) {
@@ -34,7 +42,7 @@ open class ASWebAuthenticationURLHandler: OAuthSwiftURLHandlerType {
                     let msg = error.localizedDescription.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)
                     let errorDomain = (error as NSError).domain
                     let errorCode = (error as NSError).code
-                    let urlString = "\(self.callbackUrlScheme):?error=\(msg ?? "UNKNOWN")&error_domain=\(errorDomain)&error_code=\(errorCode)"
+                    let urlString = "\(self.callbackUrlScheme)://\(self.callbackUrlDomain ?? "")?error=\(msg ?? "UNKNOWN")&error_domain=\(errorDomain)&error_code=\(errorCode)"
                     let url = URL(string: urlString)!
                     #if !OAUTH_APP_EXTENSIONS
                     UIApplication.shared.open(url, options: [:], completionHandler: nil)
