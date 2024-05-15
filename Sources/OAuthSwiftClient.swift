@@ -256,7 +256,7 @@ open class OAuthSwiftClient: NSObject {
                 guard let accessToken = responseParameters["access_token"] as? String else {
                     let message = NSLocalizedString("Could not get Access Token", comment: "Due to an error in the OAuth2 process, we couldn't get a valid token.")
                     OAuthSwift.log?.error("Could not get access token")
-                    completion(.failure(.serverError(message: message)))
+                    completion(.failure(.serverError(message: message, description: "")))
                     return
                 }
 
