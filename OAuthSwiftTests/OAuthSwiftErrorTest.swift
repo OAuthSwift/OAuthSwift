@@ -83,7 +83,7 @@ class OAuthSwiftErrorTest: XCTestCase {
      testOAuthSwiftError(.tokenExpired)
      testOAuthSwiftError(.missingState)
      testOAuthSwiftError(.stateNotEqual(state: "state", responseState: "responseState"))
-     testOAuthSwiftError(.serverError(message: "message"))
+     testOAuthSwiftError(.serverError(message: "message", description: "description"))
      testOAuthSwiftError(.encodingError(urlString: "urlString"))
      testOAuthSwiftError(.authorizationPending)
      testOAuthSwiftError(.requestCreation(message: "message"))
